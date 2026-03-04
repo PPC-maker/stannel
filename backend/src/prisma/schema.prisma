@@ -1,0 +1,242 @@
+// STANNEL Database Schema - Prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  ADMIN
+  ARCHITECT
+  SUPPLIER
+}
+
+enum UserRank {
+  BRONZE
+  SILVER
+  GOLD
+  PLATINUM
+}
+
+enum InvoiceStatus {
+  PENDING_ADMIN
+  CLARIFICATION_NEEDED
+  APPROVED
+  REJECTED
+  PENDING_SUPPLIER_PAY
+  PAID
+  OVERDUE
+}
+
+enum ContractType {
+  STANDARD
+  PREMIUM
+  EXCLUSIVE
+}
+
+model User {
+  id              String          @id @default(cuid())
+  firebaseUid     String          @unique
+  email           String          @unique
+  name            String
+  phone           String?
+  role            UserRole
+  rank            UserRank        @default(BRONZE)
+  isActive        Boolean         @default(false)
+  profileImage    String?
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  architectProfile  ArchitectProfile?
+  supplierProfile   SupplierProfile?
+  auditLogs         AuditLog[]
+  eventRegistrations EventRegistration[]
+}
+
+model ArchitectProfile {
+  id              String    @id @default(cuid())
+  userId          String    @unique
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  pointsBalance   Float     @default(0)
+  cashBalance     Float     @default(0)
+  totalEarned     Float     @default(0)
+  totalRedeemed   Float     @default(0)
+
+  cardNumber      String    @unique @default(cuid())
+  cardExpiry      DateTime?
+
+  monthlyGoal     Float     @default(0)
+  monthlyProgress Float     @default(0)
+
+  invoices        Invoice[]
+  cardTransactions CardTransaction[]
+  goalBonuses     GoalBonus[]
+  redemptions     Redemption[]
+}
+
+model SupplierProfile {
+  id            String        @id @default(cuid())
+  userId        String        @unique
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  companyName   String
+  trustScore    Float         @default(5.0)
+  qualityScore  Float         @default(5.0)
+
+  contracts     Contract[]
+  invoices      Invoice[]
+  supplierGoals SupplierGoal[]
+  products      Product[]
+}
+
+model Invoice {
+  id              String          @id @default(cuid())
+  imageUrl        String
+  amount          Float
+  status          InvoiceStatus   @default(PENDING_ADMIN)
+
+  architectId     String
+  architect       ArchitectProfile @relation(fields: [architectId], references: [id])
+  supplierId      String
+  supplier        SupplierProfile  @relation(fields: [supplierId], references: [id])
+
+  slaDeadline     DateTime
+  slaAlertSent    Boolean         @default(false)
+
+  adminNote       String?
+  supplierRef     String?
+
+  createdAt       DateTime        @default(now())
+  approvedAt      DateTime?
+  paidAt          DateTime?
+
+  aiExtractedAmount Float?
+  aiConfidence      Float?
+  aiStatus          String?
+
+  statusHistory     InvoiceStatusHistory[]
+}
+
+model InvoiceStatusHistory {
+  id          String        @id @default(cuid())
+  invoiceId   String
+  invoice     Invoice       @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  status      InvoiceStatus
+  note        String?
+  changedBy   String
+  createdAt   DateTime      @default(now())
+}
+
+model Contract {
+  id          String        @id @default(cuid())
+  supplierId  String
+  supplier    SupplierProfile @relation(fields: [supplierId], references: [id], onDelete: Cascade)
+  type        ContractType
+  feePercent  Float
+  validFrom   DateTime
+  validTo     DateTime
+  isActive    Boolean       @default(true)
+  createdAt   DateTime      @default(now())
+}
+
+model Product {
+  id            String    @id @default(cuid())
+  name          String
+  description   String?
+  imageUrl      String
+  pointCost     Float
+  cashCost      Float     @default(0)
+  stock         Int       @default(0)
+  isActive      Boolean   @default(true)
+  supplierId    String?
+  supplier      SupplierProfile? @relation(fields: [supplierId], references: [id])
+  createdAt     DateTime  @default(now())
+
+  redemptions   Redemption[]
+}
+
+model Redemption {
+  id              String    @id @default(cuid())
+  productId       String
+  product         Product   @relation(fields: [productId], references: [id])
+  architectId     String
+  architect       ArchitectProfile @relation(fields: [architectId], references: [id])
+  pointsUsed      Float
+  cashPaid        Float     @default(0)
+  createdAt       DateTime  @default(now())
+}
+
+model CardTransaction {
+  id            String    @id @default(cuid())
+  architectId   String
+  architect     ArchitectProfile @relation(fields: [architectId], references: [id], onDelete: Cascade)
+  type          String
+  amount        Float
+  description   String
+  invoiceId     String?
+  createdAt     DateTime  @default(now())
+}
+
+model Event {
+  id              String    @id @default(cuid())
+  title           String
+  description     String
+  imageUrl        String?
+  date            DateTime
+  location        String
+  capacity        Int
+  isHidden        Boolean   @default(false)
+  registeredCount Int       @default(0)
+  waitlistEnabled Boolean   @default(true)
+  createdAt       DateTime  @default(now())
+
+  registrations   EventRegistration[]
+}
+
+model EventRegistration {
+  id        String    @id @default(cuid())
+  eventId   String
+  event     Event     @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status    String    @default("CONFIRMED")
+  createdAt DateTime  @default(now())
+
+  @@unique([eventId, userId])
+}
+
+model SupplierGoal {
+  id            String    @id @default(cuid())
+  supplierId    String
+  supplier      SupplierProfile @relation(fields: [supplierId], references: [id], onDelete: Cascade)
+  targetAmount  Float
+  bonusPoints   Float
+  period        String
+  startDate     DateTime
+  endDate       DateTime
+  isActive      Boolean   @default(true)
+}
+
+model GoalBonus {
+  id            String    @id @default(cuid())
+  architectId   String
+  architect     ArchitectProfile @relation(fields: [architectId], references: [id], onDelete: Cascade)
+  goalId        String
+  bonusPoints   Float
+  awardedAt     DateTime  @default(now())
+}
+
+model AuditLog {
+  id        String    @id @default(cuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  action    String
+  entityId  String?
+  metadata  Json?
+  ipAddress String?
+  createdAt DateTime  @default(now())
+}

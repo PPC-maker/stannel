@@ -1,0 +1,65 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build outputs
+dist/
+.next/
+.expo/
+out/
+build/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+*.env
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Testing
+coverage/
+.nyc_output/
+
+# Turbo
+.turbo/
+
+# Prisma
+backend/src/prisma/*.db
+
+# Mobile
+*.ipa
+*.apk
+*.aab
+android/app/build/
+ios/build/
+ios/Pods/
+
+# Expo
+.expo/
+web-build/
+
+# Secrets
+google-service-account.json
+*.pem
+*.key
+
+# Video files (too large)
+*.mp4
+*.mov
+*.avi
