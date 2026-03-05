@@ -60,8 +60,8 @@ export const theme = {
     },
   },
   fonts: {
-    primary: "'Assistant', 'Heebo', sans-serif",
-    display: "'Playfair Display', serif",
+    primary: "'Assistant', sans-serif",
+    display: "'Assistant', sans-serif",
     mono: "'JetBrains Mono', monospace",
   },
   fontWeights: {

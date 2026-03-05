@@ -5,6 +5,9 @@ import prisma from '../lib/prisma.js';
 import { authMiddleware, requireAdmin } from '../middleware/auth.middleware.js';
 import { loyaltyService } from '../services/loyalty.service.js';
 import { slaService } from '../services/sla.service.js';
+import { healthReportService } from '../services/health-report.service.js';
+import { schedulerService } from '../services/scheduler.service.js';
+import { systemScannerService } from '../services/system-scanner.service.js';
 import { z } from 'zod';
 
 const verifyInvoiceSchema = z.object({
@@ -152,8 +155,8 @@ export async function adminRoutes(server: FastifyInstance) {
       return reply.code(404).send({ error: 'Invoice not found' });
     }
 
-    let newStatus = body.status;
-    let approvedAt = null;
+    let newStatus: any = body.status;
+    let approvedAt: Date | null = null;
 
     if (body.status === 'APPROVED') {
       newStatus = 'PENDING_SUPPLIER_PAY';
@@ -263,6 +266,227 @@ export async function adminRoutes(server: FastifyInstance) {
       page,
       pageSize,
       totalPages: Math.ceil(total / pageSize),
+    };
+  });
+
+  // ============ Health Reports ============
+
+  // Get current health report
+  server.get('/health-report', async () => {
+    const report = await healthReportService.generateReport();
+    return report;
+  });
+
+  // Get recent health reports
+  server.get('/health-reports', async () => {
+    const reports = await healthReportService.getRecentReports(10);
+    return { data: reports };
+  });
+
+  // Trigger health report manually (sends email)
+  server.post('/health-report/send', async (request: FastifyRequest) => {
+    const report = await healthReportService.sendWeeklyReport();
+
+    await prisma.auditLog.create({
+      data: {
+        userId: request.user!.id,
+        action: 'HEALTH_REPORT_SENT',
+        entityId: report.id,
+        metadata: { sentTo: report.sentTo },
+      },
+    });
+
+    return report;
+  });
+
+  // ============ Scheduled Tasks ============
+
+  // Get scheduled tasks
+  server.get('/scheduled-tasks', async () => {
+    const tasks = schedulerService.getTasks();
+    return { data: tasks };
+  });
+
+  // Force run a scheduled task
+  server.post('/scheduled-tasks/:name/run', async (request: FastifyRequest, reply: FastifyReply) => {
+    const { name } = request.params as { name: string };
+
+    const success = await schedulerService.forceRun(name);
+
+    if (!success) {
+      return reply.code(404).send({ error: 'Task not found or failed to run' });
+    }
+
+    await prisma.auditLog.create({
+      data: {
+        userId: request.user!.id,
+        action: 'SCHEDULED_TASK_RUN',
+        entityId: name,
+      },
+    });
+
+    return { success: true, task: name };
+  });
+
+  // Enable/disable scheduled task
+  server.patch('/scheduled-tasks/:name', async (request: FastifyRequest, reply: FastifyReply) => {
+    const { name } = request.params as { name: string };
+    const { enabled } = request.body as { enabled: boolean };
+
+    const success = enabled
+      ? schedulerService.enableTask(name)
+      : schedulerService.disableTask(name);
+
+    if (!success) {
+      return reply.code(404).send({ error: 'Task not found' });
+    }
+
+    return { success: true, task: name, enabled };
+  });
+
+  // ============ System Logs (for debugging) ============
+
+  // Get system logs
+  server.get('/logs', async (request: FastifyRequest) => {
+    const query = request.query as {
+      page?: string;
+      pageSize?: string;
+      severity?: string;
+      category?: string;
+      resolved?: string;
+    };
+
+    const page = parseInt(query.page || '1');
+    const pageSize = parseInt(query.pageSize || '50');
+
+    const where = {
+      ...(query.severity && { severity: query.severity as any }),
+      ...(query.category && { category: query.category as any }),
+      ...(query.resolved !== undefined && { resolved: query.resolved === 'true' }),
+    };
+
+    const [logs, total] = await Promise.all([
+      prisma.systemLog.findMany({
+        where,
+        orderBy: { createdAt: 'desc' },
+        skip: (page - 1) * pageSize,
+        take: pageSize,
+      }),
+      prisma.systemLog.count({ where }),
+    ]);
+
+    return {
+      data: logs,
+      total,
+      page,
+      pageSize,
+      totalPages: Math.ceil(total / pageSize),
+    };
+  });
+
+  // Get single log with full details (for copy to Claude)
+  server.get('/logs/:id', async (request: FastifyRequest, reply: FastifyReply) => {
+    const { id } = request.params as { id: string };
+
+    const log = await prisma.systemLog.findUnique({ where: { id } });
+
+    if (!log) {
+      return reply.code(404).send({ error: 'Log not found' });
+    }
+
+    // Format for easy copy/paste to Claude
+    const claudeFormat = `
+## System Error Report - STANNEL
+
+**Error ID:** ${log.id}
+**Time:** ${log.createdAt.toISOString()}
+**Severity:** ${log.severity}
+**Category:** ${log.category}
+
+### Issue
+**${log.title}**
+${log.message}
+
+### Details
+\`\`\`
+${log.details || 'No additional details'}
+\`\`\`
+
+${log.stackTrace ? `### Stack Trace\n\`\`\`\n${log.stackTrace}\n\`\`\`` : ''}
+
+### Request Info
+- Endpoint: ${log.endpoint || 'N/A'}
+- Response Time: ${log.responseTime || 'N/A'}ms
+
+---
+Please analyze this error and provide a fix.
+    `.trim();
+
+    return {
+      ...log,
+      claudeFormat,
+    };
+  });
+
+  // Mark log as resolved
+  server.patch('/logs/:id/resolve', async (request: FastifyRequest) => {
+    const { id } = request.params as { id: string };
+
+    const log = await prisma.systemLog.update({
+      where: { id },
+      data: {
+        resolved: true,
+        resolvedAt: new Date(),
+        resolvedBy: request.user!.id,
+      },
+    });
+
+    await prisma.auditLog.create({
+      data: {
+        userId: request.user!.id,
+        action: 'SYSTEM_LOG_RESOLVED',
+        entityId: id,
+      },
+    });
+
+    return log;
+  });
+
+  // Run system scan manually
+  server.post('/scan', async (request: FastifyRequest) => {
+    const report = await systemScannerService.runFullScan();
+
+    await prisma.auditLog.create({
+      data: {
+        userId: request.user!.id,
+        action: 'SYSTEM_SCAN_RUN',
+        metadata: {
+          passed: report.passed,
+          failed: report.failed,
+          warnings: report.warnings,
+        },
+      },
+    });
+
+    return report;
+  });
+
+  // Get unresolved logs count (for dashboard badge)
+  server.get('/logs/stats', async () => {
+    const [total, unresolved, critical, errors, warnings] = await Promise.all([
+      prisma.systemLog.count(),
+      prisma.systemLog.count({ where: { resolved: false } }),
+      prisma.systemLog.count({ where: { severity: 'CRITICAL', resolved: false } }),
+      prisma.systemLog.count({ where: { severity: 'ERROR', resolved: false } }),
+      prisma.systemLog.count({ where: { severity: 'WARNING', resolved: false } }),
+    ]);
+
+    return {
+      total,
+      unresolved,
+      critical,
+      errors,
+      warnings,
     };
   });
 }

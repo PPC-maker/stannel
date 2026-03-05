@@ -3,7 +3,7 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
 import { getAuth } from 'firebase-admin/auth';
 import prisma from '../lib/prisma.js';
-import type { UserRole } from '@stannel/types';
+import { UserRole } from '@stannel/types';
 
 // Extend FastifyRequest to include user
 declare module 'fastify' {
@@ -103,15 +103,15 @@ export function requireRole(...roles: UserRole[]) {
 
 // Require architect role
 export async function requireArchitect(request: FastifyRequest, reply: FastifyReply) {
-  return requireRole('ARCHITECT')(request, reply);
+  return requireRole(UserRole.ARCHITECT)(request, reply);
 }
 
 // Require supplier role
 export async function requireSupplier(request: FastifyRequest, reply: FastifyReply) {
-  return requireRole('SUPPLIER')(request, reply);
+  return requireRole(UserRole.SUPPLIER)(request, reply);
 }
 
 // Require admin role
 export async function requireAdmin(request: FastifyRequest, reply: FastifyReply) {
-  return requireRole('ADMIN')(request, reply);
+  return requireRole(UserRole.ADMIN)(request, reply);
 }

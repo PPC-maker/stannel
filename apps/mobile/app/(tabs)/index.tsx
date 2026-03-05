@@ -1,33 +1,55 @@
-import { View, Text, ScrollView, StyleSheet, Pressable } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, Pressable, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 import GlassCard from '@/components/GlassCard';
 import DigitalCard from '@/components/DigitalCard';
-
-// Mock data
-const mockStats = {
-  points: 12500,
-  cash: 3200,
-  pendingInvoices: 3,
-  approvedThisMonth: 8,
-};
+import { useAuth } from '@/lib/auth-context';
+import { useDashboardStats } from '@/lib/api-hooks';
 
 const quickActions = [
   { icon: 'file-upload', label: 'העלאת חשבונית', route: '/invoices/upload' },
-  { icon: 'gift', label: 'הטבות', route: '/rewards' },
-  { icon: 'wallet', label: 'ארנק', route: '/wallet' },
+  { icon: 'gift', label: 'הטבות', route: '/(tabs)/rewards' },
+  { icon: 'wallet', label: 'ארנק', route: '/(tabs)/wallet' },
   { icon: 'calendar-star', label: 'אירועים', route: '/events' },
 ];
 
 export default function HomeScreen() {
+  const router = useRouter();
+  const { user, loading: authLoading } = useAuth();
+  const { data: stats, isLoading: statsLoading } = useDashboardStats();
+
+  const isLoading = authLoading || statsLoading;
+
+  // Show loading state
+  if (isLoading) {
+    return (
+      <SafeAreaView style={styles.container} edges={['top']}>
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#d4af37" />
+          <Text style={styles.loadingText}>טוען...</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
+  const displayStats = stats || {
+    points: 0,
+    cash: 0,
+    pendingInvoices: 0,
+    approvedThisMonth: 0,
+    cardNumber: '0000',
+    rank: 'BRONZE',
+  };
+
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
         {/* Header */}
         <View style={styles.header}>
           <View>
-            <Text style={styles.greeting}>שלום, ישראל 👋</Text>
+            <Text style={styles.greeting}>שלום, {user?.name || 'אורח'} 👋</Text>
             <Text style={styles.subtitle}>הנה סיכום הפעילות שלך</Text>
           </View>
           <Pressable style={styles.notificationBtn}>
@@ -38,10 +60,10 @@ export default function HomeScreen() {
         {/* Stats Grid */}
         <View style={styles.statsGrid}>
           {[
-            { label: 'נקודות', value: mockStats.points.toLocaleString(), icon: 'star', color: '#d4af37' },
-            { label: 'פתוחות', value: mockStats.pendingInvoices, icon: 'clock-outline', color: '#f59e0b' },
-            { label: 'אושרו', value: mockStats.approvedThisMonth, icon: 'check-circle-outline', color: '#10b981' },
-            { label: 'זיכוי', value: `₪${mockStats.cash.toLocaleString()}`, icon: 'credit-card', color: '#3b82f6' },
+            { label: 'נקודות', value: displayStats.points.toLocaleString(), icon: 'star', color: '#d4af37' },
+            { label: 'פתוחות', value: displayStats.pendingInvoices, icon: 'clock-outline', color: '#f59e0b' },
+            { label: 'אושרו', value: displayStats.approvedThisMonth, icon: 'check-circle-outline', color: '#10b981' },
+            { label: 'זיכוי', value: `₪${displayStats.cash.toLocaleString()}`, icon: 'credit-card', color: '#3b82f6' },
           ].map((stat, i) => (
             <GlassCard key={i} style={styles.statCard}>
               <MaterialCommunityIcons name={stat.icon as any} size={20} color={stat.color} />
@@ -54,17 +76,21 @@ export default function HomeScreen() {
         {/* Digital Card */}
         <Text style={styles.sectionTitle}>הכרטיס שלך</Text>
         <DigitalCard
-          holderName="ישראל ישראלי"
-          cardNumber="4521"
-          points={mockStats.points}
-          rank="GOLD"
+          holderName={user?.name || 'אורח'}
+          cardNumber={displayStats.cardNumber}
+          points={displayStats.points}
+          rank={displayStats.rank as 'BRONZE' | 'SILVER' | 'GOLD' | 'PLATINUM'}
         />
 
         {/* Quick Actions */}
         <Text style={styles.sectionTitle}>פעולות מהירות</Text>
         <View style={styles.actionsGrid}>
           {quickActions.map((action, i) => (
-            <Pressable key={i} style={styles.actionCard}>
+            <Pressable
+              key={i}
+              style={styles.actionCard}
+              onPress={() => router.push(action.route as any)}
+            >
               <GlassCard style={styles.actionCardInner}>
                 <LinearGradient
                   colors={['rgba(212,175,55,0.2)', 'rgba(212,175,55,0.05)']}
@@ -85,6 +111,16 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 16,
+  },
+  loadingText: {
+    color: 'rgba(255,255,255,0.6)',
+    fontSize: 16,
   },
   scrollContent: {
     padding: 20,

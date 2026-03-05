@@ -4,11 +4,15 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import GlassCard from '@/components/layout/GlassCard';
-import { Mail, Lock, User, Phone, Building2, ArrowLeft, Check } from 'lucide-react';
+import PageSlider, { sliderImages } from '@/components/layout/PageSlider';
+import { Mail, Lock, User, Phone, Building2, ArrowLeft, Check, AlertCircle } from 'lucide-react';
+import { useAuth } from '@/lib/auth-context';
 
 type UserRole = 'ARCHITECT' | 'SUPPLIER';
 
 export default function RegisterPage() {
+  const { register, loading: authLoading } = useAuth();
+
   const [step, setStep] = useState(1);
   const [role, setRole] = useState<UserRole | null>(null);
   const [formData, setFormData] = useState({
@@ -19,23 +23,40 @@ export default function RegisterPage() {
     companyName: '',
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!role) return;
+
     setIsLoading(true);
-    // Firebase auth + API registration will be implemented here
-    setTimeout(() => {
-      setIsLoading(false);
+    setError(null);
+
+    try {
+      await register({
+        email: formData.email,
+        password: formData.password,
+        name: formData.name,
+        phone: formData.phone || undefined,
+        role: role,
+        companyName: role === 'SUPPLIER' ? formData.companyName : undefined,
+      });
       setStep(3); // Success step
-    }, 2000);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'ההרשמה נכשלה';
+      setError(translateFirebaseError(message));
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-20">
+    <div className="min-h-screen flex items-center justify-center px-4 py-20 relative">
+      <PageSlider images={sliderImages.register} />
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-lg"
+        className="w-full max-w-lg relative z-10"
       >
         <GlassCard className="p-8">
           {/* Steps indicator */}
@@ -131,6 +152,18 @@ export default function RegisterPage() {
                 <p className="text-white/60">מלאו את הפרטים שלכם</p>
               </div>
 
+              {/* Error Alert */}
+              {error && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="mb-6 p-4 bg-red-500/20 border border-red-500/30 rounded-xl flex items-center gap-3"
+                >
+                  <AlertCircle className="text-red-400 flex-shrink-0" size={20} />
+                  <p className="text-red-300 text-sm">{error}</p>
+                </motion.div>
+              )}
+
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
                   <label className="block text-white/70 text-sm mb-2">שם מלא</label>
@@ -143,6 +176,7 @@ export default function RegisterPage() {
                       className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 pr-12 text-white focus:border-gold-400 transition-all"
                       placeholder="ישראל ישראלי"
                       required
+                      disabled={isLoading}
                     />
                   </div>
                 </div>
@@ -159,6 +193,7 @@ export default function RegisterPage() {
                         className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 pr-12 text-white focus:border-gold-400 transition-all"
                         placeholder="שם החברה בע״מ"
                         required
+                        disabled={isLoading}
                       />
                     </div>
                   </div>
@@ -176,6 +211,7 @@ export default function RegisterPage() {
                       placeholder="your@email.com"
                       required
                       dir="ltr"
+                      disabled={isLoading}
                     />
                   </div>
                 </div>
@@ -191,6 +227,7 @@ export default function RegisterPage() {
                       className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 pr-12 text-white focus:border-gold-400 transition-all"
                       placeholder="050-123-4567"
                       dir="ltr"
+                      disabled={isLoading}
                     />
                   </div>
                 </div>
@@ -208,6 +245,7 @@ export default function RegisterPage() {
                       required
                       minLength={8}
                       dir="ltr"
+                      disabled={isLoading}
                     />
                   </div>
                   <p className="text-white/40 text-xs mt-1">לפחות 8 תווים</p>
@@ -217,13 +255,14 @@ export default function RegisterPage() {
                   <button
                     type="button"
                     onClick={() => setStep(1)}
-                    className="flex-1 bg-white/10 border border-white/20 rounded-xl py-3 text-white hover:bg-white/15 transition-colors"
+                    disabled={isLoading}
+                    className="flex-1 bg-white/10 border border-white/20 rounded-xl py-3 text-white hover:bg-white/15 transition-colors disabled:opacity-50"
                   >
                     חזרה
                   </button>
                   <button
                     type="submit"
-                    disabled={isLoading}
+                    disabled={isLoading || authLoading}
                     className="flex-1 btn-gold py-3 flex items-center justify-center gap-2 disabled:opacity-50"
                   >
                     {isLoading ? (
@@ -263,4 +302,23 @@ export default function RegisterPage() {
       </motion.div>
     </div>
   );
+}
+
+// Helper function to translate Firebase error messages to Hebrew
+function translateFirebaseError(error: string): string {
+  const errorMap: Record<string, string> = {
+    'auth/email-already-in-use': 'כתובת האימייל כבר בשימוש',
+    'auth/invalid-email': 'כתובת אימייל לא תקינה',
+    'auth/weak-password': 'הסיסמה חלשה מדי. השתמשו בלפחות 8 תווים',
+    'auth/operation-not-allowed': 'הרשמה לא מופעלת כרגע',
+    'auth/network-request-failed': 'בעיית רשת. בדקו את החיבור לאינטרנט',
+  };
+
+  for (const [key, value] of Object.entries(errorMap)) {
+    if (error.includes(key)) {
+      return value;
+    }
+  }
+
+  return error;
 }

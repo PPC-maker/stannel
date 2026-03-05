@@ -240,3 +240,39 @@ model AuditLog {
   ipAddress String?
   createdAt DateTime  @default(now())
 }
+
+enum SystemLogSeverity {
+  INFO
+  WARNING
+  ERROR
+  CRITICAL
+}
+
+enum SystemLogCategory {
+  HEALTH_CHECK
+  SECURITY
+  API_TEST
+  DATABASE
+  PERFORMANCE
+  SCHEDULER
+}
+
+model SystemLog {
+  id          String              @id @default(cuid())
+  severity    SystemLogSeverity
+  category    SystemLogCategory
+  title       String
+  message     String
+  details     String?             // Full error details for copy/paste to Claude
+  endpoint    String?
+  responseTime Int?               // Response time in ms
+  stackTrace  String?
+  resolved    Boolean             @default(false)
+  resolvedAt  DateTime?
+  resolvedBy  String?
+  createdAt   DateTime            @default(now())
+
+  @@index([createdAt])
+  @@index([severity])
+  @@index([resolved])
+}

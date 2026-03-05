@@ -24,9 +24,9 @@ pnpm install
 pnpm dev
 
 # Run specific apps
-pnpm dev:web      # Web only (http://localhost:3000) with Turbopack
-pnpm dev:mobile   # Expo mobile (http://localhost:8081)
-pnpm dev:backend  # API server (http://localhost:8080)
+pnpm dev:web      # Web only (http://localhost:7000) with Turbopack
+pnpm dev:mobile   # Expo mobile (http://localhost:7071)
+pnpm dev:backend  # API server (http://localhost:7070)
 
 # Database
 pnpm db:push      # Push schema to database

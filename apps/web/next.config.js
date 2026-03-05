@@ -28,8 +28,8 @@ const nextConfig = {
     ],
     formats: ['image/avif', 'image/webp'],
   },
-  // Enable static exports for Cloud Run
-  output: process.env.NEXT_OUTPUT === 'standalone' ? 'standalone' : undefined,
+  // Enable standalone output for Cloud Run production builds
+  output: 'standalone',
 };
 
 module.exports = nextConfig;

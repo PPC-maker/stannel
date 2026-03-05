@@ -1,25 +1,15 @@
 import type { Metadata } from 'next';
-import { Assistant, Heebo, Playfair_Display } from 'next/font/google';
+import { Assistant } from 'next/font/google';
 import './globals.css';
 import BackgroundSlider from '@/components/layout/BackgroundSlider';
 import Navbar from '@/components/layout/Navbar';
+import AccessibilityWidget from '@/components/layout/AccessibilityWidget';
 import { Providers } from './providers';
 
 const assistant = Assistant({
   subsets: ['hebrew', 'latin'],
   variable: '--font-assistant',
-  display: 'swap',
-});
-
-const heebo = Heebo({
-  subsets: ['hebrew', 'latin'],
-  variable: '--font-heebo',
-  display: 'swap',
-});
-
-const playfair = Playfair_Display({
-  subsets: ['latin'],
-  variable: '--font-playfair',
+  weight: ['300', '400', '500', '600', '700'],
   display: 'swap',
 });
 
@@ -42,19 +32,22 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="he" dir="rtl" className={`${assistant.variable} ${heebo.variable} ${playfair.variable}`}>
-      <body className="min-h-screen antialiased">
+    <html lang="he" dir="rtl" className={assistant.variable} suppressHydrationWarning>
+      <body className="min-h-screen antialiased" suppressHydrationWarning>
         <Providers>
           {/* Full-screen animated background — runs on EVERY page */}
           <BackgroundSlider />
 
           {/* Main app shell */}
-          <div className="relative z-10 min-h-screen flex flex-col">
+          <div className="relative z-10 min-h-screen flex flex-col items-center">
             <Navbar />
-            <main className="flex-1">
+            <main className="flex-1 pt-24 w-full">
               {children}
             </main>
           </div>
+
+          {/* Accessibility Widget - fixed button bottom left */}
+          <AccessibilityWidget />
         </Providers>
       </body>
     </html>

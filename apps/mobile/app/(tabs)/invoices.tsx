@@ -1,23 +1,42 @@
-import { View, Text, ScrollView, StyleSheet, Pressable } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, Pressable, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import GlassCard from '@/components/GlassCard';
-
-const mockInvoices = [
-  { id: '1', supplier: 'אבני ירושלים', amount: 15000, status: 'PENDING', date: '14/03' },
-  { id: '2', supplier: 'קרמיקה מודרנית', amount: 8500, status: 'APPROVED', date: '13/03' },
-  { id: '3', supplier: 'עץ ואבן', amount: 22000, status: 'PAID', date: '12/03' },
-];
+import { useInvoices } from '@/lib/api-hooks';
 
 const statusConfig: Record<string, { label: string; color: string; icon: string }> = {
-  PENDING: { label: 'ממתין', color: '#f59e0b', icon: 'clock-outline' },
+  PENDING_ADMIN: { label: 'ממתין לאישור', color: '#f59e0b', icon: 'clock-outline' },
+  CLARIFICATION_NEEDED: { label: 'דרוש הבהרה', color: '#f97316', icon: 'help-circle-outline' },
   APPROVED: { label: 'אושר', color: '#10b981', icon: 'check-circle-outline' },
-  PAID: { label: 'שולם', color: '#3b82f6', icon: 'check-all' },
+  PENDING_SUPPLIER_PAY: { label: 'ממתין לתשלום', color: '#3b82f6', icon: 'clock-outline' },
+  PAID: { label: 'שולם', color: '#22c55e', icon: 'check-all' },
   REJECTED: { label: 'נדחה', color: '#ef4444', icon: 'close-circle-outline' },
+  OVERDUE: { label: 'באיחור', color: '#dc2626', icon: 'alert-circle-outline' },
 };
 
 export default function InvoicesScreen() {
+  const { data: invoices, isLoading } = useInvoices();
+
+  if (isLoading) {
+    return (
+      <SafeAreaView style={styles.container} edges={['top']}>
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#d4af37" />
+          <Text style={styles.loadingText}>טוען חשבוניות...</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
+  const invoiceList = invoices || [];
+  const pendingCount = invoiceList.filter((inv: any) =>
+    inv.status === 'PENDING_ADMIN' || inv.status === 'PENDING_SUPPLIER_PAY'
+  ).length;
+  const approvedCount = invoiceList.filter((inv: any) =>
+    inv.status === 'APPROVED' || inv.status === 'PAID'
+  ).length;
+
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
@@ -36,9 +55,9 @@ export default function InvoicesScreen() {
         {/* Stats */}
         <View style={styles.statsRow}>
           {[
-            { label: 'סה״כ', value: '15', color: 'white' },
-            { label: 'ממתינות', value: '3', color: '#f59e0b' },
-            { label: 'אושרו', value: '10', color: '#10b981' },
+            { label: 'סה״כ', value: invoiceList.length, color: 'white' },
+            { label: 'ממתינות', value: pendingCount, color: '#f59e0b' },
+            { label: 'אושרו', value: approvedCount, color: '#10b981' },
           ].map((stat, i) => (
             <GlassCard key={i} style={styles.statCard}>
               <Text style={[styles.statValue, { color: stat.color }]}>{stat.value}</Text>
@@ -49,27 +68,42 @@ export default function InvoicesScreen() {
 
         {/* Invoices List */}
         <Text style={styles.sectionTitle}>חשבוניות אחרונות</Text>
-        {mockInvoices.map((invoice) => {
-          const status = statusConfig[invoice.status];
-          return (
-            <GlassCard key={invoice.id} style={styles.invoiceCard}>
-              <View style={styles.invoiceHeader}>
-                <View style={styles.invoiceInfo}>
-                  <Text style={styles.supplierName}>{invoice.supplier}</Text>
-                  <Text style={styles.invoiceDate}>{invoice.date} • #{invoice.id}</Text>
+        {invoiceList.length === 0 ? (
+          <GlassCard style={styles.emptyCard}>
+            <MaterialCommunityIcons name="file-document-outline" size={48} color="rgba(255,255,255,0.3)" />
+            <Text style={styles.emptyText}>אין חשבוניות עדיין</Text>
+            <Pressable
+              style={styles.uploadBtnEmpty}
+              onPress={() => router.push('/invoices/upload')}
+            >
+              <Text style={styles.uploadBtnEmptyText}>העלו את החשבונית הראשונה</Text>
+            </Pressable>
+          </GlassCard>
+        ) : (
+          invoiceList.map((invoice: any) => {
+            const status = statusConfig[invoice.status] || statusConfig.PENDING_ADMIN;
+            return (
+              <GlassCard key={invoice.id} style={styles.invoiceCard}>
+                <View style={styles.invoiceHeader}>
+                  <View style={styles.invoiceInfo}>
+                    <Text style={styles.supplierName}>{invoice.supplier?.companyName || 'ספק'}</Text>
+                    <Text style={styles.invoiceDate}>
+                      {new Date(invoice.createdAt).toLocaleDateString('he-IL')} • #{invoice.id.slice(-4)}
+                    </Text>
+                  </View>
+                  <View style={[styles.statusBadge, { backgroundColor: `${status.color}20` }]}>
+                    <MaterialCommunityIcons name={status.icon as any} size={14} color={status.color} />
+                    <Text style={[styles.statusText, { color: status.color }]}>{status.label}</Text>
+                  </View>
                 </View>
-                <View style={[styles.statusBadge, { backgroundColor: `${status.color}20` }]}>
-                  <MaterialCommunityIcons name={status.icon as any} size={14} color={status.color} />
-                  <Text style={[styles.statusText, { color: status.color }]}>{status.label}</Text>
+                <View style={styles.invoiceFooter}>
+                  <Text style={styles.amountLabel}>סכום</Text>
+                  <Text style={styles.amountValue}>₪{invoice.amount?.toLocaleString() || 0}</Text>
                 </View>
-              </View>
-              <View style={styles.invoiceFooter}>
-                <Text style={styles.amountLabel}>סכום</Text>
-                <Text style={styles.amountValue}>₪{invoice.amount.toLocaleString()}</Text>
-              </View>
-            </GlassCard>
-          );
-        })}
+              </GlassCard>
+            );
+          })
+        )}
       </ScrollView>
     </SafeAreaView>
   );
@@ -78,6 +112,16 @@ export default function InvoicesScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 16,
+  },
+  loadingText: {
+    color: 'rgba(255,255,255,0.6)',
+    fontSize: 16,
   },
   scrollContent: {
     padding: 20,
@@ -131,6 +175,26 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: 'white',
     marginBottom: 12,
+  },
+  emptyCard: {
+    padding: 40,
+    alignItems: 'center',
+    gap: 12,
+  },
+  emptyText: {
+    color: 'rgba(255,255,255,0.5)',
+    fontSize: 16,
+  },
+  uploadBtnEmpty: {
+    marginTop: 8,
+    backgroundColor: '#d4af37',
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 12,
+  },
+  uploadBtnEmptyText: {
+    color: '#060f1f',
+    fontWeight: '600',
   },
   invoiceCard: {
     padding: 16,

@@ -1,17 +1,43 @@
 // STANNEL API Client - Main Export
 
-export { config, setAuthToken, getAuthToken } from './config';
+export { config, setAuthToken, getAuthToken, getHeaders, getMultipartHeaders } from './config';
 export { authApi } from './auth';
 export { invoicesApi } from './invoices';
 export { walletApi } from './wallet';
 export { rewardsApi } from './rewards';
 export { eventsApi } from './events';
+export { adminApi } from './admin';
+
+// API Error class for better error handling
+export class ApiError extends Error {
+  constructor(
+    message: string,
+    public statusCode: number,
+    public details?: unknown
+  ) {
+    super(message);
+    this.name = 'ApiError';
+  }
+}
 
 // Combined API client for convenience
 export const apiClient = {
-  auth: await import('./auth').then(m => m.authApi),
-  invoices: await import('./invoices').then(m => m.invoicesApi),
-  wallet: await import('./wallet').then(m => m.walletApi),
-  rewards: await import('./rewards').then(m => m.rewardsApi),
-  events: await import('./events').then(m => m.eventsApi),
+  get auth() {
+    return require('./auth').authApi;
+  },
+  get invoices() {
+    return require('./invoices').invoicesApi;
+  },
+  get wallet() {
+    return require('./wallet').walletApi;
+  },
+  get rewards() {
+    return require('./rewards').rewardsApi;
+  },
+  get events() {
+    return require('./events').eventsApi;
+  },
+  get admin() {
+    return require('./admin').adminApi;
+  },
 };

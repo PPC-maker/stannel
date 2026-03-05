@@ -2,29 +2,61 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import GlassCard from '@/components/layout/GlassCard';
-import { Mail, Lock, Eye, EyeOff, ArrowLeft } from 'lucide-react';
+import PageSlider, { sliderImages } from '@/components/layout/PageSlider';
+import { Mail, Lock, Eye, EyeOff, ArrowLeft, AlertCircle } from 'lucide-react';
+import { useAuth } from '@/lib/auth-context';
 
 export default function LoginPage() {
+  const router = useRouter();
+  const { login, loginWithGoogle, loading: authLoading } = useAuth();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    // Firebase auth will be implemented here
-    setTimeout(() => setIsLoading(false), 2000);
+    setError(null);
+
+    try {
+      await login(email, password);
+      router.push('/dashboard');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'התחברות נכשלה';
+      setError(translateFirebaseError(message));
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      await loginWithGoogle();
+      router.push('/dashboard');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'התחברות עם Google נכשלה';
+      setError(translateFirebaseError(message));
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-20">
+    <div className="min-h-screen flex items-center justify-center px-4 py-20 relative">
+      <PageSlider images={sliderImages.login} />
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="w-full max-w-md"
+        className="w-full max-w-md relative z-10"
       >
         <GlassCard className="p-8">
           {/* Header */}
@@ -35,6 +67,18 @@ export default function LoginPage() {
             <h1 className="text-2xl font-bold text-white mb-2">ברוכים השבים</h1>
             <p className="text-white/60">היכנסו לחשבון STANNEL שלכם</p>
           </div>
+
+          {/* Error Alert */}
+          {error && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-6 p-4 bg-red-500/20 border border-red-500/30 rounded-xl flex items-center gap-3"
+            >
+              <AlertCircle className="text-red-400 flex-shrink-0" size={20} />
+              <p className="text-red-300 text-sm">{error}</p>
+            </motion.div>
+          )}
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-5">
@@ -50,6 +94,7 @@ export default function LoginPage() {
                   placeholder="your@email.com"
                   required
                   dir="ltr"
+                  disabled={isLoading}
                 />
               </div>
             </div>
@@ -66,6 +111,7 @@ export default function LoginPage() {
                   placeholder="••••••••"
                   required
                   dir="ltr"
+                  disabled={isLoading}
                 />
                 <button
                   type="button"
@@ -92,7 +138,7 @@ export default function LoginPage() {
 
             <button
               type="submit"
-              disabled={isLoading}
+              disabled={isLoading || authLoading}
               className="w-full btn-gold py-4 text-lg flex items-center justify-center gap-2 disabled:opacity-50"
             >
               {isLoading ? (
@@ -116,7 +162,9 @@ export default function LoginPage() {
           {/* Google Sign In */}
           <button
             type="button"
-            className="w-full bg-white/10 border border-white/20 rounded-xl py-3 text-white hover:bg-white/15 transition-colors flex items-center justify-center gap-3"
+            onClick={handleGoogleLogin}
+            disabled={isLoading || authLoading}
+            className="w-full bg-white/10 border border-white/20 rounded-xl py-3 text-white hover:bg-white/15 transition-colors flex items-center justify-center gap-3 disabled:opacity-50"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24">
               <path
@@ -150,4 +198,26 @@ export default function LoginPage() {
       </motion.div>
     </div>
   );
+}
+
+// Helper function to translate Firebase error messages to Hebrew
+function translateFirebaseError(error: string): string {
+  const errorMap: Record<string, string> = {
+    'auth/user-not-found': 'משתמש לא נמצא',
+    'auth/wrong-password': 'סיסמה שגויה',
+    'auth/invalid-email': 'כתובת אימייל לא תקינה',
+    'auth/user-disabled': 'החשבון מושבת',
+    'auth/too-many-requests': 'יותר מדי ניסיונות. נסו שוב מאוחר יותר',
+    'auth/network-request-failed': 'בעיית רשת. בדקו את החיבור לאינטרנט',
+    'auth/popup-closed-by-user': 'החלון נסגר. נסו שוב',
+    'auth/invalid-credential': 'פרטי התחברות שגויים',
+  };
+
+  for (const [key, value] of Object.entries(errorMap)) {
+    if (error.includes(key)) {
+      return value;
+    }
+  }
+
+  return error;
 }

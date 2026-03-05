@@ -29,9 +29,9 @@ pnpm install
 # Run development servers
 pnpm dev
 
-# Web: http://localhost:3000
-# Mobile: http://localhost:8081
-# API: http://localhost:8080
+# Web: http://localhost:7000
+# Mobile: http://localhost:7071
+# API: http://localhost:7070
 ```
 
 ## 📁 Project Structure

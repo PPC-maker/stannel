@@ -4,6 +4,7 @@ import { useState, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { motion } from 'framer-motion';
 import GlassCard from '@/components/layout/GlassCard';
+import PageSlider, { sliderImages } from '@/components/layout/PageSlider';
 import { Upload, FileText, CheckCircle, AlertTriangle, X, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 
@@ -108,7 +109,9 @@ export default function InvoiceUploadPage() {
   }
 
   return (
-    <div className="p-6 max-w-4xl mx-auto">
+    <div className="relative">
+      <PageSlider images={sliderImages.invoiceUpload} />
+      <div className="p-6 max-w-4xl mx-auto relative z-10">
       {/* Header */}
       <div className="flex items-center gap-4 mb-8">
         <Link href="/invoices" className="p-2 rounded-lg hover:bg-white/10 transition-colors">
@@ -255,6 +258,7 @@ export default function InvoiceUploadPage() {
             </p>
           </div>
         </GlassCard>
+        </div>
       </div>
     </div>
   );

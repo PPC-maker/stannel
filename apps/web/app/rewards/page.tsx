@@ -4,76 +4,51 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import GlassCard from '@/components/layout/GlassCard';
-import { Gift, Star, ShoppingCart, Check } from 'lucide-react';
+import PageSlider, { sliderImages } from '@/components/layout/PageSlider';
+import { Gift, Star, ShoppingCart, Loader2 } from 'lucide-react';
+import { useWalletBalance, useRewardProducts, useRedeemReward, useWalletCard } from '@/lib/api-hooks';
+import { useAuth } from '@/lib/auth-context';
 
-// Mock data
-const mockBalance = { points: 12500 };
-
-const mockProducts = [
-  {
-    id: '1',
-    name: 'כרטיס מתנה IKEA',
-    description: 'כרטיס מתנה דיגיטלי לרכישה ברשת IKEA',
-    imageUrl: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&q=80',
-    pointCost: 5000,
-    cashCost: 0,
-    stock: 10,
-  },
-  {
-    id: '2',
-    name: 'Apple AirPods Pro',
-    description: 'אוזניות אלחוטיות עם ביטול רעשים',
-    imageUrl: 'https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?w=400&q=80',
-    pointCost: 15000,
-    cashCost: 200,
-    stock: 3,
-  },
-  {
-    id: '3',
-    name: 'יום ספא יוקרתי',
-    description: 'טיפול ספא מלא כולל עיסויים ופינוקים',
-    imageUrl: 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=400&q=80',
-    pointCost: 8000,
-    cashCost: 0,
-    stock: 5,
-  },
-  {
-    id: '4',
-    name: 'ארוחה זוגית במסעדה',
-    description: 'ארוחה זוגית במסעדת שף מובילה',
-    imageUrl: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400&q=80',
-    pointCost: 6000,
-    cashCost: 0,
-    stock: 8,
-  },
-  {
-    id: '5',
-    name: 'סט כלי עבודה מקצועי',
-    description: 'סט כלים איכותי לאדריכלים ומעצבים',
-    imageUrl: 'https://images.unsplash.com/photo-1581147036324-c47a03a81d48?w=400&q=80',
-    pointCost: 4000,
-    cashCost: 0,
-    stock: 15,
-  },
-  {
-    id: '6',
-    name: 'טאבלט גרפי Wacom',
-    description: 'טאבלט מקצועי לעיצוב דיגיטלי',
-    imageUrl: 'https://images.unsplash.com/photo-1625895197185-efcec01cffe0?w=400&q=80',
-    pointCost: 20000,
-    cashCost: 300,
-    stock: 2,
-  },
-];
+const rankEmojis: Record<string, string> = {
+  BRONZE: '🥉',
+  SILVER: '🥈',
+  GOLD: '🥇',
+  PLATINUM: '💎',
+};
 
 export default function RewardsPage() {
+  const { user } = useAuth();
   const [selectedProduct, setSelectedProduct] = useState<string | null>(null);
+  const [redeemingId, setRedeemingId] = useState<string | null>(null);
 
-  const canAfford = (product: typeof mockProducts[0]) =>
-    mockBalance.points >= product.pointCost;
+  const { data: balance } = useWalletBalance();
+  const { data: card } = useWalletCard();
+  const { data: productsResponse, isLoading: productsLoading } = useRewardProducts();
+  const redeemMutation = useRedeemReward();
+
+  // לא חוסמים את כל הדף - מציגים מבנה מיידית
+  const points = balance?.points || 0;
+  const rank = card?.rank || user?.rank || 'BRONZE';
+  const products = (productsResponse as any)?.data || productsResponse || [];
+
+  const canAfford = (product: any) => points >= product.pointCost;
+
+  const handleRedeem = async (productId: string) => {
+    setRedeemingId(productId);
+    try {
+      await redeemMutation.mutateAsync(productId);
+      alert('המוצר נרכש בהצלחה!');
+    } catch (error: any) {
+      alert(error.message || 'שגיאה במימוש המוצר');
+    } finally {
+      setRedeemingId(null);
+    }
+  };
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
+    <div className="relative">
+      <PageSlider images={sliderImages.rewards} />
+      <div className="p-6 max-w-7xl mx-auto relative z-10">
       {/* Balance Banner */}
       <GlassCard gold className="mb-8">
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
@@ -84,14 +59,14 @@ export default function RewardsPage() {
             <div>
               <p className="text-white/60 text-sm">יתרת נקודות זמינה</p>
               <p className="text-4xl font-bold text-gold-400">
-                {mockBalance.points.toLocaleString()} <span className="text-lg">נק׳</span>
+                {points.toLocaleString()} <span className="text-lg">נק׳</span>
               </p>
             </div>
           </div>
           <div className="flex items-center gap-3">
             <div className="text-center md:text-left">
               <p className="text-white/60 text-sm">דרגה</p>
-              <p className="text-2xl font-semibold text-white">🥇 GOLD</p>
+              <p className="text-2xl font-semibold text-white">{rankEmojis[rank]} {rank}</p>
             </div>
           </div>
         </div>
@@ -107,8 +82,24 @@ export default function RewardsPage() {
 
       {/* Products Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {mockProducts.map((product, index) => {
+        {productsLoading ? (
+          // Skeleton while loading
+          [...Array(6)].map((_, i) => (
+            <div key={i} className="glass-card overflow-hidden animate-pulse">
+              <div className="h-48 bg-white/5" />
+              <div className="p-6">
+                <div className="h-5 w-3/4 bg-white/10 rounded mb-2" />
+                <div className="h-4 w-full bg-white/5 rounded mb-4" />
+                <div className="flex justify-between">
+                  <div className="h-6 w-20 bg-gold-400/20 rounded" />
+                  <div className="h-8 w-20 bg-white/10 rounded-lg" />
+                </div>
+              </div>
+            </div>
+          ))
+        ) : products.map((product: any, index: number) => {
           const affordable = canAfford(product);
+          const isRedeeming = redeemingId === product.id;
 
           return (
             <motion.div
@@ -125,18 +116,29 @@ export default function RewardsPage() {
               >
                 {/* Product Image */}
                 <div className="relative h-48 -mx-6 -mt-6 mb-4 overflow-hidden">
-                  <Image
-                    src={product.imageUrl}
-                    alt={product.name}
-                    fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                  {product.stock <= 3 && (
+                  {product.imageUrl ? (
+                    <Image
+                      src={product.imageUrl}
+                      alt={product.name}
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-white/10 flex items-center justify-center">
+                      <Gift size={48} className="text-white/30" />
+                    </div>
+                  )}
+                  {product.stock <= 3 && product.stock > 0 && (
                     <div className="absolute top-3 left-3 bg-red-500 text-white text-xs px-2 py-1 rounded-full">
                       נשארו {product.stock}!
                     </div>
                   )}
-                  {!affordable && (
+                  {product.stock === 0 && (
+                    <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                      <span className="text-white/80 text-sm">אזל מהמלאי</span>
+                    </div>
+                  )}
+                  {!affordable && product.stock > 0 && (
                     <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
                       <span className="text-white/80 text-sm">חסרים נקודות</span>
                     </div>
@@ -158,20 +160,26 @@ export default function RewardsPage() {
                     )}
                   </div>
                   <button
-                    disabled={!affordable}
+                    disabled={!affordable || product.stock === 0 || isRedeeming}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleRedeem(product.id);
+                    }}
                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${
-                      affordable
+                      affordable && product.stock > 0
                         ? 'bg-gold-400 text-primary-900 hover:bg-gold-300'
                         : 'bg-white/10 text-white/40 cursor-not-allowed'
                     }`}
                   >
-                    {affordable ? (
+                    {isRedeeming ? (
+                      <Loader2 size={16} className="animate-spin" />
+                    ) : affordable && product.stock > 0 ? (
                       <>
                         <ShoppingCart size={16} />
                         <span>מימוש</span>
                       </>
                     ) : (
-                      <span>חסר</span>
+                      <span>{product.stock === 0 ? 'אזל' : 'חסר'}</span>
                     )}
                   </button>
                 </div>
@@ -182,12 +190,13 @@ export default function RewardsPage() {
       </div>
 
       {/* Empty State */}
-      {mockProducts.length === 0 && (
+      {!productsLoading && products.length === 0 && (
         <GlassCard className="text-center py-12">
           <Gift size={48} className="mx-auto text-white/30 mb-4" />
           <p className="text-white/60">אין מוצרים זמינים כרגע</p>
         </GlassCard>
       )}
+        </div>
     </div>
   );
 }

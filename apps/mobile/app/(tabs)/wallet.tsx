@@ -1,17 +1,41 @@
-import { View, Text, ScrollView, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import GlassCard from '@/components/GlassCard';
 import DigitalCard from '@/components/DigitalCard';
+import { useAuth } from '@/lib/auth-context';
+import { useWalletBalance, useWalletCard, useWalletTransactions } from '@/lib/api-hooks';
 
-const mockTransactions = [
-  { id: 1, description: 'זיכוי מחשבונית #A4F2', amount: 850, type: 'CREDIT', date: '12/03' },
-  { id: 2, description: 'מימוש: כרטיס מתנה', amount: -500, type: 'DEBIT', date: '11/03' },
-  { id: 3, description: 'בונוס יעד חודשי', amount: 1000, type: 'CREDIT', date: '10/03' },
-  { id: 4, description: 'זיכוי מחשבונית #B2C1', amount: 1200, type: 'CREDIT', date: '08/03' },
-];
+const rankEmojis: Record<string, string> = {
+  BRONZE: '🥉',
+  SILVER: '🥈',
+  GOLD: '🥇',
+  PLATINUM: '💎',
+};
 
 export default function WalletScreen() {
+  const { user } = useAuth();
+  const { data: balance, isLoading: balanceLoading } = useWalletBalance();
+  const { data: card, isLoading: cardLoading } = useWalletCard();
+  const { data: transactions, isLoading: txLoading } = useWalletTransactions();
+
+  const isLoading = balanceLoading || cardLoading || txLoading;
+
+  if (isLoading) {
+    return (
+      <SafeAreaView style={styles.container} edges={['top']}>
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#d4af37" />
+          <Text style={styles.loadingText}>טוען...</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
+  const walletBalance = balance || { points: 0, cash: 0, totalEarned: 0, totalRedeemed: 0 };
+  const cardData = card || { cardNumber: '0000', rank: 'BRONZE', pointsBalance: 0, holderName: '' };
+  const txList = transactions || [];
+
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
@@ -23,21 +47,21 @@ export default function WalletScreen() {
           <View style={styles.balanceRow}>
             <View>
               <Text style={styles.balanceLabel}>יתרת נקודות</Text>
-              <Text style={styles.balanceValue}>12,500 נק׳</Text>
+              <Text style={styles.balanceValue}>{walletBalance.points?.toLocaleString() || 0} נק׳</Text>
             </View>
             <View style={styles.rankBadge}>
-              <Text style={styles.rankIcon}>🥇</Text>
-              <Text style={styles.rankText}>GOLD</Text>
+              <Text style={styles.rankIcon}>{rankEmojis[cardData.rank || 'BRONZE']}</Text>
+              <Text style={styles.rankText}>{cardData.rank || 'BRONZE'}</Text>
             </View>
           </View>
           <View style={styles.balanceRow}>
             <View>
               <Text style={styles.balanceLabel}>סה״כ נצבר</Text>
-              <Text style={styles.balanceSubValue}>45,200 נק׳</Text>
+              <Text style={styles.balanceSubValue}>{walletBalance.totalEarned?.toLocaleString() || 0} נק׳</Text>
             </View>
             <View>
               <Text style={styles.balanceLabel}>סה״כ מומש</Text>
-              <Text style={styles.balanceSubValue}>32,700 נק׳</Text>
+              <Text style={styles.balanceSubValue}>{walletBalance.totalRedeemed?.toLocaleString() || 0} נק׳</Text>
             </View>
           </View>
         </GlassCard>
@@ -45,47 +69,56 @@ export default function WalletScreen() {
         {/* Digital Card */}
         <Text style={styles.sectionTitle}>הכרטיס הדיגיטלי</Text>
         <DigitalCard
-          holderName="ישראל ישראלי"
-          cardNumber="4521"
-          points={12500}
-          rank="GOLD"
+          holderName={user?.name || cardData.holderName || 'אורח'}
+          cardNumber={cardData.cardNumber?.slice(-4) || '0000'}
+          points={walletBalance.points || 0}
+          rank={(cardData.rank as 'BRONZE' | 'SILVER' | 'GOLD' | 'PLATINUM') || 'BRONZE'}
         />
 
         {/* Transactions */}
         <Text style={styles.sectionTitle}>תנועות אחרונות</Text>
         <GlassCard style={styles.transactionsCard}>
-          {mockTransactions.map((tx, i) => (
-            <View
-              key={tx.id}
-              style={[
-                styles.transaction,
-                i < mockTransactions.length - 1 && styles.transactionBorder,
-              ]}
-            >
-              <View style={styles.transactionLeft}>
-                <View style={[
-                  styles.transactionIcon,
-                  { backgroundColor: tx.type === 'CREDIT' ? 'rgba(16,185,129,0.2)' : 'rgba(239,68,68,0.2)' }
-                ]}>
-                  <MaterialCommunityIcons
-                    name={tx.type === 'CREDIT' ? 'arrow-down' : 'arrow-up'}
-                    size={18}
-                    color={tx.type === 'CREDIT' ? '#10b981' : '#ef4444'}
-                  />
-                </View>
-                <View>
-                  <Text style={styles.transactionDesc}>{tx.description}</Text>
-                  <Text style={styles.transactionDate}>{tx.date}</Text>
-                </View>
-              </View>
-              <Text style={[
-                styles.transactionAmount,
-                { color: tx.type === 'CREDIT' ? '#10b981' : '#ef4444' }
-              ]}>
-                {tx.type === 'CREDIT' ? '+' : ''}{tx.amount.toLocaleString()} נק׳
-              </Text>
+          {txList.length === 0 ? (
+            <View style={styles.emptyState}>
+              <MaterialCommunityIcons name="wallet-outline" size={40} color="rgba(255,255,255,0.3)" />
+              <Text style={styles.emptyText}>אין תנועות עדיין</Text>
             </View>
-          ))}
+          ) : (
+            txList.map((tx, i) => (
+              <View
+                key={tx.id}
+                style={[
+                  styles.transaction,
+                  i < txList.length - 1 && styles.transactionBorder,
+                ]}
+              >
+                <View style={styles.transactionLeft}>
+                  <View style={[
+                    styles.transactionIcon,
+                    { backgroundColor: tx.type === 'CREDIT' ? 'rgba(16,185,129,0.2)' : 'rgba(239,68,68,0.2)' }
+                  ]}>
+                    <MaterialCommunityIcons
+                      name={tx.type === 'CREDIT' ? 'arrow-down' : 'arrow-up'}
+                      size={18}
+                      color={tx.type === 'CREDIT' ? '#10b981' : '#ef4444'}
+                    />
+                  </View>
+                  <View>
+                    <Text style={styles.transactionDesc}>{tx.description}</Text>
+                    <Text style={styles.transactionDate}>
+                      {new Date(tx.createdAt).toLocaleDateString('he-IL')}
+                    </Text>
+                  </View>
+                </View>
+                <Text style={[
+                  styles.transactionAmount,
+                  { color: tx.type === 'CREDIT' ? '#10b981' : '#ef4444' }
+                ]}>
+                  {tx.type === 'CREDIT' ? '+' : ''}{tx.amount?.toLocaleString() || 0} נק׳
+                </Text>
+              </View>
+            ))
+          )}
         </GlassCard>
       </ScrollView>
     </SafeAreaView>
@@ -95,6 +128,25 @@ export default function WalletScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 16,
+  },
+  loadingText: {
+    color: 'rgba(255,255,255,0.6)',
+    fontSize: 16,
+  },
+  emptyState: {
+    padding: 40,
+    alignItems: 'center',
+    gap: 12,
+  },
+  emptyText: {
+    color: 'rgba(255,255,255,0.5)',
+    fontSize: 14,
   },
   scrollContent: {
     padding: 20,

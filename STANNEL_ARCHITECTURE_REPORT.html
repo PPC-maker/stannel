@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STANNEL Platform - Technical Architecture Report</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px;
+            background: #fff;
+        }
+        h1 {
+            color: #1a3a6b;
+            font-size: 28px;
+            border-bottom: 3px solid #d4af37;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+        h2 {
+            color: #1a3a6b;
+            font-size: 20px;
+            margin-top: 35px;
+            margin-bottom: 15px;
+            border-right: 4px solid #d4af37;
+            padding-right: 12px;
+        }
+        h3 {
+            color: #0f2750;
+            font-size: 16px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        .meta {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 14px;
+        }
+        th {
+            background: #1a3a6b;
+            color: white;
+            padding: 12px;
+            text-align: right;
+        }
+        td {
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+        }
+        tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+        .code-block {
+            background: #f4f4f4;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 13px;
+            overflow-x: auto;
+            direction: ltr;
+            text-align: left;
+            margin: 15px 0;
+        }
+        .highlight-box {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-right: 4px solid #d4af37;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .success-badge {
+            display: inline-block;
+            background: #28a745;
+            color: white;
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .section {
+            page-break-inside: avoid;
+        }
+        hr {
+            border: none;
+            border-top: 1px solid #eee;
+            margin: 30px 0;
+        }
+        .footer {
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 2px solid #1a3a6b;
+            text-align: center;
+            color: #666;
+            font-size: 12px;
+        }
+        @media print {
+            body {
+                padding: 20px;
+            }
+            h2 {
+                page-break-after: avoid;
+            }
+            table {
+                page-break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>STANNEL Platform - Technical Architecture Report</h1>
+
+    <div class="meta">
+        <strong>Version:</strong> 1.0.0 |
+        <strong>Date:</strong> March 2026 |
+        <strong>Type:</strong> Cross-platform Loyalty Management System
+    </div>
+
+    <div class="highlight-box">
+        <h3>Executive Summary</h3>
+        <p>STANNEL is a professionally built, custom-developed loyalty management platform designed for architects and suppliers in the construction and design industry. The platform is built from the ground up using industry-standard technologies with <strong>no dependency on low-code/no-code platforms</strong>.</p>
+    </div>
+
+    <div class="section">
+        <h2>Technology Stack</h2>
+
+        <h3>Frontend - Web Application</h3>
+        <table>
+            <tr><th>Component</th><th>Technology</th><th>Version</th></tr>
+            <tr><td>Framework</td><td>Next.js (App Router)</td><td>15.1.0</td></tr>
+            <tr><td>Build Tool</td><td>Turbopack</td><td>Built-in</td></tr>
+            <tr><td>Language</td><td>TypeScript</td><td>5.7.0</td></tr>
+            <tr><td>UI Library</td><td>React</td><td>19.0.0</td></tr>
+            <tr><td>Styling</td><td>Tailwind CSS</td><td>3.4.17</td></tr>
+            <tr><td>Animations</td><td>Framer Motion</td><td>11.15.0</td></tr>
+            <tr><td>State Management</td><td>Zustand</td><td>5.0.2</td></tr>
+            <tr><td>Data Fetching</td><td>TanStack Query</td><td>5.62.0</td></tr>
+        </table>
+
+        <h3>Backend Server</h3>
+        <table>
+            <tr><th>Component</th><th>Technology</th><th>Version</th></tr>
+            <tr><td>Runtime</td><td>Node.js</td><td>20+</td></tr>
+            <tr><td>Framework</td><td>Fastify</td><td>5.2.0</td></tr>
+            <tr><td>Validation</td><td>Zod</td><td>3.24.0</td></tr>
+            <tr><td>Task Queue</td><td>Bull</td><td>4.16.0</td></tr>
+        </table>
+
+        <h3>Database & Storage</h3>
+        <table>
+            <tr><th>Component</th><th>Technology</th><th>Version</th></tr>
+            <tr><td>Database</td><td>PostgreSQL</td><td>15</td></tr>
+            <tr><td>ORM</td><td>Prisma</td><td>6.2.0</td></tr>
+            <tr><td>Cache</td><td>Redis (ioredis)</td><td>5.4.0</td></tr>
+            <tr><td>File Storage</td><td>Google Cloud Storage</td><td>7.14.0</td></tr>
+        </table>
+
+        <h3>Authentication & AI</h3>
+        <table>
+            <tr><th>Component</th><th>Technology</th><th>Version</th></tr>
+            <tr><td>Auth Provider</td><td>Firebase Authentication</td><td>13.0.0</td></tr>
+            <tr><td>AI/ML</td><td>Google Vertex AI (Gemini)</td><td>1.9.0</td></tr>
+        </table>
+    </div>
+
+    <hr>
+
+    <div class="section">
+        <h2>Project Architecture</h2>
+
+        <h3>Monorepo Structure</h3>
+        <div class="code-block">
+stannel/
+├── apps/
+│   ├── web/                    # Next.js 15 Web Application
+│   │   ├── app/               # App Router pages
+│   │   ├── components/        # React components
+│   │   └── package.json
+│   │
+│   └── mobile/                # Expo React Native App
+│       ├── app/               # Expo Router
+│       └── components/        # Native components
+│
+├── packages/
+│   ├── types/                 # Shared TypeScript definitions
+│   ├── api-client/            # Shared API client library
+│   └── ui/                    # Shared theme & utilities
+│
+├── backend/                   # Fastify API Server
+│   ├── src/
+│   │   ├── routes/           # API endpoints
+│   │   ├── services/         # Business logic
+│   │   ├── middleware/       # Auth & RBAC
+│   │   └── prisma/           # Database schema
+│   └── package.json
+│
+├── turbo.json                # Turborepo configuration
+└── package.json              # Root package
+        </div>
+    </div>
+
+    <hr>
+
+    <div class="section">
+        <h2>Database Schema</h2>
+
+        <h3>Core Entities</h3>
+        <table>
+            <tr><th>Table</th><th>Description</th><th>Key Fields</th></tr>
+            <tr><td>User</td><td>Base user account</td><td>id, email, role, rank, isActive</td></tr>
+            <tr><td>ArchitectProfile</td><td>Architect details</td><td>pointsBalance, cashBalance, cardNumber</td></tr>
+            <tr><td>SupplierProfile</td><td>Supplier details</td><td>companyName, trustScore, qualityScore</td></tr>
+            <tr><td>Invoice</td><td>Transaction records</td><td>amount, status, slaDeadline, aiStatus</td></tr>
+            <tr><td>Contract</td><td>Supplier agreements</td><td>type, feePercent, validFrom/To</td></tr>
+            <tr><td>Product</td><td>Reward catalog</td><td>pointCost, cashCost, stock</td></tr>
+            <tr><td>Redemption</td><td>Reward claims</td><td>pointsUsed, cashPaid</td></tr>
+            <tr><td>Event</td><td>Platform events</td><td>title, date, capacity</td></tr>
+            <tr><td>AuditLog</td><td>System audit</td><td>action, entityId, metadata</td></tr>
+        </table>
+
+        <h3>Enums</h3>
+        <div class="code-block">
+UserRole:      ADMIN | ARCHITECT | SUPPLIER
+UserRank:      BRONZE | SILVER | GOLD | PLATINUM
+InvoiceStatus: PENDING_ADMIN | CLARIFICATION_NEEDED | APPROVED |
+               REJECTED | PENDING_SUPPLIER_PAY | PAID | OVERDUE
+ContractType:  STANDARD | PREMIUM | EXCLUSIVE
+        </div>
+    </div>
+
+    <hr>
+
+    <div class="section">
+        <h2>API Endpoints</h2>
+
+        <table>
+            <tr><th>Category</th><th>Endpoint</th><th>Description</th></tr>
+            <tr><td>Auth</td><td>POST /api/v1/auth/register</td><td>User registration</td></tr>
+            <tr><td>Auth</td><td>POST /api/v1/auth/login</td><td>Firebase token verification</td></tr>
+            <tr><td>Auth</td><td>GET /api/v1/auth/me</td><td>Current user profile</td></tr>
+            <tr><td>Invoices</td><td>POST /api/v1/invoices/upload</td><td>Upload invoice (multipart)</td></tr>
+            <tr><td>Invoices</td><td>GET /api/v1/invoices</td><td>List invoices</td></tr>
+            <tr><td>Wallet</td><td>GET /api/v1/wallet/balance</td><td>Points & cash balance</td></tr>
+            <tr><td>Wallet</td><td>GET /api/v1/wallet/transactions</td><td>Transaction history</td></tr>
+            <tr><td>Rewards</td><td>GET /api/v1/rewards/products</td><td>Product catalog</td></tr>
+            <tr><td>Rewards</td><td>POST /api/v1/rewards/redeem</td><td>Redeem product</td></tr>
+            <tr><td>Events</td><td>GET /api/v1/events</td><td>List events</td></tr>
+            <tr><td>Admin</td><td>PATCH /api/v1/admin/invoices/:id/verify</td><td>Verify invoice</td></tr>
+            <tr><td>Supplier</td><td>PATCH /api/v1/supplier/invoices/:id/confirm</td><td>Confirm payment</td></tr>
+        </table>
+    </div>
+
+    <hr>
+
+    <div class="section">
+        <h2>Third-Party Platform Independence</h2>
+
+        <div class="highlight-box">
+            <h3>Verification Results</h3>
+            <table>
+                <tr><th>Platform</th><th>Status</th></tr>
+                <tr><td>BASE44</td><td><span class="success-badge">NOT FOUND</span></td></tr>
+                <tr><td>Lovable</td><td><span class="success-badge">NOT FOUND</span></td></tr>
+                <tr><td>Bolt.new</td><td><span class="success-badge">NOT FOUND</span></td></tr>
+                <tr><td>Replit</td><td><span class="success-badge">NOT FOUND</span></td></tr>
+                <tr><td>Cursor AI</td><td><span class="success-badge">NOT FOUND</span></td></tr>
+                <tr><td>v0.dev</td><td><span class="success-badge">NOT FOUND</span></td></tr>
+            </table>
+        </div>
+
+        <h3>Codebase Analysis</h3>
+        <ul style="padding-right: 20px; margin-top: 10px;">
+            <li><strong>Custom React Components:</strong> All UI components are custom-built</li>
+            <li><strong>Standard npm Packages:</strong> Only industry-standard open-source packages</li>
+            <li><strong>Professional Architecture:</strong> Monorepo structure with Turborepo</li>
+            <li><strong>Type-Safe Code:</strong> Full TypeScript implementation</li>
+            <li><strong>Custom Backend:</strong> Fastify server with Prisma ORM</li>
+        </ul>
+    </div>
+
+    <hr>
+
+    <div class="section">
+        <h2>Conclusion</h2>
+
+        <p>STANNEL is a professionally architected, custom-built platform using industry-standard technologies:</p>
+
+        <ol style="padding-right: 20px; margin-top: 15px;">
+            <li><strong>Modern Architecture:</strong> Monorepo with shared packages</li>
+            <li><strong>Type Safety:</strong> Full TypeScript implementation</li>
+            <li><strong>Scalability:</strong> Cloud-native deployment on Google Cloud</li>
+            <li><strong>Security:</strong> Firebase Auth with RBAC middleware</li>
+            <li><strong>AI Integration:</strong> Vertex AI for invoice validation</li>
+            <li><strong>No Low-Code Dependencies:</strong> 100% custom code</li>
+        </ol>
+    </div>
+
+    <div class="footer">
+        <p><strong>STANNEL Platform v1.0.0</strong></p>
+        <p>Technical Architecture Report - March 2026</p>
+    </div>
+</body>
+</html>

@@ -60,11 +60,12 @@ export interface LoginRequest {
 
 export interface RegisterRequest {
   email: string;
-  password: string;
+  password?: string;
   name: string;
   phone?: string;
   role: UserRole;
   companyName?: string; // For suppliers
+  firebaseToken?: string; // For Firebase auth
 }
 
 export interface AuthResponse {

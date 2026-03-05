@@ -5,6 +5,29 @@ import cors from '@fastify/cors';
 import multipart from '@fastify/multipart';
 import rateLimit from '@fastify/rate-limit';
 
+// Initialize config and Firebase FIRST
+import { validateEnv } from './lib/config.js';
+import { initializeFirebase } from './lib/firebase.js';
+import { schedulerService } from './services/scheduler.service.js';
+import { healthMonitorService } from './services/health-monitor.service.js';
+import { systemScannerService } from './services/system-scanner.service.js';
+import { securityMiddleware, securityHeadersMiddleware } from './middleware/security.middleware.js';
+
+// Validate environment variables
+validateEnv();
+
+// Initialize Firebase Admin SDK
+initializeFirebase();
+
+// Initialize Scheduler for background tasks (weekly reports, etc.)
+schedulerService.init();
+
+// Initialize Health Monitor for daily status reports
+healthMonitorService.initDailyScheduler();
+
+// Initialize System Scanner for nightly scans at 1:00 AM
+systemScannerService.initNightlyScanner();
+
 // Import routes
 import { authRoutes } from './routes/auth.routes.js';
 import { invoiceRoutes } from './routes/invoices.routes.js';
@@ -55,6 +78,10 @@ async function registerPlugins() {
     timeWindow: '1 minute',
   });
 }
+
+// Register security hooks
+server.addHook('onRequest', securityHeadersMiddleware);
+server.addHook('preHandler', securityMiddleware);
 
 // Register routes
 async function registerRoutes() {

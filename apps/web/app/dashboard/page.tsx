@@ -2,26 +2,45 @@
 
 import { motion } from 'framer-motion';
 import GlassCard from '@/components/layout/GlassCard';
+import PageSlider, { sliderImages } from '@/components/layout/PageSlider';
 import { Wallet, FileText, Gift, TrendingUp, ArrowUpRight, Clock, Star, CreditCard } from 'lucide-react';
 import Link from 'next/link';
+import { useAuth } from '@/lib/auth-context';
+import { useDashboardStats, useWalletTransactions, useWalletCard } from '@/lib/api-hooks';
 
-// Mock data - will be replaced with real API calls
-const mockStats = {
-  points: 12500,
-  cash: 3200,
-  pendingInvoices: 3,
-  approvedThisMonth: 8,
+const rankEmojis: Record<string, string> = {
+  BRONZE: '🥉',
+  SILVER: '🥈',
+  GOLD: '🥇',
+  PLATINUM: '💎',
 };
 
-const mockTransactions = [
-  { id: 1, description: 'זיכוי מחשבונית #A4F2', amount: 850, type: 'CREDIT', date: new Date() },
-  { id: 2, description: 'מימוש: כרטיס מתנה', amount: -500, type: 'DEBIT', date: new Date(Date.now() - 86400000) },
-  { id: 3, description: 'בונוס יעד חודשי', amount: 1000, type: 'CREDIT', date: new Date(Date.now() - 172800000) },
-];
-
 export default function DashboardPage() {
+  const { user } = useAuth();
+
+  // Use dashboard stats hook (fetches balance, card, and invoices)
+  const { data: stats } = useDashboardStats();
+
+  // Fetch transactions
+  const { data: transactions, isLoading: txLoading } = useWalletTransactions();
+
+  // Fetch card data
+  const { data: card } = useWalletCard();
+
+  // לא חוסמים את כל הדף - מציגים מיידית
+  const dashboardStats = {
+    points: stats?.points || 0,
+    cash: stats?.cash || 0,
+    pendingInvoices: stats?.pendingInvoices || 0,
+    approvedThisMonth: stats?.approvedThisMonth || 0,
+  };
+
+  const recentTransactions = (transactions || []).slice(0, 3);
+
   return (
-    <div className="p-6 max-w-7xl mx-auto">
+    <div className="relative">
+      <PageSlider images={sliderImages.dashboard} opacity={0.2} />
+      <div className="p-6 max-w-7xl mx-auto relative z-10">
       {/* Welcome Header */}
       <motion.div
         initial={{ opacity: 0, x: -20 }}
@@ -29,7 +48,7 @@ export default function DashboardPage() {
         className="mb-8"
       >
         <h1 className="text-3xl font-display font-bold text-white">
-          שלום, ישראל 👋
+          שלום, {user?.name || 'אורח'} 👋
         </h1>
         <p className="text-white/60 mt-1">הנה סיכום הפעילות שלך</p>
       </motion.div>
@@ -37,10 +56,10 @@ export default function DashboardPage() {
       {/* Quick Stats Grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         {[
-          { label: 'יתרת נקודות', value: mockStats.points.toLocaleString(), icon: Star, color: 'text-gold-400', suffix: 'נק׳' },
-          { label: 'חשבוניות פתוחות', value: mockStats.pendingInvoices, icon: Clock, color: 'text-yellow-400' },
-          { label: 'אושרו החודש', value: mockStats.approvedThisMonth, icon: FileText, color: 'text-green-400' },
-          { label: 'סה״כ זיכוי', value: `₪${mockStats.cash.toLocaleString()}`, icon: CreditCard, color: 'text-blue-400' },
+          { label: 'יתרת נקודות', value: dashboardStats.points.toLocaleString(), icon: Star, color: 'text-gold-400', suffix: 'נק׳' },
+          { label: 'חשבוניות פתוחות', value: dashboardStats.pendingInvoices, icon: Clock, color: 'text-yellow-400' },
+          { label: 'אושרו החודש', value: dashboardStats.approvedThisMonth, icon: FileText, color: 'text-green-400' },
+          { label: 'סה״כ זיכוי', value: `₪${dashboardStats.cash.toLocaleString()}`, icon: CreditCard, color: 'text-blue-400' },
         ].map((stat, i) => (
           <GlassCard key={i} delay={i * 0.1}>
             <div className="flex items-start justify-between">
@@ -74,7 +93,9 @@ export default function DashboardPage() {
             <div className="relative z-10 flex justify-between items-start">
               <div>
                 <p className="text-white/60 text-xs">STANNEL CLUB</p>
-                <p className="text-gold-400 font-bold">🥇 GOLD</p>
+                <p className="text-gold-400 font-bold">
+                  {rankEmojis[user?.rank || 'BRONZE']} {user?.rank || 'BRONZE'}
+                </p>
               </div>
               <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-gold-400 to-gold-600 flex items-center justify-center">
                 <span className="text-primary-900 font-bold">S</span>
@@ -83,17 +104,19 @@ export default function DashboardPage() {
 
             <div className="relative z-10">
               <p className="text-white/60 text-xs">מספר כרטיס</p>
-              <p className="text-white font-mono tracking-wider">•••• •••• •••• 4521</p>
+              <p className="text-white font-mono tracking-wider">
+                •••• •••• •••• {card?.cardNumber?.slice(-4) || '0000'}
+              </p>
             </div>
 
             <div className="relative z-10 flex justify-between items-end">
               <div>
                 <p className="text-white/60 text-xs">שם</p>
-                <p className="text-white font-medium">ישראל ישראלי</p>
+                <p className="text-white font-medium">{user?.name || 'אורח'}</p>
               </div>
               <div className="text-left">
                 <p className="text-white/60 text-xs">נקודות</p>
-                <p className="text-gold-400 font-bold">{mockStats.points.toLocaleString()}</p>
+                <p className="text-gold-400 font-bold">{dashboardStats.points.toLocaleString()}</p>
               </div>
             </div>
           </div>
@@ -121,35 +144,54 @@ export default function DashboardPage() {
           </div>
 
           <div className="space-y-3">
-            {mockTransactions.map((tx) => (
-              <div
-                key={tx.id}
-                className="flex items-center justify-between py-3 border-b border-white/10 last:border-0"
-              >
-                <div className="flex items-center gap-3">
-                  <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-                    tx.type === 'CREDIT' ? 'bg-green-500/20' : 'bg-red-500/20'
-                  }`}>
-                    {tx.type === 'CREDIT' ? (
-                      <TrendingUp size={18} className="text-green-400" />
-                    ) : (
-                      <Gift size={18} className="text-red-400" />
-                    )}
+            {txLoading ? (
+              // Skeleton
+              [...Array(3)].map((_, i) => (
+                <div key={i} className="flex items-center gap-3 py-3 border-b border-white/10 animate-pulse">
+                  <div className="w-10 h-10 bg-white/10 rounded-lg" />
+                  <div className="flex-1">
+                    <div className="h-4 w-32 bg-white/10 rounded mb-2" />
+                    <div className="h-3 w-20 bg-white/5 rounded" />
                   </div>
-                  <div>
-                    <p className="text-white font-medium">{tx.description}</p>
-                    <p className="text-white/50 text-sm">
-                      {tx.date.toLocaleDateString('he-IL')}
-                    </p>
-                  </div>
+                  <div className="h-5 w-16 bg-white/10 rounded" />
                 </div>
-                <span className={`font-bold ${
-                  tx.type === 'CREDIT' ? 'text-green-400' : 'text-red-400'
-                }`}>
-                  {tx.type === 'CREDIT' ? '+' : ''}{tx.amount.toLocaleString()} נק׳
-                </span>
+              ))
+            ) : recentTransactions.length === 0 ? (
+              <div className="text-center py-8">
+                <Wallet className="w-12 h-12 mx-auto text-white/20 mb-3" />
+                <p className="text-white/50">אין תנועות עדיין</p>
               </div>
-            ))}
+            ) : (
+              recentTransactions.map((tx: any) => (
+                <div
+                  key={tx.id}
+                  className="flex items-center justify-between py-3 border-b border-white/10 last:border-0"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+                      tx.type === 'CREDIT' ? 'bg-green-500/20' : 'bg-red-500/20'
+                    }`}>
+                      {tx.type === 'CREDIT' ? (
+                        <TrendingUp size={18} className="text-green-400" />
+                      ) : (
+                        <Gift size={18} className="text-red-400" />
+                      )}
+                    </div>
+                    <div>
+                      <p className="text-white font-medium">{tx.description}</p>
+                      <p className="text-white/50 text-sm">
+                        {new Date(tx.createdAt).toLocaleDateString('he-IL')}
+                      </p>
+                    </div>
+                  </div>
+                  <span className={`font-bold ${
+                    tx.type === 'CREDIT' ? 'text-green-400' : 'text-red-400'
+                  }`}>
+                    {tx.type === 'CREDIT' ? '+' : ''}{tx.amount?.toLocaleString() || 0} נק׳
+                  </span>
+                </div>
+              ))
+            )}
           </div>
         </GlassCard>
       </div>
@@ -174,6 +216,7 @@ export default function DashboardPage() {
             </Link>
           ))}
         </div>
+      </div>
       </div>
     </div>
   );

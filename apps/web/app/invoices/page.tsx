@@ -3,16 +3,10 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import GlassCard from '@/components/layout/GlassCard';
-import { FileText, Upload, Filter, Search, Clock, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
+import PageSlider, { sliderImages } from '@/components/layout/PageSlider';
+import { FileText, Upload, Search, Clock, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
 import Link from 'next/link';
-
-// Mock data
-const mockInvoices = [
-  { id: '1', supplier: 'אבני ירושלים בע״מ', amount: 15000, status: 'PENDING_ADMIN', date: new Date(), aiStatus: 'MATCH' },
-  { id: '2', supplier: 'קרמיקה מודרנית', amount: 8500, status: 'APPROVED', date: new Date(Date.now() - 86400000), aiStatus: 'MATCH' },
-  { id: '3', supplier: 'עץ ואבן', amount: 22000, status: 'PAID', date: new Date(Date.now() - 172800000), aiStatus: 'MATCH' },
-  { id: '4', supplier: 'זכוכית בע״מ', amount: 5200, status: 'REJECTED', date: new Date(Date.now() - 259200000), aiStatus: 'MISMATCH' },
-];
+import { useInvoices } from '@/lib/api-hooks';
 
 const statusConfig = {
   PENDING_ADMIN: { label: 'ממתין לאישור', color: 'text-yellow-400', bg: 'bg-yellow-400/20', icon: Clock },
@@ -28,14 +22,28 @@ export default function InvoicesPage() {
   const [filter, setFilter] = useState('all');
   const [search, setSearch] = useState('');
 
-  const filteredInvoices = mockInvoices.filter(inv => {
+  const { data: invoices, isLoading } = useInvoices();
+  const invoiceList = invoices || [];
+
+  const filteredInvoices = invoiceList.filter((inv: any) => {
     if (filter !== 'all' && inv.status !== filter) return false;
-    if (search && !inv.supplier.includes(search)) return false;
+    const supplierName = inv.supplier?.companyName || '';
+    if (search && !supplierName.includes(search)) return false;
     return true;
   });
 
+  // לא חוסמים - מציגים מיידית
+  const stats = {
+    total: invoiceList.length,
+    pending: invoiceList.filter((i: any) => i.status === 'PENDING_ADMIN' || i.status === 'PENDING_SUPPLIER_PAY').length,
+    approved: invoiceList.filter((i: any) => ['APPROVED', 'PAID'].includes(i.status)).length,
+    rejected: invoiceList.filter((i: any) => i.status === 'REJECTED').length,
+  };
+
   return (
-    <div className="p-6 max-w-7xl mx-auto">
+    <div className="relative">
+      <PageSlider images={sliderImages.invoices} />
+      <div className="p-6 max-w-7xl mx-auto relative z-10">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div>
@@ -54,10 +62,10 @@ export default function InvoicesPage() {
       {/* Stats Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
         {[
-          { label: 'סה״כ', value: mockInvoices.length, color: 'text-white' },
-          { label: 'ממתינות', value: mockInvoices.filter(i => i.status === 'PENDING_ADMIN').length, color: 'text-yellow-400' },
-          { label: 'אושרו', value: mockInvoices.filter(i => ['APPROVED', 'PAID'].includes(i.status)).length, color: 'text-green-400' },
-          { label: 'נדחו', value: mockInvoices.filter(i => i.status === 'REJECTED').length, color: 'text-red-400' },
+          { label: 'סה״כ', value: stats.total, color: 'text-white' },
+          { label: 'ממתינות', value: stats.pending, color: 'text-yellow-400' },
+          { label: 'אושרו', value: stats.approved, color: 'text-green-400' },
+          { label: 'נדחו', value: stats.rejected, color: 'text-red-400' },
         ].map((stat, i) => (
           <GlassCard key={i} delay={i * 0.05} className="text-center py-4">
             <p className={`text-2xl font-bold ${stat.color}`}>{stat.value}</p>
@@ -110,9 +118,25 @@ export default function InvoicesPage() {
 
       {/* Invoices List */}
       <div className="space-y-4">
-        {filteredInvoices.map((invoice, i) => {
-          const status = statusConfig[invoice.status as keyof typeof statusConfig];
+        {isLoading ? (
+          // Skeleton
+          [...Array(5)].map((_, i) => (
+            <div key={i} className="glass-card p-4 flex items-center gap-4 animate-pulse">
+              <div className="w-12 h-12 bg-white/10 rounded-xl" />
+              <div className="flex-1">
+                <div className="h-5 w-32 bg-white/10 rounded mb-2" />
+                <div className="h-3 w-24 bg-white/5 rounded" />
+              </div>
+              <div className="h-6 w-20 bg-white/10 rounded" />
+              <div className="h-8 w-24 bg-white/10 rounded-full" />
+            </div>
+          ))
+        ) : filteredInvoices.map((invoice: any, i: number) => {
+          const status = statusConfig[invoice.status as keyof typeof statusConfig] || statusConfig.PENDING_ADMIN;
           const StatusIcon = status.icon;
+          const supplierName = invoice.supplier?.companyName || 'ספק';
+          const invoiceDate = new Date(invoice.createdAt);
+          const isAiVerified = invoice.aiVerified || invoice.aiValidationResult?.isValid;
 
           return (
             <motion.div
@@ -127,16 +151,16 @@ export default function InvoicesPage() {
                     <FileText size={24} className="text-white/60" />
                   </div>
                   <div>
-                    <h3 className="text-white font-semibold">{invoice.supplier}</h3>
+                    <h3 className="text-white font-semibold">{supplierName}</h3>
                     <p className="text-white/50 text-sm">
-                      {invoice.date.toLocaleDateString('he-IL')} • #{invoice.id.slice(-6)}
+                      {invoiceDate.toLocaleDateString('he-IL')} • #{invoice.id.slice(-6)}
                     </p>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-6">
                   {/* AI Status */}
-                  {invoice.aiStatus === 'MATCH' && (
+                  {isAiVerified && (
                     <div className="hidden md:flex items-center gap-1 text-green-400 text-sm">
                       <CheckCircle size={14} />
                       <span>AI מאומת</span>
@@ -146,7 +170,7 @@ export default function InvoicesPage() {
                   {/* Amount */}
                   <div className="text-left">
                     <p className="text-white/50 text-xs">סכום</p>
-                    <p className="text-white font-bold text-lg">₪{invoice.amount.toLocaleString()}</p>
+                    <p className="text-white font-bold text-lg">₪{(invoice.amount || 0).toLocaleString()}</p>
                   </div>
 
                   {/* Status Badge */}
@@ -166,6 +190,7 @@ export default function InvoicesPage() {
             <p className="text-white/60">לא נמצאו חשבוניות</p>
           </GlassCard>
         )}
+      </div>
       </div>
     </div>
   );
