@@ -98,7 +98,7 @@ export const healthMonitorService = {
       const rejectedInvoices = await prisma.invoice.count({
         where: {
           status: 'REJECTED',
-          updatedAt: { gte: oneDayAgo },
+          createdAt: { gte: oneDayAgo },
         },
       });
 
@@ -139,7 +139,7 @@ export const healthMonitorService = {
 
       const oldPendingInvoices = await prisma.invoice.count({
         where: {
-          status: 'PENDING_VERIFICATION',
+          status: 'PENDING_ADMIN',
           createdAt: { lte: threeDaysAgo },
         },
       });
@@ -199,7 +199,7 @@ export const healthMonitorService = {
   async sendDailyReport(): Promise<void> {
     try {
       const checks = await this.runHealthChecks();
-      const isHealthy = checks.every(c => c.status !== 'error');
+      const isHealthy = checks.every((c: HealthCheck) => c.status !== 'error');
 
       await emailService.sendDailyStatusReport(ADMIN_EMAILS, {
         isHealthy,

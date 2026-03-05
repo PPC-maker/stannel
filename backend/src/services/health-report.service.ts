@@ -88,8 +88,8 @@ export const healthReportService = {
       // Active events
       prisma.event.count({
         where: {
-          isActive: true,
-          startDate: { gte: now },
+          isHidden: false,
+          date: { gte: now },
         },
       }),
 

@@ -136,8 +136,15 @@ export async function supplierRoutes(server: FastifyInstance) {
 
     const product = await prisma.product.create({
       data: {
-        ...body,
-        supplierId: request.user!.supplierProfile!.id,
+        name: body.name,
+        description: body.description,
+        imageUrl: body.imageUrl,
+        pointCost: body.pointCost,
+        cashCost: body.cashCost,
+        stock: body.stock,
+        supplier: {
+          connect: { id: request.user!.supplierProfile!.id },
+        },
       },
     });
 

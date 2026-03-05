@@ -207,7 +207,15 @@ export async function adminRoutes(server: FastifyInstance) {
     const body = createContractSchema.parse(request.body);
 
     const contract = await prisma.contract.create({
-      data: body,
+      data: {
+        supplier: {
+          connect: { id: body.supplierId },
+        },
+        type: body.type,
+        feePercent: body.feePercent,
+        validFrom: body.validFrom,
+        validTo: body.validTo,
+      },
     });
 
     await prisma.auditLog.create({
@@ -238,7 +246,16 @@ export async function adminRoutes(server: FastifyInstance) {
     const body = createGoalSchema.parse(request.body);
 
     const goal = await prisma.supplierGoal.create({
-      data: body,
+      data: {
+        supplier: {
+          connect: { id: body.supplierId },
+        },
+        targetAmount: body.targetAmount,
+        bonusPoints: body.bonusPoints,
+        period: body.period,
+        startDate: body.startDate,
+        endDate: body.endDate,
+      },
     });
 
     return goal;
