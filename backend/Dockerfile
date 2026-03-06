@@ -36,25 +36,35 @@ WORKDIR /app/backend
 RUN npx prisma generate --schema=src/prisma/schema.prisma
 RUN pnpm run build
 
-# Production stage - use npm for clean install
+# Production stage
 FROM node:20-alpine AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
 
+RUN npm install -g pnpm
+
 # Create non-root user
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 fastify
 
-# Copy package.json and install production deps with npm (not pnpm)
-COPY backend/package.json ./
-RUN npm install --omit=dev
+# Copy workspace config for pnpm
+COPY package.json pnpm-workspace.yaml ./
+COPY packages/types/package.json ./packages/types/
+COPY backend/package.json ./backend/
 
-# Copy built files and prisma
-COPY --from=build /app/backend/dist ./dist
-COPY --from=build /app/backend/src/prisma ./prisma
+# Copy built types package
+COPY --from=build /app/packages/types/dist ./packages/types/dist
 
-# Generate Prisma client in production
+# Copy built backend
+COPY --from=build /app/backend/dist ./backend/dist
+COPY --from=build /app/backend/src/prisma ./backend/prisma
+
+# Install production dependencies only with pnpm
+RUN pnpm install --prod --frozen-lockfile || pnpm install --prod
+
+# Generate Prisma client
+WORKDIR /app/backend
 RUN npx prisma generate --schema=prisma/schema.prisma
 
 USER fastify
