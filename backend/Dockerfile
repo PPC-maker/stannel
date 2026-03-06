@@ -14,14 +14,14 @@ COPY packages/types/package.json ./packages/types/
 COPY backend/package.json ./backend/
 
 # Install all dependencies
-RUN pnpm install --filter backend...
+RUN pnpm install --frozen-lockfile || pnpm install
 
 # Build stage
 FROM base AS build
 WORKDIR /app
 
+# Copy all node_modules from deps
 COPY --from=deps /app/node_modules ./node_modules
-COPY --from=deps /app/packages/types/node_modules ./packages/types/node_modules
 COPY --from=deps /app/backend/node_modules ./backend/node_modules
 
 # Copy source
@@ -36,7 +36,7 @@ WORKDIR /app/backend
 RUN npx prisma generate --schema=src/prisma/schema.prisma
 RUN pnpm run build
 
-# Production stage
+# Production stage - use npm for clean install
 FROM node:20-alpine AS runner
 WORKDIR /app
 
@@ -46,11 +46,16 @@ ENV NODE_ENV=production
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 fastify
 
-# Copy built files from backend
+# Copy package.json and install production deps with npm (not pnpm)
+COPY backend/package.json ./
+RUN npm install --omit=dev
+
+# Copy built files and prisma
 COPY --from=build /app/backend/dist ./dist
-COPY --from=build /app/backend/node_modules ./node_modules
 COPY --from=build /app/backend/src/prisma ./prisma
-COPY --from=build /app/backend/package.json ./
+
+# Generate Prisma client in production
+RUN npx prisma generate --schema=prisma/schema.prisma
 
 USER fastify
 
