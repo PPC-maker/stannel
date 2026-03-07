@@ -122,7 +122,18 @@ export async function authRoutes(server: FastifyInstance) {
         return reply.code(500).send({ error: 'Auth service not configured' });
       }
 
-      const decoded = await firebaseAuth.verifyIdToken(body.token);
+      let decoded: DecodedIdToken;
+      try {
+        decoded = await firebaseAuth.verifyIdToken(body.token);
+      } catch (tokenError) {
+        const err = tokenError as { code?: string; message?: string };
+        console.error('[Auth] Token verification failed:', err.code, err.message);
+        return reply.code(401).send({
+          error: 'Invalid token',
+          code: err.code || 'auth/invalid-token',
+          message: err.message || 'Token verification failed'
+        });
+      }
 
       const user = await prisma.user.findUnique({
         where: { firebaseUid: decoded.uid },
@@ -133,13 +144,13 @@ export async function authRoutes(server: FastifyInstance) {
       });
 
       if (!user) {
-        return reply.code(404).send({ error: 'User not found' });
+        return reply.code(404).send({ error: 'User not found in database', firebaseUid: decoded.uid });
       }
 
       return { user, token: body.token };
     } catch (error) {
-      console.error('[Auth] Token verification failed:', error);
-      return reply.code(401).send({ error: 'Invalid token' });
+      console.error('[Auth] Verify error:', error);
+      return reply.code(500).send({ error: 'Verification failed' });
     }
   });
 

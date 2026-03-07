@@ -87,9 +87,20 @@ export async function registerWithEmail(email: string, password: string) {
     // If email already exists in Firebase, try to sign in instead
     // This handles the case where Firebase user exists but DB record doesn't
     if (error && typeof error === 'object' && 'code' in error && error.code === 'auth/email-already-in-use') {
-      const result = await signInWithEmailAndPassword(auth, email, password);
-      const token = await result.user.getIdToken();
-      return { user: result.user, token, isNewUser: false };
+      try {
+        const result = await signInWithEmailAndPassword(auth, email, password);
+        const token = await result.user.getIdToken();
+        return { user: result.user, token, isNewUser: false };
+      } catch (signInError: unknown) {
+        // If sign-in fails (wrong password), provide clear error message
+        if (signInError && typeof signInError === 'object' && 'code' in signInError) {
+          const code = (signInError as { code: string }).code;
+          if (code === 'auth/wrong-password' || code === 'auth/invalid-credential') {
+            throw new Error('auth/email-already-in-use-wrong-password');
+          }
+        }
+        throw signInError;
+      }
     }
     throw error;
   }

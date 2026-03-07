@@ -313,11 +313,16 @@ export default function RegisterPage() {
 // Helper function to translate Firebase error messages to Hebrew
 function translateFirebaseError(error: string): string {
   const errorMap: Record<string, string> = {
+    'auth/email-already-in-use-wrong-password': 'כתובת האימייל כבר רשומה. נסו להתחבר עם הסיסמה הנכונה או השתמשו בכפתור "היכנסו כאן"',
     'auth/email-already-in-use': 'כתובת האימייל כבר בשימוש',
     'auth/invalid-email': 'כתובת אימייל לא תקינה',
     'auth/weak-password': 'הסיסמה חלשה מדי. השתמשו בלפחות 8 תווים',
+    'auth/wrong-password': 'סיסמה שגויה',
+    'auth/invalid-credential': 'פרטי התחברות שגויים',
+    'auth/user-not-found': 'משתמש לא נמצא',
     'auth/operation-not-allowed': 'הרשמה לא מופעלת כרגע',
     'auth/network-request-failed': 'בעיית רשת. בדקו את החיבור לאינטרנט',
+    'auth/too-many-requests': 'יותר מדי ניסיונות. נסו שוב מאוחר יותר',
   };
 
   for (const [key, value] of Object.entries(errorMap)) {
