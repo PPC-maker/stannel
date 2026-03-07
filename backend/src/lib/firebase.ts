@@ -18,7 +18,15 @@ export function initializeFirebase(): void {
 
   const projectId = process.env.FIREBASE_PROJECT_ID;
   const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
-  const privateKey = process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n');
+  // Handle both escaped \n and actual newlines in private key
+  let privateKey = process.env.FIREBASE_PRIVATE_KEY;
+  if (privateKey) {
+    // If the key has escaped newlines (\\n), replace them with actual newlines
+    if (privateKey.includes('\\n')) {
+      privateKey = privateKey.replace(/\\n/g, '\n');
+    }
+    console.log('[Firebase] Private key loaded, length:', privateKey.length);
+  }
 
   if (!projectId || !clientEmail || !privateKey) {
     console.warn('⚠️  Firebase credentials not configured - running in DEV MODE (no auth)');

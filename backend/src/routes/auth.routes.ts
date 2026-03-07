@@ -1,7 +1,7 @@
 // Auth Routes
 
 import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
-import { getAuth } from 'firebase-admin/auth';
+import { getFirebaseAuth } from '../lib/firebase.js';
 import prisma from '../lib/prisma.js';
 import { authMiddleware } from '../middleware/auth.middleware.js';
 import { z } from 'zod';
@@ -25,8 +25,14 @@ export async function authRoutes(server: FastifyInstance) {
     try {
       const body = registerSchema.parse(request.body);
 
+      const firebaseAuth = getFirebaseAuth();
+      if (!firebaseAuth) {
+        console.error('[Auth] Firebase Auth not initialized for register');
+        return reply.code(500).send({ error: 'Auth service not configured' });
+      }
+
       // Verify Firebase token
-      const decoded = await getAuth().verifyIdToken(body.firebaseToken);
+      const decoded = await firebaseAuth.verifyIdToken(body.firebaseToken);
 
       // Check if user already exists
       const existingUser = await prisma.user.findUnique({
@@ -72,7 +78,14 @@ export async function authRoutes(server: FastifyInstance) {
   server.post('/verify', async (request: FastifyRequest, reply: FastifyReply) => {
     try {
       const body = verifySchema.parse(request.body);
-      const decoded = await getAuth().verifyIdToken(body.token);
+      const firebaseAuth = getFirebaseAuth();
+
+      if (!firebaseAuth) {
+        console.error('[Auth] Firebase Auth not initialized');
+        return reply.code(500).send({ error: 'Auth service not configured' });
+      }
+
+      const decoded = await firebaseAuth.verifyIdToken(body.token);
 
       const user = await prisma.user.findUnique({
         where: { firebaseUid: decoded.uid },
@@ -88,6 +101,7 @@ export async function authRoutes(server: FastifyInstance) {
 
       return { user, token: body.token };
     } catch (error) {
+      console.error('[Auth] Token verification failed:', error);
       return reply.code(401).send({ error: 'Invalid token' });
     }
   });
