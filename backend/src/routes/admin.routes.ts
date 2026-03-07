@@ -3,11 +3,11 @@
 import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import prisma from '../lib/prisma.js';
 import { authMiddleware, requireAdmin } from '../middleware/auth.middleware.js';
-import { loyaltyService } from '../services/loyalty.service.js';
 import { slaService } from '../services/sla.service.js';
 import { healthReportService } from '../services/health-report.service.js';
 import { schedulerService } from '../services/scheduler.service.js';
 import { systemScannerService } from '../services/system-scanner.service.js';
+import { emailService } from '../services/email.service.js';
 import { z } from 'zod';
 
 const verifyInvoiceSchema = z.object({
@@ -71,14 +71,65 @@ export async function adminRoutes(server: FastifyInstance) {
     };
   });
 
-  // Activate user
+  // Get pending users (awaiting approval)
+  server.get('/users/pending', async (request: FastifyRequest) => {
+    const query = request.query as { page?: string; pageSize?: string };
+    const page = parseInt(query.page || '1');
+    const pageSize = parseInt(query.pageSize || '20');
+
+    const where = {
+      isActive: false,
+      role: { not: 'ADMIN' as const },
+    };
+
+    const [users, total] = await Promise.all([
+      prisma.user.findMany({
+        where,
+        include: {
+          architectProfile: true,
+          supplierProfile: true,
+        },
+        orderBy: { createdAt: 'desc' },
+        skip: (page - 1) * pageSize,
+        take: pageSize,
+      }),
+      prisma.user.count({ where }),
+    ]);
+
+    return {
+      data: users,
+      total,
+      page,
+      pageSize,
+      totalPages: Math.ceil(total / pageSize),
+    };
+  });
+
+  // Activate user (approve) with welcome email
   server.patch('/users/:id/activate', async (request: FastifyRequest, reply: FastifyReply) => {
     const { id } = request.params as { id: string };
+    const body = request.body as { sendEmail?: boolean } | undefined;
+    const sendEmail = body?.sendEmail !== false; // Default to true
 
     const user = await prisma.user.update({
       where: { id },
-      data: { isActive: true },
+      data: {
+        isActive: true,
+        activatedAt: new Date(),
+      },
     });
+
+    // Send welcome email
+    if (sendEmail && user.email) {
+      const webUrl = process.env.WEB_URL || 'https://stannel.app';
+      const loginUrl = `${webUrl}/login?email=${encodeURIComponent(user.email)}`;
+
+      await emailService.sendWelcomeEmail(
+        user.email,
+        user.name,
+        loginUrl
+      );
+    }
 
     // Audit log
     await prisma.auditLog.create({
@@ -86,10 +137,63 @@ export async function adminRoutes(server: FastifyInstance) {
         userId: request.user!.id,
         action: 'USER_ACTIVATED',
         entityId: id,
+        metadata: { emailSent: sendEmail },
       },
     });
 
     return user;
+  });
+
+  // Bulk activate users
+  server.post('/users/bulk-activate', async (request: FastifyRequest, reply: FastifyReply) => {
+    const body = request.body as { userIds: string[]; sendEmail?: boolean };
+    const { userIds, sendEmail = true } = body;
+
+    if (!userIds || userIds.length === 0) {
+      return reply.code(400).send({ error: 'userIds array is required' });
+    }
+
+    const webUrl = process.env.WEB_URL || 'https://stannel.app';
+    const results: { userId: string; success: boolean; error?: string }[] = [];
+
+    for (const userId of userIds) {
+      try {
+        const user = await prisma.user.update({
+          where: { id: userId },
+          data: {
+            isActive: true,
+            activatedAt: new Date(),
+          },
+        });
+
+        // Send welcome email
+        if (sendEmail && user.email) {
+          const loginUrl = `${webUrl}/login?email=${encodeURIComponent(user.email)}`;
+          await emailService.sendWelcomeEmail(user.email, user.name, loginUrl);
+        }
+
+        results.push({ userId, success: true });
+
+        // Audit log
+        await prisma.auditLog.create({
+          data: {
+            userId: request.user!.id,
+            action: 'USER_ACTIVATED',
+            entityId: userId,
+            metadata: { emailSent: sendEmail, bulk: true },
+          },
+        });
+      } catch (err) {
+        results.push({ userId, success: false, error: 'User not found' });
+      }
+    }
+
+    return {
+      total: userIds.length,
+      successful: results.filter(r => r.success).length,
+      failed: results.filter(r => !r.success).length,
+      results,
+    };
   });
 
   // Deactivate user
@@ -486,6 +590,20 @@ Please analyze this error and provide a fix.
     });
 
     return report;
+  });
+
+  // Get latest scan report
+  server.get('/scan/latest', async () => {
+    const report = await systemScannerService.getLatestReport();
+    return report || { error: 'No scan reports found' };
+  });
+
+  // Get scan report history
+  server.get('/scan/history', async (request: FastifyRequest) => {
+    const query = request.query as { limit?: string };
+    const limit = parseInt(query.limit || '10');
+    const reports = await systemScannerService.getRecentReports(limit);
+    return { data: reports };
   });
 
   // Get unresolved logs count (for dashboard badge)

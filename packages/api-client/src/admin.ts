@@ -142,15 +142,59 @@ export const adminApi = {
     return res.json();
   },
 
-  async activateUser(userId: string): Promise<any> {
+  async getPendingUsers(params?: { page?: number; pageSize?: number }): Promise<{
+    data: any[];
+    total: number;
+    page: number;
+    pageSize: number;
+    totalPages: number;
+  }> {
+    const searchParams = new URLSearchParams();
+    if (params?.page) searchParams.set('page', params.page.toString());
+    if (params?.pageSize) searchParams.set('pageSize', params.pageSize.toString());
+
+    const res = await fetch(`${config.baseUrl}/admin/users/pending?${searchParams}`, {
+      headers: getHeaders(),
+    });
+
+    if (!res.ok) {
+      const error = await res.json().catch(() => ({ message: 'Failed to get pending users' }));
+      throw new Error(error.message || 'Failed to get pending users');
+    }
+
+    return res.json();
+  },
+
+  async activateUser(userId: string, sendEmail: boolean = true): Promise<any> {
     const res = await fetch(`${config.baseUrl}/admin/users/${userId}/activate`, {
       method: 'PATCH',
       headers: getHeaders(),
+      body: JSON.stringify({ sendEmail }),
     });
 
     if (!res.ok) {
       const error = await res.json().catch(() => ({ message: 'Failed to activate user' }));
       throw new Error(error.message || 'Failed to activate user');
+    }
+
+    return res.json();
+  },
+
+  async bulkActivateUsers(userIds: string[], sendEmail: boolean = true): Promise<{
+    total: number;
+    successful: number;
+    failed: number;
+    results: Array<{ userId: string; success: boolean; error?: string }>;
+  }> {
+    const res = await fetch(`${config.baseUrl}/admin/users/bulk-activate`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify({ userIds, sendEmail }),
+    });
+
+    if (!res.ok) {
+      const error = await res.json().catch(() => ({ message: 'Failed to bulk activate users' }));
+      throw new Error(error.message || 'Failed to bulk activate users');
     }
 
     return res.json();
@@ -315,6 +359,48 @@ export const adminApi = {
     if (!res.ok) {
       const error = await res.json().catch(() => ({ message: 'Failed to run system scan' }));
       throw new Error(error.message || 'Failed to run system scan');
+    }
+
+    return res.json();
+  },
+
+  async getLatestScanReport(): Promise<{
+    id: string;
+    isHealthy: boolean;
+    checksRun: number;
+    checksPassed: number;
+    checksFailed: number;
+    checksWarnings: number;
+    results: Array<{
+      name: string;
+      category: string;
+      status: 'ok' | 'warning' | 'error';
+      message: string;
+      responseTime?: number;
+    }>;
+    errorsLast24h: number;
+    claudeFormat?: string;
+    createdAt: string;
+  } | { error: string }> {
+    const res = await fetch(`${config.baseUrl}/admin/scan/latest`, {
+      headers: getHeaders(),
+    });
+
+    if (!res.ok) {
+      return { error: 'No scan reports found' };
+    }
+
+    return res.json();
+  },
+
+  async getScanHistory(limit: number = 10): Promise<{ data: any[] }> {
+    const res = await fetch(`${config.baseUrl}/admin/scan/history?limit=${limit}`, {
+      headers: getHeaders(),
+    });
+
+    if (!res.ok) {
+      const error = await res.json().catch(() => ({ message: 'Failed to get scan history' }));
+      throw new Error(error.message || 'Failed to get scan history');
     }
 
     return res.json();

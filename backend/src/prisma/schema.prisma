@@ -47,6 +47,7 @@ model User {
   role            UserRole
   rank            UserRank        @default(BRONZE)
   isActive        Boolean         @default(false)
+  activatedAt     DateTime?
   profileImage    String?
   createdAt       DateTime        @default(now())
   updatedAt       DateTime        @updatedAt
@@ -275,4 +276,21 @@ model SystemLog {
   @@index([createdAt])
   @@index([severity])
   @@index([resolved])
+}
+
+model SystemScanReport {
+  id              String    @id @default(cuid())
+  isHealthy       Boolean
+  checksRun       Int
+  checksPassed    Int
+  checksFailed    Int
+  checksWarnings  Int
+  results         Json      // Array of check results
+  errorsLast24h   Int       @default(0)
+  claudeFormat    String?   // Pre-formatted text for Claude
+  emailSent       Boolean   @default(false)
+  sentTo          String[]
+  createdAt       DateTime  @default(now())
+
+  @@index([createdAt])
 }

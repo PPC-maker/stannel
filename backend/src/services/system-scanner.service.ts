@@ -70,6 +70,9 @@ export const systemScannerService = {
     // Log failures to database
     await this.logFailures(report);
 
+    // Save report to database
+    await this.saveScanReport(report);
+
     // Send email report
     await this.sendScanReport(report);
 
@@ -433,6 +436,116 @@ export const systemScannerService = {
     }
   },
 
+  /**
+   * Save scan report to database with Claude-ready format
+   */
+  async saveScanReport(report: ScanReport): Promise<void> {
+    try {
+      // Count errors in last 24 hours
+      const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+      const errorsLast24h = await prisma.systemLog.count({
+        where: {
+          createdAt: { gte: oneDayAgo },
+          severity: { in: ['ERROR', 'CRITICAL'] },
+        },
+      });
+
+      // Generate Claude-ready format
+      const claudeFormat = this.generateClaudeFormat(report, errorsLast24h);
+
+      await prisma.systemScanReport.create({
+        data: {
+          isHealthy: report.failed === 0,
+          checksRun: report.totalTests,
+          checksPassed: report.passed,
+          checksFailed: report.failed,
+          checksWarnings: report.warnings,
+          results: report.results as any,
+          errorsLast24h,
+          claudeFormat,
+          emailSent: true,
+          sentTo: ADMIN_EMAILS,
+        },
+      });
+    } catch (error) {
+      console.error('[SystemScanner] Failed to save report:', error);
+    }
+  },
+
+  /**
+   * Generate Claude-ready format for easy troubleshooting
+   */
+  generateClaudeFormat(report: ScanReport, errorsLast24h: number): string {
+    const failedChecks = report.results.filter(r => r.status === 'error');
+    const warningChecks = report.results.filter(r => r.status === 'warning');
+
+    let format = `
+## STANNEL System Scan Report
+**Scan ID:** ${report.scanId}
+**Time:** ${report.startTime.toISOString()}
+**Duration:** ${(report.endTime.getTime() - report.startTime.getTime()) / 1000}s
+
+### Summary
+- **Total Checks:** ${report.totalTests}
+- **Passed:** ${report.passed} ✅
+- **Warnings:** ${report.warnings} ⚠️
+- **Failed:** ${report.failed} ❌
+- **Errors (Last 24h):** ${errorsLast24h}
+
+### Status: ${report.failed === 0 ? '✅ HEALTHY' : '❌ ISSUES DETECTED'}
+`;
+
+    if (failedChecks.length > 0) {
+      format += `
+### ❌ Failed Checks
+${failedChecks.map(r => `
+**${r.name}** (${r.category})
+- Status: ${r.status}
+- Message: ${r.message}
+${r.details ? `\`\`\`\n${r.details}\n\`\`\`` : ''}
+`).join('\n')}
+`;
+    }
+
+    if (warningChecks.length > 0) {
+      format += `
+### ⚠️ Warnings
+${warningChecks.map(r => `
+**${r.name}** (${r.category})
+- Message: ${r.message}
+${r.details ? `\`\`\`\n${r.details}\n\`\`\`` : ''}
+`).join('\n')}
+`;
+    }
+
+    format += `
+---
+Please analyze these issues and provide fixes for the STANNEL platform.
+Tech stack: Next.js, Fastify, Prisma, PostgreSQL, Firebase Auth, Google Cloud Run.
+`;
+
+    return format.trim();
+  },
+
+  /**
+   * Get latest scan report
+   */
+  async getLatestReport() {
+    return prisma.systemScanReport.findFirst({
+      orderBy: { createdAt: 'desc' },
+    });
+  },
+
+  /**
+   * Get recent scan reports
+   */
+  async getRecentReports(limit: number = 10) {
+    return prisma.systemScanReport.findMany({
+      orderBy: { createdAt: 'desc' },
+      take: limit,
+    });
+  },
+
   mapCategory(category: string): 'HEALTH_CHECK' | 'SECURITY' | 'API_TEST' | 'DATABASE' | 'PERFORMANCE' | 'SCHEDULER' {
     const map: Record<string, 'HEALTH_CHECK' | 'SECURITY' | 'API_TEST' | 'DATABASE' | 'PERFORMANCE' | 'SCHEDULER'> = {
       'API': 'API_TEST',
@@ -449,7 +562,6 @@ export const systemScannerService = {
    */
   async sendScanReport(report: ScanReport): Promise<void> {
     const allOk = report.failed === 0;
-    const hasWarnings = report.warnings > 0;
 
     const resultsHtml = report.results.map(r => {
       const icon = r.status === 'ok' ? '✅' : r.status === 'warning' ? '⚠️' : '❌';

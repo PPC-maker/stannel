@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, User, LogOut, Settings, Wallet, FileText, Gift, Calendar, Home } from 'lucide-react';
+import { useAuth } from '@/lib/auth-context';
 
 const navLinks = [
   { href: '/', label: 'דף הבית', icon: Home },
@@ -16,6 +17,7 @@ const navLinks = [
 
 export default function Navbar() {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const { user, logout } = useAuth();
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 py-6 bg-primary-900/95 backdrop-blur-md shadow-lg shadow-black/20 w-full">
@@ -76,13 +78,21 @@ export default function Navbar() {
                   <Settings size={16} />
                   <span>הגדרות</span>
                 </Link>
-                <hr className="my-2 border-white/10" />
-                <button
-                  className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-500/20 text-white/80 hover:text-red-400 transition-colors w-full"
-                >
-                  <LogOut size={16} />
-                  <span>התנתק</span>
-                </button>
+                {user && (
+                  <>
+                    <hr className="my-2 border-white/10" />
+                    <button
+                      onClick={() => {
+                        logout();
+                        setIsProfileOpen(false);
+                      }}
+                      className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-500/20 text-white/80 hover:text-red-400 transition-colors w-full"
+                    >
+                      <LogOut size={16} />
+                      <span>התנתק</span>
+                    </button>
+                  </>
+                )}
               </motion.div>
             )}
           </AnimatePresence>

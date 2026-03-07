@@ -381,6 +381,89 @@ export const emailService = {
       html,
     });
   },
+
+  async sendWelcomeEmail(
+    userEmail: string,
+    userName: string,
+    loginUrl: string
+  ): Promise<boolean> {
+    const html = `
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ברוכים הבאים ל-STANNEL</title>
+</head>
+<body style="font-family: 'Segoe UI', Arial, sans-serif; background-color: #060f1f; margin: 0; padding: 20px;">
+  <div style="max-width: 600px; margin: 0 auto; background: linear-gradient(135deg, rgba(26, 58, 107, 0.9) 0%, rgba(15, 35, 71, 0.95) 100%); border-radius: 16px; overflow: hidden; box-shadow: 0 8px 32px rgba(0,0,0,0.4); border: 1px solid rgba(212, 175, 55, 0.3);">
+    <!-- Header -->
+    <div style="background: linear-gradient(135deg, #1a3a6b 0%, #0f2347 100%); padding: 40px; text-align: center; border-bottom: 2px solid rgba(212, 175, 55, 0.4);">
+      <div style="width: 80px; height: 80px; margin: 0 auto 20px; background: linear-gradient(135deg, #d4af37 0%, #f5d77e 100%); border-radius: 20px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 20px rgba(212, 175, 55, 0.4);">
+        <span style="color: #1a3a6b; font-size: 40px; font-weight: bold;">S</span>
+      </div>
+      <h1 style="color: #d4af37; margin: 0; font-size: 32px; font-weight: bold;">ברוכים הבאים ל-STANNEL</h1>
+      <p style="color: rgba(255,255,255,0.8); margin: 15px 0 0 0; font-size: 16px;">פלטפורמת הנאמנות המובילה לאדריכלים וספקים</p>
+    </div>
+
+    <!-- Content -->
+    <div style="padding: 40px;">
+      <!-- Welcome Message -->
+      <div style="background: rgba(255,255,255,0.07); border-radius: 12px; padding: 25px; margin-bottom: 25px; border: 1px solid rgba(255,255,255,0.15);">
+        <h2 style="color: white; margin: 0 0 15px 0; font-size: 22px;">שלום ${escapeHtml(userName)}! 👋</h2>
+        <p style="color: rgba(255,255,255,0.8); margin: 0; font-size: 16px; line-height: 1.6;">
+          חשבונך אושר בהצלחה! כעת תוכל להתחבר למערכת וליהנות מכל היתרונות של פלטפורמת STANNEL.
+        </p>
+      </div>
+
+      <!-- Features -->
+      <div style="margin-bottom: 30px;">
+        <h3 style="color: #d4af37; margin: 0 0 15px 0; font-size: 18px;">מה מחכה לך במערכת?</h3>
+        <ul style="color: rgba(255,255,255,0.8); margin: 0; padding-right: 20px; font-size: 15px; line-height: 2;">
+          <li>ניהול חשבוניות חכם ומהיר</li>
+          <li>צבירת נקודות נאמנות על כל רכישה</li>
+          <li>מימוש נקודות לפרסים בלעדיים</li>
+          <li>מעקב אחר היסטוריית הפעילות שלך</li>
+          <li>גישה לאירועים בלעדיים</li>
+        </ul>
+      </div>
+
+      <!-- CTA Button -->
+      <div style="text-align: center; margin: 30px 0;">
+        <a href="${escapeHtml(loginUrl)}" style="display: inline-block; background: linear-gradient(135deg, #d4af37 0%, #f5d77e 100%); color: #1a3a6b; padding: 16px 48px; border-radius: 12px; font-size: 18px; font-weight: bold; text-decoration: none; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);">
+          התחברות למערכת
+        </a>
+      </div>
+
+      <!-- Support -->
+      <div style="background: rgba(212, 175, 55, 0.1); border-radius: 12px; padding: 20px; border: 1px solid rgba(212, 175, 55, 0.2);">
+        <p style="color: rgba(255,255,255,0.7); margin: 0; font-size: 14px; text-align: center;">
+          שאלות? צרו קשר עם צוות התמיכה שלנו<br/>
+          <a href="mailto:support@stannel.app" style="color: #d4af37; text-decoration: none;">support@stannel.app</a>
+        </p>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div style="background: rgba(0,0,0,0.3); padding: 25px; text-align: center; border-top: 1px solid rgba(255,255,255,0.1);">
+      <p style="color: rgba(255,255,255,0.5); font-size: 13px; margin: 0;">
+        © 2026 STANNEL. כל הזכויות שמורות.
+      </p>
+      <p style="color: rgba(255,255,255,0.4); font-size: 12px; margin: 10px 0 0 0;">
+        הודעה זו נשלחה מ-noreply@stannel.app
+      </p>
+    </div>
+  </div>
+</body>
+</html>
+    `;
+
+    return this.send({
+      to: userEmail,
+      subject: '🎉 ברוכים הבאים ל-STANNEL - חשבונך אושר!',
+      html,
+    });
+  },
 };
 
 // Helper function to escape HTML and prevent XSS in email templates

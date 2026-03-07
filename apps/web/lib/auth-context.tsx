@@ -12,8 +12,8 @@ interface AuthContextType {
   user: AuthUser | null;
   loading: boolean;
   error: string | null;
-  login: (email: string, password: string) => Promise<void>;
-  loginWithGoogle: () => Promise<void>;
+  login: (email: string, password: string) => Promise<AuthUser | null>;
+  loginWithGoogle: () => Promise<AuthUser | null>;
   register: (data: RegisterData) => Promise<void>;
   logout: () => Promise<void>;
   refreshUser: () => Promise<void>;
@@ -78,7 +78,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => unsubscribe();
   }, []);
 
-  const login = async (email: string, password: string) => {
+  const login = async (email: string, password: string): Promise<AuthUser | null> => {
     setError(null);
     setLoading(true);
 
@@ -89,6 +89,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       const response = await authApi.verifyToken(token);
       setUser(response.user);
+      return response.user;
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Login failed';
       setError(message);
@@ -98,7 +99,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const loginWithGoogle = async () => {
+  const loginWithGoogle = async (): Promise<AuthUser | null> => {
     setError(null);
     setLoading(true);
 
@@ -109,6 +110,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       const response = await authApi.verifyToken(token);
       setUser(response.user);
+      return response.user;
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Google login failed';
       setError(message);

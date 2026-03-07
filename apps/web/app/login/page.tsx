@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import GlassCard from '@/components/layout/GlassCard';
 import PageSlider, { sliderImages } from '@/components/layout/PageSlider';
@@ -11,9 +11,18 @@ import { useAuth } from '@/lib/auth-context';
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { login, loginWithGoogle, loading: authLoading } = useAuth();
 
   const [email, setEmail] = useState('');
+
+  // Prefill email from query param (used after admin approval)
+  useEffect(() => {
+    const emailParam = searchParams.get('email');
+    if (emailParam) {
+      setEmail(emailParam);
+    }
+  }, [searchParams]);
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -25,8 +34,13 @@ export default function LoginPage() {
     setError(null);
 
     try {
-      await login(email, password);
-      router.push('/dashboard');
+      const user = await login(email, password);
+      // Redirect ADMIN to admin panel, others to dashboard
+      if (user?.role === 'ADMIN') {
+        router.push('/admin');
+      } else {
+        router.push('/dashboard');
+      }
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'התחברות נכשלה';
       setError(translateFirebaseError(message));
@@ -40,8 +54,13 @@ export default function LoginPage() {
     setError(null);
 
     try {
-      await loginWithGoogle();
-      router.push('/dashboard');
+      const user = await loginWithGoogle();
+      // Redirect ADMIN to admin panel, others to dashboard
+      if (user?.role === 'ADMIN') {
+        router.push('/admin');
+      } else {
+        router.push('/dashboard');
+      }
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'התחברות עם Google נכשלה';
       setError(translateFirebaseError(message));

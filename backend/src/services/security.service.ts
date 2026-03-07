@@ -121,8 +121,22 @@ export const securityService = {
     endpoint: string,
     userAgent?: string
   ): { isSuspicious: boolean; pattern?: string } {
+    // Fields to skip (JWT tokens, authorization headers)
+    const skipFields = ['firebaseToken', 'token', 'idToken', 'accessToken', 'refreshToken', 'authorization'];
+
     const checkValue = (value: unknown, path: string): { isSuspicious: boolean; pattern?: string } => {
+      // Skip JWT token fields
+      const fieldName = path.split('.').pop()?.toLowerCase() || '';
+      if (skipFields.some(f => fieldName.includes(f.toLowerCase()))) {
+        return { isSuspicious: false };
+      }
+
       if (typeof value === 'string') {
+        // Skip if it looks like a JWT (three base64 segments separated by dots)
+        if (/^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$/.test(value)) {
+          return { isSuspicious: false };
+        }
+
         for (const pattern of SUSPICIOUS_PATTERNS) {
           if (pattern.test(value)) {
             const isSqlInjection = pattern.source.includes('SELECT') || pattern.source.includes('--');
