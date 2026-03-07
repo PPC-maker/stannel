@@ -5,6 +5,8 @@ import { getFirebaseAuth } from '../lib/firebase.js';
 import prisma from '../lib/prisma.js';
 import { authMiddleware } from '../middleware/auth.middleware.js';
 import { z } from 'zod';
+import { Prisma } from '@prisma/client';
+import type { DecodedIdToken } from 'firebase-admin/auth';
 
 const registerSchema = z.object({
   email: z.string().email(),
@@ -32,15 +34,37 @@ export async function authRoutes(server: FastifyInstance) {
       }
 
       // Verify Firebase token
-      const decoded = await firebaseAuth.verifyIdToken(body.firebaseToken);
+      let decoded: DecodedIdToken;
+      try {
+        decoded = await firebaseAuth.verifyIdToken(body.firebaseToken);
+      } catch (tokenError) {
+        const err = tokenError as { code?: string; message?: string };
+        console.error('[Auth] Token verification failed:', err.code, err.message);
+        return reply.code(401).send({
+          error: 'Invalid authentication token',
+          code: err.code || 'auth/invalid-token',
+          message: err.message || 'Token verification failed'
+        });
+      }
 
-      // Check if user already exists
-      const existingUser = await prisma.user.findUnique({
+      // Check if user already exists by firebaseUid
+      const existingByUid = await prisma.user.findUnique({
         where: { firebaseUid: decoded.uid },
+        include: { architectProfile: true, supplierProfile: true },
       });
 
-      if (existingUser) {
-        return reply.code(400).send({ error: 'User already exists' });
+      if (existingByUid) {
+        // User already registered - return existing user
+        return { user: existingByUid, token: body.firebaseToken, message: 'User already registered.' };
+      }
+
+      // Check if user already exists by email (different Firebase account)
+      const existingByEmail = await prisma.user.findUnique({
+        where: { email: body.email },
+      });
+
+      if (existingByEmail) {
+        return reply.code(400).send({ error: 'Email already registered with a different account' });
       }
 
       // Create user with profile
@@ -65,25 +89,25 @@ export async function authRoutes(server: FastifyInstance) {
         },
       });
 
+      console.log('[Auth] New user registered:', user.email, user.role);
       return { user, token: body.firebaseToken, message: 'Registration successful. Awaiting admin approval.' };
     } catch (error) {
+      // Handle Zod validation errors
       if (error instanceof z.ZodError) {
         return reply.code(400).send({ error: 'Validation error', details: error.errors });
       }
 
-      // Handle Firebase Auth errors
-      if (error && typeof error === 'object' && 'code' in error) {
-        const firebaseError = error as { code: string; message: string };
-        console.error('[Auth] Firebase error during registration:', firebaseError.code, firebaseError.message);
-        return reply.code(401).send({
-          error: 'Authentication failed',
-          code: firebaseError.code,
-          message: firebaseError.message
-        });
+      // Handle Prisma errors
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        console.error('[Auth] Database error:', error.code, error.message);
+        if (error.code === 'P2002') {
+          return reply.code(400).send({ error: 'User already exists' });
+        }
+        return reply.code(500).send({ error: 'Database error' });
       }
 
       console.error('[Auth] Registration error:', error);
-      throw error;
+      return reply.code(500).send({ error: 'Registration failed' });
     }
   });
 
