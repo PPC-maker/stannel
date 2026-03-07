@@ -78,7 +78,7 @@ export function useRedeemReward() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (productId: string) => rewardsApi.redeem(productId),
+    mutationFn: (productId: string) => rewardsApi.redeem({ productId }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['rewards'] });
       queryClient.invalidateQueries({ queryKey: ['wallet'] });
