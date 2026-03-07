@@ -12,8 +12,8 @@ export const authApi = {
     });
 
     if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || 'Registration failed');
+      const errorData = await response.json();
+      throw new Error(errorData.error || errorData.message || 'Registration failed');
     }
 
     const result = await response.json();
@@ -29,8 +29,8 @@ export const authApi = {
     });
 
     if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || 'Login failed');
+      const errorData = await response.json();
+      throw new Error(errorData.error || errorData.message || 'Login failed');
     }
 
     const result = await response.json();
@@ -46,8 +46,8 @@ export const authApi = {
     });
 
     if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || 'Token verification failed');
+      const errorData = await response.json();
+      throw new Error(errorData.error || errorData.message || 'Token verification failed');
     }
 
     const result = await response.json();
@@ -62,8 +62,8 @@ export const authApi = {
     });
 
     if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || 'Failed to get user');
+      const errorData = await response.json();
+      throw new Error(errorData.error || errorData.message || 'Failed to get user');
     }
 
     return response.json();
@@ -77,8 +77,8 @@ export const authApi = {
     });
 
     if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || 'Failed to update profile');
+      const errorData = await response.json();
+      throw new Error(errorData.error || errorData.message || 'Failed to update profile');
     }
 
     return response.json();

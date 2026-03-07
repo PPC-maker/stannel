@@ -125,8 +125,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     try {
       const { registerWithEmail } = await import('./firebase');
-      const { token } = await registerWithEmail(data.email, data.password);
+      const { token, isNewUser } = await registerWithEmail(data.email, data.password);
       setAuthToken(token);
+
+      // If user already existed in Firebase, check if they exist in DB
+      if (!isNewUser) {
+        try {
+          const verifyResponse = await authApi.verifyToken(token);
+          // User exists in both Firebase and DB - they should login instead
+          setUser(verifyResponse.user);
+          return;
+        } catch {
+          // User exists in Firebase but not in DB - continue with registration
+        }
+      }
 
       // Build registration payload - only include defined values
       const payload: {

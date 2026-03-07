@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import GlassCard from '@/components/layout/GlassCard';
@@ -11,7 +11,13 @@ import { useAuth } from '@/lib/auth-context';
 type UserRole = 'ARCHITECT' | 'SUPPLIER';
 
 export default function RegisterPage() {
-  const { register, loading: authLoading } = useAuth();
+  const { register, loading: authLoading, logout } = useAuth();
+
+  // Sign out any existing user when entering register page
+  // This prevents race conditions with existing Firebase sessions
+  useEffect(() => {
+    logout();
+  }, [logout]);
 
   const [step, setStep] = useState(1);
   const [role, setRole] = useState<UserRole | null>(null);

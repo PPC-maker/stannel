@@ -73,9 +73,26 @@ export async function loginWithEmail(email: string, password: string) {
 export async function registerWithEmail(email: string, password: string) {
   const auth = getFirebaseAuth();
   if (!auth) throw new Error('Firebase not configured');
-  const result = await createUserWithEmailAndPassword(auth, email, password);
-  const token = await result.user.getIdToken();
-  return { user: result.user, token };
+
+  // Sign out any existing user first to ensure clean state
+  if (auth.currentUser) {
+    await signOut(auth);
+  }
+
+  try {
+    const result = await createUserWithEmailAndPassword(auth, email, password);
+    const token = await result.user.getIdToken();
+    return { user: result.user, token, isNewUser: true };
+  } catch (error: unknown) {
+    // If email already exists in Firebase, try to sign in instead
+    // This handles the case where Firebase user exists but DB record doesn't
+    if (error && typeof error === 'object' && 'code' in error && error.code === 'auth/email-already-in-use') {
+      const result = await signInWithEmailAndPassword(auth, email, password);
+      const token = await result.user.getIdToken();
+      return { user: result.user, token, isNewUser: false };
+    }
+    throw error;
+  }
 }
 
 export async function loginWithGoogle() {
