@@ -1,10 +1,10 @@
 // STANNEL Types - Main Export
 
-export * from './user.types';
-export * from './invoice.types';
-export * from './wallet.types';
-export * from './event.types';
-export * from './contract.types';
+export * from './user.types.js';
+export * from './invoice.types.js';
+export * from './wallet.types.js';
+export * from './event.types.js';
+export * from './contract.types.js';
 
 // Common Types
 export interface PaginatedResponse<T> {
