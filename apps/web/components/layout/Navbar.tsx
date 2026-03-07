@@ -48,7 +48,7 @@ export default function Navbar() {
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: 10, scale: 0.95 }}
                 transition={{ duration: 0.2 }}
-                className="absolute right-0 mt-2 w-48 glass-card p-2"
+                className="absolute right-0 mt-2 w-48 bg-primary-900/95 backdrop-blur-xl border border-white/20 rounded-xl p-2 shadow-xl"
               >
                 {navLinks.map((link) => (
                   <Link
