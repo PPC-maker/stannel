@@ -32,7 +32,7 @@ const REQUEST_SPIKE_THRESHOLD = 200;
 const SUSPICIOUS_PATTERNS = [
   // SQL Injection
   /(\b(SELECT|INSERT|UPDATE|DELETE|DROP|UNION|ALTER|CREATE|TRUNCATE)\b.*\b(FROM|INTO|TABLE|WHERE|SET)\b)/i,
-  /(--|;|\/\*|\*\/|@@|@)/,
+  /(--|\/\*|\*\/|@@)/,  // Removed single @ to allow email addresses
   /(\bOR\b|\bAND\b)\s*[\d'"=]/i,
   // XSS
   /<script[\s\S]*?>[\s\S]*?<\/script>/i,
