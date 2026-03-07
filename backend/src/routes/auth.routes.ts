@@ -21,6 +21,11 @@ const verifySchema = z.object({
   token: z.string(),
 });
 
+const googleAuthSchema = z.object({
+  token: z.string(),
+  role: z.enum(['ARCHITECT', 'SUPPLIER']).optional(), // Optional - defaults to ARCHITECT for new users
+});
+
 export async function authRoutes(server: FastifyInstance) {
   // Register new user
   server.post('/register', async (request: FastifyRequest, reply: FastifyReply) => {
@@ -108,6 +113,107 @@ export async function authRoutes(server: FastifyInstance) {
 
       console.error('[Auth] Registration error:', error);
       return reply.code(500).send({ error: 'Registration failed' });
+    }
+  });
+
+  // Google login/register - Auto-creates user if doesn't exist
+  server.post('/google', async (request: FastifyRequest, reply: FastifyReply) => {
+    try {
+      const body = googleAuthSchema.parse(request.body);
+      const firebaseAuth = getFirebaseAuth();
+
+      if (!firebaseAuth) {
+        console.error('[Auth] Firebase Auth not initialized for Google auth');
+        return reply.code(500).send({ error: 'Auth service not configured' });
+      }
+
+      // Verify Firebase token
+      let decoded: DecodedIdToken;
+      try {
+        decoded = await firebaseAuth.verifyIdToken(body.token);
+      } catch (tokenError) {
+        const err = tokenError as { code?: string; message?: string };
+        console.error('[Auth] Google token verification failed:', err.code, err.message);
+        return reply.code(401).send({
+          error: 'Invalid authentication token',
+          code: err.code || 'auth/invalid-token',
+        });
+      }
+
+      // Check if user exists
+      let user = await prisma.user.findUnique({
+        where: { firebaseUid: decoded.uid },
+        include: { architectProfile: true, supplierProfile: true },
+      });
+
+      if (user) {
+        // User exists - return them
+        console.log('[Auth] Google login - existing user:', user.email);
+        return { user, token: body.token, isNewUser: false };
+      }
+
+      // User doesn't exist - auto-register with Google profile data
+      const email = decoded.email || '';
+      const name = decoded.name || decoded.email?.split('@')[0] || 'User';
+      const profileImage = decoded.picture || undefined;
+      const role = body.role || 'ARCHITECT'; // Default to ARCHITECT
+
+      // Check if email is already used by another account
+      const existingByEmail = await prisma.user.findUnique({
+        where: { email },
+      });
+
+      if (existingByEmail) {
+        return reply.code(400).send({
+          error: 'Email already registered with a different account',
+          code: 'auth/email-exists'
+        });
+      }
+
+      // Create new user with Google profile data
+      user = await prisma.user.create({
+        data: {
+          firebaseUid: decoded.uid,
+          email,
+          name,
+          profileImage,
+          role,
+          isActive: false, // Admin must approve
+          ...(role === 'ARCHITECT' && {
+            architectProfile: { create: {} },
+          }),
+          ...(role === 'SUPPLIER' && {
+            supplierProfile: { create: { companyName: name } },
+          }),
+        },
+        include: {
+          architectProfile: true,
+          supplierProfile: true,
+        },
+      });
+
+      console.log('[Auth] Google auto-register - new user:', user.email, user.role);
+      return {
+        user,
+        token: body.token,
+        isNewUser: true,
+        message: 'Registration successful. Awaiting admin approval.'
+      };
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return reply.code(400).send({ error: 'Validation error', details: error.errors });
+      }
+
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        console.error('[Auth] Google auth database error:', error.code, error.message);
+        if (error.code === 'P2002') {
+          return reply.code(400).send({ error: 'User already exists' });
+        }
+        return reply.code(500).send({ error: 'Database error' });
+      }
+
+      console.error('[Auth] Google auth error:', error);
+      return reply.code(500).send({ error: 'Google authentication failed' });
     }
   });
 
