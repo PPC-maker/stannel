@@ -60,21 +60,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           const token = await firebaseUser.getIdToken();
           setAuthToken(token);
 
-          // Try to get user from backend
-          try {
-            const response = await authApi.verifyToken(token);
-            setUser(response.user);
-          } catch (verifyErr) {
-            // If user not found in DB, try googleAuth which auto-registers
-            // This handles the case where a Google user refreshes the page
-            const errMsg = verifyErr instanceof Error ? verifyErr.message : '';
-            if (errMsg.includes('not found') || errMsg.includes('User not found')) {
-              const response = await authApi.googleAuth(token);
-              setUser(response.user);
-            } else {
-              throw verifyErr;
-            }
-          }
+          // Get user from backend
+          const response = await authApi.verifyToken(token);
+          setUser(response.user);
         } catch (err) {
           console.error('Error fetching user:', err);
           setUser(null);
@@ -120,8 +108,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const { token } = await googleLogin();
       setAuthToken(token);
 
-      // Use googleAuth which auto-registers new users with Google profile data
-      const response = await authApi.googleAuth(token);
+      const response = await authApi.verifyToken(token);
       setUser(response.user);
       return response.user;
     } catch (err: unknown) {
