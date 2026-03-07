@@ -1,0 +1,12 @@
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - 'me-west1-docker.pkg.dev/stannel-app/stannel/web:latest'
+      - '-f'
+      - 'apps/web/Dockerfile'
+      - '.'
+images:
+  - 'me-west1-docker.pkg.dev/stannel-app/stannel/web:latest'
+timeout: '1800s'
