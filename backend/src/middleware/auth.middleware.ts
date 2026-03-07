@@ -3,7 +3,7 @@
 import { FastifyRequest, FastifyReply } from 'fastify';
 import { getAuth } from 'firebase-admin/auth';
 import prisma from '../lib/prisma.js';
-import { UserRole } from '@stannel/types';
+import { UserRole } from '../types/index.js';
 
 // Extend FastifyRequest to include user
 declare module 'fastify' {
