@@ -65,7 +65,7 @@ export async function authRoutes(server: FastifyInstance) {
         },
       });
 
-      return { user, message: 'Registration successful. Awaiting admin approval.' };
+      return { user, token: body.firebaseToken, message: 'Registration successful. Awaiting admin approval.' };
     } catch (error) {
       if (error instanceof z.ZodError) {
         return reply.code(400).send({ error: 'Validation error', details: error.errors });

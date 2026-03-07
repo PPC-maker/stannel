@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import { createContext, useContext, useEffect, useState, useRef, ReactNode } from 'react';
 import { User, onAuthStateChanged } from 'firebase/auth';
 import { getFirebaseAuth, logout as firebaseLogout, isAuthEnabled } from './firebase';
 import { authApi, setAuthToken } from '@stannel/api-client';
@@ -35,6 +35,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const isRegistering = useRef(false);
 
   useEffect(() => {
     const auth = getFirebaseAuth();
@@ -49,6 +50,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setFirebaseUser(firebaseUser);
 
       if (firebaseUser) {
+        // Skip verification during registration - the register function handles it
+        if (isRegistering.current) {
+          setLoading(false);
+          return;
+        }
+
         try {
           const token = await firebaseUser.getIdToken();
           setAuthToken(token);
@@ -114,28 +121,44 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const register = async (data: RegisterData) => {
     setError(null);
     setLoading(true);
+    isRegistering.current = true;
 
     try {
       const { registerWithEmail } = await import('./firebase');
       const { token } = await registerWithEmail(data.email, data.password);
       setAuthToken(token);
 
-      // Register in backend
-      const response = await authApi.register({
+      // Build registration payload - only include defined values
+      const payload: {
+        email: string;
+        name: string;
+        role: UserRole;
+        firebaseToken: string;
+        phone?: string;
+        companyName?: string;
+      } = {
         email: data.email,
         name: data.name,
-        phone: data.phone,
         role: data.role as UserRole,
-        companyName: data.companyName,
         firebaseToken: token,
-      });
+      };
 
+      if (data.phone) {
+        payload.phone = data.phone;
+      }
+      if (data.companyName) {
+        payload.companyName = data.companyName;
+      }
+
+      // Register in backend
+      const response = await authApi.register(payload);
       setUser(response.user);
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Registration failed';
       setError(message);
       throw err;
     } finally {
+      isRegistering.current = false;
       setLoading(false);
     }
   };

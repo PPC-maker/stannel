@@ -1,4 +1,5 @@
 steps:
+  # Build the Docker image
   - name: 'gcr.io/cloud-builders/docker'
     args:
       - 'build'
@@ -7,6 +8,23 @@ steps:
       - '-f'
       - 'apps/web/Dockerfile'
       - '.'
-images:
-  - 'me-west1-docker.pkg.dev/stannel-app/stannel/web:latest'
+
+  # Push to Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'me-west1-docker.pkg.dev/stannel-app/stannel/web:latest'
+
+  # Deploy to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - 'stannel-web'
+      - '--image=me-west1-docker.pkg.dev/stannel-app/stannel/web:latest'
+      - '--region=me-west1'
+      - '--platform=managed'
+      - '--allow-unauthenticated'
+
 timeout: '1800s'
