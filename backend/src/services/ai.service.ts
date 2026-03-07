@@ -2,6 +2,45 @@
 
 import { VertexAI } from '@google-cloud/vertexai';
 
+// Local type definition for chat messages
+interface ChatMessage {
+  id: string;
+  role: 'user' | 'assistant';
+  content: string;
+  timestamp: Date;
+}
+
+// System prompt for the AI assistant
+const AI_ASSISTANT_SYSTEM_PROMPT = `You are an AI assistant for STANNEL - a loyalty management platform for architects and suppliers in the construction/design industry in Israel.
+
+Your role is to help users understand how to use the system.
+
+The platform includes the following features:
+- Uploading and managing invoices from suppliers
+- Earning points and cash rewards for purchases
+- Digital wallet with card and transaction history
+- Rewards marketplace to redeem points
+- Events and networking opportunities
+- Profile and settings management
+
+When a user asks a question:
+1. Explain clearly what needs to be done
+2. Provide simple step-by-step instructions in Hebrew
+3. If possible, recommend relevant pages or actions inside the website
+
+Navigation guide:
+- Dashboard (ניהול ראשי): /dashboard - View your wallet balance, recent transactions, and quick actions
+- Invoices (חשבוניות): /invoices - View and manage your invoices
+- Upload Invoice: /invoices/upload - Upload a new invoice for verification
+- Rewards (הטבות): /rewards - Browse and redeem rewards with your points
+- Events (אירועים): /events - View and register for events
+- Wallet (ארנק): /wallet - View your full wallet, transactions, and card details
+- Profile (הפרופיל שלי): /profile - Edit your personal details
+- Settings (הגדרות): /settings - Manage account settings
+
+Always respond in Hebrew unless the user writes in English.
+Be helpful, friendly, and concise.`;
+
 const projectId = process.env.GOOGLE_CLOUD_PROJECT || 'stannel-project';
 const location = process.env.VERTEX_LOCATION || 'us-central1';
 
@@ -129,6 +168,47 @@ export const aiService = {
         alerts: [],
         recommendations: [],
       };
+    }
+  },
+
+  async chat(message: string, conversationHistory: ChatMessage[] = []): Promise<string> {
+    try {
+      const vertex = getVertexAI();
+      const model = vertex.getGenerativeModel({ model: 'gemini-1.5-pro' });
+
+      // Build conversation contents
+      const contents = [
+        {
+          role: 'user' as const,
+          parts: [{ text: AI_ASSISTANT_SYSTEM_PROMPT }],
+        },
+        {
+          role: 'model' as const,
+          parts: [{ text: 'שלום! אני העוזר החכם של STANNEL. איך אוכל לעזור לך היום?' }],
+        },
+      ];
+
+      // Add conversation history
+      for (const msg of conversationHistory) {
+        contents.push({
+          role: msg.role === 'user' ? 'user' as const : 'model' as const,
+          parts: [{ text: msg.content }],
+        });
+      }
+
+      // Add current message
+      contents.push({
+        role: 'user' as const,
+        parts: [{ text: message }],
+      });
+
+      const result = await model.generateContent({ contents });
+      const text = result.response.candidates?.[0]?.content?.parts?.[0]?.text || '';
+
+      return text || 'מצטער, לא הצלחתי לעבד את הבקשה. אנא נסה שוב.';
+    } catch (error) {
+      console.error('AI chat error:', error);
+      return 'מצטער, אירעה שגיאה. אנא נסה שוב מאוחר יותר.';
     }
   },
 };
