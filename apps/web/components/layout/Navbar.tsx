@@ -12,7 +12,7 @@ const publicLinks = [
 ];
 
 const authLinks = [
-  { href: '/dashboard', label: 'דשבורד', icon: Wallet },
+  { href: '/dashboard', label: 'ניהול ראשי', icon: Wallet },
   { href: '/invoices', label: 'חשבוניות', icon: FileText },
   { href: '/rewards', label: 'הטבות', icon: Gift },
   { href: '/events', label: 'אירועים', icon: Calendar },
