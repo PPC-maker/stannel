@@ -70,6 +70,19 @@ export async function authRoutes(server: FastifyInstance) {
       if (error instanceof z.ZodError) {
         return reply.code(400).send({ error: 'Validation error', details: error.errors });
       }
+
+      // Handle Firebase Auth errors
+      if (error && typeof error === 'object' && 'code' in error) {
+        const firebaseError = error as { code: string; message: string };
+        console.error('[Auth] Firebase error during registration:', firebaseError.code, firebaseError.message);
+        return reply.code(401).send({
+          error: 'Authentication failed',
+          code: firebaseError.code,
+          message: firebaseError.message
+        });
+      }
+
+      console.error('[Auth] Registration error:', error);
       throw error;
     }
   });
