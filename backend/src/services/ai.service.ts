@@ -47,8 +47,8 @@ Be helpful, friendly, and concise.`;
 // Supported regions: us-central1, us-east4, us-west1, europe-west1, europe-west4, asia-northeast1, asia-southeast1
 // me-west1 (Tel Aviv) does NOT support Gemini - we must use us-central1
 const GEMINI_SUPPORTED_REGION = 'us-central1';
-// Model options: gemini-1.5-flash-001, gemini-1.5-pro-001, gemini-1.0-pro-001
-const GEMINI_MODEL = 'gemini-1.0-pro-001'; // Using stable model version
+// Try different model names - Vertex AI model naming can vary
+const GEMINI_MODEL = 'gemini-pro'; // Base model name without version
 
 let vertexAI: VertexAI | null = null;
 let isInitialized = false;
