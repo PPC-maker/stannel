@@ -1,7 +1,8 @@
 // React Query hooks for API calls (Web)
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { walletApi, invoicesApi, rewardsApi, eventsApi } from '@stannel/api-client';
+import { walletApi, invoicesApi, rewardsApi, eventsApi, aiApi } from '@stannel/api-client';
+import type { ChatMessage } from '@stannel/types';
 
 // Wallet hooks
 export function useWalletBalance() {
@@ -51,6 +52,13 @@ export function useInvoice(id: string) {
     queryKey: ['invoices', id],
     queryFn: () => invoicesApi.getById(id),
     enabled: !!id,
+  });
+}
+
+export function useSuppliers() {
+  return useQuery({
+    queryKey: ['suppliers'],
+    queryFn: () => invoicesApi.getSuppliers(),
   });
 }
 
@@ -142,5 +150,25 @@ export function useDashboardStats() {
         rank: card.rank || 'BRONZE',
       };
     },
+  });
+}
+
+// AI Chat hooks
+export function useAiChat() {
+  return useMutation({
+    mutationFn: ({
+      message,
+      conversationHistory,
+    }: {
+      message: string;
+      conversationHistory?: ChatMessage[];
+    }) => aiApi.chat(message, conversationHistory),
+  });
+}
+
+export function useAiPrompts() {
+  return useQuery({
+    queryKey: ['ai', 'prompts'],
+    queryFn: () => aiApi.getPrompts(),
   });
 }

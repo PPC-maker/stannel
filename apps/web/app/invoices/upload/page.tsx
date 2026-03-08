@@ -5,29 +5,21 @@ import { useDropzone } from 'react-dropzone';
 import { motion } from 'framer-motion';
 import GlassCard from '@/components/layout/GlassCard';
 import PageSlider, { sliderImages } from '@/components/layout/PageSlider';
-import { Upload, FileText, CheckCircle, AlertTriangle, X, ArrowLeft } from 'lucide-react';
+import { Upload, FileText, CheckCircle, AlertTriangle, X, ArrowLeft, Building2 } from 'lucide-react';
 import Link from 'next/link';
-import { useUploadInvoice } from '@/lib/api-hooks';
-
-// Available suppliers list
-const suppliersList = [
-  { id: '1', companyName: 'אבני ירושלים בע״מ' },
-  { id: '2', companyName: 'קרמיקה מודרנית' },
-  { id: '3', companyName: 'עץ ואבן' },
-  { id: '4', companyName: 'זכוכית בע״מ' },
-  { id: '5', companyName: 'מתכות פרימיום' },
-];
+import { useUploadInvoice, useSuppliers } from '@/lib/api-hooks';
 
 export default function InvoiceUploadPage() {
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [amount, setAmount] = useState('');
   const [supplierId, setSupplierId] = useState('');
-  const suppliers = suppliersList;
   const [aiResult, setAiResult] = useState<{ status: string; extractedAmount: number; confidence: number } | null>(null);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const { data: suppliersData, isLoading: suppliersLoading } = useSuppliers();
+  const suppliers = suppliersData?.data || [];
   const uploadMutation = useUploadInvoice();
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
@@ -121,6 +113,9 @@ export default function InvoiceUploadPage() {
     );
   }
 
+  // Show empty state if no suppliers
+  const noSuppliers = !suppliersLoading && suppliers.length === 0;
+
   return (
     <div className="relative">
       <PageSlider images={sliderImages.invoiceUpload} />
@@ -136,6 +131,26 @@ export default function InvoiceUploadPage() {
         </div>
       </div>
 
+      {/* No suppliers warning */}
+      {noSuppliers && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-6"
+        >
+          <GlassCard className="text-center py-8">
+            <Building2 size={48} className="mx-auto text-gold-400 mb-4" />
+            <h2 className="text-xl font-semibold text-white mb-2">אין ספקים זמינים</h2>
+            <p className="text-white/60 mb-4">
+              כרגע אין ספקים פעילים במערכת. צור קשר עם מנהל המערכת להוספת ספקים.
+            </p>
+            <Link href="/invoices" className="btn-gold inline-block">
+              חזרה לחשבוניות
+            </Link>
+          </GlassCard>
+        </motion.div>
+      )}
+
       {/* Error message */}
       {error && (
         <motion.div
@@ -150,6 +165,7 @@ export default function InvoiceUploadPage() {
         </motion.div>
       )}
 
+      {!noSuppliers && (
       <div className="grid lg:grid-cols-2 gap-6">
         {/* Upload Zone */}
         <GlassCard>
@@ -234,18 +250,24 @@ export default function InvoiceUploadPage() {
           <div className="space-y-5">
             <div>
               <label className="block text-white/70 text-sm mb-2">ספק</label>
-              <select
-                value={supplierId}
-                onChange={(e) => setSupplierId(e.target.value)}
-                className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white focus:border-gold-400 transition-all appearance-none cursor-pointer"
-              >
-                <option value="" className="bg-primary-900">בחרו ספק...</option>
-                {suppliers.map(s => (
-                  <option key={s.id} value={s.id} className="bg-primary-900">
-                    {s.companyName}
-                  </option>
-                ))}
-              </select>
+              {suppliersLoading ? (
+                <div className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white/50 animate-pulse">
+                  טוען ספקים...
+                </div>
+              ) : (
+                <select
+                  value={supplierId}
+                  onChange={(e) => setSupplierId(e.target.value)}
+                  className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white focus:border-gold-400 transition-all appearance-none cursor-pointer"
+                >
+                  <option value="" className="bg-primary-900">בחרו ספק...</option>
+                  {suppliers.map(s => (
+                    <option key={s.id} value={s.id} className="bg-primary-900">
+                      {s.companyName}
+                    </option>
+                  ))}
+                </select>
+              )}
             </div>
 
             <div>
@@ -286,6 +308,7 @@ export default function InvoiceUploadPage() {
           </div>
         </GlassCard>
         </div>
+      )}
       </div>
     </div>
   );

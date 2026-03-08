@@ -9,6 +9,32 @@ import { slaService } from '../services/sla.service.js';
 import { z } from 'zod';
 
 export async function invoiceRoutes(server: FastifyInstance) {
+  // Get list of suppliers for invoice upload
+  server.get('/suppliers', {
+    preHandler: [authMiddleware],
+  }, async () => {
+    const suppliers = await prisma.supplierProfile.findMany({
+      where: {
+        user: { isActive: true },
+      },
+      select: {
+        id: true,
+        companyName: true,
+        user: {
+          select: { name: true },
+        },
+      },
+      orderBy: { companyName: 'asc' },
+    });
+
+    return {
+      data: suppliers.map(s => ({
+        id: s.id,
+        companyName: s.companyName || s.user.name || 'ספק',
+      })),
+    };
+  });
+
   // Upload invoice (Architect only)
   server.post('/upload', {
     preHandler: [authMiddleware, requireArchitect],
