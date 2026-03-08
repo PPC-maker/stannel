@@ -1,7 +1,6 @@
-// AI Service - Vertex AI (Gemini)
+// AI Service - Google AI (Gemini)
 
-import { VertexAI, GenerativeModel } from '@google-cloud/vertexai';
-import { getConfig } from '../lib/config.js';
+import { GoogleGenerativeAI, GenerativeModel } from '@google/generative-ai';
 
 // Local type definition for chat messages
 interface ChatMessage {
@@ -42,44 +41,41 @@ Navigation guide:
 Always respond in Hebrew unless the user writes in English.
 Be helpful, friendly, and concise.`;
 
-// Vertex AI configuration
-// IMPORTANT: Gemini models are only available in specific regions
-// Supported regions: us-central1, us-east4, us-west1, europe-west1, europe-west4, asia-northeast1, asia-southeast1
-// me-west1 (Tel Aviv) does NOT support Gemini - we must use us-central1
-const GEMINI_SUPPORTED_REGION = 'us-central1';
-// Try different model names - Vertex AI model naming can vary
-const GEMINI_MODEL = 'gemini-pro'; // Base model name without version
+// Google AI configuration
+const GEMINI_MODEL = 'gemini-1.5-flash';
 
-let vertexAI: VertexAI | null = null;
+let genAI: GoogleGenerativeAI | null = null;
 let isInitialized = false;
 let initError: string | null = null;
 
-function getVertexAI(): VertexAI {
-  if (!vertexAI) {
-    const config = getConfig();
-    const projectId = config.GOOGLE_CLOUD_PROJECT || 'stannel-app';
+function getGenAI(): GoogleGenerativeAI {
+  if (!genAI) {
+    const apiKey = process.env.GEMINI_API_KEY;
 
-    console.log(`[AI Service] Initializing Vertex AI - Project: ${projectId}, Region: ${GEMINI_SUPPORTED_REGION}`);
+    if (!apiKey) {
+      initError = 'GEMINI_API_KEY environment variable is not set';
+      console.error('[AI Service] ' + initError);
+      throw new Error(initError);
+    }
+
+    console.log('[AI Service] Initializing Google AI with Gemini');
 
     try {
-      vertexAI = new VertexAI({
-        project: projectId,
-        location: GEMINI_SUPPORTED_REGION
-      });
+      genAI = new GoogleGenerativeAI(apiKey);
       isInitialized = true;
-      console.log('[AI Service] Vertex AI initialized successfully');
+      console.log('[AI Service] Google AI initialized successfully');
     } catch (error) {
       initError = error instanceof Error ? error.message : String(error);
-      console.error('[AI Service] Failed to initialize Vertex AI:', initError);
+      console.error('[AI Service] Failed to initialize Google AI:', initError);
       throw error;
     }
   }
-  return vertexAI;
+  return genAI;
 }
 
 function getModel(): GenerativeModel {
-  const vertex = getVertexAI();
-  return vertex.getGenerativeModel({ model: GEMINI_MODEL });
+  const ai = getGenAI();
+  return ai.getGenerativeModel({ model: GEMINI_MODEL });
 }
 
 export const aiService = {
@@ -123,17 +119,12 @@ export const aiService = {
         - UNCLEAR: if you cannot read the amount clearly
       `;
 
-      const result = await model.generateContent({
-        contents: [{
-          role: 'user',
-          parts: [
-            { inlineData: { mimeType, data: base64 } },
-            { text: prompt },
-          ],
-        }],
-      });
+      const result = await model.generateContent([
+        { inlineData: { mimeType, data: base64 } },
+        { text: prompt },
+      ]);
 
-      const text = result.response.candidates?.[0]?.content?.parts?.[0]?.text || '';
+      const text = result.response.text();
       const jsonText = text.replace(/```json|```/g, '').trim();
       return JSON.parse(jsonText);
     } catch (error) {
@@ -189,7 +180,7 @@ export const aiService = {
       `;
 
       const result = await model.generateContent(prompt);
-      const text = result.response.candidates?.[0]?.content?.parts?.[0]?.text || '';
+      const text = result.response.text();
       const jsonText = text.replace(/```json|```/g, '').trim();
       return JSON.parse(jsonText);
     } catch (error) {
@@ -209,36 +200,29 @@ export const aiService = {
     try {
       const model = getModel();
 
-      // Build conversation contents
-      const contents = [
-        {
-          role: 'user' as const,
-          parts: [{ text: AI_ASSISTANT_SYSTEM_PROMPT }],
-        },
-        {
-          role: 'model' as const,
-          parts: [{ text: 'שלום! אני העוזר החכם של STANNEL. איך אוכל לעזור לך היום?' }],
-        },
-      ];
-
-      // Add conversation history
-      for (const msg of conversationHistory) {
-        contents.push({
-          role: msg.role === 'user' ? 'user' as const : 'model' as const,
-          parts: [{ text: msg.content }],
-        });
-      }
-
-      // Add current message
-      contents.push({
-        role: 'user' as const,
-        parts: [{ text: message }],
+      // Start a chat with system instruction
+      const chat = model.startChat({
+        history: [
+          {
+            role: 'user',
+            parts: [{ text: AI_ASSISTANT_SYSTEM_PROMPT }],
+          },
+          {
+            role: 'model',
+            parts: [{ text: 'שלום! אני העוזר החכם של STANNEL. איך אוכל לעזור לך היום?' }],
+          },
+          // Add conversation history
+          ...conversationHistory.map(msg => ({
+            role: msg.role === 'user' ? 'user' as const : 'model' as const,
+            parts: [{ text: msg.content }],
+          })),
+        ],
       });
 
       console.log('[AI Service] Sending request to Gemini...');
-      const result = await model.generateContent({ contents });
+      const result = await chat.sendMessage(message);
 
-      const text = result.response.candidates?.[0]?.content?.parts?.[0]?.text || '';
+      const text = result.response.text();
       console.log('[AI Service] Received response, length:', text.length);
 
       return text || 'מצטער, לא הצלחתי לעבד את הבקשה. אנא נסה שוב.';
@@ -255,13 +239,13 @@ export const aiService = {
 
       // Return user-friendly error in Hebrew
       if (errorMessage.includes('PERMISSION_DENIED') || errorMessage.includes('403')) {
-        console.error('[AI Service] Permission denied - check IAM roles for Vertex AI');
+        console.error('[AI Service] Permission denied - check API key');
         return 'מצטער, אין הרשאות לשירות ה-AI. אנא פנה למנהל המערכת.';
       }
 
-      if (errorMessage.includes('NOT_FOUND') || errorMessage.includes('404')) {
-        console.error('[AI Service] Model or API not found - check if Vertex AI is enabled');
-        return 'מצטער, שירות ה-AI אינו זמין כרגע. אנא נסה שוב מאוחר יותר.';
+      if (errorMessage.includes('API_KEY') || errorMessage.includes('invalid')) {
+        console.error('[AI Service] Invalid API key');
+        return 'מצטער, שירות ה-AI אינו מוגדר כראוי. אנא פנה למנהל המערכת.';
       }
 
       if (errorMessage.includes('QUOTA') || errorMessage.includes('429')) {
