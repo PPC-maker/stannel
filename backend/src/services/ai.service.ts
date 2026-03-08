@@ -41,8 +41,8 @@ Navigation guide:
 Always respond in Hebrew unless the user writes in English.
 Be helpful, friendly, and concise.`;
 
-// Google AI configuration
-const GEMINI_MODEL = 'gemini-1.5-flash';
+// Google AI configuration - using available model
+const GEMINI_MODEL = 'gemini-2.0-flash';
 
 let genAI: GoogleGenerativeAI | null = null;
 let isInitialized = false;
