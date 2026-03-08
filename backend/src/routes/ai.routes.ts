@@ -17,6 +17,32 @@ interface ChatRequestBody {
 }
 
 export async function aiRoutes(fastify: FastifyInstance) {
+  // Health check for AI service (no auth required)
+  fastify.get(
+    '/health',
+    async (_request: FastifyRequest, reply: FastifyReply) => {
+      try {
+        // Test the AI service with a simple message
+        const testResponse = await aiService.chat('בדיקה - ענה במילה אחת: שלום', []);
+        const isWorking = testResponse && testResponse.length > 0 && !testResponse.includes('שגיאה');
+
+        return reply.send({
+          status: isWorking ? 'healthy' : 'degraded',
+          message: isWorking ? 'AI service is operational' : 'AI service returned an error',
+          timestamp: new Date().toISOString(),
+        });
+      } catch (error) {
+        fastify.log.error('AI health check failed: %s', error instanceof Error ? error.message : error);
+        return reply.status(503).send({
+          status: 'unhealthy',
+          message: 'AI service is not available',
+          error: error instanceof Error ? error.message : 'Unknown error',
+          timestamp: new Date().toISOString(),
+        });
+      }
+    }
+  );
+
   // Chat endpoint - requires authentication
   fastify.post(
     '/chat',

@@ -15,6 +15,14 @@ steps:
       - 'push'
       - 'me-west1-docker.pkg.dev/stannel-app/stannel/api:latest'
 
+  # Enable Vertex AI API (if not already enabled)
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: bash
+    args:
+      - '-c'
+      - |
+        gcloud services enable aiplatform.googleapis.com --project=stannel-app || true
+
   # Deploy to Cloud Run with secrets
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: bash
@@ -27,6 +35,6 @@ steps:
           --platform=managed \
           --allow-unauthenticated \
           --set-secrets="DATABASE_URL=database-url:latest,FIREBASE_PRIVATE_KEY=firebase-private-key:latest,FIREBASE_CLIENT_EMAIL=firebase-client-email:latest" \
-          --set-env-vars="NODE_ENV=production,GOOGLE_CLOUD_PROJECT=stannel-app,FIREBASE_PROJECT_ID=stannel-app"
+          --set-env-vars="NODE_ENV=production,GOOGLE_CLOUD_PROJECT=stannel-app,FIREBASE_PROJECT_ID=stannel-app,VERTEX_LOCATION=us-central1"
 
 timeout: '1800s'

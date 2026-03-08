@@ -1,6 +1,7 @@
 // AI Service - Vertex AI (Gemini)
 
-import { VertexAI } from '@google-cloud/vertexai';
+import { VertexAI, GenerativeModel } from '@google-cloud/vertexai';
+import { getConfig } from '../lib/config.js';
 
 // Local type definition for chat messages
 interface ChatMessage {
@@ -41,23 +42,54 @@ Navigation guide:
 Always respond in Hebrew unless the user writes in English.
 Be helpful, friendly, and concise.`;
 
-const projectId = process.env.GOOGLE_CLOUD_PROJECT || 'stannel-project';
-const location = process.env.VERTEX_LOCATION || 'us-central1';
+// Vertex AI configuration
+// IMPORTANT: Gemini models are only available in specific regions
+// Supported regions: us-central1, us-east4, us-west1, europe-west1, europe-west4, asia-northeast1, asia-southeast1
+// me-west1 (Tel Aviv) does NOT support Gemini - we must use us-central1
+const GEMINI_SUPPORTED_REGION = 'us-central1';
+const GEMINI_MODEL = 'gemini-1.5-flash'; // Using flash for faster responses and lower cost
 
 let vertexAI: VertexAI | null = null;
+let isInitialized = false;
+let initError: string | null = null;
 
-function getVertexAI() {
+function getVertexAI(): VertexAI {
   if (!vertexAI) {
-    vertexAI = new VertexAI({ project: projectId, location });
+    const config = getConfig();
+    const projectId = config.GOOGLE_CLOUD_PROJECT || 'stannel-app';
+
+    console.log(`[AI Service] Initializing Vertex AI - Project: ${projectId}, Region: ${GEMINI_SUPPORTED_REGION}`);
+
+    try {
+      vertexAI = new VertexAI({
+        project: projectId,
+        location: GEMINI_SUPPORTED_REGION
+      });
+      isInitialized = true;
+      console.log('[AI Service] Vertex AI initialized successfully');
+    } catch (error) {
+      initError = error instanceof Error ? error.message : String(error);
+      console.error('[AI Service] Failed to initialize Vertex AI:', initError);
+      throw error;
+    }
   }
   return vertexAI;
 }
 
+function getModel(): GenerativeModel {
+  const vertex = getVertexAI();
+  return vertex.getGenerativeModel({ model: GEMINI_MODEL });
+}
+
 export const aiService = {
+  // Check if AI service is available
+  isAvailable(): boolean {
+    return isInitialized && !initError;
+  },
+
   async validateInvoice(imageUrl: string, declaredAmount: number) {
     try {
-      const vertex = getVertexAI();
-      const model = vertex.getGenerativeModel({ model: 'gemini-1.5-pro' });
+      const model = getModel();
 
       // Fetch image and convert to base64
       const response = await fetch(imageUrl);
@@ -123,8 +155,7 @@ export const aiService = {
     period: string;
   }) {
     try {
-      const vertex = getVertexAI();
-      const model = vertex.getGenerativeModel({ model: 'gemini-1.5-pro' });
+      const model = getModel();
 
       const prompt = `
         You are a business intelligence AI for STANNEL - an architect-supplier loyalty platform in Israel.
@@ -172,9 +203,10 @@ export const aiService = {
   },
 
   async chat(message: string, conversationHistory: ChatMessage[] = []): Promise<string> {
+    console.log('[AI Service] Chat request received, message length:', message.length);
+
     try {
-      const vertex = getVertexAI();
-      const model = vertex.getGenerativeModel({ model: 'gemini-1.5-pro' });
+      const model = getModel();
 
       // Build conversation contents
       const contents = [
@@ -202,12 +234,39 @@ export const aiService = {
         parts: [{ text: message }],
       });
 
+      console.log('[AI Service] Sending request to Gemini...');
       const result = await model.generateContent({ contents });
+
       const text = result.response.candidates?.[0]?.content?.parts?.[0]?.text || '';
+      console.log('[AI Service] Received response, length:', text.length);
 
       return text || 'מצטער, לא הצלחתי לעבד את הבקשה. אנא נסה שוב.';
     } catch (error) {
-      console.error('AI chat error:', error);
+      // Log detailed error information
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorStack = error instanceof Error ? error.stack : undefined;
+
+      console.error('[AI Service] Chat error:', {
+        message: errorMessage,
+        stack: errorStack,
+        initError: initError,
+      });
+
+      // Return user-friendly error in Hebrew
+      if (errorMessage.includes('PERMISSION_DENIED') || errorMessage.includes('403')) {
+        console.error('[AI Service] Permission denied - check IAM roles for Vertex AI');
+        return 'מצטער, אין הרשאות לשירות ה-AI. אנא פנה למנהל המערכת.';
+      }
+
+      if (errorMessage.includes('NOT_FOUND') || errorMessage.includes('404')) {
+        console.error('[AI Service] Model or API not found - check if Vertex AI is enabled');
+        return 'מצטער, שירות ה-AI אינו זמין כרגע. אנא נסה שוב מאוחר יותר.';
+      }
+
+      if (errorMessage.includes('QUOTA') || errorMessage.includes('429')) {
+        return 'מצטער, הגעת למגבלת הבקשות. אנא נסה שוב בעוד מספר דקות.';
+      }
+
       return 'מצטער, אירעה שגיאה. אנא נסה שוב מאוחר יותר.';
     }
   },

@@ -19,7 +19,10 @@ const envSchema = z.object({
   GOOGLE_CLOUD_PROJECT: z.string().optional(),
   GCS_INVOICE_BUCKET: z.string().default('stannel-invoices'),
   GCS_ASSETS_BUCKET: z.string().default('stannel-assets'),
-  VERTEX_LOCATION: z.string().default('me-west1'),
+  // Note: Vertex AI with Gemini models only works in specific regions
+  // Supported: us-central1, us-east4, us-west1, europe-west1, europe-west4, asia-northeast1
+  // me-west1 (Tel Aviv) does NOT support Gemini - must use us-central1
+  VERTEX_LOCATION: z.string().default('us-central1'),
 
   // Firebase
   FIREBASE_PROJECT_ID: z.string().min(1, 'FIREBASE_PROJECT_ID is required'),
