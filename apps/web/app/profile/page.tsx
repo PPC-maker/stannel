@@ -1,10 +1,13 @@
 'use client';
 
-import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { useState, useRef, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import GlassCard from '@/components/layout/GlassCard';
 import PageSlider, { sliderImages } from '@/components/layout/PageSlider';
+import { useAuth } from '@/lib/auth-context';
+import { useWalletBalance, useInvoices } from '@/lib/api-hooks';
 import {
   User,
   Mail,
@@ -18,34 +21,11 @@ import {
   Camera,
   Shield,
   Bell,
-  CreditCard
+  CreditCard,
+  X,
+  Save,
+  ChevronLeft,
 } from 'lucide-react';
-
-// Mock user data
-const mockUser = {
-  id: '1',
-  name: 'איציק לוי',
-  email: 'itzik@architect.co.il',
-  phone: '050-1234567',
-  avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80',
-  role: 'architect',
-  company: 'לוי אדריכלים בע"מ',
-  address: 'רחוב הרצל 50, תל אביב',
-  joinDate: '2024-03-15',
-  tier: 'GOLD',
-  totalPoints: 45000,
-  currentPoints: 12500,
-  totalTransactions: 87,
-  totalRedeemed: 32500,
-};
-
-const mockActivity = [
-  { id: '1', type: 'points', description: 'צברת 500 נקודות מחשבונית', date: '2025-03-01', points: 500 },
-  { id: '2', type: 'redeem', description: 'מימוש הטבה - כרטיס מתנה IKEA', date: '2025-02-28', points: -5000 },
-  { id: '3', type: 'event', description: 'נרשמת לכנס אדריכלות 2025', date: '2025-02-25', points: 0 },
-  { id: '4', type: 'points', description: 'צברת 1200 נקודות מחשבונית', date: '2025-02-20', points: 1200 },
-  { id: '5', type: 'tier', description: 'עלית לדרגת GOLD!', date: '2025-02-15', points: 0 },
-];
 
 function formatDate(dateStr: string): string {
   const date = new Date(dateStr);
@@ -57,7 +37,72 @@ function formatDate(dateStr: string): string {
 }
 
 export default function ProfilePage() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const { user } = useAuth();
+  const { data: balance } = useWalletBalance();
+  const { data: invoices } = useInvoices();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const [isEditing, setIsEditing] = useState(false);
+  const [showPhotoModal, setShowPhotoModal] = useState(false);
+  const [editData, setEditData] = useState({
+    name: '',
+    phone: '',
+    company: '',
+    address: '',
+  });
+
+  // Check URL params for edit mode
+  useEffect(() => {
+    if (searchParams.get('edit') === 'true') {
+      setIsEditing(true);
+    }
+    if (searchParams.get('edit') === 'photo') {
+      setShowPhotoModal(true);
+    }
+  }, [searchParams]);
+
+  // Initialize edit data from user
+  useEffect(() => {
+    if (user) {
+      setEditData({
+        name: user.name || '',
+        phone: user.phone || '',
+        company: user.supplierProfile?.companyName || '',
+        address: '',
+      });
+    }
+  }, [user]);
+
+  const currentUser = {
+    id: user?.id || '1',
+    name: user?.name || 'משתמש',
+    email: user?.email || 'user@example.com',
+    phone: user?.phone || '',
+    avatar: user?.profileImage || null,
+    role: user?.role || 'ARCHITECT',
+    company: user?.supplierProfile?.companyName || '',
+    address: '',
+    joinDate: user?.createdAt ? new Date(user.createdAt).toISOString() : new Date().toISOString(),
+    tier: user?.rank || 'GOLD',
+  };
+
+  const stats = {
+    currentPoints: balance?.points || 0,
+    totalPoints: (balance?.points || 0) + (balance?.totalRedeemed || 0),
+    totalTransactions: invoices?.length || 0,
+    totalRedeemed: balance?.totalRedeemed || 0,
+  };
+
+  // Recent activity from invoices
+  const recentActivity = (invoices || []).slice(0, 5).map((inv: any) => ({
+    id: inv.id,
+    type: 'points',
+    description: `חשבונית מ${inv.supplier?.companyName || 'ספק'}`,
+    date: inv.createdAt,
+    points: inv.pointsEarned || 0,
+  }));
 
   const getTierColor = (tier: string) => {
     switch (tier) {
@@ -70,10 +115,26 @@ export default function ProfilePage() {
 
   const getTierEmoji = (tier: string) => {
     switch (tier) {
-      case 'GOLD': return '🥇';
-      case 'SILVER': return '🥈';
-      case 'BRONZE': return '🥉';
-      default: return '⭐';
+      case 'GOLD': return '';
+      case 'SILVER': return '';
+      case 'BRONZE': return '';
+      default: return '';
+    }
+  };
+
+  const handleSaveProfile = async () => {
+    // TODO: Implement profile update API call
+    setIsEditing(false);
+    // Clear URL params
+    router.replace('/profile');
+  };
+
+  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // TODO: Implement photo upload
+      console.log('Uploading photo:', file.name);
+      setShowPhotoModal(false);
     }
   };
 
@@ -91,55 +152,133 @@ export default function ProfilePage() {
             <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
               {/* Avatar */}
               <div className="relative group">
-                <div className="w-32 h-32 rounded-2xl overflow-hidden ring-4 ring-gold-400/30">
-                  <Image
-                    src={mockUser.avatar}
-                    alt={mockUser.name}
-                    fill
-                    className="object-cover"
-                  />
+                <div className="w-32 h-32 rounded-2xl overflow-hidden ring-4 ring-gold-400/30 bg-gradient-to-br from-gold-400 to-gold-600">
+                  {currentUser.avatar ? (
+                    <Image
+                      src={currentUser.avatar}
+                      alt={currentUser.name}
+                      fill
+                      className="object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <span className="text-4xl font-bold text-primary-900">
+                        {currentUser.name.charAt(0)}
+                      </span>
+                    </div>
+                  )}
                 </div>
-                <button className="absolute bottom-2 right-2 w-8 h-8 bg-gold-400 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                <button
+                  onClick={() => setShowPhotoModal(true)}
+                  className="absolute bottom-2 right-2 w-8 h-8 bg-gold-400 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-gold-500"
+                >
                   <Camera size={16} className="text-primary-900" />
                 </button>
                 <div className="absolute -top-2 -right-2 w-10 h-10 bg-gradient-to-br from-gold-400 to-gold-600 rounded-full flex items-center justify-center text-lg">
-                  {getTierEmoji(mockUser.tier)}
+                  {getTierEmoji(currentUser.tier)}
                 </div>
               </div>
 
               {/* User Info */}
               <div className="flex-1 text-center md:text-right">
-                <div className="flex items-center justify-center md:justify-start gap-3 mb-2">
-                  <h1 className="text-3xl font-display font-bold text-white">{mockUser.name}</h1>
-                  <span className={`text-lg font-bold ${getTierColor(mockUser.tier)}`}>
-                    {mockUser.tier}
-                  </span>
-                </div>
-                <p className="text-white/60 mb-4">{mockUser.company}</p>
+                {isEditing ? (
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-white/60 text-sm mb-1">שם מלא</label>
+                      <input
+                        type="text"
+                        value={editData.name}
+                        onChange={(e) => setEditData({ ...editData, name: e.target.value })}
+                        className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-2 text-white focus:border-gold-400 transition-all"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-white/60 text-sm mb-1">טלפון</label>
+                      <input
+                        type="tel"
+                        value={editData.phone}
+                        onChange={(e) => setEditData({ ...editData, phone: e.target.value })}
+                        className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-2 text-white focus:border-gold-400 transition-all"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-white/60 text-sm mb-1">חברה</label>
+                      <input
+                        type="text"
+                        value={editData.company}
+                        onChange={(e) => setEditData({ ...editData, company: e.target.value })}
+                        className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-2 text-white focus:border-gold-400 transition-all"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-white/60 text-sm mb-1">כתובת</label>
+                      <input
+                        type="text"
+                        value={editData.address}
+                        onChange={(e) => setEditData({ ...editData, address: e.target.value })}
+                        className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-2 text-white focus:border-gold-400 transition-all"
+                      />
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <div className="flex items-center justify-center md:justify-start gap-3 mb-2">
+                      <h1 className="text-3xl font-display font-bold text-white">{currentUser.name}</h1>
+                      <span className={`text-lg font-bold ${getTierColor(currentUser.tier)}`}>
+                        {currentUser.tier}
+                      </span>
+                    </div>
+                    <p className="text-white/60 mb-4">{currentUser.company || 'לא צוין עסק'}</p>
 
-                <div className="flex flex-wrap justify-center md:justify-start gap-4 text-sm text-white/60">
-                  <div className="flex items-center gap-2">
-                    <Mail size={14} />
-                    <span>{mockUser.email}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Phone size={14} />
-                    <span>{mockUser.phone}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <MapPin size={14} />
-                    <span>{mockUser.address}</span>
-                  </div>
-                </div>
+                    <div className="flex flex-wrap justify-center md:justify-start gap-4 text-sm text-white/60">
+                      <div className="flex items-center gap-2">
+                        <Mail size={14} />
+                        <span>{currentUser.email}</span>
+                      </div>
+                      {currentUser.phone && (
+                        <div className="flex items-center gap-2">
+                          <Phone size={14} />
+                          <span>{currentUser.phone}</span>
+                        </div>
+                      )}
+                      {currentUser.address && (
+                        <div className="flex items-center gap-2">
+                          <MapPin size={14} />
+                          <span>{currentUser.address}</span>
+                        </div>
+                      )}
+                    </div>
+                  </>
+                )}
               </div>
 
               {/* Edit Button */}
-              <button
-                onClick={() => setIsEditing(!isEditing)}
-                className="absolute top-4 left-4 p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors"
-              >
-                <Edit3 size={18} className="text-white" />
-              </button>
+              {isEditing ? (
+                <div className="absolute top-4 left-4 flex gap-2">
+                  <button
+                    onClick={() => {
+                      setIsEditing(false);
+                      router.replace('/profile');
+                    }}
+                    className="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors"
+                  >
+                    <X size={18} className="text-white" />
+                  </button>
+                  <button
+                    onClick={handleSaveProfile}
+                    className="p-2 rounded-lg bg-gold-400 hover:bg-gold-500 transition-colors"
+                  >
+                    <Save size={18} className="text-primary-900" />
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={() => setIsEditing(true)}
+                  className="absolute top-4 left-4 p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors"
+                >
+                  <Edit3 size={18} className="text-white" />
+                </button>
+              )}
             </div>
           </GlassCard>
         </motion.div>
@@ -147,10 +286,10 @@ export default function ProfilePage() {
         {/* Stats Grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           {[
-            { icon: Award, label: 'נקודות נוכחיות', value: mockUser.currentPoints.toLocaleString(), color: 'text-gold-400' },
-            { icon: TrendingUp, label: 'סה"כ נצבר', value: mockUser.totalPoints.toLocaleString(), color: 'text-green-400' },
-            { icon: CreditCard, label: 'עסקאות', value: mockUser.totalTransactions.toString(), color: 'text-blue-400' },
-            { icon: Calendar, label: 'חבר מאז', value: formatDate(mockUser.joinDate), color: 'text-purple-400' },
+            { icon: Award, label: 'נקודות נוכחיות', value: stats.currentPoints.toLocaleString(), color: 'text-gold-400' },
+            { icon: TrendingUp, label: 'סה"כ נצבר', value: stats.totalPoints.toLocaleString(), color: 'text-green-400' },
+            { icon: CreditCard, label: 'חשבוניות', value: stats.totalTransactions.toString(), color: 'text-blue-400' },
+            { icon: Calendar, label: 'חבר מאז', value: formatDate(currentUser.joinDate), color: 'text-purple-400' },
           ].map((stat, index) => (
             <motion.div
               key={stat.label}
@@ -180,22 +319,29 @@ export default function ProfilePage() {
                 פעילות אחרונה
               </h2>
               <div className="space-y-3">
-                {mockActivity.map((activity) => (
-                  <div
-                    key={activity.id}
-                    className="flex items-center justify-between p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors"
-                  >
-                    <div>
-                      <p className="text-white">{activity.description}</p>
-                      <p className="text-white/40 text-sm">{formatDate(activity.date)}</p>
+                {recentActivity.length > 0 ? (
+                  recentActivity.map((activity: any) => (
+                    <div
+                      key={activity.id}
+                      className="flex items-center justify-between p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors"
+                    >
+                      <div>
+                        <p className="text-white">{activity.description}</p>
+                        <p className="text-white/40 text-sm">{formatDate(activity.date)}</p>
+                      </div>
+                      {activity.points !== 0 && (
+                        <span className={`font-bold ${activity.points > 0 ? 'text-green-400' : 'text-red-400'}`}>
+                          {activity.points > 0 ? '+' : ''}{activity.points.toLocaleString()} נק׳
+                        </span>
+                      )}
                     </div>
-                    {activity.points !== 0 && (
-                      <span className={`font-bold ${activity.points > 0 ? 'text-green-400' : 'text-red-400'}`}>
-                        {activity.points > 0 ? '+' : ''}{activity.points.toLocaleString()} נק׳
-                      </span>
-                    )}
+                  ))
+                ) : (
+                  <div className="text-center py-8 text-white/50">
+                    <TrendingUp size={48} className="mx-auto mb-4 opacity-30" />
+                    <p>אין פעילות אחרונה להצגה</p>
                   </div>
-                ))}
+                )}
               </div>
             </GlassCard>
           </motion.div>
@@ -211,31 +357,127 @@ export default function ProfilePage() {
                 הגדרות מהירות
               </h2>
               <div className="space-y-2">
-                <button className="w-full flex items-center gap-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors text-white/80 hover:text-white">
-                  <User size={18} />
-                  <span>עריכת פרטים אישיים</span>
+                <button
+                  onClick={() => setIsEditing(true)}
+                  className="w-full flex items-center justify-between gap-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors text-white/80 hover:text-white"
+                >
+                  <div className="flex items-center gap-3">
+                    <User size={18} />
+                    <span>עריכת פרטים אישיים</span>
+                  </div>
+                  <ChevronLeft size={16} className="text-white/40" />
                 </button>
-                <button className="w-full flex items-center gap-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors text-white/80 hover:text-white">
-                  <Bell size={18} />
-                  <span>הגדרות התראות</span>
+                <button
+                  onClick={() => router.push('/settings#notifications')}
+                  className="w-full flex items-center justify-between gap-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors text-white/80 hover:text-white"
+                >
+                  <div className="flex items-center gap-3">
+                    <Bell size={18} />
+                    <span>הגדרות התראות</span>
+                  </div>
+                  <ChevronLeft size={16} className="text-white/40" />
                 </button>
-                <button className="w-full flex items-center gap-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors text-white/80 hover:text-white">
-                  <Shield size={18} />
-                  <span>אבטחה ופרטיות</span>
+                <button
+                  onClick={() => router.push('/settings#security')}
+                  className="w-full flex items-center justify-between gap-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors text-white/80 hover:text-white"
+                >
+                  <div className="flex items-center gap-3">
+                    <Shield size={18} />
+                    <span>אבטחה ופרטיות</span>
+                  </div>
+                  <ChevronLeft size={16} className="text-white/40" />
                 </button>
-                <button className="w-full flex items-center gap-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors text-white/80 hover:text-white">
-                  <CreditCard size={18} />
-                  <span>אמצעי תשלום</span>
+                <button
+                  onClick={() => router.push('/wallet')}
+                  className="w-full flex items-center justify-between gap-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors text-white/80 hover:text-white"
+                >
+                  <div className="flex items-center gap-3">
+                    <CreditCard size={18} />
+                    <span>הארנק שלי</span>
+                  </div>
+                  <ChevronLeft size={16} className="text-white/40" />
                 </button>
-                <button className="w-full flex items-center gap-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors text-white/80 hover:text-white">
-                  <Building2 size={18} />
-                  <span>פרטי עסק</span>
+                <button
+                  onClick={() => router.push('/invoices')}
+                  className="w-full flex items-center justify-between gap-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors text-white/80 hover:text-white"
+                >
+                  <div className="flex items-center gap-3">
+                    <Building2 size={18} />
+                    <span>החשבוניות שלי</span>
+                  </div>
+                  <ChevronLeft size={16} className="text-white/40" />
                 </button>
               </div>
             </GlassCard>
           </motion.div>
         </div>
       </div>
+
+      {/* Photo Upload Modal */}
+      <AnimatePresence>
+        {showPhotoModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+            onClick={() => setShowPhotoModal(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              className="glass-card p-6 max-w-sm w-full"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-xl font-semibold text-white">עדכון תמונת פרופיל</h3>
+                <button onClick={() => setShowPhotoModal(false)} className="text-white/50 hover:text-white">
+                  <X size={20} />
+                </button>
+              </div>
+
+              <div className="text-center">
+                <div className="w-32 h-32 mx-auto rounded-2xl overflow-hidden ring-4 ring-gold-400/30 bg-gradient-to-br from-gold-400 to-gold-600 mb-6">
+                  {currentUser.avatar ? (
+                    <img
+                      src={currentUser.avatar}
+                      alt={currentUser.name}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <span className="text-4xl font-bold text-primary-900">
+                        {currentUser.name.charAt(0)}
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handlePhotoUpload}
+                  className="hidden"
+                />
+
+                <button
+                  onClick={() => fileInputRef.current?.click()}
+                  className="w-full btn-gold mb-3"
+                >
+                  <Camera size={18} className="inline ml-2" />
+                  בחר תמונה
+                </button>
+
+                <p className="text-white/50 text-sm">
+                  JPG, PNG או GIF. מקסימום 5MB.
+                </p>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

@@ -7,14 +7,15 @@ import GlassCard from '@/components/layout/GlassCard';
 import PageSlider, { sliderImages } from '@/components/layout/PageSlider';
 import { Upload, FileText, CheckCircle, AlertTriangle, X, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
+import { useUploadInvoice } from '@/lib/api-hooks';
 
-// Mock suppliers
-const suppliers = [
-  { id: '1', name: 'אבני ירושלים בע״מ' },
-  { id: '2', name: 'קרמיקה מודרנית' },
-  { id: '3', name: 'עץ ואבן' },
-  { id: '4', name: 'זכוכית בע״מ' },
-  { id: '5', name: 'מתכות פרימיום' },
+// Available suppliers list
+const suppliersList = [
+  { id: '1', companyName: 'אבני ירושלים בע״מ' },
+  { id: '2', companyName: 'קרמיקה מודרנית' },
+  { id: '3', companyName: 'עץ ואבן' },
+  { id: '4', companyName: 'זכוכית בע״מ' },
+  { id: '5', companyName: 'מתכות פרימיום' },
 ];
 
 export default function InvoiceUploadPage() {
@@ -22,9 +23,12 @@ export default function InvoiceUploadPage() {
   const [preview, setPreview] = useState<string | null>(null);
   const [amount, setAmount] = useState('');
   const [supplierId, setSupplierId] = useState('');
-  const [uploading, setUploading] = useState(false);
+  const suppliers = suppliersList;
   const [aiResult, setAiResult] = useState<{ status: string; extractedAmount: number; confidence: number } | null>(null);
   const [success, setSuccess] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const uploadMutation = useUploadInvoice();
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
@@ -32,6 +36,7 @@ export default function InvoiceUploadPage() {
       setFile(file);
       setPreview(URL.createObjectURL(file));
       setAiResult(null);
+      setError(null);
     }
   }, []);
 
@@ -48,25 +53,29 @@ export default function InvoiceUploadPage() {
   const handleSubmit = async () => {
     if (!file || !amount || !supplierId) return;
 
-    setUploading(true);
+    setError(null);
 
-    // Simulate upload and AI validation
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    try {
+      const formData = new FormData();
+      formData.append('image', file);
+      formData.append('amount', amount);
+      formData.append('supplierId', supplierId);
 
-    // Mock AI result
-    const mockAiResult = {
-      status: 'MATCH',
-      extractedAmount: parseFloat(amount),
-      confidence: 0.94,
-    };
+      const result = await uploadMutation.mutateAsync(formData);
 
-    setAiResult(mockAiResult);
-    setUploading(false);
+      // Show AI validation result if available
+      if (result.aiValidation) {
+        setAiResult({
+          status: result.aiValidation.status || 'MATCH',
+          extractedAmount: result.aiValidation.extractedAmount || parseFloat(amount),
+          confidence: result.aiValidation.confidence || 0.9,
+        });
+      }
 
-    // If match, show success
-    if (mockAiResult.status === 'MATCH') {
-      await new Promise(resolve => setTimeout(resolve, 1000));
       setSuccess(true);
+    } catch (err: any) {
+      console.error('Upload error:', err);
+      setError(err.message || 'אירעה שגיאה בהעלאת החשבונית');
     }
   };
 
@@ -77,33 +86,37 @@ export default function InvoiceUploadPage() {
     setSupplierId('');
     setAiResult(null);
     setSuccess(false);
+    setError(null);
   };
 
   if (success) {
     return (
-      <div className="p-6 max-w-2xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-        >
-          <GlassCard className="text-center py-12">
-            <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center">
-              <CheckCircle size={40} className="text-white" />
-            </div>
-            <h1 className="text-2xl font-bold text-white mb-2">החשבונית הועלתה בהצלחה!</h1>
-            <p className="text-white/60 mb-8">
-              החשבונית נשלחה לאישור. נעדכן אותך ברגע שתאושר.
-            </p>
-            <div className="flex gap-4 justify-center">
-              <button onClick={resetForm} className="btn-primary">
-                העלאת חשבונית נוספת
-              </button>
-              <Link href="/invoices" className="btn-gold">
-                צפייה בחשבוניות
-              </Link>
-            </div>
-          </GlassCard>
-        </motion.div>
+      <div className="relative">
+        <PageSlider images={sliderImages.invoiceUpload} />
+        <div className="p-6 max-w-2xl mx-auto relative z-10">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+          >
+            <GlassCard className="text-center py-12">
+              <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center">
+                <CheckCircle size={40} className="text-white" />
+              </div>
+              <h1 className="text-2xl font-bold text-white mb-2">החשבונית הועלתה בהצלחה!</h1>
+              <p className="text-white/60 mb-8">
+                החשבונית נשלחה לאישור. נעדכן אותך ברגע שתאושר.
+              </p>
+              <div className="flex gap-4 justify-center">
+                <button onClick={resetForm} className="btn-primary">
+                  העלאת חשבונית נוספת
+                </button>
+                <Link href="/invoices" className="btn-gold">
+                  צפייה בחשבוניות
+                </Link>
+              </div>
+            </GlassCard>
+          </motion.div>
+        </div>
       </div>
     );
   }
@@ -122,6 +135,20 @@ export default function InvoiceUploadPage() {
           <p className="text-white/60 mt-1">העלו חשבונית לצבירת נקודות</p>
         </div>
       </div>
+
+      {/* Error message */}
+      {error && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-6 p-4 rounded-lg bg-red-500/20 border border-red-500/40"
+        >
+          <div className="flex items-center gap-2 text-red-400">
+            <AlertTriangle size={20} />
+            <p>{error}</p>
+          </div>
+        </motion.div>
+      )}
 
       <div className="grid lg:grid-cols-2 gap-6">
         {/* Upload Zone */}
@@ -215,7 +242,7 @@ export default function InvoiceUploadPage() {
                 <option value="" className="bg-primary-900">בחרו ספק...</option>
                 {suppliers.map(s => (
                   <option key={s.id} value={s.id} className="bg-primary-900">
-                    {s.name}
+                    {s.companyName}
                   </option>
                 ))}
               </select>
@@ -236,10 +263,10 @@ export default function InvoiceUploadPage() {
             <div className="pt-4">
               <button
                 onClick={handleSubmit}
-                disabled={!file || !amount || !supplierId || uploading}
+                disabled={!file || !amount || !supplierId || uploadMutation.isPending}
                 className="w-full btn-gold py-4 text-lg flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {uploading ? (
+                {uploadMutation.isPending ? (
                   <>
                     <div className="spinner" />
                     <span>מעלה ומנתח...</span>

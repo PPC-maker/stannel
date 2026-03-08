@@ -141,4 +141,9 @@ export const sliderImages = {
     { src: 'https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=1920&q=80', alt: 'Networking Event' },
     { src: 'https://images.unsplash.com/photo-1515169067868-5387ec356754?w=1920&q=80', alt: 'Business Meeting' },
   ],
+  wallet: [
+    { src: 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=1920&q=80', alt: 'Finance & Banking' },
+    { src: 'https://images.unsplash.com/photo-1567427017947-545c5f8d16ad?w=1920&q=80', alt: 'Digital Payments' },
+    { src: 'https://images.unsplash.com/photo-1620714223084-8fcacc6dfd8d?w=1920&q=80', alt: 'Modern Banking' },
+  ],
 };
