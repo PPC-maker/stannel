@@ -3,8 +3,9 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, User, LogOut, Settings, Wallet, FileText, Gift, Calendar, Home, LogIn, UserPlus } from 'lucide-react';
+import { Menu, User, LogOut, Settings, Wallet, FileText, Gift, Calendar, Home, LogIn, Bot } from 'lucide-react';
 import { useAuth } from '@/lib/auth-context';
 
 const publicLinks = [
@@ -12,15 +13,17 @@ const publicLinks = [
 ];
 
 const authLinks = [
-  { href: '/dashboard', label: 'ניהול ראשי', icon: Wallet },
+  { href: '/wallet', label: 'הארנק שלי', icon: Wallet },
   { href: '/invoices', label: 'חשבוניות', icon: FileText },
   { href: '/rewards', label: 'הטבות', icon: Gift },
   { href: '/events', label: 'אירועים', icon: Calendar },
+  { href: '/ai-agent', label: 'הסוכן שלך', icon: Bot },
 ];
 
 export default function Navbar() {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const { user, logout } = useAuth();
+  const router = useRouter();
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 py-6 bg-primary-900/95 backdrop-blur-md shadow-lg shadow-black/20 w-full">
@@ -104,6 +107,7 @@ export default function Navbar() {
                       onClick={() => {
                         logout();
                         setIsProfileOpen(false);
+                        router.push('/');
                       }}
                       className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-500/20 text-white/80 hover:text-red-400 transition-colors w-full"
                     >
@@ -114,22 +118,13 @@ export default function Navbar() {
                 ) : (
                   <>
                     {/* Guest links - only when logged out */}
-                    <hr className="my-2 border-white/10" />
                     <Link
                       href="/login"
                       onClick={() => setIsProfileOpen(false)}
-                      className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/10 text-white/80 hover:text-white transition-colors"
-                    >
-                      <LogIn size={16} />
-                      <span>כניסה לחשבון</span>
-                    </Link>
-                    <Link
-                      href="/register"
-                      onClick={() => setIsProfileOpen(false)}
                       className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gold/20 text-gold hover:text-gold transition-colors"
                     >
-                      <UserPlus size={16} />
-                      <span>הצטרפו עכשיו</span>
+                      <LogIn size={16} />
+                      <span>התחברות למערכת</span>
                     </Link>
                   </>
                 )}
