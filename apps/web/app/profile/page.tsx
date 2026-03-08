@@ -45,6 +45,7 @@ export default function ProfilePage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [isEditing, setIsEditing] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
   const [showPhotoModal, setShowPhotoModal] = useState(false);
   const [editData, setEditData] = useState({
     name: '',
@@ -358,7 +359,7 @@ export default function ProfilePage() {
               </h2>
               <div className="space-y-2">
                 <button
-                  onClick={() => setIsEditing(true)}
+                  onClick={() => setShowEditModal(true)}
                   className="w-full flex items-center justify-between gap-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors text-white/80 hover:text-white"
                 >
                   <div className="flex items-center gap-3">
@@ -412,6 +413,97 @@ export default function ProfilePage() {
           </motion.div>
         </div>
       </div>
+
+      {/* Edit Profile Modal */}
+      <AnimatePresence>
+        {showEditModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+            onClick={() => setShowEditModal(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.95, opacity: 0, y: 20 }}
+              className="glass-card p-6 max-w-md w-full max-h-[90vh] overflow-y-auto"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-xl font-semibold text-white">עריכת פרטים אישיים</h3>
+                <button onClick={() => setShowEditModal(false)} className="text-white/50 hover:text-white">
+                  <X size={20} />
+                </button>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-white/60 text-sm mb-2">שם מלא</label>
+                  <input
+                    type="text"
+                    value={editData.name}
+                    onChange={(e) => setEditData({ ...editData, name: e.target.value })}
+                    className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white focus:border-gold-400 transition-all"
+                    placeholder="הזן שם מלא"
+                  />
+                </div>
+                <div>
+                  <label className="block text-white/60 text-sm mb-2">טלפון</label>
+                  <input
+                    type="tel"
+                    value={editData.phone}
+                    onChange={(e) => setEditData({ ...editData, phone: e.target.value })}
+                    className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white focus:border-gold-400 transition-all"
+                    placeholder="050-0000000"
+                    dir="ltr"
+                  />
+                </div>
+                <div>
+                  <label className="block text-white/60 text-sm mb-2">שם החברה / עסק</label>
+                  <input
+                    type="text"
+                    value={editData.company}
+                    onChange={(e) => setEditData({ ...editData, company: e.target.value })}
+                    className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white focus:border-gold-400 transition-all"
+                    placeholder="שם העסק"
+                  />
+                </div>
+                <div>
+                  <label className="block text-white/60 text-sm mb-2">כתובת</label>
+                  <input
+                    type="text"
+                    value={editData.address}
+                    onChange={(e) => setEditData({ ...editData, address: e.target.value })}
+                    className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white focus:border-gold-400 transition-all"
+                    placeholder="עיר, רחוב"
+                  />
+                </div>
+
+                <div className="flex gap-3 pt-4">
+                  <button
+                    onClick={() => setShowEditModal(false)}
+                    className="flex-1 py-3 rounded-xl bg-white/10 text-white hover:bg-white/20 transition-colors"
+                  >
+                    ביטול
+                  </button>
+                  <button
+                    onClick={() => {
+                      handleSaveProfile();
+                      setShowEditModal(false);
+                    }}
+                    className="flex-1 btn-gold py-3"
+                  >
+                    <Save size={18} className="inline ml-2" />
+                    שמור שינויים
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Photo Upload Modal */}
       <AnimatePresence>
