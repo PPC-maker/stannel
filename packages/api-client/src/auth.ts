@@ -55,6 +55,23 @@ export const authApi = {
     return result;
   },
 
+  async googleAuth(firebaseToken: string, role?: 'ARCHITECT' | 'SUPPLIER'): Promise<AuthResponse & { isNewUser?: boolean }> {
+    const response = await fetch(`${config.baseUrl}/auth/google`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify({ token: firebaseToken, role }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || errorData.message || 'Google authentication failed');
+    }
+
+    const result = await response.json();
+    setAuthToken(result.token);
+    return result;
+  },
+
   async getMe(): Promise<AuthUser> {
     const response = await fetch(`${config.baseUrl}/auth/me`, {
       method: 'GET',

@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useEffect, useState, useRef, ReactNode } from 'react';
 import { User, onAuthStateChanged } from 'firebase/auth';
-import { getFirebaseAuth, logout as firebaseLogout, isAuthEnabled } from './firebase';
+import { getFirebaseAuth, logout as firebaseLogout } from './firebase';
 import { authApi, setAuthToken } from '@stannel/api-client';
 import type { AuthUser } from '@stannel/types';
 import { UserRole } from '@stannel/types';
@@ -35,36 +35,49 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const isRegistering = useRef(false);
+  const isAuthenticating = useRef(false);
 
   useEffect(() => {
     const auth = getFirebaseAuth();
 
-    // If Firebase is not configured, just mark as not loading
     if (!auth) {
       setLoading(false);
       return;
     }
 
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      setFirebaseUser(firebaseUser);
+    const unsubscribe = onAuthStateChanged(auth, async (fbUser) => {
+      setFirebaseUser(fbUser);
 
-      if (firebaseUser) {
-        // Skip verification during registration - the register function handles it
-        if (isRegistering.current) {
-          setLoading(false);
+      if (fbUser) {
+        // Skip if we're in the middle of login/register - those functions handle it
+        if (isAuthenticating.current) {
           return;
         }
 
         try {
-          const token = await firebaseUser.getIdToken();
+          const token = await fbUser.getIdToken();
           setAuthToken(token);
 
-          // Get user from backend
-          const response = await authApi.verifyToken(token);
-          setUser(response.user);
+          // Try to verify existing user
+          try {
+            const response = await authApi.verifyToken(token);
+            setUser(response.user);
+          } catch (verifyErr) {
+            // User not in DB - try auto-register via Google endpoint
+            const errMsg = verifyErr instanceof Error ? verifyErr.message : '';
+            if (errMsg.includes('not found') || errMsg.includes('404')) {
+              try {
+                const response = await authApi.googleAuth(token);
+                setUser(response.user);
+              } catch {
+                setUser(null);
+              }
+            } else {
+              setUser(null);
+            }
+          }
         } catch (err) {
-          console.error('Error fetching user:', err);
+          console.error('Auth state change error:', err);
           setUser(null);
         }
       } else {
@@ -81,6 +94,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = async (email: string, password: string): Promise<AuthUser | null> => {
     setError(null);
     setLoading(true);
+    isAuthenticating.current = true;
 
     try {
       const { loginWithEmail } = await import('./firebase');
@@ -95,6 +109,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setError(message);
       throw err;
     } finally {
+      isAuthenticating.current = false;
       setLoading(false);
     }
   };
@@ -102,13 +117,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const loginWithGoogle = async (): Promise<AuthUser | null> => {
     setError(null);
     setLoading(true);
+    isAuthenticating.current = true;
 
     try {
       const { loginWithGoogle: googleLogin } = await import('./firebase');
       const { token } = await googleLogin();
       setAuthToken(token);
 
-      const response = await authApi.verifyToken(token);
+      // Use googleAuth which auto-registers if user doesn't exist
+      const response = await authApi.googleAuth(token);
       setUser(response.user);
       return response.user;
     } catch (err: unknown) {
@@ -116,6 +133,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setError(message);
       throw err;
     } finally {
+      isAuthenticating.current = false;
       setLoading(false);
     }
   };
@@ -123,7 +141,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const register = async (data: RegisterData) => {
     setError(null);
     setLoading(true);
-    isRegistering.current = true;
+    isAuthenticating.current = true;
 
     try {
       const { registerWithEmail } = await import('./firebase');
@@ -134,7 +152,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (!isNewUser) {
         try {
           const verifyResponse = await authApi.verifyToken(token);
-          // User exists in both Firebase and DB - they should login instead
           setUser(verifyResponse.user);
           return;
         } catch {
@@ -142,7 +159,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
       }
 
-      // Build registration payload - only include defined values
+      // Build registration payload
       const payload: {
         email: string;
         name: string;
@@ -157,14 +174,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         firebaseToken: token,
       };
 
-      if (data.phone) {
+      if (data.phone && data.phone.trim() !== '') {
         payload.phone = data.phone;
       }
-      if (data.companyName) {
+      if (data.companyName && data.companyName.trim() !== '') {
         payload.companyName = data.companyName;
       }
 
-      // Register in backend
       const response = await authApi.register(payload);
       setUser(response.user);
     } catch (err: unknown) {
@@ -172,7 +188,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setError(message);
       throw err;
     } finally {
-      isRegistering.current = false;
+      isAuthenticating.current = false;
       setLoading(false);
     }
   };
