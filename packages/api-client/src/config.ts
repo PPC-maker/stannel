@@ -36,3 +36,13 @@ export const getMultipartHeaders = (): HeadersInit => {
 
   return headers;
 };
+
+export const getHeadersNoBody = (): HeadersInit => {
+  const headers: HeadersInit = {};
+
+  if (authToken) {
+    headers['Authorization'] = `Bearer ${authToken}`;
+  }
+
+  return headers;
+};

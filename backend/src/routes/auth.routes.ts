@@ -228,6 +228,15 @@ export async function authRoutes(server: FastifyInstance) {
         return reply.code(404).send({ error: 'User not found in database', firebaseUid: decoded.uid });
       }
 
+      // Check if user is approved by admin (except for admins themselves)
+      if (!user.isActive && user.role !== 'ADMIN') {
+        return reply.code(403).send({
+          error: 'החשבון שלך ממתין לאישור מנהל. נודיע לך כשהחשבון יאושר.',
+          code: 'auth/pending-approval',
+          pendingApproval: true
+        });
+      }
+
       return { user, token: body.token };
     } catch (error) {
       console.error('[Auth] Verify error:', error);

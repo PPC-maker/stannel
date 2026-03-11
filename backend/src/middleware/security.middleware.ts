@@ -22,7 +22,11 @@ export async function securityMiddleware(
   }
 
   // Check request body for injection attempts
-  if (request.body && typeof request.body === 'object') {
+  // Skip for multipart/form-data requests (file uploads)
+  const contentType = request.headers['content-type'] || '';
+  const isMultipart = contentType.includes('multipart/form-data');
+
+  if (!isMultipart && request.body && typeof request.body === 'object') {
     const injectionCheck = securityService.checkForInjection(
       request.body as Record<string, unknown>,
       ip,

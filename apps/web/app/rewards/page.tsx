@@ -8,6 +8,8 @@ import PageSlider, { sliderImages } from '@/components/layout/PageSlider';
 import { Gift, Star, ShoppingCart, Loader2 } from 'lucide-react';
 import { useWalletBalance, useRewardProducts, useRedeemReward, useWalletCard } from '@/lib/api-hooks';
 import { useAuth } from '@/lib/auth-context';
+import { useAuthGuard, AuthGuardLoader } from '@/lib/useAuthGuard';
+import Swal from 'sweetalert2';
 
 const rankEmojis: Record<string, string> = {
   BRONZE: '🥉',
@@ -17,6 +19,7 @@ const rankEmojis: Record<string, string> = {
 };
 
 export default function RewardsPage() {
+  const { isReady } = useAuthGuard();
   const { user } = useAuth();
   const [selectedProduct, setSelectedProduct] = useState<string | null>(null);
   const [redeemingId, setRedeemingId] = useState<string | null>(null);
@@ -25,6 +28,10 @@ export default function RewardsPage() {
   const { data: card } = useWalletCard();
   const { data: productsResponse, isLoading: productsLoading } = useRewardProducts();
   const redeemMutation = useRedeemReward();
+
+  if (!isReady) {
+    return <AuthGuardLoader />;
+  }
 
   // לא חוסמים את כל הדף - מציגים מבנה מיידית
   const points = balance?.points || 0;
@@ -37,9 +44,23 @@ export default function RewardsPage() {
     setRedeemingId(productId);
     try {
       await redeemMutation.mutateAsync(productId);
-      alert('המוצר נרכש בהצלחה!');
+      Swal.fire({
+        title: 'המוצר נרכש בהצלחה!',
+        text: 'המימוש בוצע בהצלחה',
+        icon: 'success',
+        confirmButtonText: 'אישור',
+        background: '#1a1a2e',
+        color: '#fff',
+      });
     } catch (error: any) {
-      alert(error.message || 'שגיאה במימוש המוצר');
+      Swal.fire({
+        title: 'שגיאה',
+        text: error.message || 'שגיאה במימוש המוצר',
+        icon: 'error',
+        confirmButtonText: 'אישור',
+        background: '#1a1a2e',
+        color: '#fff',
+      });
     } finally {
       setRedeemingId(null);
     }

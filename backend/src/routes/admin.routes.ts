@@ -8,6 +8,8 @@ import { healthReportService } from '../services/health-report.service.js';
 import { schedulerService } from '../services/scheduler.service.js';
 import { systemScannerService } from '../services/system-scanner.service.js';
 import { emailService } from '../services/email.service.js';
+import { getFirebaseAuth } from '../lib/firebase.js';
+import { wsService } from '../services/websocket.service.js';
 import { z } from 'zod';
 
 const verifyInvoiceSchema = z.object({
@@ -216,14 +218,107 @@ export async function adminRoutes(server: FastifyInstance) {
     return user;
   });
 
-  // Get all invoices (admin view)
+  // Delete user
+  server.delete('/users/:id', async (request: FastifyRequest, reply: FastifyReply) => {
+    const { id } = request.params as { id: string };
+
+    // Check if user exists
+    const user = await prisma.user.findUnique({ where: { id } });
+    if (!user) {
+      return reply.code(404).send({ error: 'User not found' });
+    }
+
+    // Don't allow deleting admins
+    if (user.role === 'ADMIN') {
+      return reply.code(403).send({ error: 'Cannot delete admin users' });
+    }
+
+    // Delete from Firebase Auth first
+    if (user.firebaseUid) {
+      try {
+        const auth = getFirebaseAuth();
+        if (auth) {
+          await auth.deleteUser(user.firebaseUid);
+        }
+      } catch (firebaseError: any) {
+        // If user doesn't exist in Firebase, continue with DB deletion
+        if (firebaseError.code !== 'auth/user-not-found') {
+          console.error('Error deleting user from Firebase:', firebaseError);
+        }
+      }
+    }
+
+    // Delete related records first
+    await prisma.$transaction(async (tx) => {
+      // Delete architect profile if exists
+      await tx.architectProfile.deleteMany({ where: { userId: id } });
+      // Delete supplier profile if exists
+      await tx.supplierProfile.deleteMany({ where: { userId: id } });
+      // Delete the user
+      await tx.user.delete({ where: { id } });
+    });
+
+    // Audit log
+    await prisma.auditLog.create({
+      data: {
+        userId: request.user!.id,
+        action: 'USER_DELETED',
+        entityId: id,
+        metadata: { deletedUserEmail: user.email },
+      },
+    });
+
+    return { success: true };
+  });
+
+  // Login as user (admin impersonation)
+  server.post('/users/:id/login-as', async (request: FastifyRequest, reply: FastifyReply) => {
+    const { id } = request.params as { id: string };
+
+    // Get the target user
+    const targetUser = await prisma.user.findUnique({
+      where: { id },
+    });
+
+    if (!targetUser) {
+      return reply.code(404).send({ error: 'User not found' });
+    }
+
+    if (!targetUser.firebaseUid) {
+      return reply.code(400).send({ error: 'User has no Firebase account' });
+    }
+
+    const auth = getFirebaseAuth();
+    if (!auth) {
+      return reply.code(500).send({ error: 'Firebase not configured' });
+    }
+
+    // Create a custom token for the target user
+    const customToken = await auth.createCustomToken(targetUser.firebaseUid);
+
+    // Audit log
+    await prisma.auditLog.create({
+      data: {
+        userId: request.user!.id,
+        action: 'ADMIN_LOGIN_AS_USER',
+        entityId: id,
+        metadata: { targetUserEmail: targetUser.email },
+      },
+    });
+
+    return { customToken };
+  });
+
+  // Get all invoices (admin view) - excludes deleted by default
   server.get('/invoices', async (request: FastifyRequest) => {
-    const query = request.query as { page?: string; pageSize?: string; status?: string };
+    const query = request.query as { page?: string; pageSize?: string; status?: string; includeDeleted?: string };
     const page = parseInt(query.page || '1');
-    const pageSize = parseInt(query.pageSize || '20');
+    const pageSize = parseInt(query.pageSize || '100');
+    const includeDeleted = query.includeDeleted === 'true';
 
     const where = {
       ...(query.status && { status: query.status as any }),
+      ...(!includeDeleted && { deletedAt: null }), // Exclude deleted unless explicitly requested
     };
 
     const [invoices, total] = await Promise.all([
@@ -247,6 +342,195 @@ export async function adminRoutes(server: FastifyInstance) {
       pageSize,
       totalPages: Math.ceil(total / pageSize),
     };
+  });
+
+  // Get deleted invoices (recycle bin)
+  server.get('/invoices/deleted', async (request: FastifyRequest) => {
+    const query = request.query as { page?: string; pageSize?: string };
+    const page = parseInt(query.page || '1');
+    const pageSize = parseInt(query.pageSize || '100');
+
+    const where = {
+      deletedAt: { not: null },
+    };
+
+    const [invoices, total] = await Promise.all([
+      prisma.invoice.findMany({
+        where,
+        include: {
+          architect: { include: { user: { select: { name: true, email: true } } } },
+          supplier: { include: { user: { select: { name: true, email: true } } } },
+        },
+        orderBy: { deletedAt: 'desc' },
+        skip: (page - 1) * pageSize,
+        take: pageSize,
+      }),
+      prisma.invoice.count({ where }),
+    ]);
+
+    return {
+      data: invoices,
+      total,
+      page,
+      pageSize,
+      totalPages: Math.ceil(total / pageSize),
+    };
+  });
+
+  // Soft delete invoice (move to recycle bin)
+  server.delete('/invoices/:id', async (request: FastifyRequest, reply: FastifyReply) => {
+    const { id } = request.params as { id: string };
+
+    const invoice = await prisma.invoice.findUnique({ where: { id } });
+    if (!invoice) {
+      return reply.code(404).send({ error: 'Invoice not found' });
+    }
+
+    const updated = await prisma.invoice.update({
+      where: { id },
+      data: { deletedAt: new Date() },
+    });
+
+    await prisma.auditLog.create({
+      data: {
+        userId: request.user!.id,
+        action: 'INVOICE_DELETED',
+        entityId: id,
+        metadata: { amount: invoice.amount, architectId: invoice.architectId },
+      },
+    });
+
+    // Broadcast deletion to all clients
+    wsService.invoiceDeleted(updated);
+
+    return { success: true, invoice: updated };
+  });
+
+  // Bulk soft delete invoices by architect
+  server.delete('/invoices/architect/:architectId', async (request: FastifyRequest, reply: FastifyReply) => {
+    const { architectId } = request.params as { architectId: string };
+
+    const invoices = await prisma.invoice.findMany({
+      where: { architectId, deletedAt: null },
+    });
+
+    if (invoices.length === 0) {
+      return reply.code(404).send({ error: 'No invoices found for this architect' });
+    }
+
+    await prisma.invoice.updateMany({
+      where: { architectId, deletedAt: null },
+      data: { deletedAt: new Date() },
+    });
+
+    await prisma.auditLog.create({
+      data: {
+        userId: request.user!.id,
+        action: 'INVOICES_BULK_DELETED',
+        entityId: architectId,
+        metadata: { count: invoices.length },
+      },
+    });
+
+    // Broadcast deletion to all clients for each invoice
+    invoices.forEach(inv => wsService.invoiceDeleted(inv));
+
+    return { success: true, deletedCount: invoices.length };
+  });
+
+  // Restore invoice from recycle bin
+  server.patch('/invoices/:id/restore', async (request: FastifyRequest, reply: FastifyReply) => {
+    const { id } = request.params as { id: string };
+
+    const invoice = await prisma.invoice.findUnique({ where: { id } });
+    if (!invoice) {
+      return reply.code(404).send({ error: 'Invoice not found' });
+    }
+
+    if (!invoice.deletedAt) {
+      return reply.code(400).send({ error: 'Invoice is not deleted' });
+    }
+
+    const updated = await prisma.invoice.update({
+      where: { id },
+      data: { deletedAt: null },
+    });
+
+    await prisma.auditLog.create({
+      data: {
+        userId: request.user!.id,
+        action: 'INVOICE_RESTORED',
+        entityId: id,
+      },
+    });
+
+    // Broadcast restoration to all clients
+    wsService.invoiceRestored(updated);
+
+    return { success: true, invoice: updated };
+  });
+
+  // Permanent delete invoice (from recycle bin)
+  server.delete('/invoices/:id/permanent', async (request: FastifyRequest, reply: FastifyReply) => {
+    const { id } = request.params as { id: string };
+
+    const invoice = await prisma.invoice.findUnique({ where: { id } });
+    if (!invoice) {
+      return reply.code(404).send({ error: 'Invoice not found' });
+    }
+
+    // Delete status history first
+    await prisma.invoiceStatusHistory.deleteMany({ where: { invoiceId: id } });
+
+    // Delete the invoice permanently
+    await prisma.invoice.delete({ where: { id } });
+
+    await prisma.auditLog.create({
+      data: {
+        userId: request.user!.id,
+        action: 'INVOICE_PERMANENTLY_DELETED',
+        entityId: id,
+        metadata: { amount: invoice.amount },
+      },
+    });
+
+    return { success: true };
+  });
+
+  // Empty recycle bin (delete all invoices older than 30 days)
+  server.delete('/invoices/recycle-bin/cleanup', async (request: FastifyRequest) => {
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+    // Get invoices to delete
+    const invoicesToDelete = await prisma.invoice.findMany({
+      where: {
+        deletedAt: { lte: thirtyDaysAgo },
+      },
+      select: { id: true },
+    });
+
+    // Delete status history first
+    await prisma.invoiceStatusHistory.deleteMany({
+      where: { invoiceId: { in: invoicesToDelete.map(i => i.id) } },
+    });
+
+    // Delete invoices
+    const result = await prisma.invoice.deleteMany({
+      where: {
+        deletedAt: { lte: thirtyDaysAgo },
+      },
+    });
+
+    await prisma.auditLog.create({
+      data: {
+        userId: request.user!.id,
+        action: 'RECYCLE_BIN_CLEANUP',
+        metadata: { deletedCount: result.count },
+      },
+    });
+
+    return { success: true, deletedCount: result.count };
   });
 
   // Verify invoice
@@ -302,6 +586,15 @@ export async function adminRoutes(server: FastifyInstance) {
         metadata: { note: body.note },
       },
     });
+
+    // Broadcast to all connected clients
+    if (body.status === 'APPROVED') {
+      wsService.invoiceApproved(updated);
+    } else if (body.status === 'REJECTED') {
+      wsService.invoiceRejected(updated);
+    } else {
+      wsService.invoiceUpdated(updated);
+    }
 
     return updated;
   });

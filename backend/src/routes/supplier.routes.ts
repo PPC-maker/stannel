@@ -32,6 +32,7 @@ export async function supplierRoutes(server: FastifyInstance) {
 
     const where = {
       supplierId: request.user!.supplierProfile!.id,
+      deletedAt: null, // Exclude soft-deleted invoices
       ...(query.status ? { status: query.status as any } : { status: { in: ['PENDING_SUPPLIER_PAY', 'OVERDUE'] } }),
     };
 
@@ -67,6 +68,11 @@ export async function supplierRoutes(server: FastifyInstance) {
     });
 
     if (!invoice) {
+      return reply.code(404).send({ error: 'Invoice not found' });
+    }
+
+    // Cannot confirm payment on deleted invoices
+    if (invoice.deletedAt) {
       return reply.code(404).send({ error: 'Invoice not found' });
     }
 
@@ -180,7 +186,7 @@ export async function supplierRoutes(server: FastifyInstance) {
 
     const [pendingPayments, paidThisMonth, overdueCount] = await Promise.all([
       prisma.invoice.aggregate({
-        where: { supplierId, status: 'PENDING_SUPPLIER_PAY' },
+        where: { supplierId, status: 'PENDING_SUPPLIER_PAY', deletedAt: null },
         _sum: { amount: true },
         _count: true,
       }),
@@ -188,13 +194,14 @@ export async function supplierRoutes(server: FastifyInstance) {
         where: {
           supplierId,
           status: 'PAID',
+          deletedAt: null,
           paidAt: { gte: new Date(new Date().setDate(1)) },
         },
         _sum: { amount: true },
         _count: true,
       }),
       prisma.invoice.count({
-        where: { supplierId, status: 'OVERDUE' },
+        where: { supplierId, status: 'OVERDUE', deletedAt: null },
       }),
     ]);
 

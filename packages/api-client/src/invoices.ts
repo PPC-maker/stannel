@@ -32,8 +32,9 @@ export const invoicesApi = {
     });
 
     if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || 'Failed to upload invoice');
+      const errorData = await response.json();
+      // Server returns { error: 'message' }
+      throw new Error(errorData.error || errorData.message || 'Failed to upload invoice');
     }
 
     return response.json();

@@ -6,9 +6,11 @@ import GlassCard from '@/components/layout/GlassCard';
 import PageSlider, { sliderImages } from '@/components/layout/PageSlider';
 import { Send, Bot, User, Sparkles, Loader2 } from 'lucide-react';
 import { useAiChat, useAiPrompts } from '@/lib/api-hooks';
+import { useAuthGuard, AuthGuardLoader } from '@/lib/useAuthGuard';
 import type { ChatMessage } from '@stannel/types';
 
 export default function AiAgentPage() {
+  const { isReady } = useAuthGuard();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -17,8 +19,6 @@ export default function AiAgentPage() {
   const { mutate: sendMessage, isPending } = useAiChat();
   const { data: promptsData } = useAiPrompts();
 
-  const suggestedPrompts = promptsData?.prompts || [];
-
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
@@ -26,6 +26,12 @@ export default function AiAgentPage() {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  if (!isReady) {
+    return <AuthGuardLoader />;
+  }
+
+  const suggestedPrompts = promptsData?.prompts || [];
 
   const handleSend = (messageText?: string) => {
     const text = messageText || input.trim();

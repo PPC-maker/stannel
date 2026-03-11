@@ -7,6 +7,7 @@ export { walletApi } from './wallet';
 export { rewardsApi } from './rewards';
 export { eventsApi } from './events';
 export { adminApi } from './admin';
+export { aiApi } from './ai';
 
 // API Error class for better error handling
 export class ApiError extends Error {
@@ -39,5 +40,8 @@ export const apiClient = {
   },
   get admin() {
     return require('./admin').adminApi;
+  },
+  get ai() {
+    return require('./ai').aiApi;
   },
 };

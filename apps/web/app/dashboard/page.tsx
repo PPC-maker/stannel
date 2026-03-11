@@ -1,5 +1,7 @@
 'use client';
 
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import GlassCard from '@/components/layout/GlassCard';
 import PageSlider, { sliderImages } from '@/components/layout/PageSlider';
@@ -16,18 +18,30 @@ const rankEmojis: Record<string, string> = {
 };
 
 export default function DashboardPage() {
-  const { user } = useAuth();
+  const router = useRouter();
+  const { user, loading } = useAuth();
 
-  // Use dashboard stats hook (fetches balance, card, and invoices)
+  // ALL hooks must be called before any conditional returns
   const { data: stats } = useDashboardStats();
-
-  // Fetch transactions
   const { data: transactions, isLoading: txLoading } = useWalletTransactions();
-
-  // Fetch card data
   const { data: card } = useWalletCard();
 
-  // לא חוסמים את כל הדף - מציגים מיידית
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (!loading && !user) {
+      router.replace('/login');
+    }
+  }, [user, loading, router]);
+
+  // Show nothing while checking auth or redirecting
+  if (loading || !user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-gold-400 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
   const dashboardStats = {
     points: stats?.points || 0,
     cash: stats?.cash || 0,
@@ -201,7 +215,9 @@ export default function DashboardPage() {
         <h2 className="text-lg font-semibold text-white mb-4">פעולות מהירות</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[
-            { label: 'העלאת חשבונית', icon: FileText, href: '/invoices/upload', color: 'from-blue-500/20 to-blue-600/20' },
+            user?.role === 'SUPPLIER'
+              ? { label: 'צפייה בחשבוניות', icon: FileText, href: '/invoices', color: 'from-blue-500/20 to-blue-600/20' }
+              : { label: 'העלאת חשבונית', icon: FileText, href: '/invoices/upload', color: 'from-blue-500/20 to-blue-600/20' },
             { label: 'חנות הטבות', icon: Gift, href: '/rewards', color: 'from-purple-500/20 to-purple-600/20' },
             { label: 'הארנק שלי', icon: Wallet, href: '/wallet', color: 'from-green-500/20 to-green-600/20' },
             { label: 'אירועים', icon: Star, href: '/events', color: 'from-gold-400/20 to-gold-600/20' },

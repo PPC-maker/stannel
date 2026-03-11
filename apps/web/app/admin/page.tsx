@@ -1,10 +1,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import GlassCard from '@/components/layout/GlassCard';
 import PageSlider, { sliderImages } from '@/components/layout/PageSlider';
-import { adminApi } from '@stannel/api-client';
+import { adminApi, setAuthToken } from '@stannel/api-client';
+import { loginWithCustomToken } from '@/lib/firebase';
+import { useAdminGuard, AuthGuardLoader } from '@/lib/useAuthGuard';
 import type { SystemLog, SystemLogStats } from '@stannel/types';
 import { SystemLogSeverity, SystemLogCategory } from '@stannel/types';
 import {
@@ -26,26 +29,72 @@ import {
   Loader2,
   ChevronDown,
   ChevronUp,
+  ChevronRight,
   Search,
   UserCheck,
   Mail,
   Phone,
-  Building2,
   Calendar,
   CheckCircle2,
+  ExternalLink,
+  Trash2,
+  Receipt,
+  Eye,
+  Ban,
+  MessageSquare,
+  FolderOpen,
+  RotateCcw,
+  Trash,
+  FileIcon,
+  Download,
 } from 'lucide-react';
+import Swal from 'sweetalert2';
 
-type TabType = 'users' | 'logs' | 'scan';
+type TabType = 'users' | 'invoices' | 'recycle-bin' | 'logs' | 'scan';
 
-interface PendingUser {
+interface AdminUser {
   id: string;
   email: string;
   name: string;
   phone?: string | null;
   role: string;
+  isActive: boolean;
   createdAt: string;
+  activatedAt?: string | null;
   architectProfile?: { id: string } | null;
   supplierProfile?: { id: string; companyName: string } | null;
+}
+
+interface AdminInvoice {
+  id: string;
+  imageUrl: string;
+  amount: number;
+  status: string;
+  aiExtractedAmount?: number | null;
+  aiConfidence?: number | null;
+  aiStatus?: string | null;
+  adminNote?: string | null;
+  slaDeadline?: string | null;
+  createdAt: string;
+  approvedAt?: string | null;
+  deletedAt?: string | null;
+  architect: {
+    id: string;
+    user: { name: string; email: string };
+  };
+  supplier: {
+    id: string;
+    companyName?: string;
+    user: { name: string; email: string };
+  };
+}
+
+interface ArchitectGroup {
+  architectId: string;
+  architectName: string;
+  architectEmail: string;
+  invoices: AdminInvoice[];
+  totalAmount: number;
 }
 
 interface ScanReport {
@@ -90,11 +139,16 @@ const roleLabels: Record<string, string> = {
 };
 
 export default function AdminPage() {
+  const { isReady } = useAdminGuard();
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState<TabType>('users');
   const [logs, setLogs] = useState<SystemLog[]>([]);
   const [stats, setStats] = useState<SystemLogStats | null>(null);
-  const [pendingUsers, setPendingUsers] = useState<PendingUser[]>([]);
+  const [allUsers, setAllUsers] = useState<AdminUser[]>([]);
   const [latestScan, setLatestScan] = useState<ScanReport | null>(null);
+  const [invoices, setInvoices] = useState<AdminInvoice[]>([]);
+  const [selectedInvoice, setSelectedInvoice] = useState<AdminInvoice | null>(null);
+  const [processingInvoice, setProcessingInvoice] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedLog, setSelectedLog] = useState<SystemLog | null>(null);
   const [filter, setFilter] = useState<{
@@ -107,13 +161,19 @@ export default function AdminPage() {
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [selectedUsers, setSelectedUsers] = useState<Set<string>>(new Set());
   const [approvingUser, setApprovingUser] = useState<string | null>(null);
+  const [loggingInAs, setLoggingInAs] = useState<string | null>(null);
+  const [deletingUser, setDeletingUser] = useState<string | null>(null);
+  const [deletedInvoices, setDeletedInvoices] = useState<AdminInvoice[]>([]);
+  const [expandedArchitects, setExpandedArchitects] = useState<Set<string>>(new Set());
+  const [deletingInvoice, setDeletingInvoice] = useState<string | null>(null);
+  const [restoringInvoice, setRestoringInvoice] = useState<string | null>(null);
 
-  const fetchPendingUsers = async () => {
+  const fetchAllUsers = async () => {
     try {
-      const response = await adminApi.getPendingUsers();
-      setPendingUsers(response.data as PendingUser[]);
+      const response = await adminApi.getUsers({ pageSize: 100 });
+      setAllUsers(response.data as AdminUser[]);
     } catch (error) {
-      console.error('Error fetching pending users:', error);
+      console.error('Error fetching users:', error);
     }
   };
 
@@ -144,31 +204,312 @@ export default function AdminPage() {
     }
   };
 
+  const fetchInvoices = async () => {
+    try {
+      const response = await adminApi.getInvoices({ pageSize: 100 });
+      setInvoices(response.data as AdminInvoice[]);
+    } catch (error) {
+      console.error('Error fetching invoices:', error);
+    }
+  };
+
+  const fetchDeletedInvoices = async () => {
+    try {
+      const response = await adminApi.getDeletedInvoices({ pageSize: 100 });
+      setDeletedInvoices(response.data as AdminInvoice[]);
+    } catch (error) {
+      console.error('Error fetching deleted invoices:', error);
+    }
+  };
+
   const fetchData = async () => {
     setRefreshing(true);
     try {
-      await Promise.all([fetchPendingUsers(), fetchLogs(), fetchLatestScan()]);
+      await Promise.all([fetchAllUsers(), fetchLogs(), fetchLatestScan(), fetchInvoices(), fetchDeletedInvoices()]);
     } finally {
       setLoading(false);
       setRefreshing(false);
     }
   };
 
+  // ALL useEffect hooks must be called before any conditional returns
   useEffect(() => {
-    fetchData();
-  }, []);
+    if (isReady) {
+      fetchData();
+    }
+  }, [isReady]);
 
   useEffect(() => {
-    if (activeTab === 'logs') {
+    if (isReady && activeTab === 'logs') {
       fetchLogs();
     }
-  }, [filter]);
+  }, [filter, isReady]);
+
+  // Auto-refresh users every 10 seconds for real-time updates
+  useEffect(() => {
+    if (!isReady || activeTab !== 'users') return;
+
+    const interval = setInterval(() => {
+      fetchAllUsers();
+    }, 10000); // 10 seconds
+
+    return () => clearInterval(interval);
+  }, [isReady, activeTab]);
+
+  // Auto-refresh invoices every 10 seconds
+  useEffect(() => {
+    if (!isReady || activeTab !== 'invoices') return;
+
+    const interval = setInterval(() => {
+      fetchInvoices();
+    }, 10000); // 10 seconds
+
+    return () => clearInterval(interval);
+  }, [isReady, activeTab]);
+
+  // Auto-refresh recycle bin every 10 seconds
+  useEffect(() => {
+    if (!isReady || activeTab !== 'recycle-bin') return;
+
+    const interval = setInterval(() => {
+      fetchDeletedInvoices();
+    }, 10000); // 10 seconds
+
+    return () => clearInterval(interval);
+  }, [isReady, activeTab]);
+
+  if (!isReady) {
+    return <AuthGuardLoader />;
+  }
+
+  // Group invoices by architect
+  const groupedInvoices: ArchitectGroup[] = Object.values(
+    invoices.reduce((acc: Record<string, ArchitectGroup>, invoice) => {
+      const architectId = invoice.architect.id;
+      if (!acc[architectId]) {
+        acc[architectId] = {
+          architectId,
+          architectName: invoice.architect.user.name,
+          architectEmail: invoice.architect.user.email,
+          invoices: [],
+          totalAmount: 0,
+        };
+      }
+      acc[architectId].invoices.push(invoice);
+      acc[architectId].totalAmount += invoice.amount;
+      return acc;
+    }, {})
+  ).sort((a, b) => b.invoices.length - a.invoices.length);
+
+  const toggleArchitectExpand = (architectId: string) => {
+    const newExpanded = new Set(expandedArchitects);
+    if (newExpanded.has(architectId)) {
+      newExpanded.delete(architectId);
+    } else {
+      newExpanded.add(architectId);
+    }
+    setExpandedArchitects(newExpanded);
+  };
+
+  const handleDeleteInvoice = async (invoiceId: string) => {
+    const result = await Swal.fire({
+      title: 'מחיקת חשבונית',
+      text: 'האם אתה בטוח? החשבונית תועבר לסל המחזור.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'כן, מחק',
+      cancelButtonText: 'ביטול',
+      confirmButtonColor: '#dc2626',
+      background: '#1a1a2e',
+      color: '#fff',
+    });
+    if (!result.isConfirmed) return;
+
+    setDeletingInvoice(invoiceId);
+    try {
+      await adminApi.deleteInvoice(invoiceId);
+      await Promise.all([fetchInvoices(), fetchDeletedInvoices()]);
+      setSelectedInvoice(null);
+      Swal.fire({
+        title: 'נמחק!',
+        text: 'החשבונית הועברה לסל המחזור',
+        icon: 'success',
+        confirmButtonText: 'אישור',
+        background: '#1a1a2e',
+        color: '#fff',
+      });
+    } catch (error) {
+      console.error('Error deleting invoice:', error);
+      Swal.fire({
+        title: 'שגיאה',
+        text: 'שגיאה במחיקת החשבונית',
+        icon: 'error',
+        confirmButtonText: 'אישור',
+        background: '#1a1a2e',
+        color: '#fff',
+      });
+    } finally {
+      setDeletingInvoice(null);
+    }
+  };
+
+  const handleBulkDeleteArchitectInvoices = async (architectId: string, architectName: string, count: number) => {
+    const result = await Swal.fire({
+      title: 'מחיקת כל החשבוניות',
+      text: `האם אתה בטוח שברצונך למחוק את כל ${count} החשבוניות של ${architectName}?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'כן, מחק הכל',
+      cancelButtonText: 'ביטול',
+      confirmButtonColor: '#dc2626',
+      background: '#1a1a2e',
+      color: '#fff',
+    });
+    if (!result.isConfirmed) return;
+
+    setRefreshing(true);
+    try {
+      await adminApi.deleteArchitectInvoices(architectId);
+      await Promise.all([fetchInvoices(), fetchDeletedInvoices()]);
+      setSelectedInvoice(null);
+      Swal.fire({
+        title: 'נמחקו!',
+        text: `${count} חשבוניות הועברו לסל המחזור`,
+        icon: 'success',
+        confirmButtonText: 'אישור',
+        background: '#1a1a2e',
+        color: '#fff',
+      });
+    } catch (error) {
+      console.error('Error bulk deleting invoices:', error);
+      Swal.fire({
+        title: 'שגיאה',
+        text: 'שגיאה במחיקת החשבוניות',
+        icon: 'error',
+        confirmButtonText: 'אישור',
+        background: '#1a1a2e',
+        color: '#fff',
+      });
+    } finally {
+      setRefreshing(false);
+    }
+  };
+
+  const handleRestoreInvoice = async (invoiceId: string) => {
+    setRestoringInvoice(invoiceId);
+    try {
+      await adminApi.restoreInvoice(invoiceId);
+      await Promise.all([fetchInvoices(), fetchDeletedInvoices()]);
+      Swal.fire({
+        title: 'שוחזר!',
+        text: 'החשבונית שוחזרה בהצלחה',
+        icon: 'success',
+        confirmButtonText: 'אישור',
+        background: '#1a1a2e',
+        color: '#fff',
+      });
+    } catch (error) {
+      console.error('Error restoring invoice:', error);
+      Swal.fire({
+        title: 'שגיאה',
+        text: 'שגיאה בשחזור החשבונית',
+        icon: 'error',
+        confirmButtonText: 'אישור',
+        background: '#1a1a2e',
+        color: '#fff',
+      });
+    } finally {
+      setRestoringInvoice(null);
+    }
+  };
+
+  const handlePermanentDelete = async (invoiceId: string) => {
+    const result = await Swal.fire({
+      title: 'מחיקה לצמיתות',
+      text: 'פעולה זו לא ניתנת לביטול! החשבונית תימחק לצמיתות.',
+      icon: 'error',
+      showCancelButton: true,
+      confirmButtonText: 'כן, מחק לצמיתות',
+      cancelButtonText: 'ביטול',
+      confirmButtonColor: '#dc2626',
+      background: '#1a1a2e',
+      color: '#fff',
+    });
+    if (!result.isConfirmed) return;
+
+    setDeletingInvoice(invoiceId);
+    try {
+      await adminApi.permanentDeleteInvoice(invoiceId);
+      await fetchDeletedInvoices();
+      Swal.fire({
+        title: 'נמחק לצמיתות!',
+        text: 'החשבונית נמחקה לצמיתות',
+        icon: 'success',
+        confirmButtonText: 'אישור',
+        background: '#1a1a2e',
+        color: '#fff',
+      });
+    } catch (error) {
+      console.error('Error permanently deleting invoice:', error);
+      Swal.fire({
+        title: 'שגיאה',
+        text: 'שגיאה במחיקת החשבונית',
+        icon: 'error',
+        confirmButtonText: 'אישור',
+        background: '#1a1a2e',
+        color: '#fff',
+      });
+    } finally {
+      setDeletingInvoice(null);
+    }
+  };
+
+  const handleCleanupRecycleBin = async () => {
+    const result = await Swal.fire({
+      title: 'ניקוי סל מחזור',
+      text: 'פעולה זו תמחק לצמיתות את כל החשבוניות שנמחקו לפני יותר מ-30 יום.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'כן, נקה',
+      cancelButtonText: 'ביטול',
+      confirmButtonColor: '#dc2626',
+      background: '#1a1a2e',
+      color: '#fff',
+    });
+    if (!result.isConfirmed) return;
+
+    setRefreshing(true);
+    try {
+      const response = await adminApi.cleanupRecycleBin();
+      await fetchDeletedInvoices();
+      Swal.fire({
+        title: 'נוקה!',
+        text: `${response.deletedCount} חשבוניות נמחקו לצמיתות`,
+        icon: 'success',
+        confirmButtonText: 'אישור',
+        background: '#1a1a2e',
+        color: '#fff',
+      });
+    } catch (error) {
+      console.error('Error cleaning up recycle bin:', error);
+      Swal.fire({
+        title: 'שגיאה',
+        text: 'שגיאה בניקוי סל המחזור',
+        icon: 'error',
+        confirmButtonText: 'אישור',
+        background: '#1a1a2e',
+        color: '#fff',
+      });
+    } finally {
+      setRefreshing(false);
+    }
+  };
 
   const handleApproveUser = async (userId: string) => {
     setApprovingUser(userId);
     try {
       await adminApi.activateUser(userId, true);
-      await fetchPendingUsers();
+      await fetchAllUsers();
     } catch (error) {
       console.error('Error approving user:', error);
     } finally {
@@ -182,11 +523,104 @@ export default function AdminPage() {
     try {
       await adminApi.bulkActivateUsers(Array.from(selectedUsers), true);
       setSelectedUsers(new Set());
-      await fetchPendingUsers();
+      await fetchAllUsers();
     } catch (error) {
       console.error('Error bulk approving users:', error);
     } finally {
       setRefreshing(false);
+    }
+  };
+
+  const handleLoginAsUser = async (userId: string) => {
+    setLoggingInAs(userId);
+    try {
+      const { customToken } = await adminApi.loginAsUser(userId);
+      const { token } = await loginWithCustomToken(customToken);
+      setAuthToken(token);
+      router.push('/dashboard');
+    } catch (error) {
+      console.error('Error logging in as user:', error);
+      Swal.fire({
+        title: 'שגיאה',
+        text: 'שגיאה בכניסה לחשבון',
+        icon: 'error',
+        confirmButtonText: 'אישור',
+        background: '#1a1a2e',
+        color: '#fff',
+      });
+    } finally {
+      setLoggingInAs(null);
+    }
+  };
+
+  const handleDeleteUser = async (userId: string, userName: string) => {
+    const result = await Swal.fire({
+      title: 'מחיקת משתמש',
+      text: `האם אתה בטוח שברצונך למחוק את המשתמש "${userName}"?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'כן, מחק',
+      cancelButtonText: 'ביטול',
+      confirmButtonColor: '#dc2626',
+      background: '#1a1a2e',
+      color: '#fff',
+    });
+    if (!result.isConfirmed) {
+      return;
+    }
+    setDeletingUser(userId);
+    try {
+      await adminApi.deleteUser(userId);
+      await fetchAllUsers();
+      Swal.fire({
+        title: 'נמחק!',
+        text: 'המשתמש נמחק בהצלחה',
+        icon: 'success',
+        confirmButtonText: 'אישור',
+        background: '#1a1a2e',
+        color: '#fff',
+      });
+    } catch (error) {
+      console.error('Error deleting user:', error);
+      Swal.fire({
+        title: 'שגיאה',
+        text: 'שגיאה במחיקת המשתמש',
+        icon: 'error',
+        confirmButtonText: 'אישור',
+        background: '#1a1a2e',
+        color: '#fff',
+      });
+    } finally {
+      setDeletingUser(null);
+    }
+  };
+
+  const handleVerifyInvoice = async (invoiceId: string, status: 'APPROVED' | 'REJECTED', note?: string) => {
+    setProcessingInvoice(invoiceId);
+    try {
+      await adminApi.verifyInvoice(invoiceId, { status, note });
+      await fetchInvoices();
+      setSelectedInvoice(null);
+      Swal.fire({
+        title: status === 'APPROVED' ? 'אושר!' : 'נדחה',
+        text: status === 'APPROVED' ? 'החשבונית אושרה בהצלחה' : 'החשבונית נדחתה',
+        icon: status === 'APPROVED' ? 'success' : 'info',
+        confirmButtonText: 'אישור',
+        background: '#1a1a2e',
+        color: '#fff',
+      });
+    } catch (error) {
+      console.error('Error verifying invoice:', error);
+      Swal.fire({
+        title: 'שגיאה',
+        text: 'שגיאה בעדכון החשבונית',
+        icon: 'error',
+        confirmButtonText: 'אישור',
+        background: '#1a1a2e',
+        color: '#fff',
+      });
+    } finally {
+      setProcessingInvoice(null);
     }
   };
 
@@ -255,6 +689,10 @@ Please analyze this error and provide a fix.
     }
   };
 
+  // Filter users by status
+  const pendingUsers = allUsers.filter(u => !u.isActive);
+  const approvedUsers = allUsers.filter(u => u.isActive);
+
   const toggleUserSelection = (userId: string) => {
     const newSelected = new Set(selectedUsers);
     if (newSelected.has(userId)) {
@@ -265,7 +703,7 @@ Please analyze this error and provide a fix.
     setSelectedUsers(newSelected);
   };
 
-  const selectAllUsers = () => {
+  const selectAllPendingUsers = () => {
     if (selectedUsers.size === pendingUsers.length) {
       setSelectedUsers(new Set());
     } else {
@@ -325,10 +763,42 @@ Please analyze this error and provide a fix.
             }`}
           >
             <Users size={18} />
-            משתמשים ממתינים
+            ניהול משתמשים
             {pendingUsers.length > 0 && (
-              <span className="bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">
+              <span className="bg-yellow-500 text-white text-xs px-2 py-0.5 rounded-full">
                 {pendingUsers.length}
+              </span>
+            )}
+          </button>
+          <button
+            onClick={() => setActiveTab('invoices')}
+            className={`px-6 py-3 rounded-xl font-medium transition-all flex items-center gap-2 ${
+              activeTab === 'invoices'
+                ? 'bg-gold-400 text-primary-900'
+                : 'bg-white/10 text-white hover:bg-white/20'
+            }`}
+          >
+            <Receipt size={18} />
+            חשבוניות
+            {invoices.filter(inv => inv.status === 'PENDING_ADMIN').length > 0 && (
+              <span className="bg-yellow-500 text-white text-xs px-2 py-0.5 rounded-full">
+                {invoices.filter(inv => inv.status === 'PENDING_ADMIN').length}
+              </span>
+            )}
+          </button>
+          <button
+            onClick={() => setActiveTab('recycle-bin')}
+            className={`px-6 py-3 rounded-xl font-medium transition-all flex items-center gap-2 ${
+              activeTab === 'recycle-bin'
+                ? 'bg-gold-400 text-primary-900'
+                : 'bg-white/10 text-white hover:bg-white/20'
+            }`}
+          >
+            <Trash size={18} />
+            סל מחזור
+            {deletedInvoices.length > 0 && (
+              <span className="bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">
+                {deletedInvoices.length}
               </span>
             )}
           </button>
@@ -370,13 +840,18 @@ Please analyze this error and provide a fix.
             <GlassCard hover={false}>
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-semibold text-white flex items-center gap-2">
-                  <UserCheck className="text-gold-400" />
-                  משתמשים ממתינים לאישור ({pendingUsers.length})
+                  <Users className="text-gold-400" />
+                  ניהול משתמשים ({allUsers.length})
+                  {pendingUsers.length > 0 && (
+                    <span className="bg-yellow-500/20 text-yellow-400 text-sm px-2 py-0.5 rounded-full mr-2">
+                      {pendingUsers.length} ממתינים
+                    </span>
+                  )}
                 </h2>
-                {pendingUsers.length > 0 && (
+                {pendingUsers.length > 0 && selectedUsers.size > 0 && (
                   <button
                     onClick={handleBulkApprove}
-                    disabled={selectedUsers.size === 0 || refreshing}
+                    disabled={refreshing}
                     className="btn-primary flex items-center gap-2 disabled:opacity-50"
                   >
                     <CheckCircle2 size={18} />
@@ -385,11 +860,10 @@ Please analyze this error and provide a fix.
                 )}
               </div>
 
-              {pendingUsers.length === 0 ? (
+              {allUsers.length === 0 ? (
                 <div className="text-center py-16">
-                  <CheckCircle className="w-20 h-20 mx-auto text-green-400 mb-4" />
-                  <p className="text-white text-xl font-medium">אין משתמשים ממתינים</p>
-                  <p className="text-white/60 mt-2">כל המשתמשים אושרו</p>
+                  <Users className="w-20 h-20 mx-auto text-white/20 mb-4" />
+                  <p className="text-white text-xl font-medium">אין משתמשים במערכת</p>
                 </div>
               ) : (
                 <div className="overflow-x-auto">
@@ -397,39 +871,49 @@ Please analyze this error and provide a fix.
                     <thead>
                       <tr className="border-b border-white/10">
                         <th className="py-3 px-4 text-right">
-                          <input
-                            type="checkbox"
-                            checked={selectedUsers.size === pendingUsers.length}
-                            onChange={selectAllUsers}
-                            className="w-4 h-4 rounded bg-white/10 border-white/20 text-gold-400"
-                          />
+                          {pendingUsers.length > 0 && (
+                            <input
+                              type="checkbox"
+                              checked={selectedUsers.size === pendingUsers.length && pendingUsers.length > 0}
+                              onChange={selectAllPendingUsers}
+                              className="w-4 h-4 rounded bg-white/10 border-white/20 text-gold-400"
+                            />
+                          )}
                         </th>
                         <th className="py-3 px-4 text-right text-white/60 font-medium">שם</th>
                         <th className="py-3 px-4 text-right text-white/60 font-medium">אימייל</th>
                         <th className="py-3 px-4 text-right text-white/60 font-medium">טלפון</th>
                         <th className="py-3 px-4 text-right text-white/60 font-medium">תפקיד</th>
-                        <th className="py-3 px-4 text-right text-white/60 font-medium">חברה</th>
+                        <th className="py-3 px-4 text-right text-white/60 font-medium">סטטוס</th>
                         <th className="py-3 px-4 text-right text-white/60 font-medium">תאריך הרשמה</th>
                         <th className="py-3 px-4 text-right text-white/60 font-medium">פעולות</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {pendingUsers.map((user) => (
+                      {allUsers.map((user) => (
                         <tr
                           key={user.id}
-                          className="border-b border-white/5 hover:bg-white/5 transition-colors"
+                          className={`border-b border-white/5 hover:bg-white/5 transition-colors ${
+                            user.isActive ? '' : 'bg-yellow-500/5'
+                          }`}
                         >
                           <td className="py-4 px-4">
-                            <input
-                              type="checkbox"
-                              checked={selectedUsers.has(user.id)}
-                              onChange={() => toggleUserSelection(user.id)}
-                              className="w-4 h-4 rounded bg-white/10 border-white/20 text-gold-400"
-                            />
+                            {!user.isActive && (
+                              <input
+                                type="checkbox"
+                                checked={selectedUsers.has(user.id)}
+                                onChange={() => toggleUserSelection(user.id)}
+                                className="w-4 h-4 rounded bg-white/10 border-white/20 text-gold-400"
+                              />
+                            )}
                           </td>
                           <td className="py-4 px-4">
                             <div className="flex items-center gap-3">
-                              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gold-400 to-gold-600 flex items-center justify-center text-primary-900 font-bold">
+                              <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold ${
+                                user.isActive
+                                  ? 'bg-gradient-to-br from-green-400 to-green-600 text-white'
+                                  : 'bg-gradient-to-br from-gold-400 to-gold-600 text-primary-900'
+                              }`}>
                                 {user.name.charAt(0)}
                               </div>
                               <span className="text-white font-medium">{user.name}</span>
@@ -452,6 +936,8 @@ Please analyze this error and provide a fix.
                               className={`px-3 py-1 rounded-full text-sm ${
                                 user.role === 'ARCHITECT'
                                   ? 'bg-blue-500/20 text-blue-400'
+                                  : user.role === 'ADMIN'
+                                  ? 'bg-red-500/20 text-red-400'
                                   : 'bg-purple-500/20 text-purple-400'
                               }`}
                             >
@@ -459,10 +945,17 @@ Please analyze this error and provide a fix.
                             </span>
                           </td>
                           <td className="py-4 px-4">
-                            <span className="text-white/80 flex items-center gap-2">
-                              <Building2 size={14} className="text-white/40" />
-                              {user.supplierProfile?.companyName || '-'}
-                            </span>
+                            {user.isActive ? (
+                              <span className="px-3 py-1 rounded-full text-sm bg-green-500/20 text-green-400 flex items-center gap-1 w-fit">
+                                <CheckCircle size={14} />
+                                מאושר
+                              </span>
+                            ) : (
+                              <span className="px-3 py-1 rounded-full text-sm bg-yellow-500/20 text-yellow-400 flex items-center gap-1 w-fit">
+                                <Clock size={14} />
+                                ממתין
+                              </span>
+                            )}
                           </td>
                           <td className="py-4 px-4">
                             <span className="text-white/60 flex items-center gap-2">
@@ -471,23 +964,494 @@ Please analyze this error and provide a fix.
                             </span>
                           </td>
                           <td className="py-4 px-4">
-                            <button
-                              onClick={() => handleApproveUser(user.id)}
-                              disabled={approvingUser === user.id}
-                              className="btn-gold text-sm flex items-center gap-2 disabled:opacity-50"
-                            >
-                              {approvingUser === user.id ? (
-                                <Loader2 size={16} className="animate-spin" />
-                              ) : (
-                                <UserCheck size={16} />
+                            <div className="flex items-center gap-2">
+                              {user.isActive && user.role !== 'ADMIN' ? (
+                                <button
+                                  onClick={() => handleLoginAsUser(user.id)}
+                                  disabled={loggingInAs === user.id}
+                                  className="btn-secondary text-sm flex items-center gap-2 disabled:opacity-50"
+                                >
+                                  {loggingInAs === user.id ? (
+                                    <Loader2 size={16} className="animate-spin" />
+                                  ) : (
+                                    <ExternalLink size={16} />
+                                  )}
+                                  צפה בחשבון
+                                </button>
+                              ) : !user.isActive ? (
+                                <button
+                                  onClick={() => handleApproveUser(user.id)}
+                                  disabled={approvingUser === user.id}
+                                  className="btn-gold text-sm flex items-center gap-2 disabled:opacity-50"
+                                >
+                                  {approvingUser === user.id ? (
+                                    <Loader2 size={16} className="animate-spin" />
+                                  ) : (
+                                    <UserCheck size={16} />
+                                  )}
+                                  אשר
+                                </button>
+                              ) : null}
+                              {user.role !== 'ADMIN' && (
+                                <button
+                                  onClick={() => handleDeleteUser(user.id, user.name)}
+                                  disabled={deletingUser === user.id}
+                                  className="p-2 rounded-lg hover:bg-red-500/20 text-red-400 transition-colors disabled:opacity-50"
+                                  title="מחק משתמש"
+                                >
+                                  {deletingUser === user.id ? (
+                                    <Loader2 size={16} className="animate-spin" />
+                                  ) : (
+                                    <Trash2 size={16} />
+                                  )}
+                                </button>
                               )}
-                              אשר
-                            </button>
+                            </div>
                           </td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
+                </div>
+              )}
+            </GlassCard>
+          </motion.div>
+        )}
+
+        {/* Invoices Tab - Grouped by Architect */}
+        {activeTab === 'invoices' && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+          >
+            <div className="grid lg:grid-cols-2 gap-6">
+              {/* Architects Folders */}
+              <GlassCard hover={false}>
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-xl font-semibold text-white flex items-center gap-2">
+                    <FolderOpen className="text-gold-400" />
+                    חשבוניות לפי אדריכל ({groupedInvoices.length} אדריכלים)
+                    {invoices.filter(inv => inv.status === 'PENDING_ADMIN').length > 0 && (
+                      <span className="bg-yellow-500/20 text-yellow-400 text-sm px-2 py-0.5 rounded-full mr-2">
+                        {invoices.filter(inv => inv.status === 'PENDING_ADMIN').length} ממתינות
+                      </span>
+                    )}
+                  </h2>
+                </div>
+
+                {groupedInvoices.length === 0 ? (
+                  <div className="text-center py-16">
+                    <Receipt className="w-20 h-20 mx-auto text-white/20 mb-4" />
+                    <p className="text-white text-xl font-medium">אין חשבוניות במערכת</p>
+                  </div>
+                ) : (
+                  <div className="space-y-3 max-h-[600px] overflow-y-auto custom-scrollbar">
+                    {groupedInvoices.map((group) => {
+                      const isExpanded = expandedArchitects.has(group.architectId);
+                      const pendingCount = group.invoices.filter(inv => inv.status === 'PENDING_ADMIN').length;
+
+                      return (
+                        <div key={group.architectId} className="border border-white/10 rounded-lg overflow-hidden">
+                          {/* Architect Folder Header */}
+                          <div
+                            onClick={() => toggleArchitectExpand(group.architectId)}
+                            className={`p-4 cursor-pointer transition-all flex items-center justify-between ${
+                              isExpanded ? 'bg-gold-400/10 border-b border-white/10' : 'bg-white/5 hover:bg-white/10'
+                            }`}
+                          >
+                            <div className="flex items-center gap-3">
+                              <div className={`p-2 rounded-lg ${isExpanded ? 'bg-gold-400/20' : 'bg-white/10'}`}>
+                                <FolderOpen size={20} className={isExpanded ? 'text-gold-400' : 'text-white/60'} />
+                              </div>
+                              <div>
+                                <p className="text-white font-medium">{group.architectName}</p>
+                                <p className="text-white/50 text-xs">{group.architectEmail}</p>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-4">
+                              <div className="text-left">
+                                <p className="text-gold-400 font-bold">₪{group.totalAmount.toLocaleString()}</p>
+                                <p className="text-white/40 text-xs">{group.invoices.length} חשבוניות</p>
+                              </div>
+                              {pendingCount > 0 && (
+                                <span className="bg-yellow-500/20 text-yellow-400 text-xs px-2 py-1 rounded-full">
+                                  {pendingCount} ממתינות
+                                </span>
+                              )}
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleBulkDeleteArchitectInvoices(group.architectId, group.architectName, group.invoices.length);
+                                }}
+                                className="p-2 rounded-lg hover:bg-red-500/20 text-red-400 transition-colors"
+                                title="מחק את כל החשבוניות"
+                              >
+                                <Trash2 size={16} />
+                              </button>
+                              <ChevronRight
+                                size={20}
+                                className={`text-white/40 transition-transform ${isExpanded ? 'rotate-90' : ''}`}
+                              />
+                            </div>
+                          </div>
+
+                          {/* Invoices List */}
+                          {isExpanded && (
+                            <div className="p-2 space-y-2 bg-black/20">
+                              {group.invoices.map((invoice) => {
+                                const invoiceStatusConfig: Record<string, { bg: string; text: string; label: string }> = {
+                                  PENDING_ADMIN: { bg: 'bg-yellow-500/20', text: 'text-yellow-400', label: 'ממתין לאישור' },
+                                  APPROVED: { bg: 'bg-green-500/20', text: 'text-green-400', label: 'מאושר' },
+                                  REJECTED: { bg: 'bg-red-500/20', text: 'text-red-400', label: 'נדחה' },
+                                  PAID: { bg: 'bg-blue-500/20', text: 'text-blue-400', label: 'שולם' },
+                                  PENDING_SUPPLIER_PAY: { bg: 'bg-purple-500/20', text: 'text-purple-400', label: 'ממתין לתשלום' },
+                                  OVERDUE: { bg: 'bg-orange-500/20', text: 'text-orange-400', label: 'באיחור' },
+                                };
+                                const status = invoiceStatusConfig[invoice.status] || { bg: 'bg-gray-500/20', text: 'text-gray-400', label: invoice.status };
+
+                                return (
+                                  <div
+                                    key={invoice.id}
+                                    onClick={() => setSelectedInvoice(invoice)}
+                                    className={`p-3 rounded-lg cursor-pointer transition-all flex items-center justify-between ${
+                                      selectedInvoice?.id === invoice.id
+                                        ? 'border border-gold-400/50 bg-gold-400/10'
+                                        : 'border border-white/5 bg-white/5 hover:border-white/20'
+                                    }`}
+                                  >
+                                    <div className="flex items-center gap-3">
+                                      <div className={`p-1.5 rounded-lg ${status.bg}`}>
+                                        <Receipt size={14} className={status.text} />
+                                      </div>
+                                      <div>
+                                        <p className="text-white font-medium text-sm">₪{invoice.amount.toLocaleString()}</p>
+                                        <p className="text-white/40 text-xs">
+                                          {invoice.supplier.companyName || invoice.supplier.user.name}
+                                        </p>
+                                      </div>
+                                    </div>
+                                    <div className="flex items-center gap-3">
+                                      <div className="text-left">
+                                        <span className={`px-2 py-0.5 rounded-full text-xs ${status.bg} ${status.text}`}>
+                                          {status.label}
+                                        </span>
+                                        <p className="text-white/30 text-xs mt-1">
+                                          {new Date(invoice.createdAt).toLocaleDateString('he-IL')}
+                                        </p>
+                                      </div>
+                                      <button
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          handleDeleteInvoice(invoice.id);
+                                        }}
+                                        disabled={deletingInvoice === invoice.id}
+                                        className="p-1.5 rounded-lg hover:bg-red-500/20 text-red-400 transition-colors disabled:opacity-50"
+                                        title="מחק חשבונית"
+                                      >
+                                        {deletingInvoice === invoice.id ? (
+                                          <Loader2 size={14} className="animate-spin" />
+                                        ) : (
+                                          <Trash2 size={14} />
+                                        )}
+                                      </button>
+                                    </div>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </GlassCard>
+
+              {/* Selected Invoice Details */}
+              <GlassCard hover={false} className="h-fit sticky top-6">
+                <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                  <FileText className="text-gold-400" size={20} />
+                  פרטי החשבונית
+                </h2>
+
+                {selectedInvoice ? (
+                  <div className="space-y-4">
+                    {/* Invoice Image */}
+                    <div className="relative aspect-video rounded-lg overflow-hidden bg-black/30">
+                      {selectedInvoice.imageUrl.toLowerCase().endsWith('.pdf') ? (
+                        // PDF Display
+                        <div className="w-full h-full flex flex-col items-center justify-center p-4">
+                          <div className="w-16 h-20 bg-red-500/20 border-2 border-red-500/50 rounded-lg flex items-center justify-center mb-3">
+                            <FileIcon size={32} className="text-red-400" />
+                          </div>
+                          <p className="text-white font-medium mb-3">קובץ PDF</p>
+                          <div className="flex gap-2">
+                            <a
+                              href={selectedInvoice.imageUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="px-3 py-1.5 rounded-lg bg-white/10 text-white hover:bg-white/20 transition-colors flex items-center gap-1.5 text-sm"
+                            >
+                              <Eye size={14} />
+                              פתח
+                            </a>
+                            <a
+                              href={selectedInvoice.imageUrl}
+                              download
+                              className="px-3 py-1.5 rounded-lg bg-gold-500 text-black hover:bg-gold-400 transition-colors flex items-center gap-1.5 text-sm"
+                            >
+                              <Download size={14} />
+                              הורד
+                            </a>
+                          </div>
+                        </div>
+                      ) : (
+                        // Image Display
+                        <>
+                          <img
+                            src={selectedInvoice.imageUrl}
+                            alt="Invoice"
+                            className="w-full h-full object-contain"
+                          />
+                          <a
+                            href={selectedInvoice.imageUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="absolute top-2 left-2 p-2 rounded-lg bg-black/50 text-white hover:bg-black/70 transition-colors"
+                          >
+                            <Eye size={18} />
+                          </a>
+                        </>
+                      )}
+                    </div>
+
+                    {/* Invoice Details */}
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-white/60 text-sm">סכום</label>
+                        <p className="text-2xl font-bold text-gold-400">₪{selectedInvoice.amount.toLocaleString()}</p>
+                      </div>
+                      <div>
+                        <label className="text-white/60 text-sm">סטטוס</label>
+                        <p className={`font-medium ${
+                          selectedInvoice.status === 'PENDING_ADMIN' ? 'text-yellow-400' :
+                          selectedInvoice.status === 'APPROVED' ? 'text-green-400' :
+                          selectedInvoice.status === 'REJECTED' ? 'text-red-400' : 'text-white'
+                        }`}>
+                          {selectedInvoice.status === 'PENDING_ADMIN' ? 'ממתין לאישור' :
+                           selectedInvoice.status === 'APPROVED' ? 'מאושר' :
+                           selectedInvoice.status === 'REJECTED' ? 'נדחה' :
+                           selectedInvoice.status === 'PAID' ? 'שולם' : selectedInvoice.status}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4 pt-4 border-t border-white/10">
+                      <div>
+                        <label className="text-white/60 text-sm">אדריכל</label>
+                        <p className="text-white font-medium">{selectedInvoice.architect.user.name}</p>
+                        <p className="text-white/50 text-xs">{selectedInvoice.architect.user.email}</p>
+                      </div>
+                      <div>
+                        <label className="text-white/60 text-sm">ספק</label>
+                        <p className="text-white font-medium">{selectedInvoice.supplier.companyName || selectedInvoice.supplier.user.name}</p>
+                        <p className="text-white/50 text-xs">{selectedInvoice.supplier.user.email}</p>
+                      </div>
+                    </div>
+
+                    {/* AI Analysis */}
+                    {selectedInvoice.aiExtractedAmount !== null && selectedInvoice.aiExtractedAmount !== undefined && (
+                      <div className={`p-3 rounded-lg ${
+                        selectedInvoice.aiStatus === 'MATCH' ? 'bg-green-500/20 border border-green-500/30' :
+                        'bg-yellow-500/20 border border-yellow-500/30'
+                      }`}>
+                        <p className="text-sm text-white/60 mb-1">ניתוח AI</p>
+                        <div className="flex items-center justify-between">
+                          <span className={selectedInvoice.aiStatus === 'MATCH' ? 'text-green-400' : 'text-yellow-400'}>
+                            סכום שזוהה: ₪{selectedInvoice.aiExtractedAmount.toLocaleString()}
+                          </span>
+                          <span className="text-white/60 text-sm">
+                            ביטחון: {Math.round((selectedInvoice.aiConfidence || 0) * 100)}%
+                          </span>
+                        </div>
+                      </div>
+                    )}
+
+                    <div className="pt-4 border-t border-white/10">
+                      <label className="text-white/60 text-sm">תאריך העלאה</label>
+                      <p className="text-white">{new Date(selectedInvoice.createdAt).toLocaleString('he-IL')}</p>
+                    </div>
+
+                    {/* Action Buttons */}
+                    {selectedInvoice.status === 'PENDING_ADMIN' && (
+                      <div className="flex gap-3 pt-4">
+                        <button
+                          onClick={() => handleVerifyInvoice(selectedInvoice.id, 'APPROVED')}
+                          disabled={processingInvoice === selectedInvoice.id}
+                          className="flex-1 btn-gold flex items-center justify-center gap-2 disabled:opacity-50"
+                        >
+                          {processingInvoice === selectedInvoice.id ? (
+                            <Loader2 size={18} className="animate-spin" />
+                          ) : (
+                            <CheckCircle size={18} />
+                          )}
+                          אשר חשבונית
+                        </button>
+                        <button
+                          onClick={async () => {
+                            const result = await Swal.fire({
+                              title: 'דחיית חשבונית',
+                              text: 'האם אתה בטוח שברצונך לדחות את החשבונית?',
+                              input: 'textarea',
+                              inputPlaceholder: 'סיבת הדחייה (אופציונלי)',
+                              icon: 'warning',
+                              showCancelButton: true,
+                              confirmButtonText: 'דחה',
+                              cancelButtonText: 'ביטול',
+                              confirmButtonColor: '#dc2626',
+                              background: '#1a1a2e',
+                              color: '#fff',
+                            });
+                            if (result.isConfirmed) {
+                              handleVerifyInvoice(selectedInvoice.id, 'REJECTED', result.value || undefined);
+                            }
+                          }}
+                          disabled={processingInvoice === selectedInvoice.id}
+                          className="flex-1 btn-secondary flex items-center justify-center gap-2 text-red-400 border-red-500/30 hover:bg-red-500/20 disabled:opacity-50"
+                        >
+                          <Ban size={18} />
+                          דחה
+                        </button>
+                      </div>
+                    )}
+
+                    {/* Delete Button */}
+                    <button
+                      onClick={() => handleDeleteInvoice(selectedInvoice.id)}
+                      disabled={deletingInvoice === selectedInvoice.id}
+                      className="w-full btn-secondary flex items-center justify-center gap-2 text-red-400 border-red-500/30 hover:bg-red-500/20 disabled:opacity-50"
+                    >
+                      {deletingInvoice === selectedInvoice.id ? (
+                        <Loader2 size={18} className="animate-spin" />
+                      ) : (
+                        <Trash2 size={18} />
+                      )}
+                      מחק חשבונית
+                    </button>
+
+                    {selectedInvoice.adminNote && (
+                      <div className="p-3 rounded-lg bg-white/5 border border-white/10">
+                        <p className="text-sm text-white/60 mb-1 flex items-center gap-1">
+                          <MessageSquare size={14} />
+                          הערת מנהל
+                        </p>
+                        <p className="text-white">{selectedInvoice.adminNote}</p>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div className="text-center py-12">
+                    <Receipt className="w-16 h-16 mx-auto text-white/20 mb-4" />
+                    <p className="text-white/50">בחר חשבונית מהרשימה לצפייה בפרטים</p>
+                  </div>
+                )}
+              </GlassCard>
+            </div>
+          </motion.div>
+        )}
+
+        {/* Recycle Bin Tab */}
+        {activeTab === 'recycle-bin' && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+          >
+            <GlassCard hover={false}>
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-xl font-semibold text-white flex items-center gap-2">
+                  <Trash className="text-red-400" />
+                  סל מחזור ({deletedInvoices.length} חשבוניות)
+                </h2>
+                {deletedInvoices.length > 0 && (
+                  <button
+                    onClick={handleCleanupRecycleBin}
+                    disabled={refreshing}
+                    className="btn-secondary flex items-center gap-2 text-red-400 border-red-500/30 hover:bg-red-500/20 disabled:opacity-50"
+                  >
+                    {refreshing ? (
+                      <Loader2 size={18} className="animate-spin" />
+                    ) : (
+                      <Trash2 size={18} />
+                    )}
+                    נקה ישנים (30+ יום)
+                  </button>
+                )}
+              </div>
+
+              <p className="text-white/50 text-sm mb-6">
+                חשבוניות שנמחקו יישמרו כאן למשך 30 יום לפני מחיקה לצמיתות.
+              </p>
+
+              {deletedInvoices.length === 0 ? (
+                <div className="text-center py-16">
+                  <Trash className="w-20 h-20 mx-auto text-white/20 mb-4" />
+                  <p className="text-white text-xl font-medium">סל המחזור ריק</p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {deletedInvoices.map((invoice) => {
+                    const deletedDate = invoice.deletedAt ? new Date(invoice.deletedAt) : new Date();
+                    const daysUntilPermanentDelete = Math.max(0, 30 - Math.floor((Date.now() - deletedDate.getTime()) / (1000 * 60 * 60 * 24)));
+
+                    return (
+                      <div
+                        key={invoice.id}
+                        className="p-4 rounded-lg border border-white/10 bg-white/5 flex items-center justify-between"
+                      >
+                        <div className="flex items-center gap-4">
+                          <div className="p-2 rounded-lg bg-red-500/20">
+                            <Receipt size={20} className="text-red-400" />
+                          </div>
+                          <div>
+                            <p className="text-white font-medium">₪{invoice.amount.toLocaleString()}</p>
+                            <p className="text-white/50 text-sm">{invoice.architect.user.name}</p>
+                            <p className="text-white/30 text-xs">
+                              נמחק: {deletedDate.toLocaleDateString('he-IL')} •
+                              <span className={daysUntilPermanentDelete <= 7 ? 'text-red-400' : 'text-white/40'}>
+                                {' '}{daysUntilPermanentDelete} ימים למחיקה לצמיתות
+                              </span>
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={() => handleRestoreInvoice(invoice.id)}
+                            disabled={restoringInvoice === invoice.id}
+                            className="btn-secondary flex items-center gap-2 text-green-400 border-green-500/30 hover:bg-green-500/20 disabled:opacity-50"
+                          >
+                            {restoringInvoice === invoice.id ? (
+                              <Loader2 size={16} className="animate-spin" />
+                            ) : (
+                              <RotateCcw size={16} />
+                            )}
+                            שחזר
+                          </button>
+                          <button
+                            onClick={() => handlePermanentDelete(invoice.id)}
+                            disabled={deletingInvoice === invoice.id}
+                            className="btn-secondary flex items-center gap-2 text-red-400 border-red-500/30 hover:bg-red-500/20 disabled:opacity-50"
+                          >
+                            {deletingInvoice === invoice.id ? (
+                              <Loader2 size={16} className="animate-spin" />
+                            ) : (
+                              <XCircle size={16} />
+                            )}
+                            מחק לצמיתות
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
               )}
             </GlassCard>

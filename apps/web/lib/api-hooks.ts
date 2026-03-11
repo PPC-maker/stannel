@@ -37,6 +37,7 @@ export function useInvoices() {
       const response = await invoicesApi.getAll();
       return response.data;
     },
+    refetchInterval: 10000, // Auto-refresh every 10 seconds
   });
 }
 
@@ -44,6 +45,7 @@ export function useInvoiceStats() {
   return useQuery({
     queryKey: ['invoices', 'stats'],
     queryFn: () => invoicesApi.getStats(),
+    refetchInterval: 10000, // Auto-refresh every 10 seconds
   });
 }
 
@@ -55,10 +57,11 @@ export function useInvoice(id: string) {
   });
 }
 
-export function useSuppliers() {
+export function useSuppliers(enabled: boolean = true) {
   return useQuery({
     queryKey: ['suppliers'],
     queryFn: () => invoicesApi.getSuppliers(),
+    enabled,
   });
 }
 

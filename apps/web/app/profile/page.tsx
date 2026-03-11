@@ -7,6 +7,7 @@ import Image from 'next/image';
 import GlassCard from '@/components/layout/GlassCard';
 import PageSlider, { sliderImages } from '@/components/layout/PageSlider';
 import { useAuth } from '@/lib/auth-context';
+import { useAuthGuard, AuthGuardLoader } from '@/lib/useAuthGuard';
 import { useWalletBalance, useInvoices } from '@/lib/api-hooks';
 import {
   User,
@@ -37,6 +38,7 @@ function formatDate(dateStr: string): string {
 }
 
 export default function ProfilePage() {
+  const { isReady } = useAuthGuard();
   const router = useRouter();
   const searchParams = useSearchParams();
   const { user } = useAuth();
@@ -55,6 +57,33 @@ export default function ProfilePage() {
     address: '',
   });
 
+  // ALL useEffect hooks must be called before any conditional returns
+  // Check URL params for edit mode
+  useEffect(() => {
+    if (isReady && searchParams.get('edit') === 'true') {
+      setIsEditing(true);
+    }
+    if (isReady && searchParams.get('edit') === 'photo') {
+      setShowPhotoModal(true);
+    }
+  }, [searchParams, isReady]);
+
+  // Initialize edit data from user
+  useEffect(() => {
+    if (isReady && user) {
+      setEditData({
+        name: user.name || '',
+        phone: user.phone || '',
+        company: user.supplierProfile?.companyName || '',
+        address: '',
+      });
+    }
+  }, [user, isReady]);
+
+  if (!isReady) {
+    return <AuthGuardLoader />;
+  }
+
   // Function to scroll to profile and highlight
   const scrollToEditProfile = () => {
     // Scroll to top smoothly
@@ -67,28 +96,6 @@ export default function ProfilePage() {
     setHighlightProfile(true);
     setTimeout(() => setHighlightProfile(false), 2000);
   };
-
-  // Check URL params for edit mode
-  useEffect(() => {
-    if (searchParams.get('edit') === 'true') {
-      setIsEditing(true);
-    }
-    if (searchParams.get('edit') === 'photo') {
-      setShowPhotoModal(true);
-    }
-  }, [searchParams]);
-
-  // Initialize edit data from user
-  useEffect(() => {
-    if (user) {
-      setEditData({
-        name: user.name || '',
-        phone: user.phone || '',
-        company: user.supplierProfile?.companyName || '',
-        address: '',
-      });
-    }
-  }, [user]);
 
   const currentUser = {
     id: user?.id || '1',

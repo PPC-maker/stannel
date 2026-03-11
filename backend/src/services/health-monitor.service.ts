@@ -1,10 +1,11 @@
 // Health Monitor Service - STANNEL Platform
 // Daily system health checks and status reports
 
-import { emailService } from './email.service.js';
+import { emailService, EMAIL_DESTINATIONS } from './email.service.js';
 import { prisma } from '../lib/prisma.js';
 
-const ADMIN_EMAILS = ['orenshp77@gmail.com'];
+// Use centralized email destinations
+const ADMIN_EMAILS = EMAIL_DESTINATIONS.systemReports;
 
 interface HealthCheck {
   name: string;
@@ -217,16 +218,16 @@ export const healthMonitorService = {
    * Initialize daily health check scheduler
    */
   initDailyScheduler(): void {
-    // Send report daily at 9:00 AM Israel time
+    // Send report daily at 1:00 AM Israel time
     const scheduleNextReport = () => {
       const now = new Date();
-      const targetHour = 9; // 9:00 AM
+      const targetHour = 1; // 1:00 AM
 
-      // Calculate next 9:00 AM
+      // Calculate next 1:00 AM
       const nextReport = new Date(now);
       nextReport.setHours(targetHour, 0, 0, 0);
 
-      // If it's already past 9 AM today, schedule for tomorrow
+      // If it's already past 1 AM today, schedule for tomorrow
       if (now.getHours() >= targetHour) {
         nextReport.setDate(nextReport.getDate() + 1);
       }

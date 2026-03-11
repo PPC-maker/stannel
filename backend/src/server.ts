@@ -4,6 +4,10 @@ import Fastify from 'fastify';
 import cors from '@fastify/cors';
 import multipart from '@fastify/multipart';
 import rateLimit from '@fastify/rate-limit';
+import fastifyStatic from '@fastify/static';
+import websocket from '@fastify/websocket';
+import * as path from 'path';
+import * as fs from 'fs';
 
 // Initialize config and Firebase FIRST
 import { validateEnv } from './lib/config.js';
@@ -12,6 +16,7 @@ import { schedulerService } from './services/scheduler.service.js';
 import { healthMonitorService } from './services/health-monitor.service.js';
 import { systemScannerService } from './services/system-scanner.service.js';
 import { securityMiddleware, securityHeadersMiddleware } from './middleware/security.middleware.js';
+import { wsService } from './services/websocket.service.js';
 
 // Validate environment variables
 validateEnv();
@@ -78,6 +83,23 @@ async function registerPlugins() {
     max: 100,
     timeWindow: '1 minute',
   });
+
+  // WebSocket for real-time updates
+  await server.register(websocket);
+
+  // Static file serving for local uploads (development only)
+  if (process.env.NODE_ENV === 'development') {
+    const uploadsDir = path.join(process.cwd(), 'uploads');
+    if (!fs.existsSync(uploadsDir)) {
+      fs.mkdirSync(uploadsDir, { recursive: true });
+    }
+    await server.register(fastifyStatic, {
+      root: uploadsDir,
+      prefix: '/uploads/',
+      decorateReply: false,
+    });
+    console.log('[Server] Static file serving enabled for /uploads/');
+  }
 }
 
 // Register security hooks
@@ -102,6 +124,25 @@ server.get('/health', async () => {
   return { status: 'ok', timestamp: new Date().toISOString() };
 });
 
+// WebSocket endpoint - registered after plugins in start()
+function registerWebSocket() {
+  server.get('/ws', { websocket: true }, (socket, req) => {
+    console.log('[WebSocket] New connection');
+    wsService.addClient(socket);
+
+    socket.on('message', (message) => {
+      try {
+        const data = JSON.parse(message.toString());
+        if (data.type === 'ping') {
+          socket.send(JSON.stringify({ type: 'pong', timestamp: new Date().toISOString() }));
+        }
+      } catch (e) {
+        // Ignore invalid JSON
+      }
+    });
+  });
+}
+
 // Root endpoint
 server.get('/', async () => {
   return {
@@ -115,6 +156,7 @@ server.get('/', async () => {
 async function start() {
   try {
     await registerPlugins();
+    registerWebSocket(); // Register WebSocket after plugins
     await registerRoutes();
 
     const port = parseInt(process.env.PORT || '8080', 10);
@@ -122,6 +164,7 @@ async function start() {
 
     await server.listen({ port, host });
     console.log(`🚀 STANNEL API Server running on http://${host}:${port}`);
+    console.log(`📡 WebSocket available at ws://${host}:${port}/ws`);
   } catch (err) {
     server.log.error(err);
     process.exit(1);

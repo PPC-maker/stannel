@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, User, LogOut, Settings, Wallet, FileText, Gift, Calendar, Home, LogIn, Bot } from 'lucide-react';
 import { useAuth } from '@/lib/auth-context';
+import Swal from 'sweetalert2';
 
 const publicLinks = [
   { href: '/', label: 'דף הבית', icon: Home },
@@ -104,9 +105,31 @@ export default function Navbar() {
                     </Link>
                     <hr className="my-2 border-white/10" />
                     <button
-                      onClick={() => {
-                        logout();
+                      onClick={async () => {
                         setIsProfileOpen(false);
+                        await logout();
+                        await Swal.fire({
+                          title: 'התנתקת מהמערכת',
+                          html: '<p style="color: rgba(255,255,255,0.7); font-size: 1.1rem;">נשמח לראותך שוב בקרוב!</p>',
+                          icon: 'success',
+                          iconColor: '#d4af37',
+                          confirmButtonText: 'להתראות',
+                          confirmButtonColor: '#d4af37',
+                          background: 'linear-gradient(135deg, #0a1628 0%, #1a3a6b 100%)',
+                          color: '#ffffff',
+                          backdrop: 'rgba(0,0,0,0.8)',
+                          customClass: {
+                            popup: 'glass-swal-popup',
+                            title: 'swal-title-rtl',
+                            confirmButton: 'swal-confirm-gold',
+                          },
+                          showClass: {
+                            popup: 'animate__animated animate__fadeInDown animate__faster'
+                          },
+                          hideClass: {
+                            popup: 'animate__animated animate__fadeOutUp animate__faster'
+                          }
+                        });
                         router.push('/');
                       }}
                       className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-500/20 text-white/80 hover:text-red-400 transition-colors w-full"

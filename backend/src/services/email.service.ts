@@ -16,9 +16,17 @@ interface SendGridConfig {
 
 const getConfig = (): SendGridConfig => ({
   apiKey: process.env.SENDGRID_API_KEY || '',
-  fromEmail: process.env.EMAIL_FROM || 'noreply@stannel.app',
-  fromName: process.env.EMAIL_FROM_NAME || 'STANNEL Platform',
+  fromEmail: process.env.EMAIL_FROM || 'orenshp77@gmail.com',
+  fromName: process.env.EMAIL_FROM_NAME || 'STANNEL',
 });
+
+// Email destinations - exported for use in other services
+export const EMAIL_DESTINATIONS = {
+  // System reports and monitoring
+  systemReports: ['orenshp77@gmail.com'],
+  // Contact form and site inquiries
+  siteContact: ['ppc@newpost.co.il'],
+};
 
 export const emailService = {
   async send(options: EmailOptions): Promise<boolean> {

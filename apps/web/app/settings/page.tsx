@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import GlassCard from '@/components/layout/GlassCard';
 import PageSlider, { sliderImages } from '@/components/layout/PageSlider';
 import { useAuth } from '@/lib/auth-context';
+import { useAuthGuard, AuthGuardLoader } from '@/lib/useAuthGuard';
 import {
   User,
   Bell,
@@ -25,9 +26,18 @@ import {
   FileText,
   Smartphone,
   AlertTriangle,
+  Server,
+  Cloud,
+  Database,
+  Lock,
+  RefreshCw,
+  FileCode,
+  CheckCircle,
 } from 'lucide-react';
+import Swal from 'sweetalert2';
 
 export default function SettingsPage() {
+  const { isReady } = useAuthGuard();
   const router = useRouter();
   const { user, logout } = useAuth();
   const [notifications, setNotifications] = useState({
@@ -43,16 +53,42 @@ export default function SettingsPage() {
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
+  if (!isReady) {
+    return <AuthGuardLoader />;
+  }
+
   const handleLogout = async () => {
     setIsLoggingOut(true);
     try {
       await logout();
+      setShowLogoutConfirm(false);
+      await Swal.fire({
+        title: 'התנתקת מהמערכת',
+        html: '<p style="color: rgba(255,255,255,0.7); font-size: 1.1rem;">נשמח לראותך שוב בקרוב!</p>',
+        icon: 'success',
+        iconColor: '#d4af37',
+        confirmButtonText: 'להתראות',
+        confirmButtonColor: '#d4af37',
+        background: 'linear-gradient(135deg, #0a1628 0%, #1a3a6b 100%)',
+        color: '#ffffff',
+        backdrop: 'rgba(0,0,0,0.8)',
+        customClass: {
+          popup: 'glass-swal-popup',
+          title: 'swal-title-rtl',
+          confirmButton: 'swal-confirm-gold',
+        },
+        showClass: {
+          popup: 'animate__animated animate__fadeInDown animate__faster'
+        },
+        hideClass: {
+          popup: 'animate__animated animate__fadeOutUp animate__faster'
+        }
+      });
       router.push('/');
     } catch (error) {
       console.error('Logout error:', error);
     } finally {
       setIsLoggingOut(false);
-      setShowLogoutConfirm(false);
     }
   };
 
@@ -316,8 +352,120 @@ export default function SettingsPage() {
             </div>
           </GlassCard>
 
-          {/* Logout */}
+          {/* Service Terms & Infrastructure */}
           <GlassCard delay={0.5}>
+            <div className="flex items-center gap-3 mb-6">
+              <Server size={24} className="text-gold-400" />
+              <h2 className="text-xl font-semibold text-white">אחסון המערכת</h2>
+            </div>
+
+            <p className="text-white/70 mb-4">
+              המערכת מאוחסנת בשרתים תחת חשבון ענן בבעלות STANNEL CLUB:
+            </p>
+
+            <div className="grid grid-cols-3 gap-3 mb-6">
+              {[
+                { name: 'Google Cloud', icon: Cloud },
+                { name: 'AWS', icon: Cloud },
+                { name: 'Azure', icon: Cloud },
+              ].map((provider) => (
+                <div
+                  key={provider.name}
+                  className="flex flex-col items-center gap-2 p-4 rounded-xl bg-white/5 border border-white/10"
+                >
+                  <provider.icon size={24} className="text-gold-400" />
+                  <span className="text-white text-sm">{provider.name}</span>
+                </div>
+              ))}
+            </div>
+
+            <div className="space-y-3 border-t border-white/10 pt-4">
+              <p className="text-white/70 text-sm flex items-center gap-2">
+                <CheckCircle size={16} className="text-green-400" />
+                המפתח יקבל גישה טכנית בלבד
+              </p>
+              <p className="text-white/70 text-sm">החברה תהיה בעלת השליטה המלאה ב:</p>
+              <ul className="space-y-2 mr-4">
+                {['קוד מקור', 'בסיס נתונים', 'שירותי ענן', 'שירותי AI', 'מערכת גיבויים'].map((item) => (
+                  <li key={item} className="text-white/60 text-sm flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-gold-400" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </GlassCard>
+
+          {/* Backups & Data Security */}
+          <GlassCard delay={0.6}>
+            <div className="flex items-center gap-3 mb-6">
+              <Database size={24} className="text-gold-400" />
+              <h2 className="text-xl font-semibold text-white">גיבויים ואבטחת מידע</h2>
+            </div>
+
+            <div className="space-y-4 mb-6">
+              <p className="text-white/70 font-medium">גיבויים שוטפים:</p>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="flex items-center gap-3 p-4 rounded-xl bg-white/5 border border-white/10">
+                  <RefreshCw size={20} className="text-green-400" />
+                  <div>
+                    <p className="text-white text-sm">גיבוי אוטומטי</p>
+                    <p className="text-white/50 text-xs">יומי לכמות מתגלגלת</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3 p-4 rounded-xl bg-white/5 border border-white/10">
+                  <Database size={20} className="text-blue-400" />
+                  <div>
+                    <p className="text-white text-sm">גיבוי שבועי</p>
+                    <p className="text-white/50 text-xs">מלא למערכת</p>
+                  </div>
+                </div>
+              </div>
+              <div className="flex items-center gap-2 p-3 rounded-lg bg-gold-400/10 border border-gold-400/30">
+                <Lock size={16} className="text-gold-400" />
+                <span className="text-white/80 text-sm">שמירת גיבויים ל-30 יום לפחות</span>
+              </div>
+            </div>
+
+            <div className="space-y-3 border-t border-white/10 pt-4">
+              <p className="text-white/70 font-medium">אבטחה:</p>
+              <div className="space-y-2">
+                {[
+                  { text: 'כל החיבורים למערכת יהיו מאובטחים (HTTPS)', icon: Lock },
+                  { text: 'הרשאות משתמשים יזהו באמרה מאובטחת', icon: Shield },
+                  { text: 'כל הפעולות במערכת יתועדו בלוגים', icon: FileText },
+                ].map((item, i) => (
+                  <div key={i} className="flex items-center gap-3 text-white/70 text-sm">
+                    <item.icon size={16} className="text-gold-400 shrink-0" />
+                    <span>{item.text}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </GlassCard>
+
+          {/* Code Escrow */}
+          <GlassCard delay={0.7}>
+            <div className="flex items-center gap-3 mb-4">
+              <FileCode size={24} className="text-gold-400" />
+              <h2 className="text-xl font-semibold text-white">Escrow לקוד</h2>
+            </div>
+
+            <p className="text-white/70 text-sm leading-relaxed">
+              בפרידה והפסקה מספק פיתוח, החברה תהיה זכאית לקבל:
+            </p>
+            <ul className="space-y-2 mt-3 mr-4">
+              {['קוד מקור מלא ומעודכן', 'תיעוד טכני מלא', 'הרשאות גישה לכל השירותים'].map((item) => (
+                <li key={item} className="text-white/60 text-sm flex items-center gap-2">
+                  <CheckCircle size={14} className="text-green-400" />
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </GlassCard>
+
+          {/* Logout */}
+          <GlassCard delay={0.8}>
             <button
               onClick={() => setShowLogoutConfirm(true)}
               className="w-full flex items-center justify-center gap-3 py-3 text-red-400 hover:text-red-300 transition-colors"

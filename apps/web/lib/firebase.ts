@@ -7,9 +7,11 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   signInWithPopup,
+  signInWithCustomToken,
   GoogleAuthProvider,
   signOut,
   onAuthStateChanged,
+  sendPasswordResetEmail,
   User
 } from 'firebase/auth';
 
@@ -137,6 +139,20 @@ export async function getIdToken(): Promise<string | null> {
   const user = await getCurrentUser();
   if (!user) return null;
   return user.getIdToken();
+}
+
+export async function loginWithCustomToken(customToken: string) {
+  const auth = getFirebaseAuth();
+  if (!auth) throw new Error('Firebase not configured');
+  const result = await signInWithCustomToken(auth, customToken);
+  const token = await result.user.getIdToken();
+  return { user: result.user, token };
+}
+
+export async function resetPassword(email: string): Promise<void> {
+  const auth = getFirebaseAuth();
+  if (!auth) throw new Error('Firebase not configured');
+  await sendPasswordResetEmail(auth, email);
 }
 
 export { auth, app };

@@ -6,6 +6,7 @@ import { getFirebaseAuth, logout as firebaseLogout } from './firebase';
 import { authApi, setAuthToken } from '@stannel/api-client';
 import type { AuthUser } from '@stannel/types';
 import { UserRole } from '@stannel/types';
+import Swal from 'sweetalert2';
 
 interface AuthContextType {
   firebaseUser: User | null;
@@ -65,10 +66,39 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           } catch (verifyErr) {
             // User not in DB - try auto-register via Google endpoint
             const errMsg = verifyErr instanceof Error ? verifyErr.message : '';
-            if (errMsg.includes('not found') || errMsg.includes('404')) {
+
+            // Check if pending approval error
+            if (errMsg.includes('ממתין לאישור') || errMsg.includes('pending-approval')) {
+              await firebaseLogout();
+              setAuthToken(null);
+              setUser(null);
+              Swal.fire({
+                title: 'ממתין לאישור',
+                text: 'החשבון שלך ממתין לאישור מנהל. נודיע לך כשהחשבון יאושר.',
+                icon: 'info',
+                confirmButtonText: 'הבנתי',
+                background: '#1a1a2e',
+                color: '#fff',
+              });
+            } else if (errMsg.includes('not found') || errMsg.includes('404')) {
               try {
                 const response = await authApi.googleAuth(token);
-                setUser(response.user);
+                // Check if new user needs approval
+                if (!response.user.isActive && response.user.role !== 'ADMIN') {
+                  await firebaseLogout();
+                  setAuthToken(null);
+                  setUser(null);
+                  Swal.fire({
+                    title: response.isNewUser ? 'נרשמת בהצלחה!' : 'ממתין לאישור',
+                    text: 'החשבון שלך ממתין לאישור מנהל. נודיע לך כשהחשבון יאושר.',
+                    icon: 'info',
+                    confirmButtonText: 'הבנתי',
+                    background: '#1a1a2e',
+                    color: '#fff',
+                  });
+                } else {
+                  setUser(response.user);
+                }
               } catch {
                 setUser(null);
               }
@@ -106,6 +136,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return response.user;
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Login failed';
+
+      // Check if pending approval error
+      if (message.includes('ממתין לאישור') || message.includes('pending-approval')) {
+        await firebaseLogout();
+        setAuthToken(null);
+        setUser(null);
+        Swal.fire({
+          title: 'ממתין לאישור',
+          text: 'החשבון שלך ממתין לאישור מנהל. נודיע לך כשהחשבון יאושר.',
+          icon: 'info',
+          confirmButtonText: 'הבנתי',
+          background: '#1a1a2e',
+          color: '#fff',
+        });
+        return null;
+      }
+
       setError(message);
       throw err;
     } finally {
@@ -126,10 +173,44 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       // Use googleAuth which auto-registers if user doesn't exist
       const response = await authApi.googleAuth(token);
+
+      // Check if user needs approval (new user or existing inactive)
+      if (!response.user.isActive && response.user.role !== 'ADMIN') {
+        await firebaseLogout();
+        setAuthToken(null);
+        setUser(null);
+        Swal.fire({
+          title: response.isNewUser ? 'נרשמת בהצלחה!' : 'ממתין לאישור',
+          text: 'החשבון שלך ממתין לאישור מנהל. נודיע לך כשהחשבון יאושר.',
+          icon: 'info',
+          confirmButtonText: 'הבנתי',
+          background: '#1a1a2e',
+          color: '#fff',
+        });
+        return null;
+      }
+
       setUser(response.user);
       return response.user;
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Google login failed';
+
+      // Check if pending approval error
+      if (message.includes('ממתין לאישור') || message.includes('pending-approval')) {
+        await firebaseLogout();
+        setAuthToken(null);
+        setUser(null);
+        Swal.fire({
+          title: 'ממתין לאישור',
+          text: 'החשבון שלך ממתין לאישור מנהל. נודיע לך כשהחשבון יאושר.',
+          icon: 'info',
+          confirmButtonText: 'הבנתי',
+          background: '#1a1a2e',
+          color: '#fff',
+        });
+        return null;
+      }
+
       setError(message);
       throw err;
     } finally {
@@ -182,6 +263,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
 
       const response = await authApi.register(payload);
+
+      // New user needs admin approval - show message and logout
+      if (!response.user.isActive && response.user.role !== 'ADMIN') {
+        await firebaseLogout();
+        setAuthToken(null);
+        setUser(null);
+        Swal.fire({
+          title: 'נרשמת בהצלחה!',
+          text: 'החשבון שלך ממתין לאישור מנהל. נודיע לך כשהחשבון יאושר.',
+          icon: 'success',
+          confirmButtonText: 'הבנתי',
+          background: '#1a1a2e',
+          color: '#fff',
+        });
+        return;
+      }
+
       setUser(response.user);
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Registration failed';

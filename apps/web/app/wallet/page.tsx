@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { useWalletBalance, useWalletCard, useWalletTransactions } from '@/lib/api-hooks';
 import { useAuth } from '@/lib/auth-context';
+import { useAuthGuard, AuthGuardLoader } from '@/lib/useAuthGuard';
 import Link from 'next/link';
 
 const rankConfig = {
@@ -25,6 +26,7 @@ const rankConfig = {
 };
 
 export default function WalletPage() {
+  const { isReady } = useAuthGuard();
   const { user } = useAuth();
   const { data: balance, isLoading: balanceLoading } = useWalletBalance();
   const { data: card, isLoading: cardLoading } = useWalletCard();
@@ -32,6 +34,10 @@ export default function WalletPage() {
 
   const rank = rankConfig[(card?.rank as keyof typeof rankConfig) || 'BRONZE'];
   const isLoading = balanceLoading || cardLoading;
+
+  if (!isReady) {
+    return <AuthGuardLoader />;
+  }
 
   return (
     <div className="relative">

@@ -7,6 +7,8 @@ import PageSlider, { sliderImages } from '@/components/layout/PageSlider';
 import { FileText, Upload, Search, Clock, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
 import Link from 'next/link';
 import { useInvoices } from '@/lib/api-hooks';
+import { useAuthGuard, AuthGuardLoader } from '@/lib/useAuthGuard';
+import { useAuth } from '@/lib/auth-context';
 
 const statusConfig = {
   PENDING_ADMIN: { label: 'ממתין לאישור', color: 'text-yellow-400', bg: 'bg-yellow-400/20', icon: Clock },
@@ -19,11 +21,19 @@ const statusConfig = {
 };
 
 export default function InvoicesPage() {
+  const { isReady } = useAuthGuard();
+  const { user } = useAuth();
   const [filter, setFilter] = useState('all');
   const [search, setSearch] = useState('');
 
+  const isArchitect = user?.role === 'ARCHITECT';
+
   const { data: invoices, isLoading } = useInvoices();
   const invoiceList = invoices || [];
+
+  if (!isReady) {
+    return <AuthGuardLoader />;
+  }
 
   const filteredInvoices = invoiceList.filter((inv: any) => {
     if (filter !== 'all' && inv.status !== filter) return false;
@@ -48,15 +58,19 @@ export default function InvoicesPage() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div>
           <h1 className="text-3xl font-display font-bold text-white">חשבוניות</h1>
-          <p className="text-white/60 mt-1">ניהול והעלאת חשבוניות לצבירת נקודות</p>
+          <p className="text-white/60 mt-1">
+            {isArchitect ? 'ניהול והעלאת חשבוניות לצבירת נקודות' : 'צפייה בחשבוניות שהועלו'}
+          </p>
         </div>
-        <Link
-          href="/invoices/upload"
-          className="btn-gold flex items-center gap-2 justify-center"
-        >
-          <Upload size={20} />
-          <span>העלאת חשבונית</span>
-        </Link>
+{isArchitect && (
+          <Link
+            href="/invoices/upload"
+            className="btn-gold flex items-center gap-2 justify-center"
+          >
+            <Upload size={20} />
+            <span>העלאת חשבונית</span>
+          </Link>
+        )}
       </div>
 
       {/* Stats Cards */}
@@ -145,7 +159,8 @@ export default function InvoicesPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.05 }}
             >
-              <GlassCard hover className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <Link href={`/invoices/${invoice.id}`}>
+              <GlassCard hover className="flex flex-col md:flex-row md:items-center justify-between gap-4 cursor-pointer">
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center">
                     <FileText size={24} className="text-white/60" />
@@ -180,6 +195,7 @@ export default function InvoicesPage() {
                   </div>
                 </div>
               </GlassCard>
+              </Link>
             </motion.div>
           );
         })}

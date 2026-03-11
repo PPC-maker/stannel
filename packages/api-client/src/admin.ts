@@ -1,6 +1,6 @@
 // Admin API Client
 
-import { config, getHeaders } from './config';
+import { config, getHeaders, getHeadersNoBody } from './config';
 import type { SystemLog, SystemLogStats, SystemLogSeverity, SystemLogCategory, PaginatedResponse } from '@stannel/types';
 
 export interface HealthReport {
@@ -214,8 +214,37 @@ export const adminApi = {
     return res.json();
   },
 
+  async loginAsUser(userId: string): Promise<{ customToken: string }> {
+    const res = await fetch(`${config.baseUrl}/admin/users/${userId}/login-as`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify({}),
+    });
+
+    if (!res.ok) {
+      const error = await res.json().catch(() => ({ message: 'Failed to login as user' }));
+      throw new Error(error.message || 'Failed to login as user');
+    }
+
+    return res.json();
+  },
+
+  async deleteUser(userId: string): Promise<{ success: boolean }> {
+    const res = await fetch(`${config.baseUrl}/admin/users/${userId}`, {
+      method: 'DELETE',
+      headers: getHeadersNoBody(),
+    });
+
+    if (!res.ok) {
+      const error = await res.json().catch(() => ({ message: 'Failed to delete user' }));
+      throw new Error(error.message || 'Failed to delete user');
+    }
+
+    return res.json();
+  },
+
   // Invoices (Admin View)
-  async getInvoices(params?: { page?: number; pageSize?: number; status?: string }): Promise<{
+  async getInvoices(params?: { page?: number; pageSize?: number; status?: string; includeDeleted?: boolean }): Promise<{
     data: any[];
     total: number;
     page: number;
@@ -226,6 +255,7 @@ export const adminApi = {
     if (params?.page) searchParams.set('page', params.page.toString());
     if (params?.pageSize) searchParams.set('pageSize', params.pageSize.toString());
     if (params?.status) searchParams.set('status', params.status);
+    if (params?.includeDeleted) searchParams.set('includeDeleted', 'true');
 
     const res = await fetch(`${config.baseUrl}/admin/invoices?${searchParams}`, {
       headers: getHeaders(),
@@ -234,6 +264,105 @@ export const adminApi = {
     if (!res.ok) {
       const error = await res.json().catch(() => ({ message: 'Failed to get invoices' }));
       throw new Error(error.message || 'Failed to get invoices');
+    }
+
+    return res.json();
+  },
+
+  // Get deleted invoices (recycle bin)
+  async getDeletedInvoices(params?: { page?: number; pageSize?: number }): Promise<{
+    data: any[];
+    total: number;
+    page: number;
+    pageSize: number;
+    totalPages: number;
+  }> {
+    const searchParams = new URLSearchParams();
+    if (params?.page) searchParams.set('page', params.page.toString());
+    if (params?.pageSize) searchParams.set('pageSize', params.pageSize.toString());
+
+    const res = await fetch(`${config.baseUrl}/admin/invoices/deleted?${searchParams}`, {
+      headers: getHeaders(),
+    });
+
+    if (!res.ok) {
+      const error = await res.json().catch(() => ({ message: 'Failed to get deleted invoices' }));
+      throw new Error(error.message || 'Failed to get deleted invoices');
+    }
+
+    return res.json();
+  },
+
+  // Soft delete invoice (move to recycle bin)
+  async deleteInvoice(invoiceId: string): Promise<{ success: boolean }> {
+    const res = await fetch(`${config.baseUrl}/admin/invoices/${invoiceId}`, {
+      method: 'DELETE',
+      headers: getHeadersNoBody(),
+    });
+
+    if (!res.ok) {
+      const error = await res.json().catch(() => ({ message: 'Failed to delete invoice' }));
+      throw new Error(error.message || 'Failed to delete invoice');
+    }
+
+    return res.json();
+  },
+
+  // Bulk delete all invoices for an architect
+  async deleteArchitectInvoices(architectId: string): Promise<{ success: boolean; deletedCount: number }> {
+    const res = await fetch(`${config.baseUrl}/admin/invoices/architect/${architectId}`, {
+      method: 'DELETE',
+      headers: getHeadersNoBody(),
+    });
+
+    if (!res.ok) {
+      const error = await res.json().catch(() => ({ message: 'Failed to delete invoices' }));
+      throw new Error(error.message || 'Failed to delete invoices');
+    }
+
+    return res.json();
+  },
+
+  // Restore invoice from recycle bin
+  async restoreInvoice(invoiceId: string): Promise<{ success: boolean }> {
+    const res = await fetch(`${config.baseUrl}/admin/invoices/${invoiceId}/restore`, {
+      method: 'PATCH',
+      headers: getHeadersNoBody(),
+    });
+
+    if (!res.ok) {
+      const error = await res.json().catch(() => ({ message: 'Failed to restore invoice' }));
+      throw new Error(error.message || 'Failed to restore invoice');
+    }
+
+    return res.json();
+  },
+
+  // Permanently delete invoice
+  async permanentDeleteInvoice(invoiceId: string): Promise<{ success: boolean }> {
+    const res = await fetch(`${config.baseUrl}/admin/invoices/${invoiceId}/permanent`, {
+      method: 'DELETE',
+      headers: getHeadersNoBody(),
+    });
+
+    if (!res.ok) {
+      const error = await res.json().catch(() => ({ message: 'Failed to permanently delete invoice' }));
+      throw new Error(error.message || 'Failed to permanently delete invoice');
+    }
+
+    return res.json();
+  },
+
+  // Cleanup recycle bin (delete invoices older than 30 days)
+  async cleanupRecycleBin(): Promise<{ success: boolean; deletedCount: number }> {
+    const res = await fetch(`${config.baseUrl}/admin/invoices/recycle-bin/cleanup`, {
+      method: 'DELETE',
+      headers: getHeadersNoBody(),
+    });
+
+    if (!res.ok) {
+      const error = await res.json().catch(() => ({ message: 'Failed to cleanup recycle bin' }));
+      throw new Error(error.message || 'Failed to cleanup recycle bin');
     }
 
     return res.json();

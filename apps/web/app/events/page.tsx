@@ -7,6 +7,8 @@ import GlassCard from '@/components/layout/GlassCard';
 import PageSlider, { sliderImages } from '@/components/layout/PageSlider';
 import { Calendar, MapPin, Users, Clock, CheckCircle, Loader2 } from 'lucide-react';
 import { useEvents, useRegisterForEvent } from '@/lib/api-hooks';
+import { useAuthGuard, AuthGuardLoader } from '@/lib/useAuthGuard';
+import Swal from 'sweetalert2';
 
 function formatDate(dateStr: string): string {
   const date = new Date(dateStr);
@@ -18,11 +20,16 @@ function formatDate(dateStr: string): string {
 }
 
 export default function EventsPage() {
+  const { isReady } = useAuthGuard();
   const [registeredEvents, setRegisteredEvents] = useState<string[]>([]);
   const [registeringId, setRegisteringId] = useState<string | null>(null);
 
   const { data: eventsResponse, isLoading } = useEvents();
   const registerMutation = useRegisterForEvent();
+
+  if (!isReady) {
+    return <AuthGuardLoader />;
+  }
 
   // לא חוסמים - מציגים מיידית
   const events = (eventsResponse as any)?.data || eventsResponse || [];
@@ -32,8 +39,23 @@ export default function EventsPage() {
     try {
       await registerMutation.mutateAsync(eventId);
       setRegisteredEvents([...registeredEvents, eventId]);
+      Swal.fire({
+        title: 'נרשמת בהצלחה!',
+        text: 'ההרשמה לאירוע בוצעה בהצלחה',
+        icon: 'success',
+        confirmButtonText: 'אישור',
+        background: '#1a1a2e',
+        color: '#fff',
+      });
     } catch (error: any) {
-      alert(error.message || 'שגיאה בהרשמה לאירוע');
+      Swal.fire({
+        title: 'שגיאה',
+        text: error.message || 'שגיאה בהרשמה לאירוע',
+        icon: 'error',
+        confirmButtonText: 'אישור',
+        background: '#1a1a2e',
+        color: '#fff',
+      });
     } finally {
       setRegisteringId(null);
     }

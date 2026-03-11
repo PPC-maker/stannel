@@ -114,12 +114,15 @@ model Invoice {
   createdAt       DateTime        @default(now())
   approvedAt      DateTime?
   paidAt          DateTime?
+  deletedAt       DateTime?       // Soft delete - moves to recycle bin
 
   aiExtractedAmount Float?
   aiConfidence      Float?
   aiStatus          String?
 
   statusHistory     InvoiceStatusHistory[]
+
+  @@index([deletedAt])
 }
 
 model InvoiceStatusHistory {

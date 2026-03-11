@@ -15,6 +15,10 @@ export default function LoginPage() {
   const { login, loginWithGoogle, loading: authLoading } = useAuth();
 
   const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   // Prefill email from query param (used after admin approval)
   useEffect(() => {
@@ -23,10 +27,6 @@ export default function LoginPage() {
       setEmail(emailParam);
     }
   }, [searchParams]);
-  const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

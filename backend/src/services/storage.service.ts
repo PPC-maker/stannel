@@ -1,18 +1,57 @@
-// Storage Service - Google Cloud Storage
+// Storage Service - Google Cloud Storage with local fallback for development
 
 import { Storage } from '@google-cloud/storage';
 import { randomUUID } from 'crypto';
+import * as fs from 'fs';
+import * as path from 'path';
 
-const storage = new Storage();
 const INVOICE_BUCKET = process.env.GCS_INVOICE_BUCKET || 'stannel-invoices';
 const ASSETS_BUCKET = process.env.GCS_ASSETS_BUCKET || 'stannel-assets';
 
+// Check if we have GCS credentials
+const USE_LOCAL_STORAGE = process.env.NODE_ENV === 'development' && !process.env.GOOGLE_APPLICATION_CREDENTIALS;
+const LOCAL_UPLOAD_DIR = path.join(process.cwd(), 'uploads');
+
+// Initialize GCS only if we have credentials
+let storage: Storage | null = null;
+if (!USE_LOCAL_STORAGE) {
+  try {
+    storage = new Storage();
+  } catch (error) {
+    console.warn('[Storage] Failed to initialize GCS, falling back to local storage');
+  }
+}
+
+// Ensure local upload directory exists
+if (USE_LOCAL_STORAGE) {
+  if (!fs.existsSync(LOCAL_UPLOAD_DIR)) {
+    fs.mkdirSync(LOCAL_UPLOAD_DIR, { recursive: true });
+  }
+  if (!fs.existsSync(path.join(LOCAL_UPLOAD_DIR, 'invoices'))) {
+    fs.mkdirSync(path.join(LOCAL_UPLOAD_DIR, 'invoices'), { recursive: true });
+  }
+  if (!fs.existsSync(path.join(LOCAL_UPLOAD_DIR, 'assets'))) {
+    fs.mkdirSync(path.join(LOCAL_UPLOAD_DIR, 'assets'), { recursive: true });
+  }
+  console.log('[Storage] Using local file storage for development');
+}
+
 export const storageService = {
   async uploadInvoice(buffer: Buffer, originalFilename: string): Promise<string> {
-    const bucket = storage.bucket(INVOICE_BUCKET);
     const extension = originalFilename.split('.').pop() || 'jpg';
     const filename = `invoices/${Date.now()}-${randomUUID()}.${extension}`;
 
+    if (USE_LOCAL_STORAGE || !storage) {
+      // Save locally for development
+      const localPath = path.join(LOCAL_UPLOAD_DIR, filename);
+      fs.writeFileSync(localPath, buffer);
+      // Return a local URL that can be served by the backend
+      const port = process.env.PORT || 8080;
+      return `http://localhost:${port}/uploads/${filename}`;
+    }
+
+    // Use GCS in production
+    const bucket = storage.bucket(INVOICE_BUCKET);
     const file = bucket.file(filename);
     await file.save(buffer, {
       metadata: {
@@ -23,10 +62,23 @@ export const storageService = {
     return `https://storage.googleapis.com/${INVOICE_BUCKET}/${filename}`;
   },
 
-  async uploadAsset(buffer: Buffer, path: string, filename: string): Promise<string> {
-    const bucket = storage.bucket(ASSETS_BUCKET);
-    const fullPath = `${path}/${filename}`;
+  async uploadAsset(buffer: Buffer, assetPath: string, filename: string): Promise<string> {
+    const fullPath = `${assetPath}/${filename}`;
 
+    if (USE_LOCAL_STORAGE || !storage) {
+      // Save locally for development
+      const localDir = path.join(LOCAL_UPLOAD_DIR, 'assets', assetPath);
+      if (!fs.existsSync(localDir)) {
+        fs.mkdirSync(localDir, { recursive: true });
+      }
+      const localPath = path.join(localDir, filename);
+      fs.writeFileSync(localPath, buffer);
+      const port = process.env.PORT || 8080;
+      return `http://localhost:${port}/uploads/assets/${fullPath}`;
+    }
+
+    // Use GCS in production
+    const bucket = storage.bucket(ASSETS_BUCKET);
     const file = bucket.file(fullPath);
     await file.save(buffer, {
       metadata: {
@@ -40,6 +92,12 @@ export const storageService = {
   },
 
   async getSignedUrl(bucket: string, filename: string, expiresInMinutes = 60): Promise<string> {
+    if (USE_LOCAL_STORAGE || !storage) {
+      // For local development, just return the direct URL
+      const port = process.env.PORT || 8080;
+      return `http://localhost:${port}/uploads/${filename}`;
+    }
+
     const file = storage.bucket(bucket).file(filename);
     const [url] = await file.getSignedUrl({
       action: 'read',
@@ -49,6 +107,14 @@ export const storageService = {
   },
 
   async deleteFile(bucket: string, filename: string): Promise<void> {
+    if (USE_LOCAL_STORAGE || !storage) {
+      const localPath = path.join(LOCAL_UPLOAD_DIR, filename);
+      if (fs.existsSync(localPath)) {
+        fs.unlinkSync(localPath);
+      }
+      return;
+    }
+
     await storage.bucket(bucket).file(filename).delete();
   },
 

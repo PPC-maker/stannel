@@ -5,6 +5,7 @@ export * from './invoice.types';
 export * from './wallet.types';
 export * from './event.types';
 export * from './contract.types';
+export * from './ai.types';
 
 // Common Types
 export interface PaginatedResponse<T> {

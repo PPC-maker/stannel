@@ -1,32 +1,49 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
+import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import GlassCard from '@/components/layout/GlassCard';
 import PageSlider, { sliderImages } from '@/components/layout/PageSlider';
-import { Upload, FileText, CheckCircle, AlertTriangle, X, ArrowLeft, Building2 } from 'lucide-react';
+import { Upload, FileText, CheckCircle, AlertTriangle, X, ArrowLeft, Building2, FileIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useUploadInvoice, useSuppliers } from '@/lib/api-hooks';
+import { useAuthGuard, AuthGuardLoader } from '@/lib/useAuthGuard';
 
 export default function InvoiceUploadPage() {
+  const router = useRouter();
+  const { isReady, user } = useAuthGuard();
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
+  const [isPdf, setIsPdf] = useState(false);
   const [amount, setAmount] = useState('');
   const [supplierId, setSupplierId] = useState('');
   const [aiResult, setAiResult] = useState<{ status: string; extractedAmount: number; confidence: number } | null>(null);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const { data: suppliersData, isLoading: suppliersLoading } = useSuppliers();
+  const { data: suppliersData, isLoading: suppliersLoading } = useSuppliers(isReady);
   const suppliers = suppliersData?.data || [];
   const uploadMutation = useUploadInvoice();
 
+  // Only ARCHITECT users can upload invoices - redirect others
+  const isArchitect = user?.role === 'ARCHITECT';
+
+  useEffect(() => {
+    if (isReady && !isArchitect) {
+      router.replace('/invoices');
+    }
+  }, [isReady, isArchitect, router]);
+
+  // ALL hooks must be called before any conditional returns
   const onDrop = useCallback((acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
     if (file) {
       setFile(file);
-      setPreview(URL.createObjectURL(file));
+      const isFilePdf = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
+      setIsPdf(isFilePdf);
+      setPreview(isFilePdf ? null : URL.createObjectURL(file));
       setAiResult(null);
       setError(null);
     }
@@ -42,6 +59,11 @@ export default function InvoiceUploadPage() {
     maxSize: 10 * 1024 * 1024,
   });
 
+  // Now we can have early returns
+  if (!isReady || !isArchitect) {
+    return <AuthGuardLoader />;
+  }
+
   const handleSubmit = async () => {
     if (!file || !amount || !supplierId) return;
 
@@ -49,9 +71,10 @@ export default function InvoiceUploadPage() {
 
     try {
       const formData = new FormData();
-      formData.append('image', file);
+      // Text fields MUST come before the file for Fastify multipart to parse them
       formData.append('amount', amount);
       formData.append('supplierId', supplierId);
+      formData.append('image', file);
 
       const result = await uploadMutation.mutateAsync(formData);
 
@@ -74,6 +97,7 @@ export default function InvoiceUploadPage() {
   const resetForm = () => {
     setFile(null);
     setPreview(null);
+    setIsPdf(false);
     setAmount('');
     setSupplierId('');
     setAiResult(null);
@@ -176,25 +200,38 @@ export default function InvoiceUploadPage() {
             className={`relative border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all duration-300 ${
               isDragActive
                 ? 'border-gold-400 bg-gold-400/10'
-                : preview
+                : (preview || isPdf)
                 ? 'border-green-400/50 bg-green-400/5'
                 : 'border-white/20 hover:border-white/40 hover:bg-white/5'
             }`}
           >
             <input {...getInputProps()} />
 
-            {preview ? (
+            {preview || isPdf ? (
               <div className="relative">
-                <img
-                  src={preview}
-                  alt="preview"
-                  className="max-h-64 mx-auto rounded-lg object-contain"
-                />
+                {isPdf ? (
+                  // PDF Preview
+                  <div className="flex flex-col items-center py-4">
+                    <div className="w-20 h-24 bg-red-500/20 border-2 border-red-500/50 rounded-lg flex items-center justify-center mb-3">
+                      <FileIcon size={40} className="text-red-400" />
+                    </div>
+                    <p className="text-white font-medium">{file?.name}</p>
+                    <p className="text-white/50 text-sm mt-1">קובץ PDF</p>
+                  </div>
+                ) : (
+                  // Image Preview
+                  <img
+                    src={preview!}
+                    alt="preview"
+                    className="max-h-64 mx-auto rounded-lg object-contain"
+                  />
+                )}
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
                     setFile(null);
                     setPreview(null);
+                    setIsPdf(false);
                     setAiResult(null);
                   }}
                   className="absolute top-2 left-2 p-1.5 rounded-full bg-red-500 text-white hover:bg-red-600 transition-colors"
