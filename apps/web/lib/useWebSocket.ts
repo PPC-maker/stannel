@@ -28,7 +28,7 @@ export function useWebSocket() {
       wsRef.current = ws;
 
       ws.onopen = () => {
-        console.log('[WebSocket] Connected');
+        // Connected silently
 
         // Start ping interval to keep connection alive
         pingIntervalRef.current = setInterval(() => {
@@ -41,7 +41,6 @@ export function useWebSocket() {
       ws.onmessage = (event) => {
         try {
           const message: WebSocketMessage = JSON.parse(event.data);
-          console.log('[WebSocket] Message:', message.type);
 
           // Invalidate relevant queries based on message type
           switch (message.type) {
@@ -68,32 +67,29 @@ export function useWebSocket() {
               // Heartbeat response, no action needed
               break;
           }
-        } catch (e) {
-          console.error('[WebSocket] Failed to parse message:', e);
+        } catch {
+          // Silent parse error
         }
       };
 
       ws.onclose = () => {
-        console.log('[WebSocket] Disconnected');
-
         // Clear ping interval
         if (pingIntervalRef.current) {
           clearInterval(pingIntervalRef.current);
           pingIntervalRef.current = null;
         }
 
-        // Attempt to reconnect after 3 seconds
+        // Attempt to reconnect after 5 seconds (silent)
         reconnectTimeoutRef.current = setTimeout(() => {
-          console.log('[WebSocket] Attempting to reconnect...');
           connect();
-        }, 3000);
+        }, 5000);
       };
 
-      ws.onerror = (error) => {
-        console.error('[WebSocket] Error:', error);
+      ws.onerror = () => {
+        // Silent error - WebSocket will reconnect automatically
       };
-    } catch (e) {
-      console.error('[WebSocket] Failed to connect:', e);
+    } catch {
+      // Silent connection error - will retry
     }
   }, [queryClient]);
 
