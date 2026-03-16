@@ -1,0 +1,157 @@
+{
+  "timestamp": "2026-03-16T11:58:45.015Z",
+  "description": "Backup 14:00 - After sync local to production",
+  "local": {
+    "users": [
+      {
+        "id": "cmmkwusbs0003uouk9px8qpht",
+        "firebaseUid": "c13k2s9HVsUTn3WlSRelTevcdaq2",
+        "email": "admin@newpost.co.il",
+        "name": "admin",
+        "phone": null,
+        "role": "ADMIN",
+        "rank": "BRONZE",
+        "isActive": true,
+        "activatedAt": null,
+        "profileImage": null,
+        "createdAt": "2026-03-10T17:55:29.128Z",
+        "updatedAt": "2026-03-10T17:55:29.128Z",
+        "architectProfile": {
+          "id": "cmmkwusbs0004uouk17o3wucb",
+          "userId": "cmmkwusbs0003uouk9px8qpht",
+          "pointsBalance": 0,
+          "cashBalance": 0,
+          "totalEarned": 0,
+          "totalRedeemed": 0,
+          "cardNumber": "cmmkwusbs0005uouk5pdmbiew",
+          "cardExpiry": null,
+          "monthlyGoal": 0,
+          "monthlyProgress": 0
+        },
+        "supplierProfile": null
+      },
+      {
+        "id": "cmml70oag0000uopgz9wq5cy0",
+        "firebaseUid": "lvjqN9kLpPVoxmFerilwmk1wCGA2",
+        "email": "aa@bb.co.il",
+        "name": "אדריכל",
+        "phone": "000000000",
+        "role": "ARCHITECT",
+        "rank": "BRONZE",
+        "isActive": true,
+        "activatedAt": "2026-03-10T22:42:23.178Z",
+        "profileImage": null,
+        "createdAt": "2026-03-10T22:39:59.992Z",
+        "updatedAt": "2026-03-10T22:42:23.179Z",
+        "architectProfile": {
+          "id": "cmml70oag0001uopgjnicemyb",
+          "userId": "cmml70oag0000uopgz9wq5cy0",
+          "pointsBalance": 0,
+          "cashBalance": 0,
+          "totalEarned": 0,
+          "totalRedeemed": 0,
+          "cardNumber": "cmml70oag0002uopgyz5iyg32",
+          "cardExpiry": null,
+          "monthlyGoal": 0,
+          "monthlyProgress": 0
+        },
+        "supplierProfile": null
+      },
+      {
+        "id": "cmml767tv0005uopg6zxiebq5",
+        "firebaseUid": "qnx4OJwb05V8bCT2JL6hUzoFD1h2",
+        "email": "sapak@gmail.com",
+        "name": "ספק",
+        "phone": "12345676545",
+        "role": "SUPPLIER",
+        "rank": "BRONZE",
+        "isActive": true,
+        "activatedAt": "2026-03-10T22:50:39.229Z",
+        "profileImage": null,
+        "createdAt": "2026-03-10T22:44:18.595Z",
+        "updatedAt": "2026-03-10T22:50:39.230Z",
+        "architectProfile": null,
+        "supplierProfile": {
+          "id": "cmml767tv0006uopg3tzqtiy1",
+          "userId": "cmml767tv0005uopg6zxiebq5",
+          "companyName": "sapak",
+          "trustScore": 1.5,
+          "qualityScore": 5
+        }
+      }
+    ],
+    "events": [],
+    "products": []
+  },
+  "production": {
+    "users": [
+      {
+        "id": "cmmgw2pab0000uofo1ztn2que",
+        "firebaseUid": "c13k2s9HVsUTn3WlSRelTevcdaq2",
+        "email": "admin@newpost.co.il",
+        "name": "Admin",
+        "phone": null,
+        "role": "ADMIN",
+        "rank": "BRONZE",
+        "isActive": true,
+        "activatedAt": null,
+        "profileImage": null,
+        "createdAt": "2026-03-07T22:22:34.115Z",
+        "updatedAt": "2026-03-07T22:22:34.115Z",
+        "architectProfile": null,
+        "supplierProfile": null
+      },
+      {
+        "id": "cmml70oag0000uopgz9wq5cy0",
+        "firebaseUid": "lvjqN9kLpPVoxmFerilwmk1wCGA2",
+        "email": "aa@bb.co.il",
+        "name": "אדריכל",
+        "phone": "000000000",
+        "role": "ARCHITECT",
+        "rank": "BRONZE",
+        "isActive": true,
+        "activatedAt": "2026-03-10T22:42:23.178Z",
+        "profileImage": null,
+        "createdAt": "2026-03-10T22:39:59.992Z",
+        "updatedAt": "2026-03-10T22:42:23.179Z",
+        "architectProfile": {
+          "id": "cmml70oag0001uopgjnicemyb",
+          "userId": "cmml70oag0000uopgz9wq5cy0",
+          "pointsBalance": 0,
+          "cashBalance": 0,
+          "totalEarned": 0,
+          "totalRedeemed": 0,
+          "cardNumber": "cmml70oag0002uopgyz5iyg32",
+          "cardExpiry": null,
+          "monthlyGoal": 0,
+          "monthlyProgress": 0
+        },
+        "supplierProfile": null
+      },
+      {
+        "id": "cmml767tv0005uopg6zxiebq5",
+        "firebaseUid": "qnx4OJwb05V8bCT2JL6hUzoFD1h2",
+        "email": "sapak@gmail.com",
+        "name": "ספק",
+        "phone": "12345676545",
+        "role": "SUPPLIER",
+        "rank": "BRONZE",
+        "isActive": true,
+        "activatedAt": "2026-03-10T22:50:39.229Z",
+        "profileImage": null,
+        "createdAt": "2026-03-10T22:44:18.595Z",
+        "updatedAt": "2026-03-10T22:50:39.230Z",
+        "architectProfile": null,
+        "supplierProfile": {
+          "id": "cmml767tv0006uopg3tzqtiy1",
+          "userId": "cmml767tv0005uopg6zxiebq5",
+          "companyName": "sapak",
+          "trustScore": 1.5,
+          "qualityScore": 5
+        }
+      }
+    ],
+    "events": [],
+    "products": []
+  }
+}
