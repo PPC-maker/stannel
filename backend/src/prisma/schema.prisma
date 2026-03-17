@@ -88,10 +88,17 @@ model SupplierProfile {
   trustScore    Float         @default(5.0)
   qualityScore  Float         @default(5.0)
 
+  // Points system - same as architect
+  pointsBalance   Float       @default(0)
+  totalEarned     Float       @default(0)
+  totalRedeemed   Float       @default(0)
+  cardNumber      String      @unique @default(cuid())
+
   contracts     Contract[]
   invoices      Invoice[]
   supplierGoals SupplierGoal[]
   products      Product[]
+  cardTransactions SupplierCardTransaction[]
 }
 
 model Invoice {
@@ -178,6 +185,17 @@ model CardTransaction {
   id            String    @id @default(cuid())
   architectId   String
   architect     ArchitectProfile @relation(fields: [architectId], references: [id], onDelete: Cascade)
+  type          String
+  amount        Float
+  description   String
+  invoiceId     String?
+  createdAt     DateTime  @default(now())
+}
+
+model SupplierCardTransaction {
+  id            String    @id @default(cuid())
+  supplierId    String
+  supplier      SupplierProfile @relation(fields: [supplierId], references: [id], onDelete: Cascade)
   type          String
   amount        Float
   description   String

@@ -34,6 +34,7 @@ export default function WalletPage() {
 
   const rank = rankConfig[(card?.rank as keyof typeof rankConfig) || 'BRONZE'];
   const isLoading = balanceLoading || cardLoading;
+  const isSupplier = user?.role === 'SUPPLIER';
 
   if (!isReady) {
     return <AuthGuardLoader />;
@@ -87,17 +88,28 @@ export default function WalletPage() {
                     <span className="text-white/60 text-sm">STANNEL</span>
                   </div>
 
-                  <div>
-                    {isLoading ? (
-                      <div className="h-8 w-48 bg-white/10 rounded animate-pulse" />
-                    ) : (
-                      <p className="text-2xl font-mono text-white tracking-wider">
-                        {card?.cardNumber || '**** **** **** ****'}
+                  <div className="flex justify-between items-end">
+                    <div>
+                      {isLoading ? (
+                        <div className="h-8 w-48 bg-white/10 rounded animate-pulse" />
+                      ) : (
+                        <p className="text-2xl font-mono text-white tracking-wider">
+                          {card?.cardNumber || '**** **** **** ****'}
+                        </p>
+                      )}
+                      <p className="text-white/60 text-sm mt-2">
+                        {isSupplier ? (card as any)?.holderName : user?.name || 'משתמש'}
                       </p>
-                    )}
-                    <p className="text-white/60 text-sm mt-2">
-                      {user?.name || 'משתמש'}
-                    </p>
+                      <p className="text-white/40 text-xs">
+                        {isSupplier ? 'ספק' : 'אדריכל'}
+                      </p>
+                    </div>
+                    <div className="text-left">
+                      <p className="text-white/50 text-xs">נקודות</p>
+                      <p className="text-gold-400 text-2xl font-bold">
+                        {isLoading ? '...' : (balance?.points || 0).toLocaleString()}
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -113,6 +125,7 @@ export default function WalletPage() {
                 value: isLoading ? '...' : (balance?.points || 0).toLocaleString(),
                 color: 'text-gold-400',
                 suffix: 'נק׳',
+                show: true,
               },
               {
                 icon: CreditCard,
@@ -120,6 +133,7 @@ export default function WalletPage() {
                 value: isLoading ? '...' : (balance?.cash || 0).toLocaleString(),
                 color: 'text-green-400',
                 prefix: '₪',
+                show: !isSupplier, // Only show for architects
               },
               {
                 icon: TrendingUp,
@@ -127,6 +141,7 @@ export default function WalletPage() {
                 value: isLoading ? '...' : (balance?.totalEarned || 0).toLocaleString(),
                 color: 'text-blue-400',
                 suffix: 'נק׳',
+                show: true,
               },
               {
                 icon: Gift,
@@ -134,8 +149,9 @@ export default function WalletPage() {
                 value: isLoading ? '...' : (balance?.totalRedeemed || 0).toLocaleString(),
                 color: 'text-purple-400',
                 suffix: 'נק׳',
+                show: true,
               },
-            ].map((stat, index) => (
+            ].filter(stat => stat.show).map((stat, index) => (
               <motion.div
                 key={stat.label}
                 initial={{ opacity: 0, y: 20 }}
@@ -173,11 +189,13 @@ export default function WalletPage() {
             <h2 className="text-lg font-semibold text-white mb-4">פעולות מהירות</h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               <Link
-                href="/invoices/upload"
+                href={user?.role === 'SUPPLIER' ? '/invoices' : '/invoices/upload'}
                 className="flex flex-col items-center gap-2 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors"
               >
                 <ArrowUpRight className="text-green-400" size={24} />
-                <span className="text-white/80 text-sm">העלאת חשבונית</span>
+                <span className="text-white/80 text-sm">
+                  {user?.role === 'SUPPLIER' ? 'צפייה בחשבונית' : 'העלאת חשבונית'}
+                </span>
               </Link>
               <Link
                 href="/rewards"

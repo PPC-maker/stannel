@@ -555,6 +555,50 @@ export async function adminRoutes(server: FastifyInstance) {
       paymentDeadline.setHours(paymentDeadline.getHours() + 72);
 
       await slaService.scheduleCheck(id, paymentDeadline);
+
+      // ===== POINTS SYSTEM: Credit 2% to both architect and supplier =====
+      const pointsToCredit = invoice.amount * 0.02; // 2% of invoice amount
+
+      // Credit points to architect
+      await prisma.architectProfile.update({
+        where: { id: invoice.architectId },
+        data: {
+          pointsBalance: { increment: pointsToCredit },
+          totalEarned: { increment: pointsToCredit },
+        },
+      });
+
+      // Create transaction record for architect
+      await prisma.cardTransaction.create({
+        data: {
+          architectId: invoice.architectId,
+          type: 'CREDIT',
+          amount: pointsToCredit,
+          description: `זיכוי נקודות מחשבונית #${invoice.id.slice(-6)}`,
+          invoiceId: invoice.id,
+        },
+      });
+
+      // Credit points to supplier
+      await prisma.supplierProfile.update({
+        where: { id: invoice.supplierId },
+        data: {
+          pointsBalance: { increment: pointsToCredit },
+          totalEarned: { increment: pointsToCredit },
+        },
+      });
+
+      // Create transaction record for supplier
+      await prisma.supplierCardTransaction.create({
+        data: {
+          supplierId: invoice.supplierId,
+          type: 'CREDIT',
+          amount: pointsToCredit,
+          description: `זיכוי נקודות מחשבונית #${invoice.id.slice(-6)}`,
+          invoiceId: invoice.id,
+        },
+      });
+      // ===== END POINTS SYSTEM =====
     }
 
     const updated = await prisma.invoice.update({

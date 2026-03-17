@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, User, LogOut, Settings, Wallet, FileText, Gift, Calendar, Home, LogIn, Bot } from 'lucide-react';
+import { Menu, User, LogOut, Settings, Wallet, FileText, Gift, Calendar, Home, LogIn, Bot, Shield } from 'lucide-react';
 import { useAuth } from '@/lib/auth-context';
 import Swal from 'sweetalert2';
 
@@ -103,6 +103,16 @@ export default function Navbar() {
                       <Settings size={16} />
                       <span>הגדרות</span>
                     </Link>
+                    {user.role === 'ADMIN' && (
+                      <Link
+                        href="/admin"
+                        onClick={() => setIsProfileOpen(false)}
+                        className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/10 text-white/80 hover:text-white transition-colors"
+                      >
+                        <Shield size={16} />
+                        <span className="text-gold-400">פאנל ניהול</span>
+                      </Link>
+                    )}
                     <hr className="my-2 border-white/10" />
                     <button
                       onClick={async () => {
