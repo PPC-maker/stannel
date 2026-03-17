@@ -1,20 +1,19 @@
 # STANNEL Backend - Fastify API Dockerfile
-# Built from project root context
 FROM node:20-alpine
 
 WORKDIR /app
 
-# Copy backend package files
-COPY backend/package.json ./
+# Copy package files
+COPY package.json ./
 
 # Install dependencies with npm
 RUN npm install --legacy-peer-deps
 
-# Copy backend source code
-COPY backend/ ./
+# Copy source code
+COPY . ./
 
 # Generate Prisma client
-RUN npx prisma generate --schema=src/prisma/schema.prisma
+RUN chmod +x ./node_modules/.bin/* && ./node_modules/.bin/prisma generate --schema=src/prisma/schema.prisma
 
 # Build TypeScript
 RUN npm run build
