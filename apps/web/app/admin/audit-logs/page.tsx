@@ -114,18 +114,18 @@ export default function AuditLogsPage() {
         >
           <Link
             href="/admin"
-            className="inline-flex items-center gap-2 text-white/60 hover:text-white mb-4 transition-colors"
+            className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4 transition-colors"
           >
             <ArrowRight size={18} />
             חזרה לפאנל ניהול
           </Link>
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-display font-bold text-white flex items-center gap-3">
+              <h1 className="text-3xl font-display font-bold text-gray-900 flex items-center gap-3">
                 <FileText className="text-gold-400" />
                 יומן פעולות
               </h1>
-              <p className="text-white/60 mt-1">מעקב אחרי כל הפעולות במערכת</p>
+              <p className="text-gray-600 mt-1">מעקב אחרי כל הפעולות במערכת</p>
             </div>
             <button
               onClick={loadLogs}
@@ -148,36 +148,36 @@ export default function AuditLogsPage() {
           <GlassCard hover={false}>
             <button
               onClick={() => setShowFilters(!showFilters)}
-              className="flex items-center justify-between w-full text-white"
+              className="flex items-center justify-between w-full text-gray-900"
             >
               <div className="flex items-center gap-2">
-                <Filter size={18} className="text-gold-400" />
+                <Filter size={18} className="text-[#0066CC]" />
                 <span className="font-medium">סינון וחיפוש</span>
               </div>
               {showFilters ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
             </button>
 
             {showFilters && (
-              <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-white/10">
+              <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-gray-200">
                 <div>
-                  <label className="text-white/60 text-sm mb-2 block">חיפוש</label>
+                  <label className="text-gray-600 text-sm mb-2 block">חיפוש</label>
                   <div className="relative">
-                    <Search className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40" size={18} />
+                    <Search className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
                     <input
                       type="text"
                       placeholder="חיפוש לפי שם, אימייל או פעולה..."
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
-                      className="w-full bg-white/10 border border-white/20 rounded-lg px-10 py-2 text-white placeholder:text-white/40"
+                      className="w-full bg-gray-50 border border-gray-200 rounded-lg px-10 py-2 text-gray-900 placeholder:text-gray-400"
                     />
                   </div>
                 </div>
                 <div>
-                  <label className="text-white/60 text-sm mb-2 block">סוג פעולה</label>
+                  <label className="text-gray-600 text-sm mb-2 block">סוג פעולה</label>
                   <select
                     value={filterAction}
                     onChange={(e) => setFilterAction(e.target.value)}
-                    className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white"
+                    className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-2 text-gray-900"
                   >
                     <option value="">כל הפעולות</option>
                     {uniqueActions.map(action => (
@@ -200,27 +200,27 @@ export default function AuditLogsPage() {
             transition={{ delay: 0.2 }}
           >
             <GlassCard hover={false}>
-              <h2 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
-                <FileText className="text-gold-400" size={20} />
+              <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                <FileText className="text-[#0066CC]" size={20} />
                 פעולות אחרונות ({filteredLogs.length})
               </h2>
 
               {loading ? (
                 <div className="text-center py-12">
-                  <Loader2 className="w-10 h-10 mx-auto text-gold-400 animate-spin" />
-                  <p className="text-white/60 mt-4">טוען יומן פעולות...</p>
+                  <Loader2 className="w-10 h-10 mx-auto text-[#0066CC] animate-spin" />
+                  <p className="text-gray-600 mt-4">טוען יומן פעולות...</p>
                 </div>
               ) : filteredLogs.length === 0 ? (
                 <div className="text-center py-12">
-                  <FileText className="w-16 h-16 mx-auto text-white/20 mb-4" />
-                  <p className="text-white/60">אין פעולות להצגה</p>
+                  <FileText className="w-16 h-16 mx-auto text-gray-300 mb-4" />
+                  <p className="text-gray-600">אין פעולות להצגה</p>
                 </div>
               ) : (
                 <div className="space-y-2 max-h-[600px] overflow-y-auto custom-scrollbar">
                   {filteredLogs.map((log) => {
                     const config = ACTION_CONFIG[log.action] || {
                       icon: FileText,
-                      color: 'text-white/60',
+                      color: 'text-gray-500',
                       label: log.action,
                     };
                     const Icon = config.icon;
@@ -233,22 +233,22 @@ export default function AuditLogsPage() {
                         onClick={() => setSelectedLog(log)}
                         className={`p-4 rounded-lg border cursor-pointer transition-all ${
                           selectedLog?.id === log.id
-                            ? 'border-gold-400/50 bg-gold-400/10'
-                            : 'border-white/10 bg-white/5 hover:border-white/20'
+                            ? 'border-[#0066CC] bg-[#0066CC]/10'
+                            : 'border-gray-200 bg-gray-50 hover:border-gray-300'
                         }`}
                       >
                         <div className="flex items-start gap-3">
-                          <div className={`p-2 rounded-lg bg-white/10`}>
+                          <div className={`p-2 rounded-lg bg-gray-100`}>
                             <Icon size={18} className={config.color} />
                           </div>
                           <div className="flex-1 min-w-0">
-                            <p className="text-white font-medium">{config.label}</p>
+                            <p className="text-gray-900 font-medium">{config.label}</p>
                             {log.user && (
-                              <p className="text-white/50 text-sm">
+                              <p className="text-gray-600 text-sm">
                                 על ידי: {log.user.name}
                               </p>
                             )}
-                            <div className="flex items-center gap-2 mt-1 text-xs text-white/40">
+                            <div className="flex items-center gap-2 mt-1 text-xs text-gray-500">
                               <Calendar size={12} />
                               <span>{new Date(log.createdAt).toLocaleString('he-IL')}</span>
                             </div>
@@ -262,21 +262,21 @@ export default function AuditLogsPage() {
 
               {/* Pagination */}
               {totalPages > 1 && (
-                <div className="flex justify-center gap-2 mt-4 pt-4 border-t border-white/10">
+                <div className="flex justify-center gap-2 mt-4 pt-4 border-t border-gray-200">
                   <button
                     onClick={() => setPage(p => Math.max(1, p - 1))}
                     disabled={page === 1}
-                    className="px-3 py-1 rounded-lg bg-white/10 text-white disabled:opacity-50"
+                    className="px-3 py-1 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 disabled:opacity-50"
                   >
                     הקודם
                   </button>
-                  <span className="px-3 py-1 text-white/60">
+                  <span className="px-3 py-1 text-gray-600">
                     {page} / {totalPages}
                   </span>
                   <button
                     onClick={() => setPage(p => Math.min(totalPages, p + 1))}
                     disabled={page === totalPages}
-                    className="px-3 py-1 rounded-lg bg-white/10 text-white disabled:opacity-50"
+                    className="px-3 py-1 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 disabled:opacity-50"
                   >
                     הבא
                   </button>
@@ -292,29 +292,29 @@ export default function AuditLogsPage() {
             transition={{ delay: 0.3 }}
           >
             <GlassCard hover={false} className="h-fit sticky top-6">
-              <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-                <Eye className="text-gold-400" size={20} />
+              <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                <Eye className="text-[#0066CC]" size={20} />
                 פרטי הפעולה
               </h2>
 
               {selectedLog ? (
                 <div className="space-y-4">
-                  <div className="p-4 bg-white/5 rounded-xl">
+                  <div className="p-4 bg-gray-50 rounded-xl">
                     {(() => {
                       const config = ACTION_CONFIG[selectedLog.action] || {
                         icon: FileText,
-                        color: 'text-white/60',
+                        color: 'text-gray-500',
                         label: selectedLog.action,
                       };
                       const Icon = config.icon;
                       return (
                         <div className="flex items-center gap-3">
-                          <div className={`p-3 rounded-lg bg-white/10`}>
+                          <div className={`p-3 rounded-lg bg-gray-100`}>
                             <Icon size={24} className={config.color} />
                           </div>
                           <div>
-                            <p className="text-white font-bold text-lg">{config.label}</p>
-                            <p className="text-white/50 text-sm">{selectedLog.action}</p>
+                            <p className="text-gray-900 font-bold text-lg">{config.label}</p>
+                            <p className="text-gray-500 text-sm">{selectedLog.action}</p>
                           </div>
                         </div>
                       );
@@ -322,46 +322,46 @@ export default function AuditLogsPage() {
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
-                    <div className="p-3 bg-white/5 rounded-lg">
-                      <p className="text-white/50 text-sm">תאריך ושעה</p>
-                      <p className="text-white">
+                    <div className="p-3 bg-gray-50 rounded-lg">
+                      <p className="text-gray-500 text-sm">תאריך ושעה</p>
+                      <p className="text-gray-900">
                         {new Date(selectedLog.createdAt).toLocaleString('he-IL')}
                       </p>
                     </div>
                     {selectedLog.user && (
-                      <div className="p-3 bg-white/5 rounded-lg">
-                        <p className="text-white/50 text-sm">בוצע על ידי</p>
-                        <p className="text-white">{selectedLog.user.name}</p>
-                        <p className="text-white/40 text-xs">{selectedLog.user.email}</p>
+                      <div className="p-3 bg-gray-50 rounded-lg">
+                        <p className="text-gray-500 text-sm">בוצע על ידי</p>
+                        <p className="text-gray-900">{selectedLog.user.name}</p>
+                        <p className="text-gray-500 text-xs">{selectedLog.user.email}</p>
                       </div>
                     )}
                   </div>
 
                   {selectedLog.entityId && (
-                    <div className="p-3 bg-white/5 rounded-lg">
-                      <p className="text-white/50 text-sm">מזהה ישות</p>
-                      <p className="text-white font-mono text-sm">{selectedLog.entityId}</p>
+                    <div className="p-3 bg-gray-50 rounded-lg">
+                      <p className="text-gray-500 text-sm">מזהה ישות</p>
+                      <p className="text-gray-900 font-mono text-sm">{selectedLog.entityId}</p>
                     </div>
                   )}
 
                   {selectedLog.metadata && Object.keys(selectedLog.metadata).length > 0 && (
-                    <div className="p-3 bg-white/5 rounded-lg">
-                      <p className="text-white/50 text-sm mb-2">נתונים נוספים</p>
-                      <pre className="text-white/80 text-xs bg-black/30 rounded-lg p-3 overflow-x-auto">
+                    <div className="p-3 bg-gray-50 rounded-lg">
+                      <p className="text-gray-500 text-sm mb-2">נתונים נוספים</p>
+                      <pre className="text-gray-700 text-xs bg-gray-100 rounded-lg p-3 overflow-x-auto">
                         {JSON.stringify(selectedLog.metadata, null, 2)}
                       </pre>
                     </div>
                   )}
 
-                  <div className="p-3 bg-white/5 rounded-lg">
-                    <p className="text-white/50 text-sm">מזהה לוג</p>
-                    <p className="text-white font-mono text-xs">{selectedLog.id}</p>
+                  <div className="p-3 bg-gray-50 rounded-lg">
+                    <p className="text-gray-500 text-sm">מזהה לוג</p>
+                    <p className="text-gray-900 font-mono text-xs">{selectedLog.id}</p>
                   </div>
                 </div>
               ) : (
                 <div className="text-center py-12">
-                  <FileText className="w-16 h-16 mx-auto text-white/20 mb-4" />
-                  <p className="text-white/50">בחר פעולה מהרשימה לצפייה בפרטים</p>
+                  <FileText className="w-16 h-16 mx-auto text-gray-300 mb-4" />
+                  <p className="text-gray-500">בחר פעולה מהרשימה לצפייה בפרטים</p>
                 </div>
               )}
             </GlassCard>
