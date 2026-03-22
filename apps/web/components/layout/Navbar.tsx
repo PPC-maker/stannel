@@ -83,7 +83,7 @@ export default function Navbar() {
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: 10, scale: 0.95 }}
                   transition={{ duration: 0.2 }}
-                  className="absolute right-0 mt-2 w-56 bg-white border border-gray-100 rounded-2xl p-2 shadow-xl z-50 max-h-[calc(90vh-120px)] overflow-y-auto"
+                  className="absolute right-0 mt-2 w-56 bg-white border border-gray-100 rounded-2xl p-2 shadow-xl z-50 max-h-[calc(75vh-120px)] overflow-y-auto"
                 >
                   {/* User Info Header */}
                   {user && (
