@@ -8,6 +8,7 @@ import Link from 'next/link';
 import { useInvoices } from '@/lib/api-hooks';
 import { useAuthGuard, AuthGuardLoader } from '@/lib/useAuthGuard';
 import { useAuth } from '@/lib/auth-context';
+import PageSlider, { sliderImages } from '@/components/layout/PageSlider';
 
 const statusConfig = {
   PENDING_ADMIN: { label: 'ממתין לאישור', color: 'text-yellow-400', bg: 'bg-yellow-400/20', icon: Clock },
@@ -50,8 +51,9 @@ export default function InvoicesPage() {
   };
 
   return (
-    <div className="relative bg-[#F8FAFC] min-h-screen">
-      <div className="p-6 max-w-7xl mx-auto">
+    <div className="relative">
+      <PageSlider images={sliderImages.invoices} />
+      <div className="p-6 max-w-7xl mx-auto relative z-10">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div>
@@ -81,7 +83,7 @@ export default function InvoicesPage() {
         ].map((stat, i) => (
           <GlassCard key={i} delay={i * 0.05} className="text-center py-4">
             <p className={`text-2xl font-bold ${stat.color}`}>{stat.value}</p>
-            <p className="text-gray-500 text-sm">{stat.label}</p>
+            <p className="text-gray-700 text-sm">{stat.label}</p>
           </GlassCard>
         ))}
       </div>
@@ -90,7 +92,7 @@ export default function InvoicesPage() {
       <GlassCard className="mb-6">
         <div className="flex flex-col md:flex-row gap-4">
           <div className="relative flex-1">
-            <Search className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+            <Search className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-600" size={20} />
             <input
               type="text"
               value={search}
@@ -165,7 +167,7 @@ export default function InvoicesPage() {
                   </div>
                   <div>
                     <h3 className="text-gray-800 font-semibold">{supplierName}</h3>
-                    <p className="text-gray-500 text-sm">
+                    <p className="text-gray-700 text-sm">
                       {invoiceDate.toLocaleDateString('he-IL')} • #{invoice.id.slice(-6)}
                     </p>
                   </div>
@@ -182,7 +184,7 @@ export default function InvoicesPage() {
 
                   {/* Amount */}
                   <div className="text-left">
-                    <p className="text-gray-500 text-xs">סכום</p>
+                    <p className="text-gray-700 text-xs">סכום</p>
                     <p className="text-gray-800 font-bold text-lg">₪{(invoice.amount || 0).toLocaleString()}</p>
                   </div>
 
