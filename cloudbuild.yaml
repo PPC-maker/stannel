@@ -12,7 +12,7 @@ steps:
     args:
       - 'build'
       - '-t'
-      - '${_REGION}-docker.pkg.dev/${_PROJECT_ID}/stannel/backend:$COMMIT_SHA'
+      - '${_REGION}-docker.pkg.dev/${_PROJECT_ID}/stannel/backend:$SHORT_SHA'
       - '-t'
       - '${_REGION}-docker.pkg.dev/${_PROJECT_ID}/stannel/backend:latest'
       - '-f'
@@ -23,7 +23,7 @@ steps:
     id: 'push-backend'
     args:
       - 'push'
-      - '${_REGION}-docker.pkg.dev/${_PROJECT_ID}/stannel/backend:$COMMIT_SHA'
+      - '${_REGION}-docker.pkg.dev/${_PROJECT_ID}/stannel/backend:$SHORT_SHA'
     waitFor: ['build-backend']
 
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
@@ -34,7 +34,7 @@ steps:
       - 'deploy'
       - 'stannel-api'
       - '--image'
-      - '${_REGION}-docker.pkg.dev/${_PROJECT_ID}/stannel/backend:$COMMIT_SHA'
+      - '${_REGION}-docker.pkg.dev/${_PROJECT_ID}/stannel/backend:$SHORT_SHA'
       - '--region'
       - '${_REGION}'
       - '--platform'
@@ -64,7 +64,7 @@ steps:
     args:
       - 'build'
       - '-t'
-      - '${_REGION}-docker.pkg.dev/${_PROJECT_ID}/stannel/web:$COMMIT_SHA'
+      - '${_REGION}-docker.pkg.dev/${_PROJECT_ID}/stannel/web:$SHORT_SHA'
       - '-t'
       - '${_REGION}-docker.pkg.dev/${_PROJECT_ID}/stannel/web:latest'
       - '-f'
@@ -75,7 +75,7 @@ steps:
     id: 'push-web'
     args:
       - 'push'
-      - '${_REGION}-docker.pkg.dev/${_PROJECT_ID}/stannel/web:$COMMIT_SHA'
+      - '${_REGION}-docker.pkg.dev/${_PROJECT_ID}/stannel/web:$SHORT_SHA'
     waitFor: ['build-web']
 
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
@@ -86,7 +86,7 @@ steps:
       - 'deploy'
       - 'stannel-web'
       - '--image'
-      - '${_REGION}-docker.pkg.dev/${_PROJECT_ID}/stannel/web:$COMMIT_SHA'
+      - '${_REGION}-docker.pkg.dev/${_PROJECT_ID}/stannel/web:$SHORT_SHA'
       - '--region'
       - '${_REGION}'
       - '--platform'
@@ -105,8 +105,8 @@ steps:
     waitFor: ['push-web']
 
 images:
-  - '${_REGION}-docker.pkg.dev/${_PROJECT_ID}/stannel/backend:$COMMIT_SHA'
-  - '${_REGION}-docker.pkg.dev/${_PROJECT_ID}/stannel/web:$COMMIT_SHA'
+  - '${_REGION}-docker.pkg.dev/${_PROJECT_ID}/stannel/backend:$SHORT_SHA'
+  - '${_REGION}-docker.pkg.dev/${_PROJECT_ID}/stannel/web:$SHORT_SHA'
 
 options:
   logging: CLOUD_LOGGING_ONLY
