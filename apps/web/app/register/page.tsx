@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import GlassCard from '@/components/layout/GlassCard';
-import PageSlider, { sliderImages } from '@/components/layout/PageSlider';
 import { Mail, Lock, User, Phone, Building2, ArrowLeft, Check, AlertCircle } from 'lucide-react';
 import { useAuth } from '@/lib/auth-context';
 
@@ -57,8 +56,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-20 relative">
-      <PageSlider images={sliderImages.register} />
+    <div className="min-h-screen flex items-center justify-center px-4 py-20 relative bg-[#F8FAFC]">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -75,7 +73,7 @@ export default function RegisterPage() {
                     ? 'w-8 bg-gold-400'
                     : s < step
                     ? 'bg-gold-400'
-                    : 'bg-white/20'
+                    : 'bg-gray-200'
                 }`}
               />
             ))}
@@ -88,8 +86,8 @@ export default function RegisterPage() {
               animate={{ opacity: 1, x: 0 }}
             >
               <div className="text-center mb-8">
-                <h1 className="text-2xl font-bold text-white mb-2">הצטרפו ל-STANNEL</h1>
-                <p className="text-white/60">בחרו את סוג החשבון שלכם</p>
+                <h1 className="text-2xl font-bold text-gray-900 mb-2">הצטרפו ל-STANNEL</h1>
+                <p className="text-gray-500">בחרו את סוג החשבון שלכם</p>
               </div>
 
               <div className="grid gap-4">
@@ -105,12 +103,12 @@ export default function RegisterPage() {
                       <User size={24} className="text-primary-400 group-hover:text-gold-400 transition-colors" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="text-lg font-semibold text-white mb-1">אדריכל / מעצב</h3>
-                      <p className="text-white/60 text-sm">
+                      <h3 className="text-lg font-semibold text-gray-800 mb-1">אדריכל / מעצב</h3>
+                      <p className="text-gray-500 text-sm">
                         צברו נקודות על רכישות, ממשו הטבות ונהנו מאירועים בלעדיים
                       </p>
                     </div>
-                    <ArrowLeft className="text-white/40 group-hover:text-gold-400 transition-colors" />
+                    <ArrowLeft className="text-gray-400 group-hover:text-gold-400 transition-colors" />
                   </div>
                 </button>
 
@@ -126,17 +124,17 @@ export default function RegisterPage() {
                       <Building2 size={24} className="text-primary-400 group-hover:text-gold-400 transition-colors" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="text-lg font-semibold text-white mb-1">ספק / יצרן</h3>
-                      <p className="text-white/60 text-sm">
+                      <h3 className="text-lg font-semibold text-gray-800 mb-1">ספק / יצרן</h3>
+                      <p className="text-gray-500 text-sm">
                         הגדילו מכירות, נהלו יעדים והתחברו לאדריכלים מובילים
                       </p>
                     </div>
-                    <ArrowLeft className="text-white/40 group-hover:text-gold-400 transition-colors" />
+                    <ArrowLeft className="text-gray-400 group-hover:text-gold-400 transition-colors" />
                   </div>
                 </button>
               </div>
 
-              <p className="text-center mt-6 text-white/60">
+              <p className="text-center mt-6 text-gray-500">
                 יש לכם חשבון?{' '}
                 <Link href="/login" className="text-gold-400 hover:text-gold-300 transition-colors font-medium">
                   היכנסו כאן
@@ -152,10 +150,10 @@ export default function RegisterPage() {
               animate={{ opacity: 1, x: 0 }}
             >
               <div className="text-center mb-8">
-                <h1 className="text-2xl font-bold text-white mb-2">
+                <h1 className="text-2xl font-bold text-gray-900 mb-2">
                   {role === 'ARCHITECT' ? 'הרשמה כאדריכל' : 'הרשמה כספק'}
                 </h1>
-                <p className="text-white/60">מלאו את הפרטים שלכם</p>
+                <p className="text-gray-500">מלאו את הפרטים שלכם</p>
               </div>
 
               {/* Error Alert */}
@@ -172,14 +170,14 @@ export default function RegisterPage() {
 
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                  <label className="block text-white/70 text-sm mb-2">שם מלא</label>
+                  <label className="block text-gray-600 text-sm mb-2">שם מלא</label>
                   <div className="relative">
-                    <User className="absolute right-4 top-1/2 -translate-y-1/2 text-white/40" size={20} />
+                    <User className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                     <input
                       type="text"
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 pr-12 text-white focus:border-gold-400 transition-all"
+                      className="w-full bg-gray-100 border border-gray-200 rounded-xl px-4 py-3 pr-12 text-gray-800 focus:border-[#0066CC] transition-all"
                       placeholder="ישראל ישראלי"
                       required
                       disabled={isLoading}
@@ -189,14 +187,14 @@ export default function RegisterPage() {
 
                 {role === 'SUPPLIER' && (
                   <div>
-                    <label className="block text-white/70 text-sm mb-2">שם החברה</label>
+                    <label className="block text-gray-600 text-sm mb-2">שם החברה</label>
                     <div className="relative">
-                      <Building2 className="absolute right-4 top-1/2 -translate-y-1/2 text-white/40" size={20} />
+                      <Building2 className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                       <input
                         type="text"
                         value={formData.companyName}
                         onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
-                        className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 pr-12 text-white focus:border-gold-400 transition-all"
+                        className="w-full bg-gray-100 border border-gray-200 rounded-xl px-4 py-3 pr-12 text-gray-800 focus:border-[#0066CC] transition-all"
                         placeholder="שם החברה בע״מ"
                         required
                         disabled={isLoading}
@@ -206,14 +204,14 @@ export default function RegisterPage() {
                 )}
 
                 <div>
-                  <label className="block text-white/70 text-sm mb-2">אימייל</label>
+                  <label className="block text-gray-600 text-sm mb-2">אימייל</label>
                   <div className="relative">
-                    <Mail className="absolute right-4 top-1/2 -translate-y-1/2 text-white/40" size={20} />
+                    <Mail className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                     <input
                       type="email"
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 pr-12 text-white focus:border-gold-400 transition-all"
+                      className="w-full bg-gray-100 border border-gray-200 rounded-xl px-4 py-3 pr-12 text-gray-800 focus:border-[#0066CC] transition-all"
                       placeholder="your@email.com"
                       required
                       dir="ltr"
@@ -223,14 +221,14 @@ export default function RegisterPage() {
                 </div>
 
                 <div>
-                  <label className="block text-white/70 text-sm mb-2">טלפון</label>
+                  <label className="block text-gray-600 text-sm mb-2">טלפון</label>
                   <div className="relative">
-                    <Phone className="absolute right-4 top-1/2 -translate-y-1/2 text-white/40" size={20} />
+                    <Phone className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                     <input
                       type="tel"
                       value={formData.phone}
                       onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                      className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 pr-12 text-white focus:border-gold-400 transition-all"
+                      className="w-full bg-gray-100 border border-gray-200 rounded-xl px-4 py-3 pr-12 text-gray-800 focus:border-[#0066CC] transition-all"
                       placeholder="050-123-4567"
                       dir="ltr"
                       disabled={isLoading}
@@ -239,14 +237,14 @@ export default function RegisterPage() {
                 </div>
 
                 <div>
-                  <label className="block text-white/70 text-sm mb-2">סיסמה</label>
+                  <label className="block text-gray-600 text-sm mb-2">סיסמה</label>
                   <div className="relative">
-                    <Lock className="absolute right-4 top-1/2 -translate-y-1/2 text-white/40" size={20} />
+                    <Lock className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                     <input
                       type="password"
                       value={formData.password}
                       onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                      className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 pr-12 text-white focus:border-gold-400 transition-all"
+                      className="w-full bg-gray-100 border border-gray-200 rounded-xl px-4 py-3 pr-12 text-gray-800 focus:border-[#0066CC] transition-all"
                       placeholder="••••••••"
                       required
                       minLength={8}
@@ -254,7 +252,7 @@ export default function RegisterPage() {
                       disabled={isLoading}
                     />
                   </div>
-                  <p className="text-white/40 text-xs mt-1">לפחות 8 תווים</p>
+                  <p className="text-gray-400 text-xs mt-1">לפחות 8 תווים</p>
                 </div>
 
                 <div className="flex gap-3 pt-4">
@@ -262,7 +260,7 @@ export default function RegisterPage() {
                     type="button"
                     onClick={() => setStep(1)}
                     disabled={isLoading}
-                    className="flex-1 bg-white/10 border border-white/20 rounded-xl py-3 text-white hover:bg-white/15 transition-colors disabled:opacity-50"
+                    className="flex-1 bg-gray-100 border border-gray-200 rounded-xl py-3 text-gray-600 hover:bg-gray-200 transition-colors disabled:opacity-50"
                   >
                     חזרה
                   </button>
@@ -295,8 +293,8 @@ export default function RegisterPage() {
               <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center">
                 <Check size={40} className="text-white" />
               </div>
-              <h1 className="text-2xl font-bold text-white mb-2">נרשמת בהצלחה!</h1>
-              <p className="text-white/60 mb-8">
+              <h1 className="text-2xl font-bold text-gray-900 mb-2">נרשמת בהצלחה!</h1>
+              <p className="text-gray-500 mb-8">
                 החשבון שלך ממתין לאישור מנהל. נעדכן אותך במייל ברגע שהחשבון יאושר.
               </p>
               <Link href="/" className="btn-primary px-8 py-3 inline-block">

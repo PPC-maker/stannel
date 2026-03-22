@@ -161,7 +161,7 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="relative">
+    <div className="relative bg-[#F8FAFC] min-h-screen">
       <PageSlider images={sliderImages.profile} />
       <div className="p-6 max-w-6xl mx-auto relative z-10">
         {/* Profile Header */}
@@ -212,53 +212,53 @@ export default function ProfilePage() {
                 {isEditing ? (
                   <div className="space-y-4">
                     <div>
-                      <label className="block text-white/60 text-sm mb-1">שם מלא</label>
+                      <label className="block text-gray-500 text-sm mb-1">שם מלא</label>
                       <input
                         type="text"
                         value={editData.name}
                         onChange={(e) => setEditData({ ...editData, name: e.target.value })}
-                        className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-2 text-white focus:border-gold-400 transition-all"
+                        className="w-full bg-gray-100 border border-gray-200 rounded-xl px-4 py-2 text-gray-800 focus:border-[#0066CC] transition-all"
                       />
                     </div>
                     <div>
-                      <label className="block text-white/60 text-sm mb-1">טלפון</label>
+                      <label className="block text-gray-500 text-sm mb-1">טלפון</label>
                       <input
                         type="tel"
                         value={editData.phone}
                         onChange={(e) => setEditData({ ...editData, phone: e.target.value })}
-                        className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-2 text-white focus:border-gold-400 transition-all"
+                        className="w-full bg-gray-100 border border-gray-200 rounded-xl px-4 py-2 text-gray-800 focus:border-[#0066CC] transition-all"
                       />
                     </div>
                     <div>
-                      <label className="block text-white/60 text-sm mb-1">חברה</label>
+                      <label className="block text-gray-500 text-sm mb-1">חברה</label>
                       <input
                         type="text"
                         value={editData.company}
                         onChange={(e) => setEditData({ ...editData, company: e.target.value })}
-                        className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-2 text-white focus:border-gold-400 transition-all"
+                        className="w-full bg-gray-100 border border-gray-200 rounded-xl px-4 py-2 text-gray-800 focus:border-[#0066CC] transition-all"
                       />
                     </div>
                     <div>
-                      <label className="block text-white/60 text-sm mb-1">כתובת</label>
+                      <label className="block text-gray-500 text-sm mb-1">כתובת</label>
                       <input
                         type="text"
                         value={editData.address}
                         onChange={(e) => setEditData({ ...editData, address: e.target.value })}
-                        className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-2 text-white focus:border-gold-400 transition-all"
+                        className="w-full bg-gray-100 border border-gray-200 rounded-xl px-4 py-2 text-gray-800 focus:border-[#0066CC] transition-all"
                       />
                     </div>
                   </div>
                 ) : (
                   <>
                     <div className="flex items-center justify-center md:justify-start gap-3 mb-2">
-                      <h1 className="text-3xl font-display font-bold text-white">{currentUser.name}</h1>
+                      <h1 className="text-3xl font-display font-bold text-gray-900">{currentUser.name}</h1>
                       <span className={`text-lg font-bold ${getTierColor(currentUser.tier)}`}>
                         {currentUser.tier}
                       </span>
                     </div>
-                    <p className="text-white/60 mb-4">{currentUser.company || 'לא צוין עסק'}</p>
+                    <p className="text-gray-500 mb-4">{currentUser.company || 'לא צוין עסק'}</p>
 
-                    <div className="flex flex-wrap justify-center md:justify-start gap-4 text-sm text-white/60">
+                    <div className="flex flex-wrap justify-center md:justify-start gap-4 text-sm text-gray-500">
                       <div className="flex items-center gap-2">
                         <Mail size={14} />
                         <span>{currentUser.email}</span>
@@ -288,9 +288,9 @@ export default function ProfilePage() {
                       setIsEditing(false);
                       router.replace('/profile');
                     }}
-                    className="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors"
+                    className="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors"
                   >
-                    <X size={18} className="text-white" />
+                    <X size={18} className="text-gray-600" />
                   </button>
                   <button
                     onClick={handleSaveProfile}
@@ -302,9 +302,9 @@ export default function ProfilePage() {
               ) : (
                 <button
                   onClick={() => setIsEditing(true)}
-                  className="absolute top-4 left-4 p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors"
+                  className="absolute top-4 left-4 p-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors"
                 >
-                  <Edit3 size={18} className="text-white" />
+                  <Edit3 size={18} className="text-gray-600" />
                 </button>
               )}
             </div>
@@ -327,8 +327,8 @@ export default function ProfilePage() {
             >
               <GlassCard className="text-center">
                 <stat.icon size={24} className={`mx-auto mb-2 ${stat.color}`} />
-                <p className="text-2xl font-bold text-white mb-1">{stat.value}</p>
-                <p className="text-white/60 text-sm">{stat.label}</p>
+                <p className="text-2xl font-bold text-gray-800 mb-1">{stat.value}</p>
+                <p className="text-gray-500 text-sm">{stat.label}</p>
               </GlassCard>
             </motion.div>
           ))}
@@ -342,7 +342,7 @@ export default function ProfilePage() {
             className="md:col-span-2"
           >
             <GlassCard>
-              <h2 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
+              <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
                 <TrendingUp size={20} className="text-gold-400" />
                 פעילות אחרונה
               </h2>
@@ -351,11 +351,11 @@ export default function ProfilePage() {
                   recentActivity.map((activity: any) => (
                     <div
                       key={activity.id}
-                      className="flex items-center justify-between p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors"
+                      className="flex items-center justify-between p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors"
                     >
                       <div>
-                        <p className="text-white">{activity.description}</p>
-                        <p className="text-white/40 text-sm">{formatDate(activity.date)}</p>
+                        <p className="text-gray-800">{activity.description}</p>
+                        <p className="text-gray-400 text-sm">{formatDate(activity.date)}</p>
                       </div>
                       {activity.points !== 0 && (
                         <span className={`font-bold ${activity.points > 0 ? 'text-green-400' : 'text-red-400'}`}>
@@ -365,7 +365,7 @@ export default function ProfilePage() {
                     </div>
                   ))
                 ) : (
-                  <div className="text-center py-8 text-white/50">
+                  <div className="text-center py-8 text-gray-400">
                     <TrendingUp size={48} className="mx-auto mb-4 opacity-30" />
                     <p>אין פעילות אחרונה להצגה</p>
                   </div>
@@ -380,60 +380,60 @@ export default function ProfilePage() {
             animate={{ opacity: 1, x: 0 }}
           >
             <GlassCard>
-              <h2 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
+              <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
                 <Shield size={20} className="text-gold-400" />
                 הגדרות מהירות
               </h2>
               <div className="space-y-2">
                 <button
                   onClick={scrollToEditProfile}
-                  className="w-full flex items-center justify-between gap-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors text-white/80 hover:text-white"
+                  className="w-full flex items-center justify-between gap-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors text-gray-600 hover:text-gray-800"
                 >
                   <div className="flex items-center gap-3">
                     <User size={18} />
                     <span>עריכת פרטים אישיים</span>
                   </div>
-                  <ChevronLeft size={16} className="text-white/40" />
+                  <ChevronLeft size={16} className="text-gray-400" />
                 </button>
                 <button
                   onClick={() => router.push('/settings#notifications')}
-                  className="w-full flex items-center justify-between gap-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors text-white/80 hover:text-white"
+                  className="w-full flex items-center justify-between gap-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors text-gray-600 hover:text-gray-800"
                 >
                   <div className="flex items-center gap-3">
                     <Bell size={18} />
                     <span>הגדרות התראות</span>
                   </div>
-                  <ChevronLeft size={16} className="text-white/40" />
+                  <ChevronLeft size={16} className="text-gray-400" />
                 </button>
                 <button
                   onClick={() => router.push('/settings#security')}
-                  className="w-full flex items-center justify-between gap-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors text-white/80 hover:text-white"
+                  className="w-full flex items-center justify-between gap-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors text-gray-600 hover:text-gray-800"
                 >
                   <div className="flex items-center gap-3">
                     <Shield size={18} />
                     <span>אבטחה ופרטיות</span>
                   </div>
-                  <ChevronLeft size={16} className="text-white/40" />
+                  <ChevronLeft size={16} className="text-gray-400" />
                 </button>
                 <button
                   onClick={() => router.push('/wallet')}
-                  className="w-full flex items-center justify-between gap-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors text-white/80 hover:text-white"
+                  className="w-full flex items-center justify-between gap-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors text-gray-600 hover:text-gray-800"
                 >
                   <div className="flex items-center gap-3">
                     <CreditCard size={18} />
                     <span>הארנק שלי</span>
                   </div>
-                  <ChevronLeft size={16} className="text-white/40" />
+                  <ChevronLeft size={16} className="text-gray-400" />
                 </button>
                 <button
                   onClick={() => router.push('/invoices')}
-                  className="w-full flex items-center justify-between gap-3 p-3 rounded-lg bg-white/5 hover:bg-white/10 transition-colors text-white/80 hover:text-white"
+                  className="w-full flex items-center justify-between gap-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors text-gray-600 hover:text-gray-800"
                 >
                   <div className="flex items-center gap-3">
                     <Building2 size={18} />
                     <span>החשבוניות שלי</span>
                   </div>
-                  <ChevronLeft size={16} className="text-white/40" />
+                  <ChevronLeft size={16} className="text-gray-400" />
                 </button>
               </div>
             </GlassCard>
@@ -459,8 +459,8 @@ export default function ProfilePage() {
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-semibold text-white">עדכון תמונת פרופיל</h3>
-                <button onClick={() => setShowPhotoModal(false)} className="text-white/50 hover:text-white">
+                <h3 className="text-xl font-semibold text-gray-800">עדכון תמונת פרופיל</h3>
+                <button onClick={() => setShowPhotoModal(false)} className="text-gray-400 hover:text-gray-600">
                   <X size={20} />
                 </button>
               </div>
@@ -498,7 +498,7 @@ export default function ProfilePage() {
                   בחר תמונה
                 </button>
 
-                <p className="text-white/50 text-sm">
+                <p className="text-gray-400 text-sm">
                   JPG, PNG או GIF. מקסימום 5MB.
                 </p>
               </div>

@@ -15,7 +15,7 @@ interface PageSliderProps {
   opacity?: number;
 }
 
-export default function PageSlider({ images, height = '400px', opacity = 0.5 }: PageSliderProps) {
+export default function PageSlider({ images, height = '400px', opacity = 1 }: PageSliderProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
@@ -28,7 +28,7 @@ export default function PageSlider({ images, height = '400px', opacity = 0.5 }: 
 
   return (
     <div
-      className="fixed left-0 right-0 top-[88px] overflow-hidden z-0"
+      className="fixed left-0 right-0 top-16 overflow-hidden z-0"
       style={{ height }}
     >
       {/* Images Container */}
@@ -58,30 +58,28 @@ export default function PageSlider({ images, height = '400px', opacity = 0.5 }: 
             priority={currentIndex === 0}
             sizes="100vw"
           />
-          {/* Overlay for better text readability */}
-          <div className="absolute inset-0 bg-primary-900/30" />
         </motion.div>
       </AnimatePresence>
 
       {/* Bottom fade gradient - blends with background */}
       <div
-        className="absolute bottom-0 left-0 right-0 h-[40%] pointer-events-none"
+        className="absolute bottom-0 left-0 right-0 h-[50%] pointer-events-none"
         style={{
-          background: 'linear-gradient(to top, #060f1f 0%, #060f1f 10%, rgba(6, 15, 31, 0.8) 40%, rgba(6, 15, 31, 0) 100%)'
+          background: 'linear-gradient(to top, #F8FAFC 0%, rgba(248, 250, 252, 0.9) 30%, rgba(248, 250, 252, 0.5) 60%, rgba(248, 250, 252, 0) 100%)'
         }}
       />
 
       {/* Side fades for smooth edge blending */}
       <div
-        className="absolute top-0 bottom-0 left-0 w-[15%] pointer-events-none"
+        className="absolute top-0 bottom-0 left-0 w-[10%] pointer-events-none"
         style={{
-          background: 'linear-gradient(to right, #060f1f 0%, rgba(6, 15, 31, 0) 100%)'
+          background: 'linear-gradient(to right, rgba(248, 250, 252, 0.7) 0%, rgba(248, 250, 252, 0) 100%)'
         }}
       />
       <div
-        className="absolute top-0 bottom-0 right-0 w-[15%] pointer-events-none"
+        className="absolute top-0 bottom-0 right-0 w-[10%] pointer-events-none"
         style={{
-          background: 'linear-gradient(to left, #060f1f 0%, rgba(6, 15, 31, 0) 100%)'
+          background: 'linear-gradient(to left, rgba(248, 250, 252, 0.7) 0%, rgba(248, 250, 252, 0) 100%)'
         }}
       />
 
@@ -145,5 +143,10 @@ export const sliderImages = {
     { src: 'https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=1920&q=80', alt: 'Finance & Banking' },
     { src: 'https://images.unsplash.com/photo-1567427017947-545c5f8d16ad?w=1920&q=80', alt: 'Digital Payments' },
     { src: 'https://images.unsplash.com/photo-1620714223084-8fcacc6dfd8d?w=1920&q=80', alt: 'Modern Banking' },
+  ],
+  supplier: [
+    { src: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=1920&q=80', alt: 'Corporate Interior' },
+    { src: 'https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=1920&q=80', alt: 'Modern Office Space' },
+    { src: 'https://images.unsplash.com/photo-1604328698692-f76ea9498e76?w=1920&q=80', alt: 'Business Architecture' },
   ],
 };

@@ -40,8 +40,8 @@ export default function HomePage() {
         {/* Background Image */}
         <div className="absolute inset-0">
           <Image
-            src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1920&q=80"
-            alt="Beautiful beach destination"
+            src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1920&q=80"
+            alt="Modern architecture building"
             fill
             className="object-cover"
             priority
@@ -51,7 +51,7 @@ export default function HomePage() {
         </div>
 
         {/* Hero Content */}
-        <div className="relative z-10 pt-32 pb-20 px-6 w-full flex justify-center">
+        <div className="relative z-10 pt-20 pb-20 px-6 w-full flex justify-center">
           <div className="max-w-4xl w-full text-center flex flex-col items-center">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
@@ -200,8 +200,8 @@ export default function HomePage() {
         {/* Background Image */}
         <div className="absolute inset-0">
           <Image
-            src="https://images.unsplash.com/photo-1540541338287-41700207dee6?w=1920&q=80"
-            alt="Tropical destination"
+            src="https://images.unsplash.com/photo-1487958449943-2429e8be8625?w=1920&q=80"
+            alt="Modern building facade"
             fill
             className="object-cover"
           />

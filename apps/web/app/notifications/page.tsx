@@ -85,11 +85,11 @@ export default function NotificationsPage() {
         >
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-display font-bold text-white flex items-center gap-3">
+              <h1 className="text-3xl font-display font-bold text-gray-900 flex items-center gap-3">
                 <Bell className="text-gold-400" />
                 התראות
               </h1>
-              <p className="text-white/60 mt-1">
+              <p className="text-gray-500 mt-1">
                 {unreadCount > 0 ? `${unreadCount} התראות שלא נקראו` : 'אין התראות חדשות'}
               </p>
             </div>
@@ -99,7 +99,7 @@ export default function NotificationsPage() {
                 whileTap={{ scale: 0.98 }}
                 onClick={handleMarkAllRead}
                 disabled={markAllRead.isPending}
-                className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-white/80 transition-colors disabled:opacity-50"
+                className="flex items-center gap-2 px-4 py-2 bg-primary-600 hover:bg-primary-700 rounded-lg text-white transition-colors disabled:opacity-50"
               >
                 <CheckCheck size={18} />
                 סמן הכל כנקרא
@@ -119,22 +119,22 @@ export default function NotificationsPage() {
               <div className="space-y-4">
                 {[...Array(5)].map((_, i) => (
                   <div key={i} className="flex items-start gap-4 p-4 animate-pulse">
-                    <div className="w-10 h-10 bg-white/10 rounded-full" />
+                    <div className="w-10 h-10 bg-gray-100 rounded-full" />
                     <div className="flex-1">
-                      <div className="h-4 w-48 bg-white/10 rounded mb-2" />
-                      <div className="h-3 w-64 bg-white/5 rounded" />
+                      <div className="h-4 w-48 bg-gray-100 rounded mb-2" />
+                      <div className="h-3 w-64 bg-gray-50 rounded" />
                     </div>
                   </div>
                 ))}
               </div>
             ) : notifications.length === 0 ? (
               <div className="text-center py-16">
-                <Bell size={48} className="mx-auto text-white/20 mb-4" />
-                <p className="text-white/50 text-lg">אין התראות</p>
-                <p className="text-white/30 text-sm mt-1">התראות חדשות יופיעו כאן</p>
+                <Bell size={48} className="mx-auto text-gray-300 mb-4" />
+                <p className="text-gray-500 text-lg">אין התראות</p>
+                <p className="text-gray-400 text-sm mt-1">התראות חדשות יופיעו כאן</p>
               </div>
             ) : (
-              <div className="divide-y divide-white/5">
+              <div className="divide-y divide-gray-100">
                 {notifications.map((notif: any, index: number) => {
                   const Icon = TYPE_ICONS[notif.type] || Info;
                   const colorClass = TYPE_COLORS[notif.type] || 'bg-blue-500/20 text-blue-400';
@@ -147,18 +147,18 @@ export default function NotificationsPage() {
                       transition={{ delay: index * 0.03 }}
                       onClick={() => !notif.isRead && handleMarkAsRead(notif.id)}
                       className={`p-4 flex items-start gap-4 cursor-pointer transition-colors ${
-                        !notif.isRead ? 'bg-white/5 hover:bg-white/10' : 'hover:bg-white/5'
+                        !notif.isRead ? 'bg-blue-50 hover:bg-blue-100' : 'hover:bg-gray-50'
                       }`}
                     >
                       <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${colorClass}`}>
                         <Icon size={20} />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className={`text-white ${!notif.isRead ? 'font-medium' : ''}`}>
+                        <p className={`text-gray-900 ${!notif.isRead ? 'font-medium' : ''}`}>
                           {notif.title}
                         </p>
-                        <p className="text-white/50 text-sm mt-0.5">{notif.message}</p>
-                        <p className="text-white/30 text-xs mt-2">
+                        <p className="text-gray-500 text-sm mt-0.5">{notif.message}</p>
+                        <p className="text-gray-400 text-xs mt-2">
                           {new Date(notif.createdAt).toLocaleString('he-IL')}
                         </p>
                       </div>

@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-import { Wallet, FileText, Gift, TrendingUp, ArrowUpRight, Clock, Star, CreditCard, Plane } from 'lucide-react';
+import { Wallet, FileText, Gift, TrendingUp, ArrowUpRight, Clock, Star, CreditCard, Building2 } from 'lucide-react';
 import Link from 'next/link';
 import { useAuth } from '@/lib/auth-context';
 import { useDashboardStats, useWalletTransactions, useWalletCard } from '@/lib/api-hooks';
@@ -57,8 +57,8 @@ export default function DashboardPage() {
         {/* Background Image */}
         <div className="absolute inset-0 h-80">
           <Image
-            src="https://images.unsplash.com/photo-1488085061387-422e29b40080?w=1920&q=80"
-            alt="Travel destination"
+            src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1920&q=80"
+            alt="Modern architecture building"
             fill
             className="object-cover"
             priority
@@ -141,7 +141,7 @@ export default function DashboardPage() {
                     </p>
                   </div>
                   <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur flex items-center justify-center">
-                    <Plane size={24} className="text-white" />
+                    <Building2 size={24} className="text-white" />
                   </div>
                 </div>
 

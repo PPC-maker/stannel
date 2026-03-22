@@ -148,23 +148,23 @@ export default function SupplierDashboardPage() {
   }
 
   return (
-    <div className="relative min-h-screen">
-      <PageSlider images={sliderImages.dashboard} opacity={0.15} />
-      <div className="p-6 max-w-7xl mx-auto relative z-10 pt-24">
+    <div className="relative min-h-screen bg-[#F8FAFC]">
+      <PageSlider images={sliderImages.supplier} />
+      <div className="p-6 max-w-7xl mx-auto pt-8 relative z-10">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
-          className="mb-8 text-center"
+          className="mb-8 text-center bg-white/90 backdrop-blur-sm rounded-2xl p-6 shadow-sm"
         >
-          <p className="text-white/50 text-sm mb-2">פורטל ספק</p>
-          <h1 className="text-3xl font-display font-bold text-white flex items-center justify-center gap-3">
+          <p className="text-gray-500 text-sm mb-2">פורטל ספק</p>
+          <h1 className="text-3xl font-display font-bold text-gray-900 flex items-center justify-center gap-3">
             <Building2 className="text-gold-400" />
             {user?.name || 'ספק'}
           </h1>
           <div className="flex items-center justify-center gap-2 mt-2">
-            <span className="text-white/40 text-sm">{user?.email}</span>
-            <span className="flex items-center gap-1 text-green-400 text-sm">
+            <span className="text-gray-500 text-sm">{user?.email}</span>
+            <span className="flex items-center gap-1 text-green-500 text-sm">
               <Shield size={14} />
               מאושר
             </span>
@@ -246,17 +246,17 @@ export default function SupplierDashboardPage() {
           transition={{ delay: 0.15 }}
           className="grid grid-cols-3 gap-4 mb-8"
         >
-          <Link href="/supplier/profile" className="p-6 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition-colors text-center group">
-            <Building2 className="mx-auto text-white/40 group-hover:text-gold-400 mb-2 transition-colors" size={32} />
-            <span className="text-white/70 text-sm">פרטי הספק</span>
+          <Link href="/supplier/profile" className="p-6 bg-gray-50 border border-gray-200 rounded-xl hover:bg-gray-100 transition-colors text-center group">
+            <Building2 className="mx-auto text-gray-400 group-hover:text-gold-400 mb-2 transition-colors" size={32} />
+            <span className="text-gray-600 text-sm">פרטי הספק</span>
           </Link>
-          <Link href="/supplier/payments" className="p-6 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition-colors text-center group">
-            <CreditCard className="mx-auto text-white/40 group-hover:text-gold-400 mb-2 transition-colors" size={32} />
-            <span className="text-white/70 text-sm">תשלומים</span>
+          <Link href="/supplier/payments" className="p-6 bg-gray-50 border border-gray-200 rounded-xl hover:bg-gray-100 transition-colors text-center group">
+            <CreditCard className="mx-auto text-gray-400 group-hover:text-gold-400 mb-2 transition-colors" size={32} />
+            <span className="text-gray-600 text-sm">תשלומים</span>
           </Link>
-          <Link href="/supplier/invoices" className="p-6 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition-colors text-center group">
-            <FileText className="mx-auto text-white/40 group-hover:text-gold-400 mb-2 transition-colors" size={32} />
-            <span className="text-white/70 text-sm">חשבוניות</span>
+          <Link href="/supplier/invoices" className="p-6 bg-gray-50 border border-gray-200 rounded-xl hover:bg-gray-100 transition-colors text-center group">
+            <FileText className="mx-auto text-gray-400 group-hover:text-gold-400 mb-2 transition-colors" size={32} />
+            <span className="text-gray-600 text-sm">חשבוניות</span>
           </Link>
         </motion.div>
 
@@ -268,7 +268,7 @@ export default function SupplierDashboardPage() {
         >
           <GlassCard hover={false}>
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-semibold text-white flex items-center gap-2">
+              <h2 className="text-xl font-semibold text-gray-800 flex items-center gap-2">
                 <Receipt className="text-gold-400" size={20} />
                 חשבוניות
               </h2>
@@ -277,7 +277,7 @@ export default function SupplierDashboardPage() {
               <div className="relative">
                 <button
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                  className="flex items-center gap-2 px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white/80 hover:bg-white/20 transition-colors min-w-[160px] justify-between"
+                  className="flex items-center gap-2 px-4 py-2 bg-gray-100 border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-200 transition-colors min-w-[160px] justify-between"
                 >
                   <span>{STATUS_OPTIONS.find(s => s.value === statusFilter)?.label || 'כל הסטטוסים'}</span>
                   <ChevronDown size={16} className={`transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
@@ -287,7 +287,7 @@ export default function SupplierDashboardPage() {
                   <motion.div
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="absolute top-full right-0 mt-1 w-full bg-primary-900 border border-white/20 rounded-lg overflow-hidden z-10 shadow-xl"
+                    className="absolute top-full right-0 mt-1 w-full bg-white border border-gray-200 rounded-lg overflow-hidden z-10 shadow-xl"
                   >
                     {STATUS_OPTIONS.map((option) => (
                       <button
@@ -296,8 +296,8 @@ export default function SupplierDashboardPage() {
                           setStatusFilter(option.value);
                           setIsDropdownOpen(false);
                         }}
-                        className={`w-full px-4 py-2 text-right hover:bg-white/10 transition-colors flex items-center justify-between ${
-                          statusFilter === option.value ? 'bg-white/10 text-gold-400' : 'text-white/70'
+                        className={`w-full px-4 py-2 text-right hover:bg-gray-100 transition-colors flex items-center justify-between ${
+                          statusFilter === option.value ? 'bg-gray-100 text-gold-400' : 'text-gray-600'
                         }`}
                       >
                         <span>{option.label}</span>
@@ -315,8 +315,8 @@ export default function SupplierDashboardPage() {
               </div>
             ) : invoices.length === 0 ? (
               <div className="text-center py-12">
-                <Receipt className="w-12 h-12 mx-auto text-white/20 mb-4" />
-                <p className="text-white/50">אין חשבוניות</p>
+                <Receipt className="w-12 h-12 mx-auto text-gray-300 mb-4" />
+                <p className="text-gray-500">אין חשבוניות</p>
               </div>
             ) : (
               <div className="space-y-3 max-h-[500px] overflow-y-auto">
@@ -331,25 +331,25 @@ export default function SupplierDashboardPage() {
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: index * 0.03 }}
-                      className={`p-4 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition-colors ${isOverdue ? 'border-red-500/30' : ''}`}
+                      className={`p-4 bg-gray-50 border border-gray-200 rounded-xl hover:bg-gray-100 transition-colors ${isOverdue ? 'border-red-500/30' : ''}`}
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4">
-                          <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center">
-                            <User size={20} className="text-white/50" />
+                          <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center">
+                            <User size={20} className="text-gray-500" />
                           </div>
                           <div>
-                            <p className="text-white font-medium">
+                            <p className="text-gray-800 font-medium">
                               {invoice.architect.user.name}
                             </p>
-                            <p className="text-white/40 text-sm">
+                            <p className="text-gray-400 text-sm">
                               {new Date(invoice.createdAt).toLocaleDateString('he-IL')}
                             </p>
                           </div>
                         </div>
                         <div className="flex items-center gap-4">
                           <div className="text-left">
-                            <p className="text-white font-bold text-lg">
+                            <p className="text-gray-800 font-bold text-lg">
                               ₪{invoice.amount.toLocaleString()}
                             </p>
                             <span className={`inline-block px-2 py-0.5 rounded-full text-xs ${statusConfig.bg} ${statusConfig.color}`}>
@@ -394,35 +394,35 @@ export default function SupplierDashboardPage() {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="w-full max-w-md bg-primary-900 border border-white/20 rounded-2xl p-6 shadow-2xl"
+              className="w-full max-w-md bg-white border border-gray-200 rounded-2xl p-6 shadow-2xl"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                <h3 className="text-xl font-bold text-gray-800 flex items-center gap-2">
                   <CreditCard className="text-gold-400" size={24} />
                   אישור תשלום
                 </h3>
                 <button
                   onClick={() => setIsModalOpen(false)}
-                  className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
                 >
-                  <X size={20} className="text-white/50" />
+                  <X size={20} className="text-gray-400" />
                 </button>
               </div>
 
               {/* Invoice Details */}
-              <div className="bg-white/5 border border-white/10 rounded-xl p-4 mb-6">
+              <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 mb-6">
                 <div className="flex justify-between items-center mb-3">
-                  <span className="text-white/50">אדריכל:</span>
-                  <span className="text-white font-medium">{selectedInvoice.architect.user.name}</span>
+                  <span className="text-gray-500">אדריכל:</span>
+                  <span className="text-gray-800 font-medium">{selectedInvoice.architect.user.name}</span>
                 </div>
                 <div className="flex justify-between items-center mb-3">
-                  <span className="text-white/50">סכום חשבונית:</span>
-                  <span className="text-white font-bold text-lg">₪{selectedInvoice.amount.toLocaleString()}</span>
+                  <span className="text-gray-500">סכום חשבונית:</span>
+                  <span className="text-gray-800 font-bold text-lg">₪{selectedInvoice.amount.toLocaleString()}</span>
                 </div>
                 {selectedInvoice.slaDeadline && (
                   <div className="flex justify-between items-center">
-                    <span className="text-white/50">תאריך יעד:</span>
+                    <span className="text-gray-500">תאריך יעד:</span>
                     <span className={selectedInvoice.status === 'OVERDUE' ? 'text-red-400' : 'text-yellow-400'}>
                       {new Date(selectedInvoice.slaDeadline).toLocaleDateString('he-IL')}
                     </span>
@@ -432,7 +432,7 @@ export default function SupplierDashboardPage() {
 
               {/* Payment Reference Input */}
               <div className="mb-4">
-                <label className="block text-white/60 text-sm mb-2">
+                <label className="block text-gray-500 text-sm mb-2">
                   אסמכתא / מספר אישור העברה
                 </label>
                 <input
@@ -440,14 +440,14 @@ export default function SupplierDashboardPage() {
                   value={paymentReference}
                   onChange={(e) => setPaymentReference(e.target.value)}
                   placeholder="הכנס מספר אסמכתא..."
-                  className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-lg text-white placeholder-white/30 focus:outline-none focus:border-gold-400 transition-colors"
+                  className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg text-gray-800 placeholder-gray-400 focus:outline-none focus:border-[#0066CC] transition-colors"
                   dir="ltr"
                 />
               </div>
 
               {/* Payment Proof Upload */}
               <div className="mb-6">
-                <label className="block text-white/60 text-sm mb-2">
+                <label className="block text-gray-500 text-sm mb-2">
                   העלאת מסמך אישור העברה <span className="text-red-400">*</span>
                 </label>
                 {paymentProofFile ? (
@@ -455,7 +455,7 @@ export default function SupplierDashboardPage() {
                     <div className="flex items-center gap-3">
                       <File className="text-green-400" size={24} />
                       <div>
-                        <p className="text-white font-medium text-sm">{paymentProofFile.name}</p>
+                        <p className="text-gray-800 font-medium text-sm">{paymentProofFile.name}</p>
                         <p className="text-green-400/70 text-xs">
                           {(paymentProofFile.size / 1024).toFixed(1)} KB
                         </p>
@@ -463,16 +463,16 @@ export default function SupplierDashboardPage() {
                     </div>
                     <button
                       onClick={() => setPaymentProofFile(null)}
-                      className="p-1 hover:bg-white/10 rounded transition-colors"
+                      className="p-1 hover:bg-gray-100 rounded transition-colors"
                     >
-                      <X size={18} className="text-white/50" />
+                      <X size={18} className="text-gray-400" />
                     </button>
                   </div>
                 ) : (
-                  <label className="flex flex-col items-center justify-center p-6 border-2 border-dashed border-white/20 rounded-lg cursor-pointer hover:border-gold-400/50 hover:bg-white/5 transition-colors">
-                    <Upload className="text-white/40 mb-2" size={32} />
-                    <span className="text-white/60 text-sm">לחץ להעלאת קובץ</span>
-                    <span className="text-white/40 text-xs mt-1">PDF, תמונה או מסמך</span>
+                  <label className="flex flex-col items-center justify-center p-6 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-[#0066CC]/50 hover:bg-gray-50 transition-colors">
+                    <Upload className="text-gray-400 mb-2" size={32} />
+                    <span className="text-gray-500 text-sm">לחץ להעלאת קובץ</span>
+                    <span className="text-gray-400 text-xs mt-1">PDF, תמונה או מסמך</span>
                     <input
                       type="file"
                       accept=".pdf,.png,.jpg,.jpeg,.doc,.docx"
@@ -487,7 +487,7 @@ export default function SupplierDashboardPage() {
               <div className="flex gap-3">
                 <button
                   onClick={() => setIsModalOpen(false)}
-                  className="flex-1 px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white/70 hover:bg-white/20 transition-colors"
+                  className="flex-1 px-4 py-3 bg-gray-100 border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-200 transition-colors"
                 >
                   ביטול
                 </button>

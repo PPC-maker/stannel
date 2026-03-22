@@ -49,7 +49,7 @@ export default function AdminAnalyticsPage() {
 
   return (
     <div className="relative min-h-screen">
-      <PageSlider images={sliderImages.dashboard} opacity={0.15} />
+      <PageSlider images={sliderImages.dashboard}  />
       <div className="p-6 max-w-7xl mx-auto relative z-10">
         {/* Header */}
         <motion.div

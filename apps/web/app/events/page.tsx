@@ -79,7 +79,7 @@ export default function EventsPage() {
   const isFull = (event: any) => event.registered >= event.capacity;
 
   return (
-    <div className="relative">
+    <div className="relative bg-[#F8FAFC] min-h-screen">
       <PageSlider images={sliderImages.events} />
       <div className="p-6 max-w-7xl mx-auto relative z-10">
       {/* Header */}
@@ -88,8 +88,8 @@ export default function EventsPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
         >
-          <h1 className="text-3xl font-display font-bold text-white">אירועים</h1>
-          <p className="text-white/60 mt-2">הצטרפו לאירועים בלעדיים וצברו נקודות</p>
+          <h1 className="text-3xl font-display font-bold text-gray-900">אירועים</h1>
+          <p className="text-gray-600 mt-2">הצטרפו לאירועים בלעדיים וצברו נקודות</p>
         </motion.div>
       </div>
 
@@ -101,15 +101,15 @@ export default function EventsPage() {
               <Calendar size={28} className="text-primary-900" />
             </div>
             <div>
-              <p className="text-white/60 text-sm">אירועים קרובים</p>
-              <p className="text-4xl font-bold text-gold-400">
+              <p className="text-white/80 text-sm">אירועים קרובים</p>
+              <p className="text-4xl font-bold text-white">
                 {events.length} <span className="text-lg">אירועים</span>
               </p>
             </div>
           </div>
           <div className="flex items-center gap-6">
             <div className="text-center">
-              <p className="text-white/60 text-sm">נרשמתם ל</p>
+              <p className="text-white/80 text-sm">נרשמתם ל</p>
               <p className="text-2xl font-semibold text-white">{registeredEvents.length} אירועים</p>
             </div>
           </div>
@@ -122,17 +122,17 @@ export default function EventsPage() {
           // Skeleton
           [...Array(6)].map((_, i) => (
             <div key={i} className="glass-card overflow-hidden animate-pulse">
-              <div className="h-48 bg-white/5" />
+              <div className="h-48 bg-gray-100" />
               <div className="p-6">
-                <div className="h-6 w-3/4 bg-white/10 rounded mb-2" />
-                <div className="h-4 w-full bg-white/5 rounded mb-4" />
+                <div className="h-6 w-3/4 bg-gray-200 rounded mb-2" />
+                <div className="h-4 w-full bg-gray-100 rounded mb-4" />
                 <div className="space-y-2 mb-4">
-                  <div className="h-3 w-24 bg-white/5 rounded" />
-                  <div className="h-3 w-32 bg-white/5 rounded" />
+                  <div className="h-3 w-24 bg-gray-100 rounded" />
+                  <div className="h-3 w-32 bg-gray-100 rounded" />
                 </div>
-                <div className="flex justify-between pt-4 border-t border-white/10">
+                <div className="flex justify-between pt-4 border-t border-gray-200">
                   <div className="h-5 w-16 bg-gold-400/20 rounded" />
-                  <div className="h-8 w-20 bg-white/10 rounded-lg" />
+                  <div className="h-8 w-20 bg-gray-200 rounded-lg" />
                 </div>
               </div>
             </div>
@@ -169,8 +169,8 @@ export default function EventsPage() {
                       }}
                     />
                   ) : null}
-                  <div className={`w-full h-full bg-white/10 flex items-center justify-center absolute inset-0 ${event.imageUrl && isValidImageUrl(event.imageUrl) ? 'hidden' : ''}`}>
-                    <Calendar size={48} className="text-white/30" />
+                  <div className={`w-full h-full bg-gray-100 flex items-center justify-center absolute inset-0 ${event.imageUrl && isValidImageUrl(event.imageUrl) ? 'hidden' : ''}`}>
+                    <Calendar size={48} className="text-gray-300" />
                   </div>
                   {event.isVip && (
                     <div className="absolute top-3 right-3 bg-gold-400 text-primary-900 text-xs font-bold px-3 py-1 rounded-full">
@@ -196,31 +196,31 @@ export default function EventsPage() {
                 </div>
 
                 {/* Event Info */}
-                <h3 className="text-white font-semibold text-lg mb-2">{event.title}</h3>
-                <p className="text-white/60 text-sm mb-4 line-clamp-2">{event.description}</p>
+                <h3 className="text-gray-800 font-semibold text-lg mb-2">{event.title}</h3>
+                <p className="text-gray-600 text-sm mb-4 line-clamp-2">{event.description}</p>
 
                 {/* Event Details */}
                 <div className="space-y-2 mb-4">
                   {event.time && (
-                    <div className="flex items-center gap-2 text-white/60 text-sm">
+                    <div className="flex items-center gap-2 text-gray-500 text-sm">
                       <Clock size={14} />
                       <span>{event.time}</span>
                     </div>
                   )}
                   {event.location && (
-                    <div className="flex items-center gap-2 text-white/60 text-sm">
+                    <div className="flex items-center gap-2 text-gray-500 text-sm">
                       <MapPin size={14} />
                       <span>{event.location}</span>
                     </div>
                   )}
-                  <div className="flex items-center gap-2 text-white/60 text-sm">
+                  <div className="flex items-center gap-2 text-gray-500 text-sm">
                     <Users size={14} />
                     <span>{event.registered || 0} / {event.capacity || '∞'} משתתפים</span>
                   </div>
                 </div>
 
                 {/* Points & Action */}
-                <div className="flex items-center justify-between pt-4 border-t border-white/10">
+                <div className="flex items-center justify-between pt-4 border-t border-gray-200">
                   <div className="text-gold-400 font-bold">
                     +{event.pointsReward || 0} נק׳
                   </div>
@@ -231,7 +231,7 @@ export default function EventsPage() {
                       registered
                         ? 'bg-green-500/20 text-green-400 cursor-default'
                         : full
-                        ? 'bg-white/10 text-white/40 cursor-not-allowed'
+                        ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
                         : 'bg-gold-400 text-primary-900 hover:bg-gold-300'
                     }`}
                   >
@@ -258,8 +258,8 @@ export default function EventsPage() {
       {/* Empty State */}
       {events.length === 0 && (
         <GlassCard className="text-center py-12">
-          <Calendar size={48} className="mx-auto text-white/30 mb-4" />
-          <p className="text-white/60">אין אירועים קרובים כרגע</p>
+          <Calendar size={48} className="mx-auto text-gray-300 mb-4" />
+          <p className="text-gray-600">אין אירועים קרובים כרגע</p>
         </GlassCard>
       )}
       </div>

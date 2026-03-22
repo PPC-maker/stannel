@@ -11,7 +11,7 @@ import {
   ArrowDownRight,
   Clock,
   Gift,
-  Plane,
+  Building2,
 } from 'lucide-react';
 import { useWalletBalance, useWalletCard, useWalletTransactions } from '@/lib/api-hooks';
 import { useAuth } from '@/lib/auth-context';
@@ -44,18 +44,19 @@ export default function WalletPage() {
     <div className="min-h-screen bg-[#F8FAFC]">
       {/* Hero Section with Background */}
       <div className="relative">
-        <div className="absolute inset-0 h-72">
+        {/* Background extends to top of viewport behind navbar */}
+        <div className="absolute inset-x-0 top-0 h-80">
           <Image
-            src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=1920&q=80"
-            alt="Travel"
+            src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1920&q=80"
+            alt="Modern Architecture"
             fill
             className="object-cover"
             priority
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#0066CC]/70 via-[#0066CC]/50 to-[#F8FAFC]" />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#0066CC]/80 via-[#0066CC]/60 to-[#F8FAFC]" />
         </div>
 
-        <div className="relative z-10 pt-24 pb-6 px-6 max-w-7xl mx-auto">
+        <div className="relative z-10 pt-20 pb-6 px-6 max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -71,7 +72,7 @@ export default function WalletPage() {
       </div>
 
       {/* Main Content */}
-      <div className="px-6 pb-8 max-w-7xl mx-auto -mt-8">
+      <div className="relative z-20 px-6 pb-8 max-w-7xl mx-auto -mt-8">
         {/* Main Balance Card */}
         <div className="grid lg:grid-cols-3 gap-6 mb-8">
           <motion.div
@@ -100,7 +101,7 @@ export default function WalletPage() {
                 <div className="relative h-full flex flex-col justify-between">
                   <div className="flex items-center justify-between">
                     <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur flex items-center justify-center">
-                      <Plane size={24} className="text-white" />
+                      <Building2 size={24} className="text-white" />
                     </div>
                     <span className="text-white/80 text-sm font-semibold">STANNEL CLUB</span>
                   </div>

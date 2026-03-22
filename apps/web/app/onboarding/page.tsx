@@ -91,7 +91,7 @@ export default function OnboardingPage() {
 
   return (
     <div className="relative min-h-screen">
-      <PageSlider images={sliderImages.dashboard} opacity={0.15} />
+      <PageSlider images={sliderImages.dashboard}  />
       <div className="min-h-screen flex items-center justify-center p-6 relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -108,7 +108,7 @@ export default function OnboardingPage() {
                       ? 'bg-green-500 text-white'
                       : index === currentStep
                       ? 'bg-gold-400 text-primary-900'
-                      : 'bg-white/10 text-white/40'
+                      : 'bg-gray-200 text-gray-400'
                   }`}
                 >
                   {index < currentStep ? <Check size={18} /> : index + 1}
@@ -116,7 +116,7 @@ export default function OnboardingPage() {
                 {index < steps.length - 1 && (
                   <div
                     className={`w-16 h-1 mx-1 rounded-full transition-all ${
-                      index < currentStep ? 'bg-green-500' : 'bg-white/10'
+                      index < currentStep ? 'bg-green-500' : 'bg-gray-200'
                     }`}
                   />
                 )}
@@ -144,27 +144,27 @@ export default function OnboardingPage() {
                       <Sparkles size={40} className="text-gold-400" />
                     </motion.div>
 
-                    <h1 className="text-3xl font-display font-bold text-white mb-4">
+                    <h1 className="text-3xl font-display font-bold text-gray-900 mb-4">
                       ברוכים הבאים ל-STANNEL
                     </h1>
-                    <p className="text-white/60 mb-8">
+                    <p className="text-gray-500 mb-8">
                       שלום {user?.name}! אנחנו שמחים שהצטרפת לתוכנית הנאמנות שלנו.
                       <br />
                       בואו נשלים את ההרשמה בכמה צעדים פשוטים.
                     </p>
 
                     <div className="grid grid-cols-3 gap-4 mb-8">
-                      <div className="p-4 bg-white/5 rounded-xl">
+                      <div className="p-4 bg-gray-50 rounded-xl">
                         <Gift className="mx-auto text-gold-400 mb-2" size={24} />
-                        <p className="text-white/80 text-sm">צברו נקודות</p>
+                        <p className="text-gray-700 text-sm">צברו נקודות</p>
                       </div>
-                      <div className="p-4 bg-white/5 rounded-xl">
+                      <div className="p-4 bg-gray-50 rounded-xl">
                         <Shield className="mx-auto text-gold-400 mb-2" size={24} />
-                        <p className="text-white/80 text-sm">עלו בדרגות</p>
+                        <p className="text-gray-700 text-sm">עלו בדרגות</p>
                       </div>
-                      <div className="p-4 bg-white/5 rounded-xl">
+                      <div className="p-4 bg-gray-50 rounded-xl">
                         <Sparkles className="mx-auto text-gold-400 mb-2" size={24} />
-                        <p className="text-white/80 text-sm">ממשו הטבות</p>
+                        <p className="text-gray-700 text-sm">ממשו הטבות</p>
                       </div>
                     </div>
 
@@ -189,16 +189,16 @@ export default function OnboardingPage() {
                 exit={{ opacity: 0, x: -20 }}
               >
                 <GlassCard hover={false}>
-                  <h2 className="text-2xl font-display font-bold text-white mb-2 text-center">
+                  <h2 className="text-2xl font-display font-bold text-gray-900 mb-2 text-center">
                     פרטים נוספים
                   </h2>
-                  <p className="text-white/60 mb-6 text-center">
+                  <p className="text-gray-500 mb-6 text-center">
                     עזרו לנו להכיר אתכם טוב יותר (אופציונלי)
                   </p>
 
                   <div className="space-y-4 mb-6">
                     <div>
-                      <label className="text-white/60 text-sm mb-2 flex items-center gap-2">
+                      <label className="text-gray-500 text-sm mb-2 flex items-center gap-2">
                         <Building2 size={16} />
                         שם החברה / משרד
                       </label>
@@ -206,13 +206,13 @@ export default function OnboardingPage() {
                         type="text"
                         value={formData.company}
                         onChange={(e) => setFormData({ ...formData, company: e.target.value })}
-                        className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-white placeholder:text-white/40"
+                        className="w-full bg-gray-100 border border-gray-200 rounded-lg px-4 py-3 text-gray-900 placeholder:text-gray-400"
                         placeholder="שם המשרד או החברה שלך"
                       />
                     </div>
 
                     <div>
-                      <label className="text-white/60 text-sm mb-2 flex items-center gap-2">
+                      <label className="text-gray-500 text-sm mb-2 flex items-center gap-2">
                         <Phone size={16} />
                         טלפון
                       </label>
@@ -220,14 +220,14 @@ export default function OnboardingPage() {
                         type="tel"
                         value={formData.phone}
                         onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                        className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-white placeholder:text-white/40"
+                        className="w-full bg-gray-100 border border-gray-200 rounded-lg px-4 py-3 text-gray-900 placeholder:text-gray-400"
                         placeholder="מספר טלפון ליצירת קשר"
                         dir="ltr"
                       />
                     </div>
 
                     <div>
-                      <label className="text-white/60 text-sm mb-2 flex items-center gap-2">
+                      <label className="text-gray-500 text-sm mb-2 flex items-center gap-2">
                         <MapPin size={16} />
                         כתובת
                       </label>
@@ -235,7 +235,7 @@ export default function OnboardingPage() {
                         type="text"
                         value={formData.address}
                         onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                        className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-white placeholder:text-white/40"
+                        className="w-full bg-gray-100 border border-gray-200 rounded-lg px-4 py-3 text-gray-900 placeholder:text-gray-400"
                         placeholder="כתובת המשרד"
                       />
                     </div>
@@ -277,30 +277,30 @@ export default function OnboardingPage() {
                       transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
                       className="w-20 h-20 mx-auto mb-6 rounded-full bg-green-500/20 flex items-center justify-center"
                     >
-                      <Check size={40} className="text-green-400" />
+                      <Check size={40} className="text-green-500" />
                     </motion.div>
 
-                    <h2 className="text-2xl font-display font-bold text-white mb-2">
+                    <h2 className="text-2xl font-display font-bold text-gray-900 mb-2">
                       מעולה! הכל מוכן
                     </h2>
-                    <p className="text-white/60 mb-8">
+                    <p className="text-gray-500 mb-8">
                       החשבון שלך מוגדר ומוכן לשימוש.
                       <br />
                       התחל להעלות חשבוניות וצבור נקודות!
                     </p>
 
-                    <div className="p-4 bg-white/5 rounded-xl mb-6">
+                    <div className="p-4 bg-gray-50 rounded-xl mb-6">
                       <div className="flex items-center gap-4">
                         <div className="w-12 h-12 rounded-full bg-gold-400/20 flex items-center justify-center">
                           <User size={24} className="text-gold-400" />
                         </div>
                         <div className="text-right flex-1">
-                          <p className="text-white font-bold">{user?.name}</p>
-                          <p className="text-white/50 text-sm">{user?.email}</p>
+                          <p className="text-gray-900 font-bold">{user?.name}</p>
+                          <p className="text-gray-500 text-sm">{user?.email}</p>
                         </div>
                       </div>
                       {formData.company && (
-                        <div className="mt-3 pt-3 border-t border-white/10 text-white/60 text-sm">
+                        <div className="mt-3 pt-3 border-t border-gray-200 text-gray-500 text-sm">
                           {formData.company}
                         </div>
                       )}

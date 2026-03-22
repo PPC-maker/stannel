@@ -80,24 +80,24 @@ export default function AiAgentPage() {
   };
 
   return (
-    <div className="relative min-h-screen">
-      <PageSlider images={sliderImages.dashboard} opacity={0.15} />
+    <div className="relative min-h-screen bg-[#F8FAFC]">
+      <PageSlider images={sliderImages.dashboard} />
       <div className="p-6 max-w-4xl mx-auto relative z-10">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-6"
+          className="text-center mb-6 bg-white/90 backdrop-blur-sm rounded-2xl p-6 shadow-sm"
         >
           <div className="flex items-center justify-center gap-3 mb-2">
             <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-gold-400/20 to-gold-600/20 flex items-center justify-center">
               <Bot size={28} className="text-gold-400" />
             </div>
-            <h1 className="text-3xl font-display font-bold text-white">
+            <h1 className="text-3xl font-display font-bold text-gray-900">
               הסוכן שלך כאן
             </h1>
           </div>
-          <p className="text-white/60">
+          <p className="text-gray-500">
             ברוכים הבאים לעוזר החכם של המערכת. כאן תוכלו לשאול שאלות, לקבל הדרכה והמלצות על השימוש באתר.
           </p>
         </motion.div>
@@ -109,8 +109,8 @@ export default function AiAgentPage() {
             {messages.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-full text-center">
                 <Sparkles size={48} className="text-gold-400/50 mb-4" />
-                <p className="text-white/50 text-lg mb-2">שלום! איך אוכל לעזור לך היום?</p>
-                <p className="text-white/30 text-sm">בחר שאלה מוצעת או כתוב שאלה משלך</p>
+                <p className="text-gray-400 text-lg mb-2">שלום! איך אוכל לעזור לך היום?</p>
+                <p className="text-gray-400 text-sm">בחר שאלה מוצעת או כתוב שאלה משלך</p>
               </div>
             ) : (
               <AnimatePresence>
@@ -140,8 +140,8 @@ export default function AiAgentPage() {
                     <div
                       className={`max-w-[80%] rounded-xl px-4 py-3 ${
                         message.role === 'user'
-                          ? 'bg-primary-500/30 text-white'
-                          : 'bg-white/10 text-white/90'
+                          ? 'bg-primary-500/30 text-gray-800'
+                          : 'bg-gray-100 text-gray-700'
                       }`}
                     >
                       <p className="whitespace-pre-wrap leading-relaxed">
@@ -162,7 +162,7 @@ export default function AiAgentPage() {
                 <div className="w-8 h-8 rounded-lg bg-gold-400/20 flex items-center justify-center">
                   <Bot size={16} className="text-gold-400" />
                 </div>
-                <div className="bg-white/10 rounded-xl px-4 py-3">
+                <div className="bg-gray-100 rounded-xl px-4 py-3">
                   <Loader2 size={20} className="text-gold-400 animate-spin" />
                 </div>
               </motion.div>
@@ -174,14 +174,14 @@ export default function AiAgentPage() {
           {/* Suggested Prompts */}
           {messages.length === 0 && suggestedPrompts.length > 0 && (
             <div className="px-4 pb-4">
-              <p className="text-white/40 text-xs mb-2">שאלות מוצעות:</p>
+              <p className="text-gray-400 text-xs mb-2">שאלות מוצעות:</p>
               <div className="flex flex-wrap gap-2">
                 {suggestedPrompts.slice(0, 6).map((prompt) => (
                   <button
                     key={prompt.id}
                     onClick={() => handleSend(prompt.text)}
                     disabled={isPending}
-                    className="text-sm px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-white/70 hover:bg-white/10 hover:text-white hover:border-white/20 transition-all disabled:opacity-50"
+                    className="text-sm px-3 py-1.5 rounded-full bg-gray-50 border border-gray-200 text-gray-600 hover:bg-gray-200 hover:text-gray-900 hover:border-[#0066CC]/30 transition-all disabled:opacity-50"
                   >
                     {prompt.text}
                   </button>
@@ -191,7 +191,7 @@ export default function AiAgentPage() {
           )}
 
           {/* Input Area */}
-          <div className="p-4 border-t border-white/10">
+          <div className="p-4 border-t border-gray-200">
             <div className="flex gap-3">
               <input
                 ref={inputRef}
@@ -201,7 +201,7 @@ export default function AiAgentPage() {
                 onKeyDown={handleKeyDown}
                 placeholder="שאל אותי משהו..."
                 disabled={isPending}
-                className="flex-1 bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/40 focus:outline-none focus:border-gold-400/50 focus:ring-1 focus:ring-gold-400/50 transition-all disabled:opacity-50"
+                className="flex-1 bg-gray-100 border border-gray-200 rounded-xl px-4 py-3 text-gray-800 placeholder-gray-400 focus:outline-none focus:border-gold-400/50 focus:ring-1 focus:ring-gold-400/50 transition-all disabled:opacity-50"
               />
               <button
                 onClick={() => handleSend()}

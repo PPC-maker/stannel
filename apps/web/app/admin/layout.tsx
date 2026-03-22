@@ -28,7 +28,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   if (loading) {
     return (
       <div className="relative min-h-screen flex items-center justify-center">
-        <PageSlider images={sliderImages.dashboard} opacity={0.15} />
+        <PageSlider images={sliderImages.dashboard}  />
         <div className="flex flex-col items-center gap-4 z-10">
           <Loader2 className="w-10 h-10 text-gold-400 animate-spin" />
           <p className="text-white/60">מאמת הרשאות...</p>
@@ -40,7 +40,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   if (!user) {
     return (
       <div className="relative min-h-screen flex items-center justify-center">
-        <PageSlider images={sliderImages.dashboard} opacity={0.15} />
+        <PageSlider images={sliderImages.dashboard}  />
         <GlassCard className="max-w-md text-center z-10">
           <Lock className="w-16 h-16 mx-auto text-gold-400 mb-4" />
           <h1 className="text-2xl font-display font-bold text-white mb-2">נדרשת התחברות</h1>
@@ -59,7 +59,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   if (!isAuthorized) {
     return (
       <div className="relative min-h-screen flex items-center justify-center">
-        <PageSlider images={sliderImages.dashboard} opacity={0.15} />
+        <PageSlider images={sliderImages.dashboard}  />
         <GlassCard className="max-w-md text-center z-10">
           <ShieldAlert className="w-16 h-16 mx-auto text-red-400 mb-4" />
           <h1 className="text-2xl font-display font-bold text-white mb-2">גישה נדחתה</h1>

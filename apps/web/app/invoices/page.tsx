@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import GlassCard from '@/components/layout/GlassCard';
-import PageSlider, { sliderImages } from '@/components/layout/PageSlider';
 import { FileText, Upload, Search, Clock, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
 import Link from 'next/link';
 import { useInvoices } from '@/lib/api-hooks';
@@ -51,14 +50,13 @@ export default function InvoicesPage() {
   };
 
   return (
-    <div className="relative">
-      <PageSlider images={sliderImages.invoices} />
-      <div className="p-6 max-w-7xl mx-auto relative z-10">
+    <div className="relative bg-[#F8FAFC] min-h-screen">
+      <div className="p-6 max-w-7xl mx-auto">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div>
-          <h1 className="text-3xl font-display font-bold text-white">חשבוניות</h1>
-          <p className="text-white/60 mt-1">
+          <h1 className="text-3xl font-display font-bold text-gray-900">חשבוניות</h1>
+          <p className="text-gray-600 mt-1">
             {isArchitect ? 'ניהול והעלאת חשבוניות לצבירת נקודות' : 'צפייה בחשבוניות שהועלו'}
           </p>
         </div>
@@ -76,14 +74,14 @@ export default function InvoicesPage() {
       {/* Stats Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
         {[
-          { label: 'סה״כ', value: stats.total, color: 'text-white' },
+          { label: 'סה״כ', value: stats.total, color: 'text-[#0066CC]' },
           { label: 'ממתינות', value: stats.pending, color: 'text-yellow-400' },
           { label: 'אושרו', value: stats.approved, color: 'text-green-400' },
           { label: 'נדחו', value: stats.rejected, color: 'text-red-400' },
         ].map((stat, i) => (
           <GlassCard key={i} delay={i * 0.05} className="text-center py-4">
             <p className={`text-2xl font-bold ${stat.color}`}>{stat.value}</p>
-            <p className="text-white/50 text-sm">{stat.label}</p>
+            <p className="text-gray-500 text-sm">{stat.label}</p>
           </GlassCard>
         ))}
       </div>
@@ -92,20 +90,20 @@ export default function InvoicesPage() {
       <GlassCard className="mb-6">
         <div className="flex flex-col md:flex-row gap-4">
           <div className="relative flex-1">
-            <Search className="absolute right-4 top-1/2 -translate-y-1/2 text-white/40" size={20} />
+            <Search className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="חיפוש לפי שם ספק..."
-              className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 pr-12 text-white focus:border-gold-400 transition-all"
+              className="w-full bg-gray-100 border border-gray-200 rounded-xl px-4 py-3 pr-12 text-gray-800 focus:border-[#0066CC] transition-all"
             />
           </div>
           <div className="flex gap-2">
             <button
               onClick={() => setFilter('all')}
               className={`px-4 py-2 rounded-lg transition-all ${
-                filter === 'all' ? 'bg-gold-400 text-primary-900' : 'bg-white/10 text-white hover:bg-white/15'
+                filter === 'all' ? 'bg-gold-400 text-primary-900' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
             >
               הכל
@@ -113,7 +111,7 @@ export default function InvoicesPage() {
             <button
               onClick={() => setFilter('PENDING_ADMIN')}
               className={`px-4 py-2 rounded-lg transition-all ${
-                filter === 'PENDING_ADMIN' ? 'bg-yellow-400 text-primary-900' : 'bg-white/10 text-white hover:bg-white/15'
+                filter === 'PENDING_ADMIN' ? 'bg-yellow-400 text-primary-900' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
             >
               ממתינות
@@ -121,7 +119,7 @@ export default function InvoicesPage() {
             <button
               onClick={() => setFilter('PAID')}
               className={`px-4 py-2 rounded-lg transition-all ${
-                filter === 'PAID' ? 'bg-green-400 text-primary-900' : 'bg-white/10 text-white hover:bg-white/15'
+                filter === 'PAID' ? 'bg-green-400 text-primary-900' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
             >
               שולמו
@@ -136,13 +134,13 @@ export default function InvoicesPage() {
           // Skeleton
           [...Array(5)].map((_, i) => (
             <div key={i} className="glass-card p-4 flex items-center gap-4 animate-pulse">
-              <div className="w-12 h-12 bg-white/10 rounded-xl" />
+              <div className="w-12 h-12 bg-gray-100 rounded-xl" />
               <div className="flex-1">
-                <div className="h-5 w-32 bg-white/10 rounded mb-2" />
-                <div className="h-3 w-24 bg-white/5 rounded" />
+                <div className="h-5 w-32 bg-gray-100 rounded mb-2" />
+                <div className="h-3 w-24 bg-gray-50 rounded" />
               </div>
-              <div className="h-6 w-20 bg-white/10 rounded" />
-              <div className="h-8 w-24 bg-white/10 rounded-full" />
+              <div className="h-6 w-20 bg-gray-100 rounded" />
+              <div className="h-8 w-24 bg-gray-100 rounded-full" />
             </div>
           ))
         ) : filteredInvoices.map((invoice: any, i: number) => {
@@ -162,12 +160,12 @@ export default function InvoicesPage() {
               <Link href={`/invoices/${invoice.id}`}>
               <GlassCard hover className="flex flex-col md:flex-row md:items-center justify-between gap-4 cursor-pointer">
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center">
-                    <FileText size={24} className="text-white/60" />
+                  <div className="w-12 h-12 rounded-xl bg-gray-100 flex items-center justify-center">
+                    <FileText size={24} className="text-gray-600" />
                   </div>
                   <div>
-                    <h3 className="text-white font-semibold">{supplierName}</h3>
-                    <p className="text-white/50 text-sm">
+                    <h3 className="text-gray-800 font-semibold">{supplierName}</h3>
+                    <p className="text-gray-500 text-sm">
                       {invoiceDate.toLocaleDateString('he-IL')} • #{invoice.id.slice(-6)}
                     </p>
                   </div>
@@ -184,8 +182,8 @@ export default function InvoicesPage() {
 
                   {/* Amount */}
                   <div className="text-left">
-                    <p className="text-white/50 text-xs">סכום</p>
-                    <p className="text-white font-bold text-lg">₪{(invoice.amount || 0).toLocaleString()}</p>
+                    <p className="text-gray-500 text-xs">סכום</p>
+                    <p className="text-gray-800 font-bold text-lg">₪{(invoice.amount || 0).toLocaleString()}</p>
                   </div>
 
                   {/* Status Badge */}
@@ -202,8 +200,8 @@ export default function InvoicesPage() {
 
         {filteredInvoices.length === 0 && (
           <GlassCard className="text-center py-12">
-            <FileText size={48} className="mx-auto text-white/30 mb-4" />
-            <p className="text-white/60">לא נמצאו חשבוניות</p>
+            <FileText size={48} className="mx-auto text-gray-300 mb-4" />
+            <p className="text-gray-600">לא נמצאו חשבוניות</p>
           </GlassCard>
         )}
       </div>

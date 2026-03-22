@@ -105,9 +105,9 @@ export default function ToolsPage() {
       <div className="relative">
         <PageSlider images={sliderImages.dashboard} />
         <div className="p-6 max-w-4xl mx-auto relative z-10 text-center py-20">
-          <Wrench size={64} className="mx-auto text-white/20 mb-4" />
-          <h1 className="text-2xl font-bold text-white mb-2">גישה מוגבלת</h1>
-          <p className="text-white/60">עמוד זה זמין לאדריכלים בלבד</p>
+          <Wrench size={64} className="mx-auto text-gray-300 mb-4" />
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">גישה מוגבלת</h1>
+          <p className="text-gray-500">עמוד זה זמין לאדריכלים בלבד</p>
         </div>
       </div>
     );
@@ -128,11 +128,11 @@ export default function ToolsPage() {
           animate={{ opacity: 1, x: 0 }}
           className="mb-8"
         >
-          <h1 className="text-3xl font-display font-bold text-white flex items-center gap-3">
+          <h1 className="text-3xl font-display font-bold text-gray-900 flex items-center gap-3">
             <Wrench className="text-gold-400" />
             כלים לאדריכלים
           </h1>
-          <p className="text-white/60 mt-1">מניפות צבעים ונותני שירות</p>
+          <p className="text-gray-500 mt-1">מניפות צבעים ונותני שירות</p>
         </motion.div>
 
         {/* Tabs */}
@@ -150,7 +150,7 @@ export default function ToolsPage() {
                 className={`flex items-center gap-2 px-5 py-3 rounded-lg text-sm font-medium transition-all ${
                   activeTab === tab.key
                     ? 'bg-gold-400 text-primary-900'
-                    : 'bg-white/10 text-white/70 hover:bg-white/20 hover:text-white'
+                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-gray-900'
                 }`}
               >
                 <tab.icon size={18} />
@@ -169,7 +169,7 @@ export default function ToolsPage() {
           >
             <GlassCard>
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-semibold text-white flex items-center gap-2">
+                <h2 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
                   <Palette size={20} className="text-gold-400" />
                   קטלוג צבעי נירלאט
                 </h2>
@@ -177,7 +177,7 @@ export default function ToolsPage() {
                   href="https://nirlat.com/fan/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 text-sm text-white/60 hover:text-gold-400 transition-colors"
+                  className="flex items-center gap-2 text-sm text-gray-500 hover:text-gold-400 transition-colors"
                 >
                   <ExternalLink size={16} />
                   מניפה מלאה באתר נירלאט
@@ -185,18 +185,18 @@ export default function ToolsPage() {
               </div>
 
               {selectedColor && (
-                <div className="mb-6 p-4 bg-white/10 rounded-xl flex items-center gap-4">
+                <div className="mb-6 p-4 bg-gray-100 rounded-xl flex items-center gap-4">
                   <div
-                    className="w-16 h-16 rounded-lg border-2 border-white/20"
+                    className="w-16 h-16 rounded-lg border-2 border-gray-200"
                     style={{ backgroundColor: selectedColor.hex }}
                   />
                   <div>
-                    <p className="text-white font-medium">{selectedColor.name}</p>
-                    <p className="text-white/50 text-sm">HEX: {selectedColor.hex}</p>
+                    <p className="text-gray-900 font-medium">{selectedColor.name}</p>
+                    <p className="text-gray-500 text-sm">HEX: {selectedColor.hex}</p>
                   </div>
                   <button
                     onClick={() => setSelectedColor(null)}
-                    className="mr-auto text-white/40 hover:text-white text-sm"
+                    className="mr-auto text-gray-400 hover:text-gray-900 text-sm"
                   >
                     סגור
                   </button>
@@ -210,9 +210,9 @@ export default function ToolsPage() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: familyIndex * 0.05 }}
-                    className="bg-white/5 rounded-xl p-4"
+                    className="bg-gray-50 rounded-xl p-4"
                   >
-                    <p className="text-white/60 text-sm uppercase tracking-wider mb-3 font-medium">
+                    <p className="text-gray-500 text-sm uppercase tracking-wider mb-3 font-medium">
                       {family.name}
                     </p>
                     <div className="flex flex-wrap gap-2">
@@ -221,12 +221,12 @@ export default function ToolsPage() {
                           key={color.name}
                           onClick={() => setSelectedColor(color)}
                           className={`group relative transition-transform hover:scale-110 ${
-                            selectedColor?.hex === color.hex ? 'ring-2 ring-gold-400 ring-offset-2 ring-offset-primary-900' : ''
+                            selectedColor?.hex === color.hex ? 'ring-2 ring-gold-400 ring-offset-2 ring-offset-white' : ''
                           }`}
                           title={`${color.name} — ${color.hex}`}
                         >
                           <div
-                            className="w-12 h-12 rounded-lg border border-white/20"
+                            className="w-12 h-12 rounded-lg border border-gray-200"
                             style={{ backgroundColor: color.hex }}
                           />
                         </button>
@@ -248,7 +248,7 @@ export default function ToolsPage() {
           >
             <GlassCard>
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-semibold text-white flex items-center gap-2">
+                <h2 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
                   <Users size={20} className="text-gold-400" />
                   נותני שירות
                 </h2>
@@ -261,7 +261,7 @@ export default function ToolsPage() {
                   className={`px-4 py-2 rounded-lg text-sm transition-colors ${
                     !selectedCategory
                       ? 'bg-gold-400 text-primary-900'
-                      : 'bg-white/10 text-white/70 hover:bg-white/20'
+                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                   }`}
                 >
                   הכל
@@ -273,7 +273,7 @@ export default function ToolsPage() {
                     className={`px-4 py-2 rounded-lg text-sm transition-colors ${
                       selectedCategory === cat.value
                         ? 'bg-gold-400 text-primary-900'
-                        : 'bg-white/10 text-white/70 hover:bg-white/20'
+                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                     }`}
                   >
                     {cat.label}
@@ -284,17 +284,17 @@ export default function ToolsPage() {
               {providersLoading ? (
                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {[...Array(6)].map((_, i) => (
-                    <div key={i} className="bg-white/5 rounded-xl p-4 animate-pulse">
-                      <div className="h-5 w-32 bg-white/10 rounded mb-3" />
-                      <div className="h-4 w-48 bg-white/5 rounded mb-2" />
-                      <div className="h-3 w-24 bg-white/5 rounded" />
+                    <div key={i} className="bg-gray-50 rounded-xl p-4 animate-pulse">
+                      <div className="h-5 w-32 bg-gray-100 rounded mb-3" />
+                      <div className="h-4 w-48 bg-gray-100 rounded mb-2" />
+                      <div className="h-3 w-24 bg-gray-100 rounded" />
                     </div>
                   ))}
                 </div>
               ) : providers.length === 0 ? (
                 <div className="text-center py-12">
-                  <Briefcase size={48} className="mx-auto text-white/20 mb-4" />
-                  <p className="text-white/50">אין נותני שירות בקטגוריה זו</p>
+                  <Briefcase size={48} className="mx-auto text-gray-300 mb-4" />
+                  <p className="text-gray-500">אין נותני שירות בקטגוריה זו</p>
                 </div>
               ) : (
                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -304,27 +304,27 @@ export default function ToolsPage() {
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: index * 0.03 }}
-                      className="bg-white/5 rounded-xl p-4 hover:bg-white/10 transition-colors"
+                      className="bg-gray-50 rounded-xl p-4 hover:bg-gray-100 transition-colors"
                     >
                       <div className="flex items-start justify-between mb-2">
-                        <p className="text-white font-medium">{provider.name}</p>
+                        <p className="text-gray-900 font-medium">{provider.name}</p>
                         {provider.isVerified && (
-                          <span className="text-xs bg-green-500/20 text-green-400 px-2 py-0.5 rounded">
+                          <span className="text-xs bg-green-500/20 text-green-600 px-2 py-0.5 rounded">
                             מאומת
                           </span>
                         )}
                       </div>
-                      <p className="text-white/40 text-xs mb-2">
+                      <p className="text-gray-400 text-xs mb-2">
                         {CATEGORY_LABELS[provider.category] || provider.category}
                       </p>
                       {provider.description && (
-                        <p className="text-white/60 text-sm mb-3">{provider.description}</p>
+                        <p className="text-gray-500 text-sm mb-3">{provider.description}</p>
                       )}
                       <div className="space-y-1.5">
                         {provider.phone && (
                           <a
                             href={`tel:${provider.phone}`}
-                            className="flex items-center gap-2 text-sm text-white/50 hover:text-gold-400 transition-colors"
+                            className="flex items-center gap-2 text-sm text-gray-500 hover:text-gold-500 transition-colors"
                           >
                             <Phone size={14} /> {provider.phone}
                           </a>
@@ -332,7 +332,7 @@ export default function ToolsPage() {
                         {provider.email && (
                           <a
                             href={`mailto:${provider.email}`}
-                            className="flex items-center gap-2 text-sm text-white/50 hover:text-gold-400 transition-colors"
+                            className="flex items-center gap-2 text-sm text-gray-500 hover:text-gold-500 transition-colors"
                           >
                             <Mail size={14} /> {provider.email}
                           </a>
@@ -342,7 +342,7 @@ export default function ToolsPage() {
                             href={provider.website}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center gap-2 text-sm text-white/50 hover:text-gold-400 transition-colors"
+                            className="flex items-center gap-2 text-sm text-gray-500 hover:text-gold-500 transition-colors"
                           >
                             <Globe size={14} /> אתר
                           </a>

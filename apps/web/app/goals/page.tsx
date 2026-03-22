@@ -30,9 +30,9 @@ export default function GoalsPage() {
       <div className="relative">
         <PageSlider images={sliderImages.dashboard} />
         <div className="p-6 max-w-4xl mx-auto relative z-10 text-center py-20">
-          <Target size={64} className="mx-auto text-white/20 mb-4" />
-          <h1 className="text-2xl font-bold text-white mb-2">גישה מוגבלת</h1>
-          <p className="text-white/60">עמוד זה זמין לאדריכלים בלבד</p>
+          <Target size={64} className="mx-auto text-gray-300 mb-4" />
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">גישה מוגבלת</h1>
+          <p className="text-gray-500">עמוד זה זמין לאדריכלים בלבד</p>
         </div>
       </div>
     );
@@ -56,11 +56,11 @@ export default function GoalsPage() {
           animate={{ opacity: 1, x: 0 }}
           className="mb-8"
         >
-          <h1 className="text-3xl font-display font-bold text-white flex items-center gap-3">
+          <h1 className="text-3xl font-display font-bold text-gray-900 flex items-center gap-3">
             <Target className="text-gold-400" />
             יעדים ובונוסים
           </h1>
-          <p className="text-white/60 mt-1">מעקב אחר הביצועים שלך</p>
+          <p className="text-gray-500 mt-1">מעקב אחר הביצועים שלך</p>
         </motion.div>
 
         {/* Stats */}
@@ -94,10 +94,10 @@ export default function GoalsPage() {
               <GlassCard className="h-full">
                 <div className="flex items-start justify-between">
                   <div>
-                    <p className="text-white/60 text-sm mb-1">{stat.label}</p>
+                    <p className="text-gray-500 text-sm mb-1">{stat.label}</p>
                     <p className={`text-3xl font-bold ${stat.color}`}>{isLoading ? '...' : stat.value}</p>
                   </div>
-                  <div className={`p-3 rounded-xl bg-white/10`}>
+                  <div className={`p-3 rounded-xl bg-gray-100`}>
                     <stat.icon size={24} className={stat.color} />
                   </div>
                 </div>
@@ -121,7 +121,7 @@ export default function GoalsPage() {
             <GlassCard gold>
               <div className="flex items-start justify-between mb-6">
                 <div>
-                  <p className="text-white/60 text-sm uppercase tracking-wider">
+                  <p className="text-white/70 text-sm uppercase tracking-wider">
                     יעד {activeGoal.periodType === 'MONTHLY' ? 'חודשי' : activeGoal.periodType === 'QUARTERLY' ? 'רבעוני' : 'שנתי'} פעיל
                   </p>
                   <p className="text-white/40 text-xs mt-1">
@@ -170,9 +170,9 @@ export default function GoalsPage() {
           ) : (
             <GlassCard>
               <div className="text-center py-12">
-                <Target size={48} className="mx-auto text-white/20 mb-4" />
-                <p className="text-white/50 text-lg">אין יעד פעיל כרגע</p>
-                <p className="text-white/30 text-sm mt-1">פנה למנהל המערכת להגדרת יעד</p>
+                <Target size={48} className="mx-auto text-gray-300 mb-4" />
+                <p className="text-gray-500 text-lg">אין יעד פעיל כרגע</p>
+                <p className="text-gray-400 text-sm mt-1">פנה למנהל המערכת להגדרת יעד</p>
               </div>
             </GlassCard>
           )}
@@ -185,7 +185,7 @@ export default function GoalsPage() {
           transition={{ delay: 0.3 }}
         >
           <GlassCard>
-            <h2 className="text-xl font-semibold text-white mb-6 flex items-center gap-2">
+            <h2 className="text-xl font-semibold text-gray-900 mb-6 flex items-center gap-2">
               <Award size={20} className="text-gold-400" />
               היסטוריית בונוסים
             </h2>
@@ -194,22 +194,22 @@ export default function GoalsPage() {
               <div className="space-y-4">
                 {[...Array(3)].map((_, i) => (
                   <div key={i} className="flex items-center gap-4 p-4 animate-pulse">
-                    <div className="w-10 h-10 bg-white/10 rounded-lg" />
+                    <div className="w-10 h-10 bg-gray-100 rounded-lg" />
                     <div className="flex-1">
-                      <div className="h-4 w-32 bg-white/10 rounded mb-2" />
-                      <div className="h-3 w-48 bg-white/5 rounded" />
+                      <div className="h-4 w-32 bg-gray-100 rounded mb-2" />
+                      <div className="h-3 w-48 bg-gray-50 rounded" />
                     </div>
                   </div>
                 ))}
               </div>
             ) : bonuses.length === 0 ? (
               <div className="text-center py-12">
-                <Award size={48} className="mx-auto text-white/20 mb-4" />
-                <p className="text-white/50">אין בונוסים</p>
-                <p className="text-white/30 text-sm mt-1">בונוסים יופיעו כאן כשתשיג יעדים</p>
+                <Award size={48} className="mx-auto text-gray-300 mb-4" />
+                <p className="text-gray-500">אין בונוסים</p>
+                <p className="text-gray-400 text-sm mt-1">בונוסים יופיעו כאן כשתשיג יעדים</p>
               </div>
             ) : (
-              <div className="divide-y divide-white/5">
+              <div className="divide-y divide-gray-100">
                 {bonuses.map((bonus: any, index: number) => (
                   <motion.div
                     key={bonus.id}
@@ -227,10 +227,10 @@ export default function GoalsPage() {
                         }`} />
                       </div>
                       <div>
-                        <p className="text-white font-medium">
+                        <p className="text-gray-900 font-medium">
                           ₪{bonus.amount?.toLocaleString()}
                         </p>
-                        <p className="text-white/50 text-sm">
+                        <p className="text-gray-500 text-sm">
                           {bonus.bonusType === 'goal_achieved' ? 'בונוס השגת יעד' : bonus.bonusType}
                         </p>
                       </div>
@@ -244,7 +244,7 @@ export default function GoalsPage() {
                         {bonus.status === 'CREDITED' ? 'זוכה' : bonus.status === 'PENDING' ? 'ממתין' : 'נכשל'}
                       </span>
                       {bonus.creditedAt && (
-                        <p className="text-white/30 text-xs mt-1">
+                        <p className="text-gray-400 text-xs mt-1">
                           {new Date(bonus.creditedAt).toLocaleDateString('he-IL')}
                         </p>
                       )}

@@ -67,7 +67,7 @@ export default function RewardsPage() {
   };
 
   return (
-    <div className="relative">
+    <div className="relative bg-[#F8FAFC] min-h-screen">
       <PageSlider images={sliderImages.rewards} />
       <div className="p-6 max-w-7xl mx-auto relative z-10">
       {/* Balance Banner */}
@@ -78,15 +78,15 @@ export default function RewardsPage() {
               <Star size={28} className="text-primary-900" />
             </div>
             <div>
-              <p className="text-white/60 text-sm">יתרת נקודות זמינה</p>
-              <p className="text-4xl font-bold text-gold-400">
+              <p className="text-white/80 text-sm">יתרת נקודות זמינה</p>
+              <p className="text-4xl font-bold text-white">
                 {points.toLocaleString()} <span className="text-lg">נק׳</span>
               </p>
             </div>
           </div>
           <div className="flex items-center gap-3">
             <div className="text-center md:text-left">
-              <p className="text-white/60 text-sm">דרגה</p>
+              <p className="text-white/80 text-sm">דרגה</p>
               <p className="text-2xl font-semibold text-white">{rankEmojis[rank]} {rank}</p>
             </div>
           </div>
@@ -96,8 +96,8 @@ export default function RewardsPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-3xl font-display font-bold text-white">חנות ההטבות</h1>
-          <p className="text-white/60 mt-1">ממשו את הנקודות שצברתם להטבות מגוונות</p>
+          <h1 className="text-3xl font-display font-bold text-gray-900">חנות ההטבות</h1>
+          <p className="text-gray-600 mt-1">ממשו את הנקודות שצברתם להטבות מגוונות</p>
         </div>
       </div>
 
@@ -107,13 +107,13 @@ export default function RewardsPage() {
           // Skeleton while loading
           [...Array(6)].map((_, i) => (
             <div key={i} className="glass-card overflow-hidden animate-pulse">
-              <div className="h-48 bg-white/5" />
+              <div className="h-48 bg-gray-100" />
               <div className="p-6">
-                <div className="h-5 w-3/4 bg-white/10 rounded mb-2" />
-                <div className="h-4 w-full bg-white/5 rounded mb-4" />
+                <div className="h-5 w-3/4 bg-gray-200 rounded mb-2" />
+                <div className="h-4 w-full bg-gray-100 rounded mb-4" />
                 <div className="flex justify-between">
                   <div className="h-6 w-20 bg-gold-400/20 rounded" />
-                  <div className="h-8 w-20 bg-white/10 rounded-lg" />
+                  <div className="h-8 w-20 bg-gray-200 rounded-lg" />
                 </div>
               </div>
             </div>
@@ -145,8 +145,8 @@ export default function RewardsPage() {
                       className="object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                   ) : (
-                    <div className="w-full h-full bg-white/10 flex items-center justify-center">
-                      <Gift size={48} className="text-white/30" />
+                    <div className="w-full h-full bg-gray-100 flex items-center justify-center">
+                      <Gift size={48} className="text-gray-300" />
                     </div>
                   )}
                   {product.stock <= 3 && product.stock > 0 && (
@@ -167,8 +167,8 @@ export default function RewardsPage() {
                 </div>
 
                 {/* Product Info */}
-                <h3 className="text-white font-semibold text-lg mb-2">{product.name}</h3>
-                <p className="text-white/60 text-sm mb-4 line-clamp-2">{product.description}</p>
+                <h3 className="text-gray-800 font-semibold text-lg mb-2">{product.name}</h3>
+                <p className="text-gray-600 text-sm mb-4 line-clamp-2">{product.description}</p>
 
                 {/* Price & Action */}
                 <div className="flex items-center justify-between">
@@ -177,7 +177,7 @@ export default function RewardsPage() {
                       {product.pointCost.toLocaleString()} נק׳
                     </span>
                     {product.cashCost > 0 && (
-                      <span className="text-white/50 text-sm mr-2">+ ₪{product.cashCost}</span>
+                      <span className="text-gray-500 text-sm mr-2">+ ₪{product.cashCost}</span>
                     )}
                   </div>
                   <button
@@ -189,7 +189,7 @@ export default function RewardsPage() {
                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${
                       affordable && product.stock > 0
                         ? 'bg-gold-400 text-primary-900 hover:bg-gold-300'
-                        : 'bg-white/10 text-white/40 cursor-not-allowed'
+                        : 'bg-gray-100 text-gray-400 cursor-not-allowed'
                     }`}
                   >
                     {isRedeeming ? (
@@ -213,8 +213,8 @@ export default function RewardsPage() {
       {/* Empty State */}
       {!productsLoading && products.length === 0 && (
         <GlassCard className="text-center py-12">
-          <Gift size={48} className="mx-auto text-white/30 mb-4" />
-          <p className="text-white/60">אין מוצרים זמינים כרגע</p>
+          <Gift size={48} className="mx-auto text-gray-300 mb-4" />
+          <p className="text-gray-600">אין מוצרים זמינים כרגע</p>
         </GlassCard>
       )}
         </div>

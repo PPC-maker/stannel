@@ -118,8 +118,8 @@ export default function InvoiceUploadPage() {
               <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center">
                 <CheckCircle size={40} className="text-white" />
               </div>
-              <h1 className="text-2xl font-bold text-white mb-2">החשבונית הועלתה בהצלחה!</h1>
-              <p className="text-white/60 mb-8">
+              <h1 className="text-2xl font-bold text-gray-900 mb-2">החשבונית הועלתה בהצלחה!</h1>
+              <p className="text-gray-500 mb-8">
                 החשבונית נשלחה לאישור. נעדכן אותך ברגע שתאושר.
               </p>
               <div className="flex gap-4 justify-center">
@@ -146,12 +146,12 @@ export default function InvoiceUploadPage() {
       <div className="p-6 max-w-4xl mx-auto relative z-10">
       {/* Header */}
       <div className="flex items-center gap-4 mb-8">
-        <Link href="/invoices" className="p-2 rounded-lg hover:bg-white/10 transition-colors">
-          <ArrowLeft size={24} className="text-white" />
+        <Link href="/invoices" className="p-2 rounded-lg hover:bg-gray-100 transition-colors">
+          <ArrowLeft size={24} className="text-gray-900" />
         </Link>
         <div>
-          <h1 className="text-3xl font-display font-bold text-white">העלאת חשבונית</h1>
-          <p className="text-white/60 mt-1">העלו חשבונית לצבירת נקודות</p>
+          <h1 className="text-3xl font-display font-bold text-gray-900">העלאת חשבונית</h1>
+          <p className="text-gray-500 mt-1">העלו חשבונית לצבירת נקודות</p>
         </div>
       </div>
 
@@ -164,8 +164,8 @@ export default function InvoiceUploadPage() {
         >
           <GlassCard className="text-center py-8">
             <Building2 size={48} className="mx-auto text-gold-400 mb-4" />
-            <h2 className="text-xl font-semibold text-white mb-2">אין ספקים זמינים</h2>
-            <p className="text-white/60 mb-4">
+            <h2 className="text-xl font-semibold text-gray-900 mb-2">אין ספקים זמינים</h2>
+            <p className="text-gray-500 mb-4">
               כרגע אין ספקים פעילים במערכת. צור קשר עם מנהל המערכת להוספת ספקים.
             </p>
             <Link href="/invoices" className="btn-gold inline-block">
@@ -193,7 +193,7 @@ export default function InvoiceUploadPage() {
       <div className="grid lg:grid-cols-2 gap-6">
         {/* Upload Zone */}
         <GlassCard>
-          <h2 className="text-lg font-semibold text-white mb-4">תמונת החשבונית</h2>
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">תמונת החשבונית</h2>
 
           <div
             {...getRootProps()}
@@ -202,7 +202,7 @@ export default function InvoiceUploadPage() {
                 ? 'border-gold-400 bg-gold-400/10'
                 : (preview || isPdf)
                 ? 'border-green-400/50 bg-green-400/5'
-                : 'border-white/20 hover:border-white/40 hover:bg-white/5'
+                : 'border-gray-200 hover:border-gray-400 hover:bg-gray-50'
             }`}
           >
             <input {...getInputProps()} />
@@ -215,8 +215,8 @@ export default function InvoiceUploadPage() {
                     <div className="w-20 h-24 bg-red-500/20 border-2 border-red-500/50 rounded-lg flex items-center justify-center mb-3">
                       <FileIcon size={40} className="text-red-400" />
                     </div>
-                    <p className="text-white font-medium">{file?.name}</p>
-                    <p className="text-white/50 text-sm mt-1">קובץ PDF</p>
+                    <p className="text-gray-900 font-medium">{file?.name}</p>
+                    <p className="text-gray-500 text-sm mt-1">קובץ PDF</p>
                   </div>
                 ) : (
                   // Image Preview
@@ -241,13 +241,13 @@ export default function InvoiceUploadPage() {
               </div>
             ) : (
               <>
-                <div className="w-16 h-16 mx-auto mb-4 rounded-xl bg-white/10 flex items-center justify-center">
-                  <Upload size={32} className="text-white/60" />
+                <div className="w-16 h-16 mx-auto mb-4 rounded-xl bg-gray-100 flex items-center justify-center">
+                  <Upload size={32} className="text-gray-400" />
                 </div>
-                <p className="text-white/70 mb-2">
+                <p className="text-gray-600 mb-2">
                   {isDragActive ? 'שחררו כאן...' : 'גררו חשבונית לכאן או לחצו לבחירה'}
                 </p>
-                <p className="text-white/40 text-sm">JPG, PNG, PDF עד 10MB</p>
+                <p className="text-gray-400 text-sm">JPG, PNG, PDF עד 10MB</p>
               </>
             )}
           </div>
@@ -282,24 +282,24 @@ export default function InvoiceUploadPage() {
 
         {/* Form */}
         <GlassCard>
-          <h2 className="text-lg font-semibold text-white mb-4">פרטי העסקה</h2>
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">פרטי העסקה</h2>
 
           <div className="space-y-5">
             <div>
-              <label className="block text-white/70 text-sm mb-2">ספק</label>
+              <label className="block text-gray-600 text-sm mb-2">ספק</label>
               {suppliersLoading ? (
-                <div className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white/50 animate-pulse">
+                <div className="w-full bg-gray-100 border border-gray-200 rounded-xl px-4 py-3 text-gray-400 animate-pulse">
                   טוען ספקים...
                 </div>
               ) : (
                 <select
                   value={supplierId}
                   onChange={(e) => setSupplierId(e.target.value)}
-                  className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white focus:border-gold-400 transition-all appearance-none cursor-pointer"
+                  className="w-full bg-gray-100 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 focus:border-gold-400 transition-all appearance-none cursor-pointer"
                 >
-                  <option value="" className="bg-primary-900">בחרו ספק...</option>
+                  <option value="" className="bg-white">בחרו ספק...</option>
                   {suppliers.map(s => (
-                    <option key={s.id} value={s.id} className="bg-primary-900">
+                    <option key={s.id} value={s.id} className="bg-white">
                       {s.companyName}
                     </option>
                   ))}
@@ -308,12 +308,12 @@ export default function InvoiceUploadPage() {
             </div>
 
             <div>
-              <label className="block text-white/70 text-sm mb-2">סכום החשבונית (₪)</label>
+              <label className="block text-gray-600 text-sm mb-2">סכום החשבונית (₪)</label>
               <input
                 type="number"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
-                className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white text-xl font-bold focus:border-gold-400 transition-all"
+                className="w-full bg-gray-100 border border-gray-200 rounded-xl px-4 py-3 text-gray-900 text-xl font-bold focus:border-gold-400 transition-all"
                 placeholder="0.00"
                 dir="ltr"
               />
@@ -339,7 +339,7 @@ export default function InvoiceUploadPage() {
               </button>
             </div>
 
-            <p className="text-white/40 text-sm text-center">
+            <p className="text-gray-400 text-sm text-center">
               החשבונית תיבדק על ידי מערכת AI ולאחר מכן תאושר על ידי מנהל
             </p>
           </div>

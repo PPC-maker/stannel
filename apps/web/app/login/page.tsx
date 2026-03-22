@@ -70,8 +70,8 @@ export default function LoginPage() {
       {/* Left Side - Background Image */}
       <div className="hidden lg:flex lg:w-1/2 relative">
         <Image
-          src="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=1920&q=80"
-          alt="Travel destination"
+          src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1920&q=80"
+          alt="Modern architecture"
           fill
           className="object-cover"
           priority

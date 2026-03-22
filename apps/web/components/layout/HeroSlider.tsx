@@ -31,14 +31,14 @@ export default function HeroSlider() {
   }, []);
 
   return (
-    <div className="fixed left-0 right-0 top-[88px] h-[400px] overflow-hidden z-0">
+    <div className="fixed left-0 right-0 top-16 h-[400px] overflow-hidden z-0">
       {/* Images Container */}
       <AnimatePresence mode="wait">
         <motion.div
           key={currentIndex}
           initial={{ opacity: 0, scale: 1.1 }}
           animate={{
-            opacity: 0.5,
+            opacity: 1,
             scale: 1,
             transition: {
               opacity: { duration: 1.5, ease: 'easeOut' },
@@ -59,8 +59,6 @@ export default function HeroSlider() {
             priority={currentIndex === 0}
             sizes="100vw"
           />
-          {/* Overlay for better text readability */}
-          <div className="absolute inset-0 bg-primary-900/30" />
         </motion.div>
       </AnimatePresence>
 
@@ -77,7 +75,7 @@ export default function HeroSlider() {
       <div
         className="absolute bottom-0 left-0 right-0 h-[40%] pointer-events-none"
         style={{
-          background: 'linear-gradient(to top, #060f1f 0%, #060f1f 10%, rgba(6, 15, 31, 0.8) 40%, rgba(6, 15, 31, 0) 100%)'
+          background: 'linear-gradient(to top, #F8FAFC 0%, #F8FAFC 10%, rgba(248, 250, 252, 0.8) 40%, rgba(248, 250, 252, 0) 100%)'
         }}
       />
 
@@ -85,13 +83,13 @@ export default function HeroSlider() {
       <div
         className="absolute top-0 bottom-0 left-0 w-[15%] pointer-events-none"
         style={{
-          background: 'linear-gradient(to right, #060f1f 0%, rgba(6, 15, 31, 0) 100%)'
+          background: 'linear-gradient(to right, #F8FAFC 0%, rgba(248, 250, 252, 0) 100%)'
         }}
       />
       <div
         className="absolute top-0 bottom-0 right-0 w-[15%] pointer-events-none"
         style={{
-          background: 'linear-gradient(to left, #060f1f 0%, rgba(6, 15, 31, 0) 100%)'
+          background: 'linear-gradient(to left, #F8FAFC 0%, rgba(248, 250, 252, 0) 100%)'
         }}
       />
 

@@ -721,10 +721,10 @@ Please analyze this error and provide a fix.
   if (loading) {
     return (
       <div className="relative min-h-screen flex items-center justify-center">
-        <PageSlider images={sliderImages.dashboard} opacity={0.15} />
+        <PageSlider images={sliderImages.dashboard}  />
         <div className="flex flex-col items-center gap-4 z-10">
-          <Loader2 className="w-10 h-10 text-gold-400 animate-spin" />
-          <p className="text-white/60">טוען נתוני מערכת...</p>
+          <Loader2 className="w-10 h-10 text-[#0066CC] animate-spin" />
+          <p className="text-gray-600">טוען נתוני מערכת...</p>
         </div>
       </div>
     );
@@ -732,7 +732,7 @@ Please analyze this error and provide a fix.
 
   return (
     <div className="relative min-h-screen">
-      <PageSlider images={sliderImages.dashboard} opacity={0.15} />
+      <PageSlider images={sliderImages.dashboard}  />
       <div className="p-6 max-w-7xl mx-auto relative z-10">
         {/* Header */}
         <motion.div
@@ -742,11 +742,11 @@ Please analyze this error and provide a fix.
         >
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-display font-bold text-white flex items-center gap-3">
-                <Shield className="text-gold-400" />
+              <h1 className="text-3xl font-display font-bold text-gray-900 flex items-center gap-3">
+                <Shield className="text-[#0066CC]" />
                 פאנל ניהול
               </h1>
-              <p className="text-white/60 mt-1">ניהול משתמשים ומעקב אחרי תקלות המערכת</p>
+              <p className="text-gray-600 mt-1">ניהול משתמשים ומעקב אחרי תקלות המערכת</p>
             </div>
             <button
               onClick={fetchData}
@@ -773,8 +773,8 @@ Please analyze this error and provide a fix.
                   <BarChart3 size={20} className="text-purple-400" />
                 </div>
                 <div>
-                  <p className="text-white font-medium group-hover:text-gold-400 transition-colors">אנליטיקות</p>
-                  <p className="text-white/50 text-xs">דוחות וסטטיסטיקות</p>
+                  <p className="text-gray-800 font-medium group-hover:text-[#0066CC] transition-colors">אנליטיקות</p>
+                  <p className="text-gray-500 text-xs">דוחות וסטטיסטיקות</p>
                 </div>
               </div>
             </GlassCard>
@@ -786,8 +786,8 @@ Please analyze this error and provide a fix.
                   <Users size={20} className="text-blue-400" />
                 </div>
                 <div>
-                  <p className="text-white font-medium group-hover:text-gold-400 transition-colors">אדריכלים</p>
-                  <p className="text-white/50 text-xs">ניהול אדריכלים</p>
+                  <p className="text-gray-800 font-medium group-hover:text-[#0066CC] transition-colors">אדריכלים</p>
+                  <p className="text-gray-500 text-xs">ניהול אדריכלים</p>
                 </div>
               </div>
             </GlassCard>
@@ -799,8 +799,8 @@ Please analyze this error and provide a fix.
                   <Building2 size={20} className="text-green-400" />
                 </div>
                 <div>
-                  <p className="text-white font-medium group-hover:text-gold-400 transition-colors">ספקי שירות</p>
-                  <p className="text-white/50 text-xs">ניהול ספקים</p>
+                  <p className="text-gray-800 font-medium group-hover:text-[#0066CC] transition-colors">ספקי שירות</p>
+                  <p className="text-gray-500 text-xs">ניהול ספקים</p>
                 </div>
               </div>
             </GlassCard>
@@ -809,11 +809,11 @@ Please analyze this error and provide a fix.
             <GlassCard hover={true}>
               <div className="flex items-center gap-3">
                 <div className="p-2 rounded-lg bg-gold-500/20">
-                  <Target size={20} className="text-gold-400" />
+                  <Target size={20} className="text-[#0066CC]" />
                 </div>
                 <div>
-                  <p className="text-white font-medium group-hover:text-gold-400 transition-colors">יעדים</p>
-                  <p className="text-white/50 text-xs">ניהול יעדי אדריכלים</p>
+                  <p className="text-gray-800 font-medium group-hover:text-[#0066CC] transition-colors">יעדים</p>
+                  <p className="text-gray-500 text-xs">ניהול יעדי אדריכלים</p>
                 </div>
               </div>
             </GlassCard>
@@ -825,8 +825,8 @@ Please analyze this error and provide a fix.
                   <FileText size={20} className="text-cyan-400" />
                 </div>
                 <div>
-                  <p className="text-white font-medium group-hover:text-gold-400 transition-colors">חוזים</p>
-                  <p className="text-white/50 text-xs">ניהול חוזי ספקים</p>
+                  <p className="text-gray-800 font-medium group-hover:text-[#0066CC] transition-colors">חוזים</p>
+                  <p className="text-gray-500 text-xs">ניהול חוזי ספקים</p>
                 </div>
               </div>
             </GlassCard>
@@ -838,8 +838,8 @@ Please analyze this error and provide a fix.
                   <Clock size={20} className="text-orange-400" />
                 </div>
                 <div>
-                  <p className="text-white font-medium group-hover:text-gold-400 transition-colors">יומן פעולות</p>
-                  <p className="text-white/50 text-xs">מעקב פעולות מערכת</p>
+                  <p className="text-gray-800 font-medium group-hover:text-[#0066CC] transition-colors">יומן פעולות</p>
+                  <p className="text-gray-500 text-xs">מעקב פעולות מערכת</p>
                 </div>
               </div>
             </GlassCard>
@@ -851,8 +851,8 @@ Please analyze this error and provide a fix.
                   <Calendar size={20} className="text-pink-400" />
                 </div>
                 <div>
-                  <p className="text-white font-medium group-hover:text-gold-400 transition-colors">אירועים</p>
-                  <p className="text-white/50 text-xs">ניהול אירועים</p>
+                  <p className="text-gray-800 font-medium group-hover:text-[#0066CC] transition-colors">אירועים</p>
+                  <p className="text-gray-500 text-xs">ניהול אירועים</p>
                 </div>
               </div>
             </GlassCard>
@@ -866,7 +866,7 @@ Please analyze this error and provide a fix.
             className={`px-6 py-3 rounded-xl font-medium transition-all flex items-center gap-2 ${
               activeTab === 'users'
                 ? 'bg-gold-400 text-primary-900'
-                : 'bg-white/10 text-white hover:bg-white/20'
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
             }`}
           >
             <Users size={18} />
@@ -882,7 +882,7 @@ Please analyze this error and provide a fix.
             className={`px-6 py-3 rounded-xl font-medium transition-all flex items-center gap-2 ${
               activeTab === 'invoices'
                 ? 'bg-gold-400 text-primary-900'
-                : 'bg-white/10 text-white hover:bg-white/20'
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
             }`}
           >
             <Receipt size={18} />
@@ -898,7 +898,7 @@ Please analyze this error and provide a fix.
             className={`px-6 py-3 rounded-xl font-medium transition-all flex items-center gap-2 ${
               activeTab === 'recycle-bin'
                 ? 'bg-gold-400 text-primary-900'
-                : 'bg-white/10 text-white hover:bg-white/20'
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
             }`}
           >
             <Trash size={18} />
@@ -914,7 +914,7 @@ Please analyze this error and provide a fix.
             className={`px-6 py-3 rounded-xl font-medium transition-all flex items-center gap-2 ${
               activeTab === 'scan'
                 ? 'bg-gold-400 text-primary-900'
-                : 'bg-white/10 text-white hover:bg-white/20'
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
             }`}
           >
             <Activity size={18} />
@@ -925,7 +925,7 @@ Please analyze this error and provide a fix.
             className={`px-6 py-3 rounded-xl font-medium transition-all flex items-center gap-2 ${
               activeTab === 'logs'
                 ? 'bg-gold-400 text-primary-900'
-                : 'bg-white/10 text-white hover:bg-white/20'
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
             }`}
           >
             <FileText size={18} />
@@ -946,8 +946,8 @@ Please analyze this error and provide a fix.
           >
             <GlassCard hover={false}>
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-semibold text-white flex items-center gap-2">
-                  <Users className="text-gold-400" />
+                <h2 className="text-xl font-semibold text-gray-800 flex items-center gap-2">
+                  <Users className="text-[#0066CC]" />
                   ניהול משתמשים ({allUsers.length})
                   {pendingUsers.length > 0 && (
                     <span className="bg-yellow-500/20 text-yellow-400 text-sm px-2 py-0.5 rounded-full mr-2">
@@ -969,8 +969,8 @@ Please analyze this error and provide a fix.
 
               {allUsers.length === 0 ? (
                 <div className="text-center py-16">
-                  <Users className="w-20 h-20 mx-auto text-white/20 mb-4" />
-                  <p className="text-white text-xl font-medium">אין משתמשים במערכת</p>
+                  <Users className="w-20 h-20 mx-auto text-gray-300 mb-4" />
+                  <p className="text-gray-800 text-xl font-medium">אין משתמשים במערכת</p>
                 </div>
               ) : (
                 <div className="overflow-x-auto">
@@ -983,17 +983,17 @@ Please analyze this error and provide a fix.
                               type="checkbox"
                               checked={selectedUsers.size === pendingUsers.length && pendingUsers.length > 0}
                               onChange={selectAllPendingUsers}
-                              className="w-4 h-4 rounded bg-white/10 border-white/20 text-gold-400"
+                              className="w-4 h-4 rounded bg-white/10 border-white/20 text-[#0066CC]"
                             />
                           )}
                         </th>
-                        <th className="py-3 px-4 text-right text-white/60 font-medium">שם</th>
-                        <th className="py-3 px-4 text-right text-white/60 font-medium">אימייל</th>
-                        <th className="py-3 px-4 text-right text-white/60 font-medium">טלפון</th>
-                        <th className="py-3 px-4 text-right text-white/60 font-medium">תפקיד</th>
-                        <th className="py-3 px-4 text-right text-white/60 font-medium">סטטוס</th>
-                        <th className="py-3 px-4 text-right text-white/60 font-medium">תאריך הרשמה</th>
-                        <th className="py-3 px-4 text-right text-white/60 font-medium">פעולות</th>
+                        <th className="py-3 px-4 text-right text-gray-600 font-medium">שם</th>
+                        <th className="py-3 px-4 text-right text-gray-600 font-medium">אימייל</th>
+                        <th className="py-3 px-4 text-right text-gray-600 font-medium">טלפון</th>
+                        <th className="py-3 px-4 text-right text-gray-600 font-medium">תפקיד</th>
+                        <th className="py-3 px-4 text-right text-gray-600 font-medium">סטטוס</th>
+                        <th className="py-3 px-4 text-right text-gray-600 font-medium">תאריך הרשמה</th>
+                        <th className="py-3 px-4 text-right text-gray-600 font-medium">פעולות</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -1010,7 +1010,7 @@ Please analyze this error and provide a fix.
                                 type="checkbox"
                                 checked={selectedUsers.has(user.id)}
                                 onChange={() => toggleUserSelection(user.id)}
-                                className="w-4 h-4 rounded bg-white/10 border-white/20 text-gold-400"
+                                className="w-4 h-4 rounded bg-white/10 border-white/20 text-[#0066CC]"
                               />
                             )}
                           </td>
@@ -1023,18 +1023,18 @@ Please analyze this error and provide a fix.
                               }`}>
                                 {user.name.charAt(0)}
                               </div>
-                              <span className="text-white font-medium">{user.name}</span>
+                              <span className="text-gray-800 font-medium">{user.name}</span>
                             </div>
                           </td>
                           <td className="py-4 px-4">
-                            <span className="text-white/80 flex items-center gap-2">
-                              <Mail size={14} className="text-white/40" />
+                            <span className="text-gray-700 flex items-center gap-2">
+                              <Mail size={14} className="text-gray-500" />
                               {user.email}
                             </span>
                           </td>
                           <td className="py-4 px-4">
-                            <span className="text-white/80 flex items-center gap-2">
-                              <Phone size={14} className="text-white/40" />
+                            <span className="text-gray-700 flex items-center gap-2">
+                              <Phone size={14} className="text-gray-500" />
                               {user.phone || '-'}
                             </span>
                           </td>
@@ -1065,8 +1065,8 @@ Please analyze this error and provide a fix.
                             )}
                           </td>
                           <td className="py-4 px-4">
-                            <span className="text-white/60 flex items-center gap-2">
-                              <Calendar size={14} className="text-white/40" />
+                            <span className="text-gray-600 flex items-center gap-2">
+                              <Calendar size={14} className="text-gray-500" />
                               {new Date(user.createdAt).toLocaleDateString('he-IL')}
                             </span>
                           </td>
@@ -1135,8 +1135,8 @@ Please analyze this error and provide a fix.
               {/* Architects Folders */}
               <GlassCard hover={false}>
                 <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-xl font-semibold text-white flex items-center gap-2">
-                    <FolderOpen className="text-gold-400" />
+                  <h2 className="text-xl font-semibold text-gray-800 flex items-center gap-2">
+                    <FolderOpen className="text-[#0066CC]" />
                     חשבוניות לפי אדריכל ({groupedInvoices.length} אדריכלים)
                     {invoices.filter(inv => inv.status === 'PENDING_ADMIN').length > 0 && (
                       <span className="bg-yellow-500/20 text-yellow-400 text-sm px-2 py-0.5 rounded-full mr-2">
@@ -1148,8 +1148,8 @@ Please analyze this error and provide a fix.
 
                 {groupedInvoices.length === 0 ? (
                   <div className="text-center py-16">
-                    <Receipt className="w-20 h-20 mx-auto text-white/20 mb-4" />
-                    <p className="text-white text-xl font-medium">אין חשבוניות במערכת</p>
+                    <Receipt className="w-20 h-20 mx-auto text-gray-300 mb-4" />
+                    <p className="text-gray-800 text-xl font-medium">אין חשבוניות במערכת</p>
                   </div>
                 ) : (
                   <div className="space-y-3 max-h-[600px] overflow-y-auto custom-scrollbar">
@@ -1168,17 +1168,17 @@ Please analyze this error and provide a fix.
                           >
                             <div className="flex items-center gap-3">
                               <div className={`p-2 rounded-lg ${isExpanded ? 'bg-gold-400/20' : 'bg-white/10'}`}>
-                                <FolderOpen size={20} className={isExpanded ? 'text-gold-400' : 'text-white/60'} />
+                                <FolderOpen size={20} className={isExpanded ? 'text-[#0066CC]' : 'text-gray-600'} />
                               </div>
                               <div>
-                                <p className="text-white font-medium">{group.architectName}</p>
-                                <p className="text-white/50 text-xs">{group.architectEmail}</p>
+                                <p className="text-gray-800 font-medium">{group.architectName}</p>
+                                <p className="text-gray-500 text-xs">{group.architectEmail}</p>
                               </div>
                             </div>
                             <div className="flex items-center gap-4">
                               <div className="text-left">
-                                <p className="text-gold-400 font-bold">₪{group.totalAmount.toLocaleString()}</p>
-                                <p className="text-white/40 text-xs">{group.invoices.length} חשבוניות</p>
+                                <p className="text-[#0066CC] font-bold">₪{group.totalAmount.toLocaleString()}</p>
+                                <p className="text-gray-500 text-xs">{group.invoices.length} חשבוניות</p>
                               </div>
                               {pendingCount > 0 && (
                                 <span className="bg-yellow-500/20 text-yellow-400 text-xs px-2 py-1 rounded-full">
@@ -1197,7 +1197,7 @@ Please analyze this error and provide a fix.
                               </button>
                               <ChevronRight
                                 size={20}
-                                className={`text-white/40 transition-transform ${isExpanded ? 'rotate-90' : ''}`}
+                                className={`text-gray-500 transition-transform ${isExpanded ? 'rotate-90' : ''}`}
                               />
                             </div>
                           </div>
@@ -1231,8 +1231,8 @@ Please analyze this error and provide a fix.
                                         <Receipt size={14} className={status.text} />
                                       </div>
                                       <div>
-                                        <p className="text-white font-medium text-sm">₪{invoice.amount.toLocaleString()}</p>
-                                        <p className="text-white/40 text-xs">
+                                        <p className="text-gray-800 font-medium text-sm">₪{invoice.amount.toLocaleString()}</p>
+                                        <p className="text-gray-500 text-xs">
                                           {invoice.supplier.companyName || invoice.supplier.user.name}
                                         </p>
                                       </div>
@@ -1242,7 +1242,7 @@ Please analyze this error and provide a fix.
                                         <span className={`px-2 py-0.5 rounded-full text-xs ${status.bg} ${status.text}`}>
                                           {status.label}
                                         </span>
-                                        <p className="text-white/30 text-xs mt-1">
+                                        <p className="text-gray-400 text-xs mt-1">
                                           {new Date(invoice.createdAt).toLocaleDateString('he-IL')}
                                         </p>
                                       </div>
@@ -1276,8 +1276,8 @@ Please analyze this error and provide a fix.
 
               {/* Selected Invoice Details */}
               <GlassCard hover={false} className="h-fit sticky top-6">
-                <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-                  <FileText className="text-gold-400" size={20} />
+                <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                  <FileText className="text-[#0066CC]" size={20} />
                   פרטי החשבונית
                 </h2>
 
@@ -1291,13 +1291,13 @@ Please analyze this error and provide a fix.
                           <div className="w-16 h-20 bg-red-500/20 border-2 border-red-500/50 rounded-lg flex items-center justify-center mb-3">
                             <FileIcon size={32} className="text-red-400" />
                           </div>
-                          <p className="text-white font-medium mb-3">קובץ PDF</p>
+                          <p className="text-gray-800 font-medium mb-3">קובץ PDF</p>
                           <div className="flex gap-2">
                             <a
                               href={selectedInvoice.imageUrl}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="px-3 py-1.5 rounded-lg bg-white/10 text-white hover:bg-white/20 transition-colors flex items-center gap-1.5 text-sm"
+                              className="px-3 py-1.5 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors flex items-center gap-1.5 text-sm"
                             >
                               <Eye size={14} />
                               פתח
@@ -1335,11 +1335,11 @@ Please analyze this error and provide a fix.
                     {/* Invoice Details */}
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <label className="text-white/60 text-sm">סכום</label>
-                        <p className="text-2xl font-bold text-gold-400">₪{selectedInvoice.amount.toLocaleString()}</p>
+                        <label className="text-gray-600 text-sm">סכום</label>
+                        <p className="text-2xl font-bold text-[#0066CC]">₪{selectedInvoice.amount.toLocaleString()}</p>
                       </div>
                       <div>
-                        <label className="text-white/60 text-sm">סטטוס</label>
+                        <label className="text-gray-600 text-sm">סטטוס</label>
                         <p className={`font-medium ${
                           selectedInvoice.status === 'PENDING_ADMIN' ? 'text-yellow-400' :
                           selectedInvoice.status === 'APPROVED' ? 'text-green-400' :
@@ -1355,14 +1355,14 @@ Please analyze this error and provide a fix.
 
                     <div className="grid grid-cols-2 gap-4 pt-4 border-t border-white/10">
                       <div>
-                        <label className="text-white/60 text-sm">אדריכל</label>
-                        <p className="text-white font-medium">{selectedInvoice.architect.user.name}</p>
-                        <p className="text-white/50 text-xs">{selectedInvoice.architect.user.email}</p>
+                        <label className="text-gray-600 text-sm">אדריכל</label>
+                        <p className="text-gray-800 font-medium">{selectedInvoice.architect.user.name}</p>
+                        <p className="text-gray-500 text-xs">{selectedInvoice.architect.user.email}</p>
                       </div>
                       <div>
-                        <label className="text-white/60 text-sm">ספק</label>
-                        <p className="text-white font-medium">{selectedInvoice.supplier.companyName || selectedInvoice.supplier.user.name}</p>
-                        <p className="text-white/50 text-xs">{selectedInvoice.supplier.user.email}</p>
+                        <label className="text-gray-600 text-sm">ספק</label>
+                        <p className="text-gray-800 font-medium">{selectedInvoice.supplier.companyName || selectedInvoice.supplier.user.name}</p>
+                        <p className="text-gray-500 text-xs">{selectedInvoice.supplier.user.email}</p>
                       </div>
                     </div>
 
@@ -1372,12 +1372,12 @@ Please analyze this error and provide a fix.
                         selectedInvoice.aiStatus === 'MATCH' ? 'bg-green-500/20 border border-green-500/30' :
                         'bg-yellow-500/20 border border-yellow-500/30'
                       }`}>
-                        <p className="text-sm text-white/60 mb-1">ניתוח AI</p>
+                        <p className="text-sm text-gray-600 mb-1">ניתוח AI</p>
                         <div className="flex items-center justify-between">
                           <span className={selectedInvoice.aiStatus === 'MATCH' ? 'text-green-400' : 'text-yellow-400'}>
                             סכום שזוהה: ₪{selectedInvoice.aiExtractedAmount.toLocaleString()}
                           </span>
-                          <span className="text-white/60 text-sm">
+                          <span className="text-gray-600 text-sm">
                             ביטחון: {Math.round((selectedInvoice.aiConfidence || 0) * 100)}%
                           </span>
                         </div>
@@ -1385,7 +1385,7 @@ Please analyze this error and provide a fix.
                     )}
 
                     <div className="pt-4 border-t border-white/10">
-                      <label className="text-white/60 text-sm">תאריך העלאה</label>
+                      <label className="text-gray-600 text-sm">תאריך העלאה</label>
                       <p className="text-white">{new Date(selectedInvoice.createdAt).toLocaleString('he-IL')}</p>
                     </div>
 
@@ -1448,7 +1448,7 @@ Please analyze this error and provide a fix.
 
                     {selectedInvoice.adminNote && (
                       <div className="p-3 rounded-lg bg-white/5 border border-white/10">
-                        <p className="text-sm text-white/60 mb-1 flex items-center gap-1">
+                        <p className="text-sm text-gray-600 mb-1 flex items-center gap-1">
                           <MessageSquare size={14} />
                           הערת מנהל
                         </p>
@@ -1465,26 +1465,26 @@ Please analyze this error and provide a fix.
                         </p>
                         {selectedInvoice.supplierRef && (
                           <div className="mb-2">
-                            <label className="text-white/60 text-xs">מספר אסמכתא</label>
+                            <label className="text-gray-600 text-xs">מספר אסמכתא</label>
                             <p className="text-white font-mono">{selectedInvoice.supplierRef}</p>
                           </div>
                         )}
                         {selectedInvoice.paidAt && (
                           <div className="mb-2">
-                            <label className="text-white/60 text-xs">תאריך תשלום</label>
+                            <label className="text-gray-600 text-xs">תאריך תשלום</label>
                             <p className="text-white">{new Date(selectedInvoice.paidAt).toLocaleString('he-IL')}</p>
                           </div>
                         )}
                         {selectedInvoice.paymentProofUrl && (
                           <div className="mt-3 pt-3 border-t border-green-500/30">
-                            <label className="text-white/60 text-xs block mb-2">מסמך אישור העברה</label>
+                            <label className="text-gray-600 text-xs block mb-2">מסמך אישור העברה</label>
                             {selectedInvoice.paymentProofUrl.toLowerCase().endsWith('.pdf') ? (
                               <div className="flex gap-2">
                                 <a
                                   href={selectedInvoice.paymentProofUrl}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className="px-3 py-1.5 rounded-lg bg-white/10 text-white hover:bg-white/20 transition-colors flex items-center gap-1.5 text-sm"
+                                  className="px-3 py-1.5 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors flex items-center gap-1.5 text-sm"
                                 >
                                   <Eye size={14} />
                                   פתח PDF
@@ -1522,8 +1522,8 @@ Please analyze this error and provide a fix.
                   </div>
                 ) : (
                   <div className="text-center py-12">
-                    <Receipt className="w-16 h-16 mx-auto text-white/20 mb-4" />
-                    <p className="text-white/50">בחר חשבונית מהרשימה לצפייה בפרטים</p>
+                    <Receipt className="w-16 h-16 mx-auto text-gray-300 mb-4" />
+                    <p className="text-gray-500">בחר חשבונית מהרשימה לצפייה בפרטים</p>
                   </div>
                 )}
               </GlassCard>
@@ -1539,7 +1539,7 @@ Please analyze this error and provide a fix.
           >
             <GlassCard hover={false}>
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-semibold text-white flex items-center gap-2">
+                <h2 className="text-xl font-semibold text-gray-800 flex items-center gap-2">
                   <Trash className="text-red-400" />
                   סל מחזור ({deletedInvoices.length} חשבוניות)
                 </h2>
@@ -1559,14 +1559,14 @@ Please analyze this error and provide a fix.
                 )}
               </div>
 
-              <p className="text-white/50 text-sm mb-6">
+              <p className="text-gray-500 text-sm mb-6">
                 חשבוניות שנמחקו יישמרו כאן למשך 30 יום לפני מחיקה לצמיתות.
               </p>
 
               {deletedInvoices.length === 0 ? (
                 <div className="text-center py-16">
-                  <Trash className="w-20 h-20 mx-auto text-white/20 mb-4" />
-                  <p className="text-white text-xl font-medium">סל המחזור ריק</p>
+                  <Trash className="w-20 h-20 mx-auto text-gray-300 mb-4" />
+                  <p className="text-gray-800 text-xl font-medium">סל המחזור ריק</p>
                 </div>
               ) : (
                 <div className="space-y-3">
@@ -1584,11 +1584,11 @@ Please analyze this error and provide a fix.
                             <Receipt size={20} className="text-red-400" />
                           </div>
                           <div>
-                            <p className="text-white font-medium">₪{invoice.amount.toLocaleString()}</p>
-                            <p className="text-white/50 text-sm">{invoice.architect.user.name}</p>
-                            <p className="text-white/30 text-xs">
+                            <p className="text-gray-800 font-medium">₪{invoice.amount.toLocaleString()}</p>
+                            <p className="text-gray-500 text-sm">{invoice.architect.user.name}</p>
+                            <p className="text-gray-400 text-xs">
                               נמחק: {deletedDate.toLocaleDateString('he-IL')} •
-                              <span className={daysUntilPermanentDelete <= 7 ? 'text-red-400' : 'text-white/40'}>
+                              <span className={daysUntilPermanentDelete <= 7 ? 'text-red-400' : 'text-gray-500'}>
                                 {' '}{daysUntilPermanentDelete} ימים למחיקה לצמיתות
                               </span>
                             </p>
@@ -1682,7 +1682,7 @@ Please analyze this error and provide a fix.
                     >
                       {latestScan.isHealthy ? 'דוח סטטוס מערכת' : 'התראת מערכת'}
                     </h2>
-                    <p className="text-white/60 mt-2">
+                    <p className="text-gray-600 mt-2">
                       זמן: {new Date(latestScan.createdAt).toLocaleString('he-IL')}
                     </p>
                   </div>
@@ -1692,7 +1692,7 @@ Please analyze this error and provide a fix.
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                   <GlassCard hover={false}>
                     <div className="text-center">
-                      <p className="text-white/50 text-sm">בדיקות</p>
+                      <p className="text-gray-500 text-sm">בדיקות</p>
                       <p className="text-3xl font-bold text-white">{latestScan.checksRun}</p>
                     </div>
                   </GlassCard>
@@ -1718,7 +1718,7 @@ Please analyze this error and provide a fix.
 
                 {/* Scan Results */}
                 <GlassCard hover={false}>
-                  <h3 className="text-lg font-semibold text-white mb-4">תוצאות הסריקה</h3>
+                  <h3 className="text-lg font-semibold text-gray-800 mb-4">תוצאות הסריקה</h3>
                   <div className="space-y-2">
                     {latestScan.results.map((result, i) => {
                       const statusConfig = {
@@ -1737,12 +1737,12 @@ Please analyze this error and provide a fix.
                             <div className="flex items-center gap-3">
                               <span className="text-xl">{config.icon}</span>
                               <div>
-                                <p className="text-white font-medium">{result.name}</p>
-                                <p className="text-white/60 text-sm">{result.message}</p>
+                                <p className="text-gray-800 font-medium">{result.name}</p>
+                                <p className="text-gray-600 text-sm">{result.message}</p>
                               </div>
                             </div>
                             {result.responseTime && (
-                              <span className="text-white/40 text-sm">
+                              <span className="text-gray-500 text-sm">
                                 {result.responseTime}ms
                               </span>
                             )}
@@ -1756,9 +1756,9 @@ Please analyze this error and provide a fix.
             ) : (
               <GlassCard hover={false}>
                 <div className="text-center py-16">
-                  <Search className="w-16 h-16 mx-auto text-white/20 mb-4" />
-                  <p className="text-white/60">אין דוחות סריקה</p>
-                  <p className="text-white/40 text-sm mt-2">לחץ על "הפעל סריקה" להפעלת סריקת מערכת</p>
+                  <Search className="w-16 h-16 mx-auto text-gray-300 mb-4" />
+                  <p className="text-gray-600">אין דוחות סריקה</p>
+                  <p className="text-gray-500 text-sm mt-2">לחץ על "הפעל סריקה" להפעלת סריקת מערכת</p>
                 </div>
               </GlassCard>
             )}
@@ -1787,7 +1787,7 @@ Please analyze this error and provide a fix.
                         <stat.icon size={20} className={stat.color} />
                       </div>
                       <div>
-                        <p className="text-white/50 text-sm">{stat.label}</p>
+                        <p className="text-gray-500 text-sm">{stat.label}</p>
                         <p className={`text-2xl font-bold ${stat.color}`}>{stat.value}</p>
                       </div>
                     </div>
@@ -1803,7 +1803,7 @@ Please analyze this error and provide a fix.
                 className="flex items-center justify-between w-full text-white"
               >
                 <div className="flex items-center gap-2">
-                  <Filter size={18} className="text-gold-400" />
+                  <Filter size={18} className="text-[#0066CC]" />
                   <span className="font-medium">סינון תוצאות</span>
                 </div>
                 {showFilters ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
@@ -1812,7 +1812,7 @@ Please analyze this error and provide a fix.
               {showFilters && (
                 <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t border-white/10">
                   <div>
-                    <label className="text-white/60 text-sm mb-2 block">חומרה</label>
+                    <label className="text-gray-600 text-sm mb-2 block">חומרה</label>
                     <select
                       value={filter.severity || ''}
                       onChange={(e) =>
@@ -1832,7 +1832,7 @@ Please analyze this error and provide a fix.
                   </div>
 
                   <div>
-                    <label className="text-white/60 text-sm mb-2 block">קטגוריה</label>
+                    <label className="text-gray-600 text-sm mb-2 block">קטגוריה</label>
                     <select
                       value={filter.category || ''}
                       onChange={(e) =>
@@ -1853,7 +1853,7 @@ Please analyze this error and provide a fix.
                   </div>
 
                   <div>
-                    <label className="text-white/60 text-sm mb-2 block">סטטוס</label>
+                    <label className="text-gray-600 text-sm mb-2 block">סטטוס</label>
                     <select
                       value={filter.resolved === undefined ? '' : filter.resolved.toString()}
                       onChange={(e) =>
@@ -1876,8 +1876,8 @@ Please analyze this error and provide a fix.
             {/* Logs List */}
             <div className="grid lg:grid-cols-2 gap-6">
               <GlassCard delay={0.3} hover={false} className="h-fit">
-                <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-                  <AlertCircle className="text-gold-400" size={20} />
+                <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                  <AlertCircle className="text-[#0066CC]" size={20} />
                   לוגים ({logs.length})
                 </h2>
 
@@ -1885,8 +1885,8 @@ Please analyze this error and provide a fix.
                   {logs.length === 0 ? (
                     <div className="text-center py-12">
                       <CheckCircle className="w-16 h-16 mx-auto text-green-400 mb-4" />
-                      <p className="text-white font-medium">אין תקלות פתוחות</p>
-                      <p className="text-white/60 text-sm">המערכת תקינה</p>
+                      <p className="text-gray-800 font-medium">אין תקלות פתוחות</p>
+                      <p className="text-gray-600 text-sm">המערכת תקינה</p>
                     </div>
                   ) : (
                     logs.map((log) => {
@@ -1916,14 +1916,14 @@ Please analyze this error and provide a fix.
                                 <span className={`text-xs px-2 py-0.5 rounded ${severity.bg} ${severity.color}`}>
                                   {severity.label}
                                 </span>
-                                <span className="text-xs text-white/40 flex items-center gap-1">
+                                <span className="text-xs text-gray-500 flex items-center gap-1">
                                   <CategoryIcon size={12} />
                                   {category.label}
                                 </span>
                               </div>
-                              <p className="text-white font-medium truncate">{log.title}</p>
-                              <p className="text-white/50 text-sm truncate">{log.message}</p>
-                              <div className="flex items-center gap-3 mt-2 text-xs text-white/40">
+                              <p className="text-gray-800 font-medium truncate">{log.title}</p>
+                              <p className="text-gray-500 text-sm truncate">{log.message}</p>
+                              <div className="flex items-center gap-3 mt-2 text-xs text-gray-500">
                                 <span>{new Date(log.createdAt).toLocaleString('he-IL')}</span>
                                 {log.resolved && (
                                   <span className="text-green-400 flex items-center gap-1">
@@ -1943,8 +1943,8 @@ Please analyze this error and provide a fix.
 
               {/* Selected Log Details */}
               <GlassCard delay={0.4} hover={false} className="h-fit sticky top-6">
-                <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-                  <FileText className="text-gold-400" size={20} />
+                <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                  <FileText className="text-[#0066CC]" size={20} />
                   פרטי הלוג
                 </h2>
 
@@ -1960,7 +1960,7 @@ Please analyze this error and provide a fix.
                           >
                             {severityConfig[selectedLog.severity].label}
                           </span>
-                          <span className="text-white/40 text-sm">
+                          <span className="text-gray-500 text-sm">
                             {categoryConfig[selectedLog.category].label}
                           </span>
                         </div>
@@ -1978,14 +1978,14 @@ Please analyze this error and provide a fix.
                     </div>
 
                     <div>
-                      <label className="text-white/60 text-sm">הודעה</label>
+                      <label className="text-gray-600 text-sm">הודעה</label>
                       <p className="text-white mt-1">{selectedLog.message}</p>
                     </div>
 
                     {selectedLog.details && (
                       <div>
-                        <label className="text-white/60 text-sm">פרטים נוספים</label>
-                        <pre className="mt-1 p-3 bg-black/30 rounded-lg text-white/80 text-sm overflow-x-auto">
+                        <label className="text-gray-600 text-sm">פרטים נוספים</label>
+                        <pre className="mt-1 p-3 bg-black/30 rounded-lg text-gray-700 text-sm overflow-x-auto">
                           {selectedLog.details}
                         </pre>
                       </div>
@@ -1993,7 +1993,7 @@ Please analyze this error and provide a fix.
 
                     {selectedLog.stackTrace && (
                       <div>
-                        <label className="text-white/60 text-sm">Stack Trace</label>
+                        <label className="text-gray-600 text-sm">Stack Trace</label>
                         <pre className="mt-1 p-3 bg-black/30 rounded-lg text-red-400/80 text-xs overflow-x-auto max-h-48">
                           {selectedLog.stackTrace}
                         </pre>
@@ -2002,23 +2002,23 @@ Please analyze this error and provide a fix.
 
                     <div className="grid grid-cols-2 gap-4 pt-4 border-t border-white/10">
                       <div>
-                        <label className="text-white/60 text-sm">Endpoint</label>
+                        <label className="text-gray-600 text-sm">Endpoint</label>
                         <p className="text-white font-mono text-sm">{selectedLog.endpoint || 'N/A'}</p>
                       </div>
                       <div>
-                        <label className="text-white/60 text-sm">Response Time</label>
+                        <label className="text-gray-600 text-sm">Response Time</label>
                         <p className="text-white font-mono text-sm">
                           {selectedLog.responseTime ? `${selectedLog.responseTime}ms` : 'N/A'}
                         </p>
                       </div>
                       <div>
-                        <label className="text-white/60 text-sm">תאריך יצירה</label>
+                        <label className="text-gray-600 text-sm">תאריך יצירה</label>
                         <p className="text-white text-sm">
                           {new Date(selectedLog.createdAt).toLocaleString('he-IL')}
                         </p>
                       </div>
                       <div>
-                        <label className="text-white/60 text-sm">ID</label>
+                        <label className="text-gray-600 text-sm">ID</label>
                         <p className="text-white font-mono text-xs">{selectedLog.id}</p>
                       </div>
                     </div>
@@ -2033,8 +2033,8 @@ Please analyze this error and provide a fix.
                   </div>
                 ) : (
                   <div className="text-center py-12">
-                    <AlertCircle className="w-16 h-16 mx-auto text-white/20 mb-4" />
-                    <p className="text-white/50">בחר לוג מהרשימה לצפייה בפרטים</p>
+                    <AlertCircle className="w-16 h-16 mx-auto text-gray-300 mb-4" />
+                    <p className="text-gray-500">בחר לוג מהרשימה לצפייה בפרטים</p>
                   </div>
                 )}
               </GlassCard>
