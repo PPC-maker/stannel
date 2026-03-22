@@ -4,6 +4,7 @@
 substitutions:
   _REGION: me-west1
   _PROJECT_ID: stannel-app
+  _TAG: latest
 
 steps:
   # ============ BACKEND ============
@@ -11,8 +12,9 @@ steps:
     id: 'build-backend'
     args:
       - 'build'
+      - '--no-cache'
       - '-t'
-      - '${_REGION}-docker.pkg.dev/${_PROJECT_ID}/stannel/backend:$SHORT_SHA'
+      - '${_REGION}-docker.pkg.dev/${_PROJECT_ID}/stannel/backend:${_TAG}'
       - '-t'
       - '${_REGION}-docker.pkg.dev/${_PROJECT_ID}/stannel/backend:latest'
       - '-f'
@@ -23,7 +25,7 @@ steps:
     id: 'push-backend'
     args:
       - 'push'
-      - '${_REGION}-docker.pkg.dev/${_PROJECT_ID}/stannel/backend:$SHORT_SHA'
+      - '${_REGION}-docker.pkg.dev/${_PROJECT_ID}/stannel/backend:${_TAG}'
     waitFor: ['build-backend']
 
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
@@ -34,7 +36,7 @@ steps:
       - 'deploy'
       - 'stannel-api'
       - '--image'
-      - '${_REGION}-docker.pkg.dev/${_PROJECT_ID}/stannel/backend:$SHORT_SHA'
+      - '${_REGION}-docker.pkg.dev/${_PROJECT_ID}/stannel/backend:${_TAG}'
       - '--region'
       - '${_REGION}'
       - '--platform'
@@ -63,8 +65,9 @@ steps:
     id: 'build-web'
     args:
       - 'build'
+      - '--no-cache'
       - '-t'
-      - '${_REGION}-docker.pkg.dev/${_PROJECT_ID}/stannel/web:$SHORT_SHA'
+      - '${_REGION}-docker.pkg.dev/${_PROJECT_ID}/stannel/web:${_TAG}'
       - '-t'
       - '${_REGION}-docker.pkg.dev/${_PROJECT_ID}/stannel/web:latest'
       - '-f'
@@ -75,7 +78,7 @@ steps:
     id: 'push-web'
     args:
       - 'push'
-      - '${_REGION}-docker.pkg.dev/${_PROJECT_ID}/stannel/web:$SHORT_SHA'
+      - '${_REGION}-docker.pkg.dev/${_PROJECT_ID}/stannel/web:${_TAG}'
     waitFor: ['build-web']
 
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
@@ -86,7 +89,7 @@ steps:
       - 'deploy'
       - 'stannel-web'
       - '--image'
-      - '${_REGION}-docker.pkg.dev/${_PROJECT_ID}/stannel/web:$SHORT_SHA'
+      - '${_REGION}-docker.pkg.dev/${_PROJECT_ID}/stannel/web:${_TAG}'
       - '--region'
       - '${_REGION}'
       - '--platform'
@@ -105,8 +108,8 @@ steps:
     waitFor: ['push-web']
 
 images:
-  - '${_REGION}-docker.pkg.dev/${_PROJECT_ID}/stannel/backend:$SHORT_SHA'
-  - '${_REGION}-docker.pkg.dev/${_PROJECT_ID}/stannel/web:$SHORT_SHA'
+  - '${_REGION}-docker.pkg.dev/${_PROJECT_ID}/stannel/backend:${_TAG}'
+  - '${_REGION}-docker.pkg.dev/${_PROJECT_ID}/stannel/web:${_TAG}'
 
 options:
   logging: CLOUD_LOGGING_ONLY

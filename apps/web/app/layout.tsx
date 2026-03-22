@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import { Assistant } from 'next/font/google';
 import './globals.css';
-import BackgroundSlider from '@/components/layout/BackgroundSlider';
 import Navbar from '@/components/layout/Navbar';
 import AccessibilityWidget from '@/components/layout/AccessibilityWidget';
 import { Providers } from './providers';
@@ -35,9 +34,6 @@ export default function RootLayout({
     <html lang="he" dir="rtl" className={assistant.variable} suppressHydrationWarning>
       <body className="min-h-screen antialiased" suppressHydrationWarning>
         <Providers>
-          {/* Full-screen animated background — runs on EVERY page */}
-          <BackgroundSlider />
-
           {/* Main app shell */}
           <div className="relative z-10 min-h-screen flex flex-col items-center">
             <Navbar />

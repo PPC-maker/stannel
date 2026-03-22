@@ -590,7 +590,7 @@ export function useConfirmPayment() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: ({ invoiceId, reference, paymentProofUrl }: { invoiceId: string; reference: string; paymentProofUrl: string }) =>
+    mutationFn: ({ invoiceId, reference, paymentProofUrl }: { invoiceId: string; reference: string; paymentProofUrl?: string }) =>
       supplierApi.confirmPayment(invoiceId, reference, paymentProofUrl),
     onSuccess: () => {
       // Force refetch all supplier-related queries

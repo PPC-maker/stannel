@@ -9,7 +9,7 @@ import { z } from 'zod';
 
 const confirmPaymentSchema = z.object({
   reference: z.string().min(1),
-  paymentProofUrl: z.string().url(), // Required - payment proof document URL
+  paymentProofUrl: z.string().url().optional(), // Optional - payment proof document URL
 });
 
 const productSchema = z.object({

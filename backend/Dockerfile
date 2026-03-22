@@ -3,17 +3,17 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-# Copy package files
-COPY package.json ./
+# Copy package files from backend directory
+COPY backend/package.json ./
 
-# Install dependencies with npm
+# Install dependencies with npm (include devDependencies for prisma)
 RUN npm install --legacy-peer-deps
 
-# Copy source code
-COPY . ./
+# Copy backend source code
+COPY backend/ ./
 
 # Generate Prisma client
-RUN chmod +x ./node_modules/.bin/* && ./node_modules/.bin/prisma generate --schema=src/prisma/schema.prisma
+RUN npx prisma generate --schema=src/prisma/schema.prisma
 
 # Build TypeScript
 RUN npm run build

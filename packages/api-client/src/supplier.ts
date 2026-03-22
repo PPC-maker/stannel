@@ -88,11 +88,14 @@ export const supplierApi = {
     return response.json();
   },
 
-  async confirmPayment(invoiceId: string, reference: string, paymentProofUrl: string): Promise<SupplierInvoice> {
+  async confirmPayment(invoiceId: string, reference: string, paymentProofUrl?: string): Promise<SupplierInvoice> {
+    const body: { reference: string; paymentProofUrl?: string } = { reference };
+    if (paymentProofUrl) body.paymentProofUrl = paymentProofUrl;
+
     const response = await fetch(`${config.baseUrl}/supplier/invoices/${invoiceId}/confirm`, {
       method: 'PATCH',
       headers: getHeaders(),
-      body: JSON.stringify({ reference, paymentProofUrl }),
+      body: JSON.stringify(body),
     });
 
     if (!response.ok) {
