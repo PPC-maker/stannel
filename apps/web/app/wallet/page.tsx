@@ -88,27 +88,34 @@ export default function WalletPage() {
                     <span className="text-white/60 text-sm">STANNEL</span>
                   </div>
 
-                  <div className="flex justify-between items-end">
-                    <div>
-                      {isLoading ? (
-                        <div className="h-8 w-48 bg-white/10 rounded animate-pulse" />
-                      ) : (
-                        <p className="text-2xl font-mono text-white tracking-wider">
-                          {card?.cardNumber || '**** **** **** ****'}
+                  <div>
+                    {/* Card Number - formatted nicely */}
+                    {isLoading ? (
+                      <div className="h-6 w-40 bg-white/10 rounded animate-pulse mb-3" />
+                    ) : (
+                      <p className="text-lg font-mono text-white tracking-wider mb-3">
+                        {card?.cardNumber
+                          ? `•••• •••• ${card.cardNumber.slice(-4).toUpperCase()}`
+                          : '**** **** **** ****'}
+                      </p>
+                    )}
+
+                    {/* Bottom row - Name and Points */}
+                    <div className="flex justify-between items-end">
+                      <div>
+                        <p className="text-white/60 text-sm">
+                          {isSupplier ? (card as any)?.holderName : user?.name || 'משתמש'}
                         </p>
-                      )}
-                      <p className="text-white/60 text-sm mt-2">
-                        {isSupplier ? (card as any)?.holderName : user?.name || 'משתמש'}
-                      </p>
-                      <p className="text-white/40 text-xs">
-                        {isSupplier ? 'ספק' : 'אדריכל'}
-                      </p>
-                    </div>
-                    <div className="text-left">
-                      <p className="text-white/50 text-xs">נקודות</p>
-                      <p className="text-gold-400 text-2xl font-bold">
-                        {isLoading ? '...' : (balance?.points || 0).toLocaleString()}
-                      </p>
+                        <p className="text-white/40 text-xs">
+                          {isSupplier ? 'ספק' : 'אדריכל'}
+                        </p>
+                      </div>
+                      <div className="text-left">
+                        <p className="text-white/50 text-xs">נקודות</p>
+                        <p className="text-gold-400 text-xl font-bold">
+                          {isLoading ? '...' : (balance?.points || 0).toLocaleString()}
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>

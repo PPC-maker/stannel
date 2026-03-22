@@ -1,6 +1,6 @@
 // Admin API Client
 
-import { config, getHeaders, getHeadersNoBody } from './config';
+import { config, getHeaders, getHeadersNoBody, getMultipartHeaders } from './config';
 import type { SystemLog, SystemLogStats, SystemLogSeverity, SystemLogCategory, PaginatedResponse } from '@stannel/types';
 
 export interface HealthReport {
@@ -530,6 +530,60 @@ export const adminApi = {
     if (!res.ok) {
       const error = await res.json().catch(() => ({ message: 'Failed to get scan history' }));
       throw new Error(error.message || 'Failed to get scan history');
+    }
+
+    return res.json();
+  },
+
+  // Contracts
+  async getContracts(): Promise<any[]> {
+    const res = await fetch(`${config.baseUrl}/admin/contracts`, {
+      headers: getHeaders(),
+    });
+
+    if (!res.ok) {
+      const error = await res.json().catch(() => ({ message: 'Failed to get contracts' }));
+      throw new Error(error.message || 'Failed to get contracts');
+    }
+
+    return res.json();
+  },
+
+  async createContract(data: {
+    supplierId: string;
+    type: 'STANDARD' | 'PREMIUM' | 'EXCLUSIVE';
+    feePercent: number;
+    validFrom: string;
+    validTo: string;
+  }): Promise<any> {
+    const res = await fetch(`${config.baseUrl}/admin/contracts`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify(data),
+    });
+
+    if (!res.ok) {
+      const error = await res.json().catch(() => ({ message: 'Failed to create contract' }));
+      throw new Error(error.message || 'Failed to create contract');
+    }
+
+    return res.json();
+  },
+
+  // Image Upload
+  async uploadImage(file: File): Promise<{ url: string }> {
+    const formData = new FormData();
+    formData.append('image', file);
+
+    const res = await fetch(`${config.baseUrl}/admin/upload-image`, {
+      method: 'POST',
+      headers: getMultipartHeaders(),
+      body: formData,
+    });
+
+    if (!res.ok) {
+      const error = await res.json().catch(() => ({ message: 'Failed to upload image' }));
+      throw new Error(error.message || 'Failed to upload image');
     }
 
     return res.json();

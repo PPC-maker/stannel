@@ -17,11 +17,11 @@ export function Providers({ children }: { children: ReactNode }) {
       new QueryClient({
         defaultOptions: {
           queries: {
-            staleTime: 5 * 60 * 1000, // 5 דקות - נתונים "טריים" יותר זמן
-            gcTime: 30 * 60 * 1000, // 30 דקות - cache נשמר יותר
-            refetchOnWindowFocus: false,
-            refetchOnMount: false, // לא מביא מחדש בכל mount - מהירות!
-            refetchOnReconnect: false,
+            staleTime: 30 * 1000, // 30 שניות - נתונים מתעדכנים יותר מהר
+            gcTime: 10 * 60 * 1000, // 10 דקות - cache
+            refetchOnWindowFocus: true, // מרפרש בחזרה לחלון
+            refetchOnMount: 'always', // תמיד מרפרש ב-mount
+            refetchOnReconnect: true,
             retry: 1,
           },
         },

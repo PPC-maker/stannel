@@ -10,6 +10,7 @@ import { systemScannerService } from '../services/system-scanner.service.js';
 import { emailService } from '../services/email.service.js';
 import { getFirebaseAuth } from '../lib/firebase.js';
 import { wsService } from '../services/websocket.service.js';
+import { storageService } from '../services/storage.service.js';
 import { z } from 'zod';
 
 const verifyInvoiceSchema = z.object({
@@ -32,6 +33,27 @@ const createGoalSchema = z.object({
   period: z.enum(['MONTHLY', 'QUARTERLY']),
   startDate: z.string().transform(s => new Date(s)),
   endDate: z.string().transform(s => new Date(s)),
+});
+
+const createEventSchema = z.object({
+  title: z.string().min(1),
+  description: z.string(),
+  date: z.string().transform(s => new Date(s)),
+  location: z.string(),
+  capacity: z.number().int().positive(),
+  pointsCost: z.number().int().min(0).optional().default(0),
+  imageUrl: z.string().optional().transform(s => s && s.length > 0 ? s : undefined),
+});
+
+const updateEventSchema = z.object({
+  title: z.string().min(1).optional(),
+  description: z.string().optional(),
+  date: z.string().transform(s => new Date(s)).optional(),
+  location: z.string().optional(),
+  capacity: z.number().int().positive().optional(),
+  pointsCost: z.number().int().min(0).optional(),
+  imageUrl: z.string().optional().transform(s => s && s.length > 0 ? s : undefined),
+  isHidden: z.boolean().optional(),
 });
 
 export async function adminRoutes(server: FastifyInstance) {
@@ -556,49 +578,8 @@ export async function adminRoutes(server: FastifyInstance) {
 
       await slaService.scheduleCheck(id, paymentDeadline);
 
-      // ===== POINTS SYSTEM: Credit 2% to both architect and supplier =====
-      const pointsToCredit = invoice.amount * 0.02; // 2% of invoice amount
-
-      // Credit points to architect
-      await prisma.architectProfile.update({
-        where: { id: invoice.architectId },
-        data: {
-          pointsBalance: { increment: pointsToCredit },
-          totalEarned: { increment: pointsToCredit },
-        },
-      });
-
-      // Create transaction record for architect
-      await prisma.cardTransaction.create({
-        data: {
-          architectId: invoice.architectId,
-          type: 'CREDIT',
-          amount: pointsToCredit,
-          description: `זיכוי נקודות מחשבונית #${invoice.id.slice(-6)}`,
-          invoiceId: invoice.id,
-        },
-      });
-
-      // Credit points to supplier
-      await prisma.supplierProfile.update({
-        where: { id: invoice.supplierId },
-        data: {
-          pointsBalance: { increment: pointsToCredit },
-          totalEarned: { increment: pointsToCredit },
-        },
-      });
-
-      // Create transaction record for supplier
-      await prisma.supplierCardTransaction.create({
-        data: {
-          supplierId: invoice.supplierId,
-          type: 'CREDIT',
-          amount: pointsToCredit,
-          description: `זיכוי נקודות מחשבונית #${invoice.id.slice(-6)}`,
-          invoiceId: invoice.id,
-        },
-      });
-      // ===== END POINTS SYSTEM =====
+      // NOTE: Points are credited ONLY when supplier confirms payment
+      // See supplier.routes.ts -> /invoices/:id/confirm -> loyaltyService.creditInvoicePoints()
     }
 
     const updated = await prisma.invoice.update({
@@ -960,5 +941,153 @@ Please analyze this error and provide a fix.
       errors,
       warnings,
     };
+  });
+
+  // ============ Events Management ============
+
+  // Get all events (admin)
+  server.get('/events', async (request: FastifyRequest) => {
+    const events = await prisma.event.findMany({
+      orderBy: { date: 'desc' },
+      include: {
+        _count: {
+          select: { registrations: true }
+        }
+      }
+    });
+
+    return {
+      data: events.map(e => ({
+        ...e,
+        registeredCount: e._count.registrations
+      })),
+      total: events.length
+    };
+  });
+
+  // Create event
+  server.post('/events', async (request: FastifyRequest) => {
+    const body = createEventSchema.parse(request.body);
+
+    const event = await prisma.event.create({
+      data: {
+        title: body.title,
+        description: body.description,
+        date: body.date,
+        location: body.location,
+        capacity: body.capacity,
+        pointsCost: body.pointsCost || 0,
+        imageUrl: body.imageUrl,
+      },
+    });
+
+    await prisma.auditLog.create({
+      data: {
+        userId: request.user!.id,
+        action: 'EVENT_CREATED',
+        entityId: event.id,
+        metadata: { title: event.title },
+      },
+    });
+
+    return event;
+  });
+
+  // Update event
+  server.patch('/events/:id', async (request: FastifyRequest, reply: FastifyReply) => {
+    const { id } = request.params as { id: string };
+    const body = updateEventSchema.parse(request.body);
+
+    const event = await prisma.event.findUnique({ where: { id } });
+    if (!event) {
+      return reply.code(404).send({ error: 'Event not found' });
+    }
+
+    const updated = await prisma.event.update({
+      where: { id },
+      data: body,
+    });
+
+    await prisma.auditLog.create({
+      data: {
+        userId: request.user!.id,
+        action: 'EVENT_UPDATED',
+        entityId: id,
+        metadata: { title: updated.title },
+      },
+    });
+
+    return updated;
+  });
+
+  // Delete event
+  server.delete('/events/:id', async (request: FastifyRequest, reply: FastifyReply) => {
+    const { id } = request.params as { id: string };
+
+    const event = await prisma.event.findUnique({ where: { id } });
+    if (!event) {
+      return reply.code(404).send({ error: 'Event not found' });
+    }
+
+    // Delete registrations first
+    await prisma.eventRegistration.deleteMany({ where: { eventId: id } });
+
+    // Delete the event
+    await prisma.event.delete({ where: { id } });
+
+    await prisma.auditLog.create({
+      data: {
+        userId: request.user!.id,
+        action: 'EVENT_DELETED',
+        entityId: id,
+        metadata: { title: event.title },
+      },
+    });
+
+    return { success: true };
+  });
+
+  // ============ Image Upload ============
+
+  // Upload image for events/assets
+  server.post('/upload-image', async (request: FastifyRequest, reply: FastifyReply) => {
+    try {
+      const data = await request.file();
+
+      if (!data) {
+        return reply.code(400).send({ error: 'No file uploaded' });
+      }
+
+      // Validate file type
+      const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+      if (!allowedTypes.includes(data.mimetype)) {
+        return reply.code(400).send({ error: 'Invalid file type. Only JPG, PNG, GIF, and WebP are allowed.' });
+      }
+
+      // Read file buffer
+      const buffer = await data.toBuffer();
+
+      // Validate file size (max 5MB)
+      if (buffer.length > 5 * 1024 * 1024) {
+        return reply.code(400).send({ error: 'File too large. Maximum size is 5MB.' });
+      }
+
+      // Upload to storage
+      const filename = `${Date.now()}-${data.filename.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
+      const url = await storageService.uploadAsset(buffer, 'events', filename);
+
+      await prisma.auditLog.create({
+        data: {
+          userId: request.user!.id,
+          action: 'IMAGE_UPLOADED',
+          metadata: { filename, url },
+        },
+      });
+
+      return { url };
+    } catch (error) {
+      console.error('Image upload error:', error);
+      return reply.code(500).send({ error: 'Failed to upload image' });
+    }
   });
 }

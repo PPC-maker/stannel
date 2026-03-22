@@ -2,10 +2,23 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import Image from 'next/image';
 import GlassCard from '@/components/layout/GlassCard';
 import PageSlider, { sliderImages } from '@/components/layout/PageSlider';
 import { Calendar, MapPin, Users, Clock, CheckCircle, Loader2 } from 'lucide-react';
+
+// Helper to check if URL is a valid image URL
+function isValidImageUrl(url: string | undefined): boolean {
+  if (!url) return false;
+  // Check if URL ends with common image extensions or is from known image hosts
+  const imageExtensions = /\.(jpg|jpeg|png|gif|webp|avif|svg)(\?.*)?$/i;
+  const imageHosts = ['images.unsplash.com', 'unsplash.com', 'storage.googleapis.com', 'cloudinary.com', 'imgur.com'];
+  try {
+    const parsedUrl = new URL(url);
+    return imageExtensions.test(parsedUrl.pathname) || imageHosts.some(host => parsedUrl.hostname.includes(host));
+  } catch {
+    return false;
+  }
+}
 import { useEvents, useRegisterForEvent } from '@/lib/api-hooks';
 import { useAuthGuard, AuthGuardLoader } from '@/lib/useAuthGuard';
 import Swal from 'sweetalert2';
@@ -144,18 +157,21 @@ export default function EventsPage() {
               >
                 {/* Event Image */}
                 <div className="relative h-48 -mx-6 -mt-6 mb-4 overflow-hidden">
-                  {event.imageUrl ? (
-                    <Image
+                  {event.imageUrl && isValidImageUrl(event.imageUrl) ? (
+                    <img
                       src={event.imageUrl}
                       alt={event.title}
-                      fill
-                      className="object-cover group-hover:scale-105 transition-transform duration-500"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      onError={(e) => {
+                        // Hide broken image and show placeholder
+                        (e.target as HTMLImageElement).style.display = 'none';
+                        (e.target as HTMLImageElement).nextElementSibling?.classList.remove('hidden');
+                      }}
                     />
-                  ) : (
-                    <div className="w-full h-full bg-white/10 flex items-center justify-center">
-                      <Calendar size={48} className="text-white/30" />
-                    </div>
-                  )}
+                  ) : null}
+                  <div className={`w-full h-full bg-white/10 flex items-center justify-center absolute inset-0 ${event.imageUrl && isValidImageUrl(event.imageUrl) ? 'hidden' : ''}`}>
+                    <Calendar size={48} className="text-white/30" />
+                  </div>
                   {event.isVip && (
                     <div className="absolute top-3 right-3 bg-gold-400 text-primary-900 text-xs font-bold px-3 py-1 rounded-full">
                       VIP

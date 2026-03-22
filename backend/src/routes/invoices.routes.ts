@@ -228,14 +228,8 @@ export async function invoiceRoutes(server: FastifyInstance) {
       prisma.invoice.count({ where }),
     ]);
 
-    console.log('[Invoices GET] Found', total, 'invoices');
-    if (invoices.length > 0) {
-      console.log('[Invoices GET] First invoice architectId:', invoices[0].architectId);
-    }
-
-    // Debug: Show all invoices in DB
-    const allInvoices = await prisma.invoice.findMany({ select: { id: true, architectId: true, status: true } });
-    console.log('[Invoices GET] All invoices in DB:', allInvoices);
+    // Production logging - minimal info only
+    console.log(`[Invoices GET] User: ${request.user?.email}, Found: ${total} invoices`);
 
     return {
       data: invoices,

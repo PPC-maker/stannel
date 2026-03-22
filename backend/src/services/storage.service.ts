@@ -62,6 +62,34 @@ export const storageService = {
     return `https://storage.googleapis.com/${INVOICE_BUCKET}/${filename}`;
   },
 
+  async uploadPaymentProof(buffer: Buffer, originalFilename: string): Promise<string> {
+    const extension = originalFilename.split('.').pop() || 'pdf';
+    const filename = `payment-proofs/${Date.now()}-${randomUUID()}.${extension}`;
+
+    if (USE_LOCAL_STORAGE || !storage) {
+      // Save locally for development
+      const localDir = path.join(LOCAL_UPLOAD_DIR, 'payment-proofs');
+      if (!fs.existsSync(localDir)) {
+        fs.mkdirSync(localDir, { recursive: true });
+      }
+      const localPath = path.join(LOCAL_UPLOAD_DIR, filename);
+      fs.writeFileSync(localPath, buffer);
+      const port = process.env.PORT || 8080;
+      return `http://localhost:${port}/uploads/${filename}`;
+    }
+
+    // Use GCS in production
+    const bucket = storage.bucket(INVOICE_BUCKET); // Store in same bucket as invoices
+    const file = bucket.file(filename);
+    await file.save(buffer, {
+      metadata: {
+        contentType: this.getContentType(extension),
+      },
+    });
+
+    return `https://storage.googleapis.com/${INVOICE_BUCKET}/${filename}`;
+  },
+
   async uploadAsset(buffer: Buffer, assetPath: string, filename: string): Promise<string> {
     const fullPath = `${assetPath}/${filename}`;
 

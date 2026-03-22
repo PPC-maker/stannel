@@ -52,6 +52,31 @@ export function useAdminGuard() {
 }
 
 /**
+ * Hook to protect supplier pages.
+ * Redirects to login if not authenticated, or to dashboard if not supplier.
+ */
+export function useSupplierGuard() {
+  const router = useRouter();
+  const { user, loading } = useAuth();
+
+  useEffect(() => {
+    if (!loading) {
+      if (!user) {
+        router.replace('/login');
+      } else if (user.role !== 'SUPPLIER') {
+        router.replace('/dashboard');
+      }
+    }
+  }, [user, loading, router]);
+
+  return {
+    isReady: !loading && !!user && user.role === 'SUPPLIER',
+    user,
+    loading,
+  };
+}
+
+/**
  * Loading spinner component for protected pages
  */
 export function AuthGuardLoader() {

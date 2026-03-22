@@ -8,6 +8,11 @@ export { rewardsApi } from './rewards';
 export { eventsApi } from './events';
 export { adminApi } from './admin';
 export { aiApi } from './ai';
+export { notificationsApi } from './notifications';
+export { goalsApi } from './goals';
+export { serviceProvidersApi } from './service-providers';
+export { analyticsApi } from './analytics';
+export { supplierApi } from './supplier';
 
 // API Error class for better error handling
 export class ApiError extends Error {
@@ -43,5 +48,20 @@ export const apiClient = {
   },
   get ai() {
     return require('./ai').aiApi;
+  },
+  get notifications() {
+    return require('./notifications').notificationsApi;
+  },
+  get goals() {
+    return require('./goals').goalsApi;
+  },
+  get serviceProviders() {
+    return require('./service-providers').serviceProvidersApi;
+  },
+  get analytics() {
+    return require('./analytics').analyticsApi;
+  },
+  get supplier() {
+    return require('./supplier').supplierApi;
   },
 };

@@ -47,8 +47,12 @@ import {
   Trash,
   FileIcon,
   Download,
+  BarChart3,
+  Target,
+  Building2,
 } from 'lucide-react';
 import Swal from 'sweetalert2';
+import Link from 'next/link';
 
 type TabType = 'users' | 'invoices' | 'recycle-bin' | 'logs' | 'scan';
 
@@ -75,6 +79,9 @@ interface AdminInvoice {
   aiStatus?: string | null;
   adminNote?: string | null;
   slaDeadline?: string | null;
+  supplierRef?: string | null;
+  paymentProofUrl?: string | null;
+  paidAt?: string | null;
   createdAt: string;
   approvedAt?: string | null;
   deletedAt?: string | null;
@@ -752,6 +759,106 @@ Please analyze this error and provide a fix.
           </div>
         </motion.div>
 
+        {/* Quick Links */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="grid grid-cols-2 lg:grid-cols-3 gap-4 mb-6"
+        >
+          <Link href="/admin/analytics" className="group">
+            <GlassCard hover={true}>
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-purple-500/20">
+                  <BarChart3 size={20} className="text-purple-400" />
+                </div>
+                <div>
+                  <p className="text-white font-medium group-hover:text-gold-400 transition-colors">אנליטיקות</p>
+                  <p className="text-white/50 text-xs">דוחות וסטטיסטיקות</p>
+                </div>
+              </div>
+            </GlassCard>
+          </Link>
+          <Link href="/admin/architects" className="group">
+            <GlassCard hover={true}>
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-blue-500/20">
+                  <Users size={20} className="text-blue-400" />
+                </div>
+                <div>
+                  <p className="text-white font-medium group-hover:text-gold-400 transition-colors">אדריכלים</p>
+                  <p className="text-white/50 text-xs">ניהול אדריכלים</p>
+                </div>
+              </div>
+            </GlassCard>
+          </Link>
+          <Link href="/admin/service-providers" className="group">
+            <GlassCard hover={true}>
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-green-500/20">
+                  <Building2 size={20} className="text-green-400" />
+                </div>
+                <div>
+                  <p className="text-white font-medium group-hover:text-gold-400 transition-colors">ספקי שירות</p>
+                  <p className="text-white/50 text-xs">ניהול ספקים</p>
+                </div>
+              </div>
+            </GlassCard>
+          </Link>
+          <Link href="/admin/goals" className="group">
+            <GlassCard hover={true}>
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-gold-500/20">
+                  <Target size={20} className="text-gold-400" />
+                </div>
+                <div>
+                  <p className="text-white font-medium group-hover:text-gold-400 transition-colors">יעדים</p>
+                  <p className="text-white/50 text-xs">ניהול יעדי אדריכלים</p>
+                </div>
+              </div>
+            </GlassCard>
+          </Link>
+          <Link href="/admin/contracts" className="group">
+            <GlassCard hover={true}>
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-cyan-500/20">
+                  <FileText size={20} className="text-cyan-400" />
+                </div>
+                <div>
+                  <p className="text-white font-medium group-hover:text-gold-400 transition-colors">חוזים</p>
+                  <p className="text-white/50 text-xs">ניהול חוזי ספקים</p>
+                </div>
+              </div>
+            </GlassCard>
+          </Link>
+          <Link href="/admin/audit-logs" className="group">
+            <GlassCard hover={true}>
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-orange-500/20">
+                  <Clock size={20} className="text-orange-400" />
+                </div>
+                <div>
+                  <p className="text-white font-medium group-hover:text-gold-400 transition-colors">יומן פעולות</p>
+                  <p className="text-white/50 text-xs">מעקב פעולות מערכת</p>
+                </div>
+              </div>
+            </GlassCard>
+          </Link>
+          <Link href="/admin/events" className="group">
+            <GlassCard hover={true}>
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-pink-500/20">
+                  <Calendar size={20} className="text-pink-400" />
+                </div>
+                <div>
+                  <p className="text-white font-medium group-hover:text-gold-400 transition-colors">אירועים</p>
+                  <p className="text-white/50 text-xs">ניהול אירועים</p>
+                </div>
+              </div>
+            </GlassCard>
+          </Link>
+        </motion.div>
+
         {/* Tabs */}
         <div className="flex gap-2 mb-6">
           <button
@@ -780,9 +887,9 @@ Please analyze this error and provide a fix.
           >
             <Receipt size={18} />
             חשבוניות
-            {invoices.filter(inv => inv.status === 'PENDING_ADMIN').length > 0 && (
-              <span className="bg-yellow-500 text-white text-xs px-2 py-0.5 rounded-full">
-                {invoices.filter(inv => inv.status === 'PENDING_ADMIN').length}
+            {invoices.filter(inv => ['PENDING_ADMIN', 'PENDING_SUPPLIER_PAY', 'OVERDUE'].includes(inv.status)).length > 0 && (
+              <span className="bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full animate-pulse">
+                {invoices.filter(inv => ['PENDING_ADMIN', 'PENDING_SUPPLIER_PAY', 'OVERDUE'].includes(inv.status)).length}
               </span>
             )}
           </button>
@@ -1346,6 +1453,70 @@ Please analyze this error and provide a fix.
                           הערת מנהל
                         </p>
                         <p className="text-white">{selectedInvoice.adminNote}</p>
+                      </div>
+                    )}
+
+                    {/* Payment Info - shown for paid invoices */}
+                    {(selectedInvoice.status === 'PAID' || selectedInvoice.supplierRef || selectedInvoice.paymentProofUrl) && (
+                      <div className="p-4 rounded-lg bg-green-500/10 border border-green-500/30">
+                        <p className="text-sm text-green-400 mb-3 font-medium flex items-center gap-1">
+                          <CheckCircle size={14} />
+                          פרטי תשלום
+                        </p>
+                        {selectedInvoice.supplierRef && (
+                          <div className="mb-2">
+                            <label className="text-white/60 text-xs">מספר אסמכתא</label>
+                            <p className="text-white font-mono">{selectedInvoice.supplierRef}</p>
+                          </div>
+                        )}
+                        {selectedInvoice.paidAt && (
+                          <div className="mb-2">
+                            <label className="text-white/60 text-xs">תאריך תשלום</label>
+                            <p className="text-white">{new Date(selectedInvoice.paidAt).toLocaleString('he-IL')}</p>
+                          </div>
+                        )}
+                        {selectedInvoice.paymentProofUrl && (
+                          <div className="mt-3 pt-3 border-t border-green-500/30">
+                            <label className="text-white/60 text-xs block mb-2">מסמך אישור העברה</label>
+                            {selectedInvoice.paymentProofUrl.toLowerCase().endsWith('.pdf') ? (
+                              <div className="flex gap-2">
+                                <a
+                                  href={selectedInvoice.paymentProofUrl}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="px-3 py-1.5 rounded-lg bg-white/10 text-white hover:bg-white/20 transition-colors flex items-center gap-1.5 text-sm"
+                                >
+                                  <Eye size={14} />
+                                  פתח PDF
+                                </a>
+                                <a
+                                  href={selectedInvoice.paymentProofUrl}
+                                  download
+                                  className="px-3 py-1.5 rounded-lg bg-green-500 text-black hover:bg-green-400 transition-colors flex items-center gap-1.5 text-sm"
+                                >
+                                  <Download size={14} />
+                                  הורד
+                                </a>
+                              </div>
+                            ) : (
+                              <div className="relative rounded-lg overflow-hidden bg-black/30">
+                                <img
+                                  src={selectedInvoice.paymentProofUrl}
+                                  alt="אישור העברה"
+                                  className="w-full h-32 object-contain"
+                                />
+                                <a
+                                  href={selectedInvoice.paymentProofUrl}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="absolute top-2 left-2 p-1.5 rounded-lg bg-black/50 text-white hover:bg-black/70 transition-colors"
+                                >
+                                  <Eye size={14} />
+                                </a>
+                              </div>
+                            )}
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>

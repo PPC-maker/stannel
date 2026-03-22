@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, User, LogOut, Settings, Wallet, FileText, Gift, Calendar, Home, LogIn, Bot, Shield } from 'lucide-react';
+import { Menu, User, LogOut, Settings, Wallet, FileText, Gift, Calendar, Home, LogIn, Bot, Shield, Bell, Target, Wrench } from 'lucide-react';
 import { useAuth } from '@/lib/auth-context';
 import Swal from 'sweetalert2';
 
@@ -13,12 +13,23 @@ const publicLinks = [
   { href: '/', label: 'דף הבית', icon: Home },
 ];
 
-const authLinks = [
+// Links for ARCHITECT users
+const architectLinks = [
   { href: '/wallet', label: 'הארנק שלי', icon: Wallet },
   { href: '/invoices', label: 'חשבוניות', icon: FileText },
   { href: '/rewards', label: 'הטבות', icon: Gift },
   { href: '/events', label: 'אירועים', icon: Calendar },
+  { href: '/goals', label: 'יעדים', icon: Target },
+  { href: '/notifications', label: 'התראות', icon: Bell },
+  { href: '/tools', label: 'כלים', icon: Wrench },
   { href: '/ai-agent', label: 'הסוכן שלך', icon: Bot },
+];
+
+// Links for SUPPLIER users - view only, no wallet
+const supplierLinks = [
+  { href: '/supplier', label: 'דשבורד', icon: Home },
+  { href: '/notifications', label: 'התראות', icon: Bell },
+  { href: '/ai-agent', label: 'תובנות AI', icon: Bot },
 ];
 
 export default function Navbar() {
@@ -74,8 +85,8 @@ export default function Navbar() {
 
                 {user ? (
                   <>
-                    {/* Auth links - only when logged in */}
-                    {authLinks.map((link) => (
+                    {/* Role-based links */}
+                    {(user.role === 'SUPPLIER' ? supplierLinks : architectLinks).map((link) => (
                       <Link
                         key={link.href}
                         href={link.href}

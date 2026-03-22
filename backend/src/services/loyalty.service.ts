@@ -8,50 +8,50 @@ export const loyaltyService = {
   async creditInvoicePoints(invoiceId: string): Promise<void> {
     const invoice = await prisma.invoice.findUnique({
       where: { id: invoiceId },
-      include: {
-        architect: true,
-        supplier: {
-          include: {
-            contracts: {
-              where: { isActive: true },
-              orderBy: { createdAt: 'desc' },
-              take: 1,
-            },
-          },
-        },
-      },
     });
 
     if (!invoice) {
       throw new Error('Invoice not found');
     }
 
-    const contract = invoice.supplier.contracts[0];
-    if (!contract) {
-      console.warn(`No active contract for supplier ${invoice.supplierId}`);
-      return;
-    }
-
-    // Calculate points based on contract fee percentage
-    const points = invoice.amount * (contract.feePercent / 100);
+    // Calculate points - 2% of invoice amount for both architect and supplier
+    const pointsToCredit = invoice.amount * 0.02;
 
     await prisma.$transaction([
       // Update architect balance
       prisma.architectProfile.update({
         where: { id: invoice.architectId },
         data: {
-          pointsBalance: { increment: points },
-          totalEarned: { increment: points },
+          pointsBalance: { increment: pointsToCredit },
+          totalEarned: { increment: pointsToCredit },
           monthlyProgress: { increment: invoice.amount },
         },
       }),
-      // Create transaction record
+      // Create transaction record for architect
       prisma.cardTransaction.create({
         data: {
           architectId: invoice.architectId,
           type: 'CREDIT',
-          amount: points,
-          description: `זיכוי מחשבונית #${invoiceId.slice(-6)}`,
+          amount: pointsToCredit,
+          description: `זיכוי נקודות מחשבונית #${invoiceId.slice(-6)}`,
+          invoiceId,
+        },
+      }),
+      // Update supplier balance
+      prisma.supplierProfile.update({
+        where: { id: invoice.supplierId },
+        data: {
+          pointsBalance: { increment: pointsToCredit },
+          totalEarned: { increment: pointsToCredit },
+        },
+      }),
+      // Create transaction record for supplier
+      prisma.supplierCardTransaction.create({
+        data: {
+          supplierId: invoice.supplierId,
+          type: 'CREDIT',
+          amount: pointsToCredit,
+          description: `זיכוי נקודות מחשבונית #${invoiceId.slice(-6)}`,
           invoiceId,
         },
       }),

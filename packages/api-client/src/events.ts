@@ -89,4 +89,84 @@ export const eventsApi = {
 
     return response.json();
   },
+
+  // Admin functions
+  admin: {
+    async getAllEvents(): Promise<Event[]> {
+      // Use admin endpoint to get ALL events including hidden ones
+      const response = await fetch(`${config.baseUrl}/admin/events`, {
+        method: 'GET',
+        headers: getHeaders(),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Failed to get events');
+      }
+
+      const data = await response.json();
+      return data.data;
+    },
+
+    async createEvent(data: {
+      title: string;
+      description: string;
+      date: string;
+      location: string;
+      capacity: number;
+      pointsCost?: number;
+      imageUrl?: string;
+    }): Promise<Event> {
+      const response = await fetch(`${config.baseUrl}/admin/events`, {
+        method: 'POST',
+        headers: getHeaders(),
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Failed to create event');
+      }
+
+      return response.json();
+    },
+
+    async updateEvent(id: string, data: Partial<{
+      title: string;
+      description: string;
+      date: string;
+      location: string;
+      capacity: number;
+      pointsCost: number;
+      imageUrl: string;
+      isHidden: boolean;
+    }>): Promise<Event> {
+      const response = await fetch(`${config.baseUrl}/admin/events/${id}`, {
+        method: 'PATCH',
+        headers: getHeaders(),
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Failed to update event');
+      }
+
+      return response.json();
+    },
+
+    async deleteEvent(id: string): Promise<{ success: boolean }> {
+      const response = await fetch(`${config.baseUrl}/admin/events/${id}`, {
+        method: 'DELETE',
+        headers: getHeaders(),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Failed to delete event');
+      }
+
+      return response.json();
+    },
+  },
 };

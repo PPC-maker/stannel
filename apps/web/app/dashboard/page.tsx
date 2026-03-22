@@ -26,15 +26,19 @@ export default function DashboardPage() {
   const { data: transactions, isLoading: txLoading } = useWalletTransactions();
   const { data: card } = useWalletCard();
 
-  // Redirect to login if not authenticated
+  // Redirect to login if not authenticated, or to supplier dashboard if supplier
   useEffect(() => {
     if (!loading && !user) {
       router.replace('/login');
     }
+    // Redirect suppliers to their own dashboard
+    if (!loading && user?.role === 'SUPPLIER') {
+      router.replace('/supplier');
+    }
   }, [user, loading, router]);
 
   // Show nothing while checking auth or redirecting
-  if (loading || !user) {
+  if (loading || !user || user.role === 'SUPPLIER') {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="w-8 h-8 border-2 border-gold-400 border-t-transparent rounded-full animate-spin" />
@@ -215,9 +219,7 @@ export default function DashboardPage() {
         <h2 className="text-lg font-semibold text-white mb-4">פעולות מהירות</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[
-            user?.role === 'SUPPLIER'
-              ? { label: 'צפייה בחשבוניות', icon: FileText, href: '/invoices', color: 'from-blue-500/20 to-blue-600/20' }
-              : { label: 'העלאת חשבונית', icon: FileText, href: '/invoices/upload', color: 'from-blue-500/20 to-blue-600/20' },
+            { label: 'העלאת חשבונית', icon: FileText, href: '/invoices/upload', color: 'from-blue-500/20 to-blue-600/20' },
             { label: 'חנות הטבות', icon: Gift, href: '/rewards', color: 'from-purple-500/20 to-purple-600/20' },
             { label: 'הארנק שלי', icon: Wallet, href: '/wallet', color: 'from-green-500/20 to-green-600/20' },
             { label: 'אירועים', icon: Star, href: '/events', color: 'from-gold-400/20 to-gold-600/20' },

@@ -8,6 +8,7 @@ export interface Event {
   date: Date;
   location: string;
   capacity: number;
+  pointsCost: number;
   isHidden: boolean;
   registeredCount: number;
   waitlistEnabled: boolean;

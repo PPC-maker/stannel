@@ -56,6 +56,11 @@ model User {
   supplierProfile   SupplierProfile?
   auditLogs         AuditLog[]
   eventRegistrations EventRegistration[]
+
+  // New relations from BASE44 migration
+  notifications     Notification[]
+  profilesViewed    ProfileView[]  @relation("ProfileViewer")
+  profileViewers    ProfileView[]  @relation("ProfileViewed")
 }
 
 model ArchitectProfile {
@@ -74,10 +79,23 @@ model ArchitectProfile {
   monthlyGoal     Float     @default(0)
   monthlyProgress Float     @default(0)
 
+  // Trust level for spending limits (Bronze: 5K, Silver: 15K, Gold: 50K)
+  trustLevel      UserRank  @default(BRONZE)
+  monthlyLimit    Float     @default(5000)
+  monthlySpent    Float     @default(0)
+
+  // Onboarding status
+  onboardingStatus String   @default("pending_review") // limited, pending_review, approved, rejected
+  businessId      String?
+
   invoices        Invoice[]
   cardTransactions CardTransaction[]
   goalBonuses     GoalBonus[]
   redemptions     Redemption[]
+
+  // New relations from BASE44 migration
+  architectGoals  ArchitectGoal[]
+  bonusTransactions BonusTransaction[]
 }
 
 model SupplierProfile {
@@ -94,11 +112,18 @@ model SupplierProfile {
   totalRedeemed   Float       @default(0)
   cardNumber      String      @unique @default(cuid())
 
+  // Onboarding status
+  onboardingStatus String     @default("pending_review") // pending_review, approved, rejected
+  status          String      @default("active") // active, suspended, inactive
+
   contracts     Contract[]
   invoices      Invoice[]
   supplierGoals SupplierGoal[]
   products      Product[]
   cardTransactions SupplierCardTransaction[]
+
+  // New relations from BASE44 migration
+  supplierPayments SupplierPayment[]
 }
 
 model Invoice {
@@ -117,6 +142,7 @@ model Invoice {
 
   adminNote       String?
   supplierRef     String?
+  paymentProofUrl String?         // URL of payment proof document uploaded by supplier
 
   createdAt       DateTime        @default(now())
   approvedAt      DateTime?
@@ -130,6 +156,12 @@ model Invoice {
   statusHistory     InvoiceStatusHistory[]
 
   @@index([deletedAt])
+  @@index([architectId])
+  @@index([supplierId])
+  @@index([status])
+  @@index([createdAt])
+  @@index([architectId, status])
+  @@index([supplierId, status])
 }
 
 model InvoiceStatusHistory {
@@ -140,6 +172,9 @@ model InvoiceStatusHistory {
   note        String?
   changedBy   String
   createdAt   DateTime      @default(now())
+
+  @@index([invoiceId])
+  @@index([createdAt])
 }
 
 model Contract {
@@ -152,6 +187,9 @@ model Contract {
   validTo     DateTime
   isActive    Boolean       @default(true)
   createdAt   DateTime      @default(now())
+
+  @@index([supplierId])
+  @@index([isActive])
 }
 
 model Product {
@@ -168,6 +206,9 @@ model Product {
   createdAt     DateTime  @default(now())
 
   redemptions   Redemption[]
+
+  @@index([isActive])
+  @@index([supplierId])
 }
 
 model Redemption {
@@ -179,6 +220,9 @@ model Redemption {
   pointsUsed      Float
   cashPaid        Float     @default(0)
   createdAt       DateTime  @default(now())
+
+  @@index([architectId])
+  @@index([productId])
 }
 
 model CardTransaction {
@@ -190,6 +234,9 @@ model CardTransaction {
   description   String
   invoiceId     String?
   createdAt     DateTime  @default(now())
+
+  @@index([architectId])
+  @@index([createdAt])
 }
 
 model SupplierCardTransaction {
@@ -201,6 +248,9 @@ model SupplierCardTransaction {
   description   String
   invoiceId     String?
   createdAt     DateTime  @default(now())
+
+  @@index([supplierId])
+  @@index([createdAt])
 }
 
 model Event {
@@ -211,12 +261,16 @@ model Event {
   date            DateTime
   location        String
   capacity        Int
+  pointsCost      Int       @default(0)
   isHidden        Boolean   @default(false)
   registeredCount Int       @default(0)
   waitlistEnabled Boolean   @default(true)
   createdAt       DateTime  @default(now())
 
   registrations   EventRegistration[]
+
+  @@index([date])
+  @@index([isHidden])
 }
 
 model EventRegistration {
@@ -229,6 +283,8 @@ model EventRegistration {
   createdAt DateTime  @default(now())
 
   @@unique([eventId, userId])
+  @@index([userId])
+  @@index([eventId])
 }
 
 model SupplierGoal {
@@ -241,6 +297,9 @@ model SupplierGoal {
   startDate     DateTime
   endDate       DateTime
   isActive      Boolean   @default(true)
+
+  @@index([supplierId])
+  @@index([isActive])
 }
 
 model GoalBonus {
@@ -250,6 +309,8 @@ model GoalBonus {
   goalId        String
   bonusPoints   Float
   awardedAt     DateTime  @default(now())
+
+  @@index([architectId])
 }
 
 model AuditLog {
@@ -261,6 +322,10 @@ model AuditLog {
   metadata  Json?
   ipAddress String?
   createdAt DateTime  @default(now())
+
+  @@index([userId])
+  @@index([action])
+  @@index([createdAt])
 }
 
 enum SystemLogSeverity {
@@ -314,4 +379,174 @@ model SystemScanReport {
   createdAt       DateTime  @default(now())
 
   @@index([createdAt])
+}
+
+// ============================================
+// NEW MODELS - Migrated from BASE44
+// ============================================
+
+enum NotificationType {
+  INVOICE_SUBMITTED
+  INVOICE_APPROVED
+  INVOICE_REJECTED
+  INVOICE_CLARIFICATION
+  INVOICE_PAID
+  CARD_CREDITED
+  GOAL_ACHIEVED
+  BONUS_RECEIVED
+  PROFILE_VIEWED
+  SYSTEM_ALERT
+  WELCOME
+}
+
+model Notification {
+  id              String           @id @default(cuid())
+  recipientId     String
+  recipient       User             @relation(fields: [recipientId], references: [id], onDelete: Cascade)
+
+  type            NotificationType
+  title           String
+  message         String
+
+  relatedEntity   String?          // e.g., "invoice", "goal", "user"
+  relatedId       String?          // ID of the related entity
+
+  isRead          Boolean          @default(false)
+  readAt          DateTime?
+
+  createdAt       DateTime         @default(now())
+
+  @@index([recipientId, isRead])
+  @@index([createdAt])
+}
+
+model ProfileView {
+  id              String    @id @default(cuid())
+  viewedUserId    String
+  viewedUser      User      @relation("ProfileViewed", fields: [viewedUserId], references: [id], onDelete: Cascade)
+
+  viewerId        String
+  viewer          User      @relation("ProfileViewer", fields: [viewerId], references: [id], onDelete: Cascade)
+
+  viewerName      String
+  viewerRole      String
+
+  createdAt       DateTime  @default(now())
+
+  @@index([viewedUserId])
+}
+
+enum ServiceProviderCategory {
+  CONTRACTOR
+  ELECTRICIAN
+  PLUMBER
+  PAINTER
+  CARPENTER
+  LANDSCAPER
+  INTERIOR_DESIGNER
+  OTHER
+}
+
+model ServiceProvider {
+  id              String                   @id @default(cuid())
+  name            String
+  phone           String?
+  email           String?
+  category        ServiceProviderCategory
+  description     String?
+  website         String?
+  address         String?
+
+  isActive        Boolean   @default(true)
+  isVerified      Boolean   @default(false)
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([category])
+  @@index([isActive])
+}
+
+enum SupplierPaymentStatus {
+  PENDING
+  PAID
+  OVERDUE
+  CANCELLED
+}
+
+model SupplierPayment {
+  id              String                 @id @default(cuid())
+  supplierId      String
+  supplier        SupplierProfile        @relation(fields: [supplierId], references: [id], onDelete: Cascade)
+
+  invoiceId       String
+  architectEmail  String
+  amount          Float
+
+  status          SupplierPaymentStatus  @default(PENDING)
+
+  dueDate         DateTime
+  paidAt          DateTime?
+  paymentRef      String?
+
+  createdAt       DateTime               @default(now())
+
+  @@index([supplierId, status])
+  @@index([dueDate])
+}
+
+enum GoalPeriodType {
+  MONTHLY
+  QUARTERLY
+  YEARLY
+}
+
+model ArchitectGoal {
+  id                    String          @id @default(cuid())
+  architectId           String
+  architect             ArchitectProfile @relation(fields: [architectId], references: [id], onDelete: Cascade)
+
+  targetAmount          Float
+  currentPeriodRevenue  Float           @default(0)
+  bonusPercentage       Float           @default(5)
+
+  periodType            GoalPeriodType  @default(MONTHLY)
+  startDate             DateTime
+  endDate               DateTime
+
+  isActive              Boolean         @default(true)
+  targetMet             Boolean         @default(false)
+  targetMetAt           DateTime?
+
+  createdAt             DateTime        @default(now())
+  updatedAt             DateTime        @updatedAt
+
+  bonusTransactions     BonusTransaction[]
+
+  @@index([architectId, isActive])
+}
+
+enum BonusStatus {
+  PENDING
+  CREDITED
+  FAILED
+}
+
+model BonusTransaction {
+  id              String        @id @default(cuid())
+  architectId     String
+  architect       ArchitectProfile @relation(fields: [architectId], references: [id], onDelete: Cascade)
+
+  goalId          String
+  goal            ArchitectGoal @relation(fields: [goalId], references: [id], onDelete: Cascade)
+
+  bonusType       String        // e.g., "goal_achieved", "special_bonus"
+  amount          Float
+
+  status          BonusStatus   @default(PENDING)
+  creditedAt      DateTime?
+
+  createdAt       DateTime      @default(now())
+
+  @@index([architectId])
 }

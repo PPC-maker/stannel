@@ -43,6 +43,9 @@ import { adminRoutes } from './routes/admin.routes.js';
 import { supplierRoutes } from './routes/supplier.routes.js';
 import { analyticsRoutes } from './routes/analytics.routes.js';
 import { aiRoutes } from './routes/ai.routes.js';
+import { notificationsRoutes } from './routes/notifications.routes.js';
+import { goalsRoutes } from './routes/goals.routes.js';
+import { serviceProvidersRoutes } from './routes/service-providers.routes.js';
 
 const server = Fastify({
   logger: {
@@ -117,6 +120,9 @@ async function registerRoutes() {
   server.register(supplierRoutes, { prefix: '/api/v1/supplier' });
   server.register(analyticsRoutes, { prefix: '/api/v1/analytics' });
   server.register(aiRoutes, { prefix: '/api/v1/ai' });
+  server.register(notificationsRoutes, { prefix: '/api/v1/notifications' });
+  server.register(goalsRoutes, { prefix: '/api/v1/goals' });
+  server.register(serviceProvidersRoutes, { prefix: '/api/v1/service-providers' });
 }
 
 // Health check

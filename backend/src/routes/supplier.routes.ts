@@ -4,10 +4,12 @@ import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import prisma from '../lib/prisma.js';
 import { authMiddleware, requireSupplier } from '../middleware/auth.middleware.js';
 import { loyaltyService } from '../services/loyalty.service.js';
+import { storageService } from '../services/storage.service.js';
 import { z } from 'zod';
 
 const confirmPaymentSchema = z.object({
   reference: z.string().min(1),
+  paymentProofUrl: z.string().url(), // Required - payment proof document URL
 });
 
 const productSchema = z.object({
@@ -90,6 +92,7 @@ export async function supplierRoutes(server: FastifyInstance) {
       data: {
         status: 'PAID',
         supplierRef: body.reference,
+        paymentProofUrl: body.paymentProofUrl,
         paidAt: new Date(),
       },
     });
@@ -108,6 +111,25 @@ export async function supplierRoutes(server: FastifyInstance) {
     await loyaltyService.creditInvoicePoints(id);
 
     return updated;
+  });
+
+  // Upload payment proof document
+  server.post('/upload-payment-proof', async (request: FastifyRequest, reply: FastifyReply) => {
+    try {
+      const data = await request.file();
+
+      if (!data) {
+        return reply.code(400).send({ error: 'No file uploaded' });
+      }
+
+      const buffer = await data.toBuffer();
+      const url = await storageService.uploadPaymentProof(buffer, data.filename);
+
+      return { url };
+    } catch (error) {
+      console.error('[Supplier] Payment proof upload error:', error);
+      return reply.code(500).send({ error: 'Failed to upload payment proof' });
+    }
   });
 
   // Get supplier goals
