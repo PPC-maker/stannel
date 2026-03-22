@@ -237,18 +237,18 @@ export default function ManageEventsPage() {
         >
           <Link
             href="/admin"
-            className="inline-flex items-center gap-2 text-white/60 hover:text-white mb-4 transition-colors"
+            className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4 transition-colors"
           >
             <ArrowRight size={18} />
             חזרה לפאנל ניהול
           </Link>
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-display font-bold text-white flex items-center gap-3">
-                <Calendar className="text-gold-400" />
+              <h1 className="text-3xl font-display font-bold text-gray-900 flex items-center gap-3">
+                <Calendar className="text-[#0066CC]" />
                 ניהול אירועים
               </h1>
-              <p className="text-white/60 mt-1">יצירה וניהול אירועים לאדריכלים</p>
+              <p className="text-gray-600 mt-1">יצירה וניהול אירועים לאדריכלים</p>
             </div>
             <button
               onClick={() => setShowForm(true)}
@@ -269,8 +269,8 @@ export default function ManageEventsPage() {
         >
           <GlassCard hover={false}>
             <div className="text-center">
-              <p className="text-white/50 text-sm">סה״כ אירועים</p>
-              <p className="text-3xl font-bold text-white">{events?.length || 0}</p>
+              <p className="text-gray-500 text-sm">סה״כ אירועים</p>
+              <p className="text-3xl font-bold text-gray-900">{events?.length || 0}</p>
             </div>
           </GlassCard>
           <GlassCard hover={false} className="bg-green-500/10">
@@ -302,20 +302,20 @@ export default function ManageEventsPage() {
           transition={{ delay: 0.2 }}
         >
           <GlassCard hover={false}>
-            <h2 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
-              <Calendar className="text-gold-400" size={20} />
+            <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
+              <Calendar className="text-[#0066CC]" size={20} />
               רשימת אירועים
             </h2>
 
             {isLoading ? (
               <div className="text-center py-12">
                 <Loader2 className="w-10 h-10 mx-auto text-gold-400 animate-spin" />
-                <p className="text-white/60 mt-4">טוען אירועים...</p>
+                <p className="text-gray-600 mt-4">טוען אירועים...</p>
               </div>
             ) : !events || events.length === 0 ? (
               <div className="text-center py-12">
-                <Calendar className="w-16 h-16 mx-auto text-white/20 mb-4" />
-                <p className="text-white/60">אין אירועים במערכת</p>
+                <Calendar className="w-16 h-16 mx-auto text-gray-300 mb-4" />
+                <p className="text-gray-600">אין אירועים במערכת</p>
                 <button
                   onClick={() => setShowForm(true)}
                   className="btn-gold mt-4 flex items-center gap-2 mx-auto"
@@ -336,7 +336,7 @@ export default function ManageEventsPage() {
                         event.isHidden
                           ? 'border-red-500/30 bg-red-500/5'
                           : isPast
-                          ? 'border-white/10 bg-white/5 opacity-60'
+                          ? 'border-gray-200 bg-gray-50 opacity-60'
                           : 'border-green-500/30 bg-green-500/5'
                       }`}
                     >
@@ -349,26 +349,26 @@ export default function ManageEventsPage() {
                               className="w-16 h-16 rounded-lg object-cover"
                             />
                           ) : (
-                            <div className="w-16 h-16 rounded-lg bg-white/10 flex items-center justify-center">
-                              <Calendar size={24} className="text-white/40" />
+                            <div className="w-16 h-16 rounded-lg bg-gray-100 flex items-center justify-center">
+                              <Calendar size={24} className="text-gray-400" />
                             </div>
                           )}
                           <div>
                             <div className="flex items-center gap-2">
-                              <p className="text-white font-bold">{event.title}</p>
+                              <p className="text-gray-900 font-bold">{event.title}</p>
                               {event.isHidden && (
                                 <span className="px-2 py-0.5 rounded-full text-xs bg-red-500/20 text-red-400">
                                   מוסתר
                                 </span>
                               )}
                               {isPast && (
-                                <span className="px-2 py-0.5 rounded-full text-xs bg-white/20 text-white/60">
+                                <span className="px-2 py-0.5 rounded-full text-xs bg-gray-200 text-gray-600">
                                   עבר
                                 </span>
                               )}
                             </div>
-                            <p className="text-white/50 text-sm line-clamp-1">{event.description}</p>
-                            <div className="flex items-center gap-4 mt-2 text-white/40 text-sm">
+                            <p className="text-gray-500 text-sm line-clamp-1">{event.description}</p>
+                            <div className="flex items-center gap-4 mt-2 text-gray-400 text-sm">
                               <span className="flex items-center gap-1">
                                 <Calendar size={12} />
                                 {new Date(event.date).toLocaleDateString('he-IL')}
@@ -393,7 +393,7 @@ export default function ManageEventsPage() {
                         <div className="flex items-center gap-2">
                           <button
                             onClick={() => handleToggleVisibility(event)}
-                            className={`p-2 rounded-lg hover:bg-white/10 transition-colors ${
+                            className={`p-2 rounded-lg hover:bg-gray-100 transition-colors ${
                               event.isHidden ? 'text-red-400' : 'text-green-400'
                             }`}
                             title={event.isHidden ? 'הצג אירוע' : 'הסתר אירוע'}
@@ -402,7 +402,7 @@ export default function ManageEventsPage() {
                           </button>
                           <button
                             onClick={() => handleEdit(event)}
-                            className="p-2 rounded-lg hover:bg-white/10 text-white/60 hover:text-white transition-colors"
+                            className="p-2 rounded-lg hover:bg-gray-100 text-gray-600 hover:text-gray-900 transition-colors"
                             title="ערוך"
                           >
                             <Edit2 size={16} />
@@ -434,12 +434,12 @@ export default function ManageEventsPage() {
             >
               <GlassCard hover={false}>
                 <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-xl font-semibold text-white">
+                  <h2 className="text-xl font-semibold text-gray-900">
                     {editingEvent ? 'עריכת אירוע' : 'יצירת אירוע חדש'}
                   </h2>
                   <button
                     onClick={resetForm}
-                    className="text-white/60 hover:text-white"
+                    className="text-gray-600 hover:text-gray-900"
                   >
                     ✕
                   </button>
@@ -447,48 +447,48 @@ export default function ManageEventsPage() {
 
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div>
-                    <label className="text-white/60 text-sm mb-2 block">כותרת</label>
+                    <label className="text-gray-600 text-sm mb-2 block">כותרת</label>
                     <input
                       type="text"
                       value={formData.title}
                       onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                       required
-                      className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white"
+                      className="w-full bg-gray-100 border border-gray-200 rounded-lg px-4 py-2 text-gray-900"
                       placeholder="שם האירוע"
                     />
                   </div>
 
                   <div>
-                    <label className="text-white/60 text-sm mb-2 block">תיאור</label>
+                    <label className="text-gray-600 text-sm mb-2 block">תיאור</label>
                     <textarea
                       value={formData.description}
                       onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                       required
                       rows={3}
-                      className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white resize-none"
+                      className="w-full bg-gray-100 border border-gray-200 rounded-lg px-4 py-2 text-gray-900 resize-none"
                       placeholder="תיאור האירוע"
                     />
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="text-white/60 text-sm mb-2 block">תאריך</label>
+                      <label className="text-gray-600 text-sm mb-2 block">תאריך</label>
                       <input
                         type="date"
                         value={formData.date}
                         onChange={(e) => setFormData({ ...formData, date: e.target.value })}
                         required
-                        className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white"
+                        className="w-full bg-gray-100 border border-gray-200 rounded-lg px-4 py-2 text-gray-900"
                       />
                     </div>
                     <div>
-                      <label className="text-white/60 text-sm mb-2 block">מיקום</label>
+                      <label className="text-gray-600 text-sm mb-2 block">מיקום</label>
                       <input
                         type="text"
                         value={formData.location}
                         onChange={(e) => setFormData({ ...formData, location: e.target.value })}
                         required
-                        className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white"
+                        className="w-full bg-gray-100 border border-gray-200 rounded-lg px-4 py-2 text-gray-900"
                         placeholder="כתובת האירוע"
                       />
                     </div>
@@ -496,30 +496,30 @@ export default function ManageEventsPage() {
 
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="text-white/60 text-sm mb-2 block">קיבולת</label>
+                      <label className="text-gray-600 text-sm mb-2 block">קיבולת</label>
                       <input
                         type="number"
                         min="1"
                         value={formData.capacity}
                         onChange={(e) => setFormData({ ...formData, capacity: parseInt(e.target.value) })}
                         required
-                        className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white"
+                        className="w-full bg-gray-100 border border-gray-200 rounded-lg px-4 py-2 text-gray-900"
                       />
                     </div>
                     <div>
-                      <label className="text-white/60 text-sm mb-2 block">עלות בנקודות</label>
+                      <label className="text-gray-600 text-sm mb-2 block">עלות בנקודות</label>
                       <input
                         type="number"
                         min="0"
                         value={formData.pointsCost}
                         onChange={(e) => setFormData({ ...formData, pointsCost: parseInt(e.target.value) })}
-                        className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white"
+                        className="w-full bg-gray-100 border border-gray-200 rounded-lg px-4 py-2 text-gray-900"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="text-white/60 text-sm mb-2 block">תמונת אירוע (אופציונלי)</label>
+                    <label className="text-gray-600 text-sm mb-2 block">תמונת אירוע (אופציונלי)</label>
                     {imagePreview ? (
                       <div className="relative">
                         <img
@@ -536,10 +536,10 @@ export default function ManageEventsPage() {
                         </button>
                       </div>
                     ) : (
-                      <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-white/20 rounded-lg cursor-pointer hover:border-gold-400 transition-colors">
-                        <Upload size={32} className="text-white/40 mb-2" />
-                        <span className="text-white/60 text-sm">לחץ להעלאת תמונה</span>
-                        <span className="text-white/40 text-xs mt-1">JPG, PNG, GIF, WebP עד 5MB</span>
+                      <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-200 rounded-lg cursor-pointer hover:border-gold-400 transition-colors">
+                        <Upload size={32} className="text-gray-400 mb-2" />
+                        <span className="text-gray-600 text-sm">לחץ להעלאת תמונה</span>
+                        <span className="text-gray-400 text-xs mt-1">JPG, PNG, GIF, WebP עד 5MB</span>
                         <input
                           type="file"
                           accept="image/jpeg,image/png,image/gif,image/webp"

@@ -59,7 +59,7 @@ export default function AdminAnalyticsPage() {
         >
           <Link
             href="/admin"
-            className="inline-flex items-center gap-2 text-gray-500 hover:text-gray-800 mb-4 transition-colors font-medium"
+            className="inline-flex items-center gap-2 text-gray-700 hover:text-gray-800 mb-4 transition-colors font-medium"
           >
             <ArrowRight size={18} />
             חזרה לפאנל ניהול
@@ -100,11 +100,11 @@ export default function AdminAnalyticsPage() {
           <GlassCard hover={false}>
             <div className="text-center">
               <TrendingUp className="mx-auto text-gold-400 mb-2" size={28} />
-              <p className="text-white/50 text-sm">סה״כ חשבוניות</p>
+              <p className="text-gray-500 text-sm">סה״כ חשבוניות</p>
               {trendsLoading ? (
-                <Loader2 className="w-6 h-6 mx-auto animate-spin text-white/50" />
+                <Loader2 className="w-6 h-6 mx-auto animate-spin text-gray-500" />
               ) : (
-                <p className="text-3xl font-bold text-white">
+                <p className="text-3xl font-bold text-gray-900">
                   {trendsData?.summary.totalInvoices || 0}
                 </p>
               )}
@@ -115,7 +115,7 @@ export default function AdminAnalyticsPage() {
               <CheckCircle className="mx-auto text-green-400 mb-2" size={28} />
               <p className="text-green-400/70 text-sm">אושרו</p>
               {trendsLoading ? (
-                <Loader2 className="w-6 h-6 mx-auto animate-spin text-white/50" />
+                <Loader2 className="w-6 h-6 mx-auto animate-spin text-gray-500" />
               ) : (
                 <p className="text-3xl font-bold text-green-400">
                   {trendsData?.summary.approvedCount || 0}
@@ -128,7 +128,7 @@ export default function AdminAnalyticsPage() {
               <BarChart3 className="mx-auto text-gold-400 mb-2" size={28} />
               <p className="text-gold-400/70 text-sm">סה״כ סכום</p>
               {trendsLoading ? (
-                <Loader2 className="w-6 h-6 mx-auto animate-spin text-white/50" />
+                <Loader2 className="w-6 h-6 mx-auto animate-spin text-gray-500" />
               ) : (
                 <p className="text-3xl font-bold text-gold-400">
                   ₪{(trendsData?.summary.totalAmount || 0).toLocaleString()}
@@ -141,7 +141,7 @@ export default function AdminAnalyticsPage() {
               <Clock className="mx-auto text-blue-400 mb-2" size={28} />
               <p className="text-blue-400/70 text-sm">עמידה ב-SLA</p>
               {slaLoading ? (
-                <Loader2 className="w-6 h-6 mx-auto animate-spin text-white/50" />
+                <Loader2 className="w-6 h-6 mx-auto animate-spin text-gray-500" />
               ) : (
                 <p className="text-3xl font-bold text-blue-400">
                   {slaData?.complianceRate || 0}%
@@ -159,8 +159,8 @@ export default function AdminAnalyticsPage() {
             transition={{ delay: 0.2 }}
           >
             <GlassCard hover={false}>
-              <h2 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
-                <Users className="text-gold-400" size={20} />
+              <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                <Users className="text-[#0066CC]" size={20} />
                 אדריכלים מובילים
               </h2>
               {architectsLoading ? (
@@ -168,31 +168,31 @@ export default function AdminAnalyticsPage() {
                   <Loader2 className="w-8 h-8 mx-auto animate-spin text-gold-400" />
                 </div>
               ) : !topArchitects || topArchitects.length === 0 ? (
-                <p className="text-white/50 text-center py-8">אין נתונים</p>
+                <p className="text-gray-500 text-center py-8">אין נתונים</p>
               ) : (
                 <div className="space-y-3">
                   {topArchitects.slice(0, 5).map((architect, index) => (
                     <div
                       key={index}
-                      className="flex items-center justify-between p-3 bg-white/5 rounded-lg"
+                      className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
                     >
                       <div className="flex items-center gap-3">
                         <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
                           index === 0 ? 'bg-gold-400 text-primary-900' :
                           index === 1 ? 'bg-gray-300 text-primary-900' :
                           index === 2 ? 'bg-amber-600 text-white' :
-                          'bg-white/10 text-white'
+                          'bg-gray-100 text-gray-900'
                         }`}>
                           {index < 3 ? <Award size={16} /> : architect.rank}
                         </div>
                         <div>
-                          <p className="text-white font-medium">{architect.name}</p>
-                          <p className="text-white/50 text-sm">{architect.invoiceCount} חשבוניות</p>
+                          <p className="text-gray-900 font-medium">{architect.name}</p>
+                          <p className="text-gray-500 text-sm">{architect.invoiceCount} חשבוניות</p>
                         </div>
                       </div>
                       <div className="text-left">
                         <p className="text-gold-400 font-bold">₪{architect.totalEarned.toLocaleString()}</p>
-                        <p className="text-white/40 text-xs">{architect.tier}</p>
+                        <p className="text-gray-400 text-xs">{architect.tier}</p>
                       </div>
                     </div>
                   ))}
@@ -208,8 +208,8 @@ export default function AdminAnalyticsPage() {
             transition={{ delay: 0.3 }}
           >
             <GlassCard hover={false}>
-              <h2 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
-                <Building2 className="text-gold-400" size={20} />
+              <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                <Building2 className="text-[#0066CC]" size={20} />
                 ביצועי ספקים
               </h2>
               {suppliersLoading ? (
@@ -217,22 +217,22 @@ export default function AdminAnalyticsPage() {
                   <Loader2 className="w-8 h-8 mx-auto animate-spin text-gold-400" />
                 </div>
               ) : !supplierPerformance || supplierPerformance.length === 0 ? (
-                <p className="text-white/50 text-center py-8">אין נתונים</p>
+                <p className="text-gray-500 text-center py-8">אין נתונים</p>
               ) : (
                 <div className="space-y-3">
                   {supplierPerformance.slice(0, 5).map((supplier) => (
                     <div
                       key={supplier.id}
-                      className="flex items-center justify-between p-3 bg-white/5 rounded-lg"
+                      className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
                     >
                       <div>
-                        <p className="text-white font-medium">{supplier.companyName}</p>
-                        <p className="text-white/50 text-sm">{supplier.invoiceCount} חשבוניות</p>
+                        <p className="text-gray-900 font-medium">{supplier.companyName}</p>
+                        <p className="text-gray-500 text-sm">{supplier.invoiceCount} חשבוניות</p>
                       </div>
                       <div className="text-left">
                         <div className="flex items-center gap-1">
                           <Star size={14} className="text-gold-400" />
-                          <span className="text-white font-bold">{supplier.trustScore}</span>
+                          <span className="text-gray-900 font-bold">{supplier.trustScore}</span>
                         </div>
                         {supplier.hasActiveContract && (
                           <span className="text-xs text-green-400">חוזה פעיל</span>
@@ -253,8 +253,8 @@ export default function AdminAnalyticsPage() {
           transition={{ delay: 0.4 }}
         >
           <GlassCard hover={false}>
-            <h2 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
-              <Clock className="text-gold-400" size={20} />
+            <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
+              <Clock className="text-[#0066CC]" size={20} />
               דו״ח עמידה ב-SLA (30 ימים אחרונים)
             </h2>
             {slaLoading ? (
@@ -262,13 +262,13 @@ export default function AdminAnalyticsPage() {
                 <Loader2 className="w-8 h-8 mx-auto animate-spin text-gold-400" />
               </div>
             ) : !slaData ? (
-              <p className="text-white/50 text-center py-8">אין נתונים</p>
+              <p className="text-gray-500 text-center py-8">אין נתונים</p>
             ) : (
               <div>
                 <div className="grid grid-cols-3 gap-4 mb-6">
-                  <div className="text-center p-4 bg-white/5 rounded-lg">
-                    <p className="text-white/50 text-sm">סה״כ</p>
-                    <p className="text-2xl font-bold text-white">{slaData.total}</p>
+                  <div className="text-center p-4 bg-gray-50 rounded-lg">
+                    <p className="text-gray-500 text-sm">סה״כ</p>
+                    <p className="text-2xl font-bold text-gray-900">{slaData.total}</p>
                   </div>
                   <div className="text-center p-4 bg-green-500/10 rounded-lg">
                     <p className="text-green-400/70 text-sm">עמדו ב-SLA</p>
@@ -283,10 +283,10 @@ export default function AdminAnalyticsPage() {
                 {/* Progress Bar */}
                 <div className="mb-4">
                   <div className="flex justify-between mb-2">
-                    <span className="text-white/60 text-sm">שיעור עמידה</span>
-                    <span className="text-white font-medium">{slaData.complianceRate}%</span>
+                    <span className="text-gray-600 text-sm">שיעור עמידה</span>
+                    <span className="text-gray-900 font-medium">{slaData.complianceRate}%</span>
                   </div>
-                  <div className="h-4 bg-white/10 rounded-full overflow-hidden">
+                  <div className="h-4 bg-gray-100 rounded-full overflow-hidden">
                     <div
                       className={`h-full transition-all duration-500 ${
                         slaData.complianceRate >= 90 ? 'bg-green-400' :
@@ -300,11 +300,11 @@ export default function AdminAnalyticsPage() {
                 {/* By Supplier */}
                 {Object.keys(slaData.bySupplier).length > 0 && (
                   <div>
-                    <h3 className="text-white/80 font-medium mb-3">לפי ספק:</h3>
+                    <h3 className="text-gray-700 font-medium mb-3">לפי ספק:</h3>
                     <div className="space-y-2 max-h-48 overflow-y-auto">
                       {Object.entries(slaData.bySupplier).map(([name, data]) => (
-                        <div key={name} className="flex items-center justify-between p-2 bg-white/5 rounded-lg">
-                          <span className="text-white/80">{name}</span>
+                        <div key={name} className="flex items-center justify-between p-2 bg-gray-50 rounded-lg">
+                          <span className="text-gray-700">{name}</span>
                           <div className="flex items-center gap-3">
                             <span className="text-green-400 text-sm flex items-center gap-1">
                               <CheckCircle size={12} /> {data.compliant}
@@ -334,12 +334,12 @@ export default function AdminAnalyticsPage() {
             className="mt-6"
           >
             <GlassCard hover={false} className="bg-purple-500/10 border-purple-500/30">
-              <h2 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
-                <TrendingUp className="text-purple-400" size={20} />
+              <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                <TrendingUp className="text-[#0066CC]" size={20} />
                 תובנות AI
               </h2>
               {typeof trendsData.aiInsights === 'string' ? (
-                <p className="text-white/80 whitespace-pre-wrap">{trendsData.aiInsights}</p>
+                <p className="text-gray-700 whitespace-pre-wrap">{trendsData.aiInsights}</p>
               ) : (
                 (() => {
                   const insights = trendsData.aiInsights as { summary?: string; trends?: string[]; alerts?: string[]; recommendations?: string[] };
@@ -347,14 +347,14 @@ export default function AdminAnalyticsPage() {
                     <div className="space-y-4">
                       {insights.summary && (
                         <div>
-                          <h3 className="text-purple-300 font-medium mb-1">סיכום</h3>
-                          <p className="text-white/80">{insights.summary}</p>
+                          <h3 className="text-purple-600 font-medium mb-1">סיכום</h3>
+                          <p className="text-gray-700">{insights.summary}</p>
                         </div>
                       )}
                       {insights.trends && insights.trends.length > 0 && (
                         <div>
-                          <h3 className="text-purple-300 font-medium mb-1">מגמות</h3>
-                          <ul className="list-disc list-inside text-white/80 space-y-1">
+                          <h3 className="text-purple-600 font-medium mb-1">מגמות</h3>
+                          <ul className="list-disc list-inside text-gray-700 space-y-1">
                             {insights.trends.map((trend: string, i: number) => (
                               <li key={i}>{trend}</li>
                             ))}
@@ -363,8 +363,8 @@ export default function AdminAnalyticsPage() {
                       )}
                       {insights.alerts && insights.alerts.length > 0 && (
                         <div>
-                          <h3 className="text-red-300 font-medium mb-1">התראות</h3>
-                          <ul className="list-disc list-inside text-red-300/80 space-y-1">
+                          <h3 className="text-red-600 font-medium mb-1">התראות</h3>
+                          <ul className="list-disc list-inside text-red-600 space-y-1">
                             {insights.alerts.map((alert: string, i: number) => (
                               <li key={i}>{alert}</li>
                             ))}
@@ -373,8 +373,8 @@ export default function AdminAnalyticsPage() {
                       )}
                       {insights.recommendations && insights.recommendations.length > 0 && (
                         <div>
-                          <h3 className="text-green-300 font-medium mb-1">המלצות</h3>
-                          <ul className="list-disc list-inside text-green-300/80 space-y-1">
+                          <h3 className="text-green-600 font-medium mb-1">המלצות</h3>
+                          <ul className="list-disc list-inside text-green-600 space-y-1">
                             {insights.recommendations.map((rec: string, i: number) => (
                               <li key={i}>{rec}</li>
                             ))}

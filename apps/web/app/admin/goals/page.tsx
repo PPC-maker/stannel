@@ -129,18 +129,18 @@ export default function ManageGoalsPage() {
         >
           <Link
             href="/admin"
-            className="inline-flex items-center gap-2 text-white/60 hover:text-white mb-4 transition-colors"
+            className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4 transition-colors"
           >
             <ArrowRight size={18} />
             חזרה לפאנל ניהול
           </Link>
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-display font-bold text-white flex items-center gap-3">
-                <Target className="text-gold-400" />
+              <h1 className="text-3xl font-display font-bold text-gray-900 flex items-center gap-3">
+                <Target className="text-[#0066CC]" />
                 ניהול יעדי אדריכלים
               </h1>
-              <p className="text-white/60 mt-1">הגדרת יעדי מכירות ובונוסים לאדריכלים</p>
+              <p className="text-gray-600 mt-1">הגדרת יעדי מכירות ובונוסים לאדריכלים</p>
             </div>
             <button
               onClick={() => {
@@ -169,9 +169,9 @@ export default function ManageGoalsPage() {
                   type="checkbox"
                   checked={showActiveOnly}
                   onChange={(e) => setShowActiveOnly(e.target.checked)}
-                  className="w-4 h-4 rounded bg-white/10 border-white/20 text-gold-400"
+                  className="w-4 h-4 rounded bg-gray-100 border-gray-200 text-gold-400"
                 />
-                <span className="text-white">הצג יעדים פעילים בלבד</span>
+                <span className="text-gray-900">הצג יעדים פעילים בלבד</span>
               </label>
             </div>
           </GlassCard>
@@ -181,8 +181,8 @@ export default function ManageGoalsPage() {
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
           <GlassCard hover={false}>
             <div className="text-center">
-              <p className="text-white/50 text-sm">סה״כ יעדים</p>
-              <p className="text-3xl font-bold text-white">{goals.length}</p>
+              <p className="text-gray-500 text-sm">סה״כ יעדים</p>
+              <p className="text-3xl font-bold text-gray-900">{goals.length}</p>
             </div>
           </GlassCard>
           <GlassCard hover={false} className="bg-green-500/10">
@@ -221,13 +221,13 @@ export default function ManageGoalsPage() {
             {isLoading ? (
               <div className="text-center py-12">
                 <Loader2 className="w-10 h-10 mx-auto text-gold-400 animate-spin" />
-                <p className="text-white/60 mt-4">טוען יעדים...</p>
+                <p className="text-gray-600 mt-4">טוען יעדים...</p>
               </div>
             ) : goals.length === 0 ? (
               <div className="text-center py-12">
-                <Target className="w-16 h-16 mx-auto text-white/20 mb-4" />
-                <p className="text-white/60">אין יעדים להצגה</p>
-                <p className="text-white/40 text-sm mt-2">לחץ על "הוסף יעד חדש" ליצירת יעד</p>
+                <Target className="w-16 h-16 mx-auto text-gray-300 mb-4" />
+                <p className="text-gray-600">אין יעדים להצגה</p>
+                <p className="text-gray-400 text-sm mt-2">לחץ על "הוסף יעד חדש" ליצירת יעד</p>
               </div>
             ) : (
               <div className="space-y-4">
@@ -248,7 +248,7 @@ export default function ManageGoalsPage() {
                           ? 'border-red-500/30 bg-red-500/10'
                           : goal.isActive
                           ? 'border-gold-500/30 bg-gold-500/5'
-                          : 'border-white/10 bg-white/5'
+                          : 'border-gray-200 bg-gray-50'
                       }`}
                     >
                       <div className="flex items-start justify-between mb-4">
@@ -264,10 +264,10 @@ export default function ManageGoalsPage() {
                           </div>
                           <div>
                             <div className="flex items-center gap-2">
-                              <User size={14} className="text-white/40" />
-                              <span className="text-white font-medium">{goal.architect.user.name}</span>
+                              <User size={14} className="text-gray-400" />
+                              <span className="text-gray-900 font-medium">{goal.architect.user.name}</span>
                             </div>
-                            <p className="text-white/50 text-sm">{goal.architect.user.email}</p>
+                            <p className="text-gray-500 text-sm">{goal.architect.user.email}</p>
                           </div>
                         </div>
                         <div className="text-left">
@@ -278,7 +278,7 @@ export default function ManageGoalsPage() {
                               ? 'bg-red-500/20 text-red-400'
                               : goal.isActive
                               ? 'bg-yellow-500/20 text-yellow-400'
-                              : 'bg-white/10 text-white/50'
+                              : 'bg-gray-100 text-gray-500'
                           }`}>
                             {isCompleted ? 'הושג' : isExpired ? 'פג תוקף' : goal.isActive ? 'פעיל' : 'לא פעיל'}
                           </span>
@@ -287,29 +287,29 @@ export default function ManageGoalsPage() {
 
                       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
                         <div>
-                          <p className="text-white/40 text-xs">יעד</p>
-                          <p className="text-white font-bold text-lg">₪{goal.targetAmount.toLocaleString()}</p>
+                          <p className="text-gray-400 text-xs">יעד</p>
+                          <p className="text-gray-900 font-bold text-lg">₪{goal.targetAmount.toLocaleString()}</p>
                         </div>
                         <div>
-                          <p className="text-white/40 text-xs">התקדמות</p>
-                          <p className="text-white font-bold text-lg">₪{goal.currentPeriodRevenue.toLocaleString()}</p>
+                          <p className="text-gray-400 text-xs">התקדמות</p>
+                          <p className="text-gray-900 font-bold text-lg">₪{goal.currentPeriodRevenue.toLocaleString()}</p>
                         </div>
                         <div>
-                          <p className="text-white/40 text-xs">בונוס</p>
+                          <p className="text-gray-400 text-xs">בונוס</p>
                           <p className="text-gold-400 font-bold text-lg flex items-center gap-1">
                             <Percent size={14} />
                             {goal.bonusPercentage}
                           </p>
                         </div>
                         <div>
-                          <p className="text-white/40 text-xs">תקופה</p>
-                          <p className="text-white font-bold text-lg">{PERIOD_LABELS[goal.periodType]}</p>
+                          <p className="text-gray-400 text-xs">תקופה</p>
+                          <p className="text-gray-900 font-bold text-lg">{PERIOD_LABELS[goal.periodType]}</p>
                         </div>
                       </div>
 
                       {/* Progress Bar */}
                       <div className="mb-3">
-                        <div className="h-3 bg-white/10 rounded-full overflow-hidden">
+                        <div className="h-3 bg-gray-100 rounded-full overflow-hidden">
                           <div
                             className={`h-full transition-all duration-500 ${
                               isCompleted ? 'bg-green-400' : progress >= 75 ? 'bg-gold-400' : 'bg-blue-400'
@@ -317,10 +317,10 @@ export default function ManageGoalsPage() {
                             style={{ width: `${progress}%` }}
                           />
                         </div>
-                        <p className="text-white/60 text-sm mt-1">{progress}% הושלם</p>
+                        <p className="text-gray-600 text-sm mt-1">{progress}% הושלם</p>
                       </div>
 
-                      <div className="flex items-center justify-between text-sm text-white/50">
+                      <div className="flex items-center justify-between text-sm text-gray-500">
                         <div className="flex items-center gap-4">
                           <span className="flex items-center gap-1">
                             <Calendar size={14} />
@@ -356,7 +356,7 @@ export default function ManageGoalsPage() {
               className="w-full max-w-lg"
             >
               <GlassCard hover={false}>
-                <h2 className="text-xl font-semibold text-white mb-6">הוספת יעד חדש</h2>
+                <h2 className="text-xl font-semibold text-gray-900 mb-6">הוספת יעד חדש</h2>
                 <form
                   onSubmit={(e) => {
                     e.preventDefault();
@@ -366,9 +366,9 @@ export default function ManageGoalsPage() {
                   className="space-y-4"
                 >
                   <div>
-                    <label className="block text-white/60 text-sm mb-1">אדריכל *</label>
+                    <label className="block text-gray-600 text-sm mb-1">אדריכל *</label>
                     {loadingArchitects ? (
-                      <div className="flex items-center gap-2 text-white/60">
+                      <div className="flex items-center gap-2 text-gray-600">
                         <Loader2 size={16} className="animate-spin" />
                         טוען אדריכלים...
                       </div>
@@ -376,7 +376,7 @@ export default function ManageGoalsPage() {
                       <select
                         name="architectId"
                         required
-                        className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white"
+                        className="w-full bg-gray-100 border border-gray-200 rounded-lg px-4 py-2 text-gray-900"
                       >
                         <option value="">בחר אדריכל</option>
                         {architects.map(arch => (
@@ -389,7 +389,7 @@ export default function ManageGoalsPage() {
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-white/60 text-sm mb-1">יעד (₪) *</label>
+                      <label className="block text-gray-600 text-sm mb-1">יעד (₪) *</label>
                       <input
                         type="number"
                         name="targetAmount"
@@ -397,11 +397,11 @@ export default function ManageGoalsPage() {
                         min="0"
                         step="1000"
                         placeholder="100000"
-                        className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white"
+                        className="w-full bg-gray-100 border border-gray-200 rounded-lg px-4 py-2 text-gray-900"
                       />
                     </div>
                     <div>
-                      <label className="block text-white/60 text-sm mb-1">אחוז בונוס *</label>
+                      <label className="block text-gray-600 text-sm mb-1">אחוז בונוס *</label>
                       <input
                         type="number"
                         name="bonusPercentage"
@@ -410,16 +410,16 @@ export default function ManageGoalsPage() {
                         max="100"
                         step="0.5"
                         defaultValue="5"
-                        className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white"
+                        className="w-full bg-gray-100 border border-gray-200 rounded-lg px-4 py-2 text-gray-900"
                       />
                     </div>
                   </div>
                   <div>
-                    <label className="block text-white/60 text-sm mb-1">סוג תקופה *</label>
+                    <label className="block text-gray-600 text-sm mb-1">סוג תקופה *</label>
                     <select
                       name="periodType"
                       required
-                      className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white"
+                      className="w-full bg-gray-100 border border-gray-200 rounded-lg px-4 py-2 text-gray-900"
                     >
                       <option value="MONTHLY">חודשי</option>
                       <option value="QUARTERLY">רבעוני</option>
@@ -428,21 +428,21 @@ export default function ManageGoalsPage() {
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-white/60 text-sm mb-1">תאריך התחלה *</label>
+                      <label className="block text-gray-600 text-sm mb-1">תאריך התחלה *</label>
                       <input
                         type="date"
                         name="startDate"
                         required
-                        className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white"
+                        className="w-full bg-gray-100 border border-gray-200 rounded-lg px-4 py-2 text-gray-900"
                       />
                     </div>
                     <div>
-                      <label className="block text-white/60 text-sm mb-1">תאריך סיום *</label>
+                      <label className="block text-gray-600 text-sm mb-1">תאריך סיום *</label>
                       <input
                         type="date"
                         name="endDate"
                         required
-                        className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white"
+                        className="w-full bg-gray-100 border border-gray-200 rounded-lg px-4 py-2 text-gray-900"
                       />
                     </div>
                   </div>

@@ -142,18 +142,18 @@ export default function ManageContractsPage() {
         >
           <Link
             href="/admin"
-            className="inline-flex items-center gap-2 text-white/60 hover:text-white mb-4 transition-colors"
+            className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4 transition-colors"
           >
             <ArrowRight size={18} />
             חזרה לפאנל ניהול
           </Link>
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-display font-bold text-white flex items-center gap-3">
-                <FileText className="text-gold-400" />
+              <h1 className="text-3xl font-display font-bold text-gray-900 flex items-center gap-3">
+                <FileText className="text-[#0066CC]" />
                 ניהול חוזים
               </h1>
-              <p className="text-white/60 mt-1">יצירה וניהול חוזים עם ספקים</p>
+              <p className="text-gray-600 mt-1">יצירה וניהול חוזים עם ספקים</p>
             </div>
             <button
               onClick={handleOpenForm}
@@ -174,8 +174,8 @@ export default function ManageContractsPage() {
         >
           <GlassCard hover={false}>
             <div className="text-center">
-              <p className="text-white/50 text-sm">סה״כ חוזים</p>
-              <p className="text-3xl font-bold text-white">{contracts?.length || 0}</p>
+              <p className="text-gray-500 text-sm">סה״כ חוזים</p>
+              <p className="text-3xl font-bold text-gray-900">{contracts?.length || 0}</p>
             </div>
           </GlassCard>
           <GlassCard hover={false} className="bg-green-500/10">
@@ -211,20 +211,20 @@ export default function ManageContractsPage() {
           transition={{ delay: 0.2 }}
         >
           <GlassCard hover={false}>
-            <h2 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
-              <FileText className="text-gold-400" size={20} />
+            <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
+              <FileText className="text-[#0066CC]" size={20} />
               רשימת חוזים
             </h2>
 
             {isLoading ? (
               <div className="text-center py-12">
                 <Loader2 className="w-10 h-10 mx-auto text-gold-400 animate-spin" />
-                <p className="text-white/60 mt-4">טוען חוזים...</p>
+                <p className="text-gray-600 mt-4">טוען חוזים...</p>
               </div>
             ) : !contracts || contracts.length === 0 ? (
               <div className="text-center py-12">
-                <FileText className="w-16 h-16 mx-auto text-white/20 mb-4" />
-                <p className="text-white/60">אין חוזים במערכת</p>
+                <FileText className="w-16 h-16 mx-auto text-gray-300 mb-4" />
+                <p className="text-gray-600">אין חוזים במערכת</p>
                 <button
                   onClick={handleOpenForm}
                   className="btn-gold mt-4 flex items-center gap-2 mx-auto"
@@ -243,7 +243,7 @@ export default function ManageContractsPage() {
                     <div
                       key={contract.id}
                       className={`p-4 rounded-lg border ${
-                        active ? 'border-green-500/30 bg-green-500/5' : 'border-white/10 bg-white/5'
+                        active ? 'border-green-500/30 bg-green-500/5' : 'border-gray-200 bg-gray-50'
                       }`}
                     >
                       <div className="flex items-center justify-between">
@@ -253,14 +253,14 @@ export default function ManageContractsPage() {
                           </div>
                           <div>
                             <div className="flex items-center gap-2">
-                              <p className="text-white font-bold">
+                              <p className="text-gray-900 font-bold">
                                 {contract.supplier.companyName || contract.supplier.user.name}
                               </p>
                               <span className={`px-2 py-0.5 rounded-full text-xs ${typeConfig.bg} ${typeConfig.color}`}>
                                 {typeConfig.label}
                               </span>
                             </div>
-                            <div className="flex items-center gap-4 mt-1 text-white/50 text-sm">
+                            <div className="flex items-center gap-4 mt-1 text-gray-500 text-sm">
                               <span className="flex items-center gap-1">
                                 <Building2 size={12} />
                                 ספק
@@ -283,7 +283,7 @@ export default function ManageContractsPage() {
                               {active ? 'פעיל' : 'לא פעיל'}
                             </span>
                           </div>
-                          <p className="text-white/40 text-xs flex items-center gap-1">
+                          <p className="text-gray-400 text-xs flex items-center gap-1">
                             <Calendar size={10} />
                             {new Date(contract.validFrom).toLocaleDateString('he-IL')} -{' '}
                             {new Date(contract.validTo).toLocaleDateString('he-IL')}
@@ -308,10 +308,10 @@ export default function ManageContractsPage() {
             >
               <GlassCard hover={false}>
                 <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-xl font-semibold text-white">יצירת חוזה חדש</h2>
+                  <h2 className="text-xl font-semibold text-gray-900">יצירת חוזה חדש</h2>
                   <button
                     onClick={() => setShowForm(false)}
-                    className="text-white/60 hover:text-white"
+                    className="text-gray-600 hover:text-gray-900"
                   >
                     ✕
                   </button>
@@ -319,7 +319,7 @@ export default function ManageContractsPage() {
 
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div>
-                    <label className="text-white/60 text-sm mb-2 block">ספק</label>
+                    <label className="text-gray-600 text-sm mb-2 block">ספק</label>
                     {loadingSuppliers ? (
                       <div className="text-center py-4">
                         <Loader2 className="w-6 h-6 mx-auto text-gold-400 animate-spin" />
@@ -329,7 +329,7 @@ export default function ManageContractsPage() {
                         value={formData.supplierId}
                         onChange={(e) => setFormData({ ...formData, supplierId: e.target.value })}
                         required
-                        className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white"
+                        className="w-full bg-gray-100 border border-gray-200 rounded-lg px-4 py-2 text-gray-900"
                       >
                         <option value="">בחר ספק</option>
                         {suppliers.map((supplier) => (
@@ -342,11 +342,11 @@ export default function ManageContractsPage() {
                   </div>
 
                   <div>
-                    <label className="text-white/60 text-sm mb-2 block">סוג חוזה</label>
+                    <label className="text-gray-600 text-sm mb-2 block">סוג חוזה</label>
                     <select
                       value={formData.type}
                       onChange={(e) => setFormData({ ...formData, type: e.target.value as 'STANDARD' | 'PREMIUM' | 'EXCLUSIVE' })}
-                      className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white"
+                      className="w-full bg-gray-100 border border-gray-200 rounded-lg px-4 py-2 text-gray-900"
                     >
                       <option value="STANDARD">סטנדרטי</option>
                       <option value="PREMIUM">פרימיום</option>
@@ -355,7 +355,7 @@ export default function ManageContractsPage() {
                   </div>
 
                   <div>
-                    <label className="text-white/60 text-sm mb-2 block">אחוז עמלה</label>
+                    <label className="text-gray-600 text-sm mb-2 block">אחוז עמלה</label>
                     <input
                       type="number"
                       min="0"
@@ -363,29 +363,29 @@ export default function ManageContractsPage() {
                       value={formData.feePercent}
                       onChange={(e) => setFormData({ ...formData, feePercent: parseInt(e.target.value) })}
                       required
-                      className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white"
+                      className="w-full bg-gray-100 border border-gray-200 rounded-lg px-4 py-2 text-gray-900"
                     />
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="text-white/60 text-sm mb-2 block">תחילת תוקף</label>
+                      <label className="text-gray-600 text-sm mb-2 block">תחילת תוקף</label>
                       <input
                         type="date"
                         value={formData.validFrom}
                         onChange={(e) => setFormData({ ...formData, validFrom: e.target.value })}
                         required
-                        className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white"
+                        className="w-full bg-gray-100 border border-gray-200 rounded-lg px-4 py-2 text-gray-900"
                       />
                     </div>
                     <div>
-                      <label className="text-white/60 text-sm mb-2 block">סיום תוקף</label>
+                      <label className="text-gray-600 text-sm mb-2 block">סיום תוקף</label>
                       <input
                         type="date"
                         value={formData.validTo}
                         onChange={(e) => setFormData({ ...formData, validTo: e.target.value })}
                         required
-                        className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white"
+                        className="w-full bg-gray-100 border border-gray-200 rounded-lg px-4 py-2 text-gray-900"
                       />
                     </div>
                   </div>

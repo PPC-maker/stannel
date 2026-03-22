@@ -217,18 +217,18 @@ export default function ManageServiceProvidersPage() {
         >
           <Link
             href="/admin"
-            className="inline-flex items-center gap-2 text-white/60 hover:text-white mb-4 transition-colors"
+            className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4 transition-colors"
           >
             <ArrowRight size={18} />
             חזרה לפאנל ניהול
           </Link>
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-display font-bold text-white flex items-center gap-3">
-                <Users className="text-gold-400" />
+              <h1 className="text-3xl font-display font-bold text-gray-900 flex items-center gap-3">
+                <Users className="text-[#0066CC]" />
                 ניהול נותני שירות
               </h1>
-              <p className="text-white/60 mt-1">הוספה, עריכה ומחיקה של נותני שירות</p>
+              <p className="text-gray-600 mt-1">הוספה, עריכה ומחיקה של נותני שירות</p>
             </div>
             <button
               onClick={() => setShowAddModal(true)}
@@ -251,20 +251,20 @@ export default function ManageServiceProvidersPage() {
             <div className="flex flex-wrap gap-4">
               <div className="flex-1 min-w-[200px]">
                 <div className="relative">
-                  <Search className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40" size={18} />
+                  <Search className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
                   <input
                     type="text"
                     placeholder="חיפוש לפי שם או אימייל..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full bg-white/10 border border-white/20 rounded-lg px-10 py-2 text-white placeholder:text-white/40"
+                    className="w-full bg-gray-100 border border-gray-200 rounded-lg px-10 py-2 text-gray-900 placeholder:text-gray-400"
                   />
                 </div>
               </div>
               <select
                 value={filterCategory}
                 onChange={(e) => setFilterCategory(e.target.value)}
-                className="bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white"
+                className="bg-gray-100 border border-gray-200 rounded-lg px-4 py-2 text-gray-900"
               >
                 <option value="">כל הקטגוריות</option>
                 {categories.map(cat => (
@@ -279,8 +279,8 @@ export default function ManageServiceProvidersPage() {
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
           <GlassCard hover={false}>
             <div className="text-center">
-              <p className="text-white/50 text-sm">סה״כ נותני שירות</p>
-              <p className="text-3xl font-bold text-white">{providers.length}</p>
+              <p className="text-gray-500 text-sm">סה״כ נותני שירות</p>
+              <p className="text-3xl font-bold text-gray-900">{providers.length}</p>
             </div>
           </GlassCard>
           <GlassCard hover={false} className="bg-green-500/10">
@@ -319,53 +319,53 @@ export default function ManageServiceProvidersPage() {
             {isLoading ? (
               <div className="text-center py-12">
                 <Loader2 className="w-10 h-10 mx-auto text-gold-400 animate-spin" />
-                <p className="text-white/60 mt-4">טוען נותני שירות...</p>
+                <p className="text-gray-600 mt-4">טוען נותני שירות...</p>
               </div>
             ) : filteredProviders.length === 0 ? (
               <div className="text-center py-12">
-                <Users className="w-16 h-16 mx-auto text-white/20 mb-4" />
-                <p className="text-white/60">אין נותני שירות להצגה</p>
+                <Users className="w-16 h-16 mx-auto text-gray-300 mb-4" />
+                <p className="text-gray-600">אין נותני שירות להצגה</p>
               </div>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
-                    <tr className="border-b border-white/10">
-                      <th className="py-3 px-4 text-right text-white/60 font-medium">שם</th>
-                      <th className="py-3 px-4 text-right text-white/60 font-medium">קטגוריה</th>
-                      <th className="py-3 px-4 text-right text-white/60 font-medium">פרטי קשר</th>
-                      <th className="py-3 px-4 text-right text-white/60 font-medium">סטטוס</th>
-                      <th className="py-3 px-4 text-right text-white/60 font-medium">פעולות</th>
+                    <tr className="border-b border-gray-200">
+                      <th className="py-3 px-4 text-right text-gray-600 font-medium">שם</th>
+                      <th className="py-3 px-4 text-right text-gray-600 font-medium">קטגוריה</th>
+                      <th className="py-3 px-4 text-right text-gray-600 font-medium">פרטי קשר</th>
+                      <th className="py-3 px-4 text-right text-gray-600 font-medium">סטטוס</th>
+                      <th className="py-3 px-4 text-right text-gray-600 font-medium">פעולות</th>
                     </tr>
                   </thead>
                   <tbody>
                     {filteredProviders.map((provider) => (
                       <tr
                         key={provider.id}
-                        className="border-b border-white/5 hover:bg-white/5 transition-colors"
+                        className="border-b border-gray-200 hover:bg-gray-50 transition-colors"
                       >
                         <td className="py-4 px-4">
                           <div>
-                            <p className="text-white font-medium">{provider.name}</p>
+                            <p className="text-gray-900 font-medium">{provider.name}</p>
                             {provider.description && (
-                              <p className="text-white/50 text-sm truncate max-w-xs">{provider.description}</p>
+                              <p className="text-gray-500 text-sm truncate max-w-xs">{provider.description}</p>
                             )}
                           </div>
                         </td>
                         <td className="py-4 px-4">
-                          <span className="px-3 py-1 rounded-full text-sm bg-white/10 text-white/80">
+                          <span className="px-3 py-1 rounded-full text-sm bg-gray-100 text-gray-700">
                             {CATEGORY_LABELS[provider.category] || provider.category}
                           </span>
                         </td>
                         <td className="py-4 px-4">
                           <div className="space-y-1 text-sm">
                             {provider.phone && (
-                              <p className="flex items-center gap-2 text-white/60">
+                              <p className="flex items-center gap-2 text-gray-600">
                                 <Phone size={14} /> {provider.phone}
                               </p>
                             )}
                             {provider.email && (
-                              <p className="flex items-center gap-2 text-white/60">
+                              <p className="flex items-center gap-2 text-gray-600">
                                 <Mail size={14} /> {provider.email}
                               </p>
                             )}
@@ -399,7 +399,7 @@ export default function ManageServiceProvidersPage() {
                               className={`flex items-center gap-1 px-2 py-1 rounded text-xs ${
                                 provider.isVerified
                                   ? 'bg-blue-500/20 text-blue-400'
-                                  : 'bg-white/10 text-white/50'
+                                  : 'bg-gray-100 text-gray-500'
                               }`}
                             >
                               {provider.isVerified ? <CheckCircle size={12} /> : <XCircle size={12} />}
@@ -411,7 +411,7 @@ export default function ManageServiceProvidersPage() {
                           <div className="flex items-center gap-2">
                             <button
                               onClick={() => setEditingProvider(provider)}
-                              className="p-2 rounded-lg hover:bg-white/10 text-white/60 hover:text-white transition-colors"
+                              className="p-2 rounded-lg hover:bg-gray-100 text-gray-600 hover:text-gray-900 transition-colors"
                               title="עריכה"
                             >
                               <Edit2 size={16} />
@@ -443,7 +443,7 @@ export default function ManageServiceProvidersPage() {
               className="w-full max-w-lg"
             >
               <GlassCard hover={false}>
-                <h2 className="text-xl font-semibold text-white mb-6">
+                <h2 className="text-xl font-semibold text-gray-900 mb-6">
                   {editingProvider ? 'עריכת נותן שירות' : 'הוספת נותן שירות חדש'}
                 </h2>
                 <form
@@ -459,22 +459,22 @@ export default function ManageServiceProvidersPage() {
                   className="space-y-4"
                 >
                   <div>
-                    <label className="block text-white/60 text-sm mb-1">שם *</label>
+                    <label className="block text-gray-600 text-sm mb-1">שם *</label>
                     <input
                       type="text"
                       name="name"
                       required
                       defaultValue={editingProvider?.name || ''}
-                      className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white"
+                      className="w-full bg-gray-100 border border-gray-200 rounded-lg px-4 py-2 text-gray-900"
                     />
                   </div>
                   <div>
-                    <label className="block text-white/60 text-sm mb-1">קטגוריה *</label>
+                    <label className="block text-gray-600 text-sm mb-1">קטגוריה *</label>
                     <select
                       name="category"
                       required
                       defaultValue={editingProvider?.category || ''}
-                      className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white"
+                      className="w-full bg-gray-100 border border-gray-200 rounded-lg px-4 py-2 text-gray-900"
                     >
                       <option value="">בחר קטגוריה</option>
                       {categories.map(cat => (
@@ -484,49 +484,49 @@ export default function ManageServiceProvidersPage() {
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-white/60 text-sm mb-1">טלפון</label>
+                      <label className="block text-gray-600 text-sm mb-1">טלפון</label>
                       <input
                         type="tel"
                         name="phone"
                         defaultValue={editingProvider?.phone || ''}
-                        className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white"
+                        className="w-full bg-gray-100 border border-gray-200 rounded-lg px-4 py-2 text-gray-900"
                       />
                     </div>
                     <div>
-                      <label className="block text-white/60 text-sm mb-1">אימייל</label>
+                      <label className="block text-gray-600 text-sm mb-1">אימייל</label>
                       <input
                         type="email"
                         name="email"
                         defaultValue={editingProvider?.email || ''}
-                        className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white"
+                        className="w-full bg-gray-100 border border-gray-200 rounded-lg px-4 py-2 text-gray-900"
                       />
                     </div>
                   </div>
                   <div>
-                    <label className="block text-white/60 text-sm mb-1">אתר אינטרנט</label>
+                    <label className="block text-gray-600 text-sm mb-1">אתר אינטרנט</label>
                     <input
                       type="url"
                       name="website"
                       defaultValue={editingProvider?.website || ''}
-                      className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white"
+                      className="w-full bg-gray-100 border border-gray-200 rounded-lg px-4 py-2 text-gray-900"
                     />
                   </div>
                   <div>
-                    <label className="block text-white/60 text-sm mb-1">כתובת</label>
+                    <label className="block text-gray-600 text-sm mb-1">כתובת</label>
                     <input
                       type="text"
                       name="address"
                       defaultValue={editingProvider?.address || ''}
-                      className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white"
+                      className="w-full bg-gray-100 border border-gray-200 rounded-lg px-4 py-2 text-gray-900"
                     />
                   </div>
                   <div>
-                    <label className="block text-white/60 text-sm mb-1">תיאור</label>
+                    <label className="block text-gray-600 text-sm mb-1">תיאור</label>
                     <textarea
                       name="description"
                       rows={3}
                       defaultValue={editingProvider?.description || ''}
-                      className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white resize-none"
+                      className="w-full bg-gray-100 border border-gray-200 rounded-lg px-4 py-2 text-gray-900 resize-none"
                     />
                   </div>
                   <div className="flex gap-3 pt-4">
