@@ -9,31 +9,43 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Primary — Deep Navy (El-Al Blue)
+        // El Al Blue Palette
         primary: {
-          50: '#e8edf7',
-          100: '#c5d0ea',
-          200: '#9fb2db',
-          300: '#7894cc',
-          400: '#5a7dc1',
-          500: '#1a3a6b',
-          600: '#0f2750',
-          700: '#0a1c3d',
-          800: '#06122a',
-          900: '#060f1f',
+          50: '#E8F4FD',
+          100: '#D1E9FB',
+          200: '#A3D3F7',
+          300: '#75BDF3',
+          400: '#47A7EF',
+          500: '#0066CC',
+          600: '#0055AA',
+          700: '#004499',
+          800: '#003377',
+          900: '#002255',
         },
-        // Accent — Warm Gold
+        // Keep gold for legacy support but map to blue
         gold: {
-          50: '#fff9e6',
-          100: '#fff0bf',
-          200: '#ffe699',
-          300: '#ffd966',
-          400: '#d4af37',
-          500: '#b8960c',
-          600: '#9a7b0a',
-          700: '#7c6208',
-          800: '#5e4a06',
-          900: '#403204',
+          50: '#E8F4FD',
+          100: '#D1E9FB',
+          200: '#A3D3F7',
+          300: '#75BDF3',
+          400: '#0066CC',
+          500: '#0055AA',
+          600: '#004499',
+          700: '#003377',
+          800: '#002255',
+          900: '#001133',
+        },
+        // Semantic colors
+        elal: {
+          blue: '#0066CC',
+          'blue-dark': '#004499',
+          'blue-light': '#3399FF',
+          sky: '#E8F4FD',
+          white: '#FFFFFF',
+          gray: '#F8FAFC',
+          'gray-dark': '#64748B',
+          text: '#1E293B',
+          'text-light': '#64748B',
         },
       },
       fontFamily: {
@@ -42,11 +54,19 @@ const config: Config = {
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-        'glass-gradient': 'linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%)',
+        'elal-gradient': 'linear-gradient(135deg, #0066CC 0%, #0088FF 100%)',
       },
       backdropBlur: {
         glass: '20px',
         heavy: '40px',
+      },
+      borderRadius: {
+        '4xl': '2rem',
+      },
+      boxShadow: {
+        'card': '0 4px 24px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04)',
+        'card-hover': '0 12px 40px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.06)',
+        'blue': '0 8px 24px rgba(0, 102, 204, 0.25)',
       },
       animation: {
         'fade-in': 'fadeIn 0.5s ease-out',

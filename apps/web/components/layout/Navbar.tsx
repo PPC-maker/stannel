@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, User, LogOut, Settings, Wallet, FileText, Gift, Calendar, Home, LogIn, Bot, Shield, Bell, Target, Wrench } from 'lucide-react';
+import { Menu, User, LogOut, Settings, Wallet, FileText, Gift, Calendar, Home, LogIn, Bot, Shield, Bell, Target, Wrench, X } from 'lucide-react';
 import { useAuth } from '@/lib/auth-context';
 import Swal from 'sweetalert2';
 
@@ -38,141 +38,163 @@ export default function Navbar() {
   const router = useRouter();
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 py-6 bg-primary-900/95 backdrop-blur-md shadow-lg shadow-black/20 w-full">
-      <div className="w-full px-4 sm:px-6 lg:px-8 flex justify-center">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100">
+      <div className="w-full px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-center relative">
         {/* Centered Logo */}
-        <Link href="/">
+        <Link href="/" className="flex items-center">
           <Image
-            src="/logo.png"
+            src="/logo_black.png"
             alt="Stannel"
-            width={200}
-            height={60}
-            className="h-12 w-auto"
+            width={160}
+            height={48}
+            className="h-10 w-auto"
             priority
           />
         </Link>
 
-        {/* Menu Icon - Fixed position on the left (RTL) */}
+        {/* Menu Icon - Fixed position on the right (RTL) */}
         <div className="absolute right-4 top-1/2 -translate-y-1/2">
           <button
             onClick={() => setIsProfileOpen(!isProfileOpen)}
-            className="w-10 h-10 rounded-full border border-white/30 flex items-center justify-center hover:bg-white/10 transition-colors"
+            className="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition-colors bg-white shadow-sm"
           >
-            <Menu size={20} className="text-white" />
+            {isProfileOpen ? (
+              <X size={20} className="text-gray-600" />
+            ) : (
+              <Menu size={20} className="text-gray-600" />
+            )}
           </button>
 
           <AnimatePresence>
             {isProfileOpen && (
-              <motion.div
-                initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                transition={{ duration: 0.2 }}
-                className="absolute right-0 mt-2 w-48 bg-primary-900/95 backdrop-blur-xl border border-white/20 rounded-xl p-2 shadow-xl"
-              >
-                {/* Public links - always visible */}
-                {publicLinks.map((link) => (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    onClick={() => setIsProfileOpen(false)}
-                    className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/10 text-white/80 hover:text-white transition-colors"
-                  >
-                    <link.icon size={16} />
-                    <span>{link.label}</span>
-                  </Link>
-                ))}
+              <>
+                {/* Backdrop */}
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="fixed inset-0 bg-black/20 z-40"
+                  onClick={() => setIsProfileOpen(false)}
+                />
 
-                {user ? (
-                  <>
-                    {/* Role-based links */}
-                    {(user.role === 'SUPPLIER' ? supplierLinks : architectLinks).map((link) => (
+                {/* Menu Panel */}
+                <motion.div
+                  initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                  transition={{ duration: 0.2 }}
+                  className="absolute right-0 mt-2 w-56 bg-white border border-gray-100 rounded-2xl p-2 shadow-xl z-50"
+                >
+                  {/* User Info Header */}
+                  {user && (
+                    <div className="px-3 py-3 mb-2 border-b border-gray-100">
+                      <p className="font-semibold text-gray-900">{user.name}</p>
+                      <p className="text-sm text-gray-500">{user.email}</p>
+                    </div>
+                  )}
+
+                  {/* Public links - always visible */}
+                  {publicLinks.map((link) => (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      onClick={() => setIsProfileOpen(false)}
+                      className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-50 text-gray-700 hover:text-[#0066CC] transition-colors"
+                    >
+                      <link.icon size={18} className="text-gray-400" />
+                      <span className="font-medium">{link.label}</span>
+                    </Link>
+                  ))}
+
+                  {user ? (
+                    <>
+                      {/* Role-based links */}
+                      {(user.role === 'SUPPLIER' ? supplierLinks : architectLinks).map((link) => (
+                        <Link
+                          key={link.href}
+                          href={link.href}
+                          onClick={() => setIsProfileOpen(false)}
+                          className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-50 text-gray-700 hover:text-[#0066CC] transition-colors"
+                        >
+                          <link.icon size={18} className="text-gray-400" />
+                          <span className="font-medium">{link.label}</span>
+                        </Link>
+                      ))}
+                      <hr className="my-2 border-gray-100" />
                       <Link
-                        key={link.href}
-                        href={link.href}
+                        href="/profile"
                         onClick={() => setIsProfileOpen(false)}
-                        className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/10 text-white/80 hover:text-white transition-colors"
+                        className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-50 text-gray-700 hover:text-[#0066CC] transition-colors"
                       >
-                        <link.icon size={16} />
-                        <span>{link.label}</span>
+                        <User size={18} className="text-gray-400" />
+                        <span className="font-medium">הפרופיל שלי</span>
                       </Link>
-                    ))}
-                    <hr className="my-2 border-white/10" />
-                    <Link
-                      href="/profile"
-                      onClick={() => setIsProfileOpen(false)}
-                      className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/10 text-white/80 hover:text-white transition-colors"
-                    >
-                      <User size={16} />
-                      <span>הפרופיל שלי</span>
-                    </Link>
-                    <Link
-                      href="/settings"
-                      onClick={() => setIsProfileOpen(false)}
-                      className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/10 text-white/80 hover:text-white transition-colors"
-                    >
-                      <Settings size={16} />
-                      <span>הגדרות</span>
-                    </Link>
-                    {user.role === 'ADMIN' && (
                       <Link
-                        href="/admin"
+                        href="/settings"
                         onClick={() => setIsProfileOpen(false)}
-                        className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-white/10 text-white/80 hover:text-white transition-colors"
+                        className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-50 text-gray-700 hover:text-[#0066CC] transition-colors"
                       >
-                        <Shield size={16} />
-                        <span className="text-gold-400">פאנל ניהול</span>
+                        <Settings size={18} className="text-gray-400" />
+                        <span className="font-medium">הגדרות</span>
                       </Link>
-                    )}
-                    <hr className="my-2 border-white/10" />
-                    <button
-                      onClick={async () => {
-                        setIsProfileOpen(false);
-                        await logout();
-                        await Swal.fire({
-                          title: 'התנתקת מהמערכת',
-                          html: '<p style="color: rgba(255,255,255,0.7); font-size: 1.1rem;">נשמח לראותך שוב בקרוב!</p>',
-                          icon: 'success',
-                          iconColor: '#d4af37',
-                          confirmButtonText: 'להתראות',
-                          confirmButtonColor: '#d4af37',
-                          background: 'linear-gradient(135deg, #0a1628 0%, #1a3a6b 100%)',
-                          color: '#ffffff',
-                          backdrop: 'rgba(0,0,0,0.8)',
-                          customClass: {
-                            popup: 'glass-swal-popup',
-                            title: 'swal-title-rtl',
-                            confirmButton: 'swal-confirm-gold',
-                          },
-                          showClass: {
-                            popup: 'animate__animated animate__fadeInDown animate__faster'
-                          },
-                          hideClass: {
-                            popup: 'animate__animated animate__fadeOutUp animate__faster'
-                          }
-                        });
-                        router.push('/');
-                      }}
-                      className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-red-500/20 text-white/80 hover:text-red-400 transition-colors w-full"
-                    >
-                      <LogOut size={16} />
-                      <span>התנתק</span>
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    {/* Guest links - only when logged out */}
-                    <Link
-                      href="/login"
-                      onClick={() => setIsProfileOpen(false)}
-                      className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-gold/20 text-gold hover:text-gold transition-colors"
-                    >
-                      <LogIn size={16} />
-                      <span>התחברות למערכת</span>
-                    </Link>
-                  </>
-                )}
-              </motion.div>
+                      {user.role === 'ADMIN' && (
+                        <Link
+                          href="/admin"
+                          onClick={() => setIsProfileOpen(false)}
+                          className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-blue-50 text-[#0066CC] transition-colors"
+                        >
+                          <Shield size={18} className="text-[#0066CC]" />
+                          <span className="font-semibold">פאנל ניהול</span>
+                        </Link>
+                      )}
+                      <hr className="my-2 border-gray-100" />
+                      <button
+                        onClick={async () => {
+                          setIsProfileOpen(false);
+                          await logout();
+                          await Swal.fire({
+                            title: 'התנתקת מהמערכת',
+                            html: '<p style="color: #64748B; font-size: 1rem;">נשמח לראותך שוב בקרוב!</p>',
+                            icon: 'success',
+                            iconColor: '#22C55E',
+                            confirmButtonText: 'להתראות',
+                            background: '#FFFFFF',
+                            color: '#1E293B',
+                            customClass: {
+                              popup: 'glass-swal-popup',
+                              title: 'swal-title-rtl',
+                              confirmButton: 'swal-confirm-gold',
+                            },
+                            showClass: {
+                              popup: 'animate__animated animate__fadeInDown animate__faster'
+                            },
+                            hideClass: {
+                              popup: 'animate__animated animate__fadeOutUp animate__faster'
+                            }
+                          });
+                          router.push('/');
+                        }}
+                        className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-red-50 text-gray-700 hover:text-red-600 transition-colors w-full"
+                      >
+                        <LogOut size={18} className="text-gray-400" />
+                        <span className="font-medium">התנתק</span>
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      {/* Guest links - only when logged out */}
+                      <Link
+                        href="/login"
+                        onClick={() => setIsProfileOpen(false)}
+                        className="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-[#0066CC] text-white hover:bg-[#0055AA] transition-colors mt-2"
+                      >
+                        <LogIn size={18} />
+                        <span className="font-semibold">התחברות למערכת</span>
+                      </Link>
+                    </>
+                  )}
+                </motion.div>
+              </>
             )}
           </AnimatePresence>
         </div>
