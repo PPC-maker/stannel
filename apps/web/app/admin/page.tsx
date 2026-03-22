@@ -738,7 +738,7 @@ Please analyze this error and provide a fix.
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
-          className="mb-8"
+          className="mb-8 bg-white/90 backdrop-blur-sm rounded-2xl p-6 shadow-sm"
         >
           <div className="flex items-center justify-between">
             <div>
@@ -746,7 +746,7 @@ Please analyze this error and provide a fix.
                 <Shield className="text-[#0066CC]" />
                 פאנל ניהול
               </h1>
-              <p className="text-gray-600 mt-1">ניהול משתמשים ומעקב אחרי תקלות המערכת</p>
+              <p className="text-gray-600 mt-1 font-medium">ניהול משתמשים ומעקב אחרי תקלות המערכת</p>
             </div>
             <button
               onClick={fetchData}

@@ -55,32 +55,32 @@ export default function AdminAnalyticsPage() {
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
-          className="mb-8"
+          className="mb-8 bg-white/90 backdrop-blur-sm rounded-2xl p-6 shadow-sm"
         >
           <Link
             href="/admin"
-            className="inline-flex items-center gap-2 text-white/60 hover:text-white mb-4 transition-colors"
+            className="inline-flex items-center gap-2 text-gray-500 hover:text-gray-800 mb-4 transition-colors font-medium"
           >
             <ArrowRight size={18} />
             חזרה לפאנל ניהול
           </Link>
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-display font-bold text-white flex items-center gap-3">
-                <BarChart3 className="text-gold-400" />
+              <h1 className="text-3xl font-display font-bold text-gray-900 flex items-center gap-3">
+                <BarChart3 className="text-gold-500" />
                 אנליטיקות מפורטות
               </h1>
-              <p className="text-white/60 mt-1">נתונים וסטטיסטיקות מערכת</p>
+              <p className="text-gray-600 mt-1 font-medium">נתונים וסטטיסטיקות מערכת</p>
             </div>
             <div className="flex gap-2">
               {(['week', 'month', 'quarter'] as Period[]).map((p) => (
                 <button
                   key={p}
                   onClick={() => setPeriod(p)}
-                  className={`px-4 py-2 rounded-lg text-sm transition-colors ${
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                     period === p
                       ? 'bg-gold-400 text-primary-900'
-                      : 'bg-white/10 text-white/70 hover:bg-white/20'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                   }`}
                 >
                   {periodLabels[p]}
