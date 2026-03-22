@@ -99,15 +99,15 @@ export default function ToolsPage() {
     return <AuthGuardLoader />;
   }
 
-  // Only architects can access tools
-  if (user?.role !== 'ARCHITECT') {
+  // Architects and admins can access tools
+  if (user?.role !== 'ARCHITECT' && user?.role !== 'ADMIN') {
     return (
       <div className="relative">
         <PageSlider images={sliderImages.dashboard} />
         <div className="p-6 max-w-4xl mx-auto relative z-10 text-center py-20">
           <Wrench size={64} className="mx-auto text-gray-300 mb-4" />
           <h1 className="text-2xl font-bold text-gray-900 mb-2">גישה מוגבלת</h1>
-          <p className="text-gray-500">עמוד זה זמין לאדריכלים בלבד</p>
+          <p className="text-gray-700">עמוד זה זמין לאדריכלים בלבד</p>
         </div>
       </div>
     );
@@ -132,7 +132,7 @@ export default function ToolsPage() {
             <Wrench className="text-gold-400" />
             כלים לאדריכלים
           </h1>
-          <p className="text-gray-500 mt-1">מניפות צבעים ונותני שירות</p>
+          <p className="text-gray-700 mt-1">מניפות צבעים ונותני שירות</p>
         </motion.div>
 
         {/* Tabs */}
@@ -177,7 +177,7 @@ export default function ToolsPage() {
                   href="https://nirlat.com/fan/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 text-sm text-gray-500 hover:text-gold-400 transition-colors"
+                  className="flex items-center gap-2 text-sm text-gray-700 hover:text-gold-400 transition-colors"
                 >
                   <ExternalLink size={16} />
                   מניפה מלאה באתר נירלאט
@@ -192,11 +192,11 @@ export default function ToolsPage() {
                   />
                   <div>
                     <p className="text-gray-900 font-medium">{selectedColor.name}</p>
-                    <p className="text-gray-500 text-sm">HEX: {selectedColor.hex}</p>
+                    <p className="text-gray-700 text-sm">HEX: {selectedColor.hex}</p>
                   </div>
                   <button
                     onClick={() => setSelectedColor(null)}
-                    className="mr-auto text-gray-400 hover:text-gray-900 text-sm"
+                    className="mr-auto text-gray-600 hover:text-gray-900 text-sm"
                   >
                     סגור
                   </button>
@@ -212,7 +212,7 @@ export default function ToolsPage() {
                     transition={{ delay: familyIndex * 0.05 }}
                     className="bg-gray-50 rounded-xl p-4"
                   >
-                    <p className="text-gray-500 text-sm uppercase tracking-wider mb-3 font-medium">
+                    <p className="text-gray-700 text-sm uppercase tracking-wider mb-3 font-medium">
                       {family.name}
                     </p>
                     <div className="flex flex-wrap gap-2">
@@ -294,7 +294,7 @@ export default function ToolsPage() {
               ) : providers.length === 0 ? (
                 <div className="text-center py-12">
                   <Briefcase size={48} className="mx-auto text-gray-300 mb-4" />
-                  <p className="text-gray-500">אין נותני שירות בקטגוריה זו</p>
+                  <p className="text-gray-700">אין נותני שירות בקטגוריה זו</p>
                 </div>
               ) : (
                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -314,17 +314,17 @@ export default function ToolsPage() {
                           </span>
                         )}
                       </div>
-                      <p className="text-gray-400 text-xs mb-2">
+                      <p className="text-gray-600 text-xs mb-2">
                         {CATEGORY_LABELS[provider.category] || provider.category}
                       </p>
                       {provider.description && (
-                        <p className="text-gray-500 text-sm mb-3">{provider.description}</p>
+                        <p className="text-gray-700 text-sm mb-3">{provider.description}</p>
                       )}
                       <div className="space-y-1.5">
                         {provider.phone && (
                           <a
                             href={`tel:${provider.phone}`}
-                            className="flex items-center gap-2 text-sm text-gray-500 hover:text-gold-500 transition-colors"
+                            className="flex items-center gap-2 text-sm text-gray-700 hover:text-gold-500 transition-colors"
                           >
                             <Phone size={14} /> {provider.phone}
                           </a>
@@ -332,7 +332,7 @@ export default function ToolsPage() {
                         {provider.email && (
                           <a
                             href={`mailto:${provider.email}`}
-                            className="flex items-center gap-2 text-sm text-gray-500 hover:text-gold-500 transition-colors"
+                            className="flex items-center gap-2 text-sm text-gray-700 hover:text-gold-500 transition-colors"
                           >
                             <Mail size={14} /> {provider.email}
                           </a>
@@ -342,7 +342,7 @@ export default function ToolsPage() {
                             href={provider.website}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center gap-2 text-sm text-gray-500 hover:text-gold-500 transition-colors"
+                            className="flex items-center gap-2 text-sm text-gray-700 hover:text-gold-500 transition-colors"
                           >
                             <Globe size={14} /> אתר
                           </a>

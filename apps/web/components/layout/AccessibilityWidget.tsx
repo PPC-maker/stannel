@@ -100,7 +100,7 @@ export default function AccessibilityWidget() {
     <>
       <motion.button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-gradient-to-br from-gold-400 to-gold-600 text-primary-900 shadow-lg flex items-center justify-center hover:scale-110 transition-transform"
+        className="fixed bottom-6 left-6 z-50 w-14 h-14 rounded-full bg-[#0066CC] text-white shadow-lg flex items-center justify-center hover:scale-110 transition-transform border-2 border-white"
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
         aria-label="פתח תפריט נגישות"
@@ -125,35 +125,35 @@ export default function AccessibilityWidget() {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 20, scale: 0.9 }}
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-              className="fixed bottom-24 right-6 z-50 w-72 glass-card p-4"
+              className="fixed bottom-24 left-6 z-50 w-72 bg-white rounded-2xl p-4 shadow-2xl border border-gray-200"
             >
-              <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-                <Accessibility size={20} className="text-gold-400" />
+              <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                <Accessibility size={20} className="text-[#0066CC]" />
                 הגדרות נגישות
               </h3>
 
               <div className="space-y-3">
                 {/* Font Size */}
                 <div className="flex items-center justify-between">
-                  <span className="text-white/70 text-sm flex items-center gap-2">
+                  <span className="text-gray-700 text-sm flex items-center gap-2">
                     <Type size={16} />
                     גודל טקסט
                   </span>
                   <div className="flex items-center gap-2">
                     <button
                       onClick={decreaseFontSize}
-                      className="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors disabled:opacity-50"
+                      className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 flex items-center justify-center transition-colors disabled:opacity-50"
                       aria-label="הקטן טקסט"
                       disabled={settings.fontSize <= 80}
                     >
                       <ZoomOut size={16} />
                     </button>
-                    <span className="text-white text-sm w-12 text-center">
+                    <span className="text-gray-900 text-sm w-12 text-center font-medium">
                       {settings.fontSize}%
                     </span>
                     <button
                       onClick={increaseFontSize}
-                      className="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors disabled:opacity-50"
+                      className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 flex items-center justify-center transition-colors disabled:opacity-50"
                       aria-label="הגדל טקסט"
                       disabled={settings.fontSize >= 150}
                     >
@@ -166,17 +166,17 @@ export default function AccessibilityWidget() {
                 <button
                   onClick={() => toggleSetting('highContrast')}
                   className={`w-full flex items-center justify-between p-3 rounded-lg transition-colors ${
-                    settings.highContrast ? 'bg-gold-500/20 border border-gold-500/50' : 'bg-white/5 hover:bg-white/10'
+                    settings.highContrast ? 'bg-[#0066CC]/10 border border-[#0066CC]/50' : 'bg-gray-50 hover:bg-gray-100'
                   }`}
                 >
-                  <span className="text-white/70 text-sm flex items-center gap-2">
+                  <span className="text-gray-700 text-sm flex items-center gap-2">
                     <Contrast size={16} />
                     ניגודיות גבוהה
                   </span>
                   <div className={`w-10 h-6 rounded-full transition-colors ${
-                    settings.highContrast ? 'bg-gold-500' : 'bg-white/20'
+                    settings.highContrast ? 'bg-[#0066CC]' : 'bg-gray-300'
                   }`}>
-                    <div className={`w-4 h-4 rounded-full bg-white mt-1 transition-transform ${
+                    <div className={`w-4 h-4 rounded-full bg-white mt-1 transition-transform shadow ${
                       settings.highContrast ? 'translate-x-1' : 'translate-x-5'
                     }`} />
                   </div>
@@ -186,17 +186,17 @@ export default function AccessibilityWidget() {
                 <button
                   onClick={() => toggleSetting('highlightLinks')}
                   className={`w-full flex items-center justify-between p-3 rounded-lg transition-colors ${
-                    settings.highlightLinks ? 'bg-gold-500/20 border border-gold-500/50' : 'bg-white/5 hover:bg-white/10'
+                    settings.highlightLinks ? 'bg-[#0066CC]/10 border border-[#0066CC]/50' : 'bg-gray-50 hover:bg-gray-100'
                   }`}
                 >
-                  <span className="text-white/70 text-sm flex items-center gap-2">
+                  <span className="text-gray-700 text-sm flex items-center gap-2">
                     <Link2 size={16} />
                     הדגשת קישורים
                   </span>
                   <div className={`w-10 h-6 rounded-full transition-colors ${
-                    settings.highlightLinks ? 'bg-gold-500' : 'bg-white/20'
+                    settings.highlightLinks ? 'bg-[#0066CC]' : 'bg-gray-300'
                   }`}>
-                    <div className={`w-4 h-4 rounded-full bg-white mt-1 transition-transform ${
+                    <div className={`w-4 h-4 rounded-full bg-white mt-1 transition-transform shadow ${
                       settings.highlightLinks ? 'translate-x-1' : 'translate-x-5'
                     }`} />
                   </div>
@@ -206,17 +206,17 @@ export default function AccessibilityWidget() {
                 <button
                   onClick={() => toggleSetting('bigCursor')}
                   className={`w-full flex items-center justify-between p-3 rounded-lg transition-colors ${
-                    settings.bigCursor ? 'bg-gold-500/20 border border-gold-500/50' : 'bg-white/5 hover:bg-white/10'
+                    settings.bigCursor ? 'bg-[#0066CC]/10 border border-[#0066CC]/50' : 'bg-gray-50 hover:bg-gray-100'
                   }`}
                 >
-                  <span className="text-white/70 text-sm flex items-center gap-2">
+                  <span className="text-gray-700 text-sm flex items-center gap-2">
                     <MousePointer2 size={16} />
                     סמן גדול
                   </span>
                   <div className={`w-10 h-6 rounded-full transition-colors ${
-                    settings.bigCursor ? 'bg-gold-500' : 'bg-white/20'
+                    settings.bigCursor ? 'bg-[#0066CC]' : 'bg-gray-300'
                   }`}>
-                    <div className={`w-4 h-4 rounded-full bg-white mt-1 transition-transform ${
+                    <div className={`w-4 h-4 rounded-full bg-white mt-1 transition-transform shadow ${
                       settings.bigCursor ? 'translate-x-1' : 'translate-x-5'
                     }`} />
                   </div>
@@ -225,7 +225,7 @@ export default function AccessibilityWidget() {
                 {/* Reset */}
                 <button
                   onClick={resetSettings}
-                  className="w-full flex items-center justify-center gap-2 p-3 rounded-lg bg-white/5 hover:bg-white/10 text-white/70 text-sm transition-colors mt-4"
+                  className="w-full flex items-center justify-center gap-2 p-3 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm transition-colors mt-4"
                 >
                   <RotateCcw size={16} />
                   איפוס הגדרות
@@ -234,7 +234,7 @@ export default function AccessibilityWidget() {
 
               <a
                 href="/accessibility"
-                className="block mt-4 text-center text-gold-400 text-sm hover:underline"
+                className="block mt-4 text-center text-[#0066CC] text-sm hover:underline font-medium"
               >
                 הצהרת נגישות מלאה
               </a>
