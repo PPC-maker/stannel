@@ -46,13 +46,13 @@ const testimonials = [
     name: 'ארתור משפחתי',
     role: 'אדריכל',
     text: '"STANNEL שינתה את דרך עבודתי עם ספקים. מאוד מרשים!"',
-    avatar: 'https://randomuser.me/api/portraits/men/32.jpg',
+    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face',
   },
   {
     name: 'מיכל סילבר',
     role: 'מעצבת פנים',
     text: '"STANNEL שינתה את דרך עבודתי עם ספקים. מאוד מרשים!"',
-    avatar: 'https://randomuser.me/api/portraits/women/44.jpg',
+    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&crop=face',
   },
 ];
 
