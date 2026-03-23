@@ -25,6 +25,10 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'unsplash.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'randomuser.me',
+      },
     ],
     formats: ['image/avif', 'image/webp'],
   },
