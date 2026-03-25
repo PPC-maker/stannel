@@ -15,7 +15,7 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 'storage.googleapis.com',
-        pathname: '/stannel-assets/**',
+        pathname: '/**',
       },
       {
         protocol: 'https',
