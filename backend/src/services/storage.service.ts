@@ -6,7 +6,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 
 const INVOICE_BUCKET = process.env.GCS_INVOICE_BUCKET || 'stannel-invoices';
-const ASSETS_BUCKET = process.env.GCS_ASSETS_BUCKET || 'stannel-assets';
+const ASSETS_BUCKET = process.env.GCS_ASSETS_BUCKET || 'stannel-invoices'; // Use same bucket for assets
 
 // Check if we have GCS credentials
 const USE_LOCAL_STORAGE = process.env.NODE_ENV === 'development' && !process.env.GOOGLE_APPLICATION_CREDENTIALS;
@@ -105,18 +105,21 @@ export const storageService = {
       return `http://localhost:${port}/uploads/assets/${fullPath}`;
     }
 
-    // Use GCS in production
-    const bucket = storage.bucket(ASSETS_BUCKET);
-    const file = bucket.file(fullPath);
+    // Use GCS in production - upload to invoices bucket
+    const bucket = storage.bucket(INVOICE_BUCKET);
+    const file = bucket.file(`assets/${fullPath}`);
     await file.save(buffer, {
       metadata: {
         contentType: this.getContentType(filename.split('.').pop() || ''),
-        cacheControl: 'public, max-age=31536000',
       },
-      public: true,
     });
 
-    return `https://storage.googleapis.com/${ASSETS_BUCKET}/${fullPath}`;
+    // Return signed URL that works for 1 year
+    const [url] = await file.getSignedUrl({
+      action: 'read',
+      expires: Date.now() + 365 * 24 * 60 * 60 * 1000,
+    });
+    return url;
   },
 
   async getSignedUrl(bucket: string, filename: string, expiresInMinutes = 60): Promise<string> {
