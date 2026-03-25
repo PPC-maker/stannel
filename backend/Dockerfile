@@ -3,14 +3,14 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-# Copy package files from backend directory
-COPY backend/package.json ./
+# Copy package files
+COPY package.json ./
 
 # Install dependencies with npm (include devDependencies for prisma)
 RUN npm install --legacy-peer-deps
 
 # Copy backend source code
-COPY backend/ ./
+COPY . ./
 
 # Generate Prisma client
 RUN npx prisma generate --schema=src/prisma/schema.prisma
