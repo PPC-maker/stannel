@@ -105,21 +105,19 @@ export const storageService = {
       return `http://localhost:${port}/uploads/assets/${fullPath}`;
     }
 
-    // Use GCS in production - upload to invoices bucket
+    // Use GCS in production - upload to invoices bucket with public access
     const bucket = storage.bucket(INVOICE_BUCKET);
     const file = bucket.file(`assets/${fullPath}`);
     await file.save(buffer, {
       metadata: {
         contentType: this.getContentType(filename.split('.').pop() || ''),
+        cacheControl: 'public, max-age=31536000',
       },
+      public: true,
     });
 
-    // Return signed URL that works for 1 year
-    const [url] = await file.getSignedUrl({
-      action: 'read',
-      expires: Date.now() + 365 * 24 * 60 * 60 * 1000,
-    });
-    return url;
+    // Return direct public URL
+    return `https://storage.googleapis.com/${INVOICE_BUCKET}/assets/${fullPath}`;
   },
 
   async getSignedUrl(bucket: string, filename: string, expiresInMinutes = 60): Promise<string> {
