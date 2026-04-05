@@ -239,6 +239,23 @@ export async function authRoutes(server: FastifyInstance) {
 
       return { user, token: body.token };
     } catch (error) {
+      // Handle Zod validation errors
+      if (error instanceof z.ZodError) {
+        return reply.code(400).send({ error: 'Invalid request body', details: error.errors });
+      }
+
+      // Handle Prisma errors
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        console.error('[Auth] Database error in verify:', error.code, error.message);
+        return reply.code(500).send({ error: 'Database error', code: error.code });
+      }
+
+      // Handle Prisma connection errors
+      if (error instanceof Prisma.PrismaClientInitializationError) {
+        console.error('[Auth] Database connection error:', error.message);
+        return reply.code(503).send({ error: 'Database unavailable' });
+      }
+
       console.error('[Auth] Verify error:', error);
       return reply.code(500).send({ error: 'Verification failed' });
     }
