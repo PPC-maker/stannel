@@ -9,6 +9,7 @@ import PageSlider, { sliderImages } from '@/components/layout/PageSlider';
 import { useAuth } from '@/lib/auth-context';
 import { useAuthGuard, AuthGuardLoader } from '@/lib/useAuthGuard';
 import { useWalletBalance, useInvoices } from '@/lib/api-hooks';
+import { authApi } from '@stannel/api-client';
 import {
   User,
   Mail,
@@ -49,6 +50,8 @@ export default function ProfilePage() {
   const [isEditing, setIsEditing] = useState(false);
   const [showPhotoModal, setShowPhotoModal] = useState(false);
   const [highlightProfile, setHighlightProfile] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
   const profileRef = useRef<HTMLDivElement>(null);
   const [editData, setEditData] = useState({
     name: '',
@@ -151,12 +154,36 @@ export default function ProfilePage() {
     router.replace('/profile');
   };
 
-  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      // TODO: Implement photo upload
-      console.log('Uploading photo:', file.name);
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      setUploadError('יש להעלות קובץ תמונה בלבד');
+      return;
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      setUploadError('הקובץ גדול מדי. גודל מקסימלי 5MB');
+      return;
+    }
+
+    setIsUploading(true);
+    setUploadError(null);
+
+    try {
+      const result = await authApi.uploadProfileImage(file);
+      console.log('Profile image uploaded:', result.imageUrl);
       setShowPhotoModal(false);
+      // Refresh the page to show new image
+      window.location.reload();
+    } catch (error: any) {
+      console.error('Failed to upload profile image:', error);
+      setUploadError(error.message || 'שגיאה בהעלאת התמונה');
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -182,11 +209,10 @@ export default function ProfilePage() {
               <div className="relative group">
                 <div className="w-32 h-32 rounded-2xl overflow-hidden ring-4 ring-gold-400/30 bg-gradient-to-br from-gold-400 to-gold-600">
                   {currentUser.avatar ? (
-                    <Image
+                    <img
                       src={currentUser.avatar}
                       alt={currentUser.name}
-                      fill
-                      className="object-cover"
+                      className="w-full h-full object-cover"
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center">
@@ -212,7 +238,7 @@ export default function ProfilePage() {
                 {isEditing ? (
                   <div className="space-y-4">
                     <div>
-                      <label className="block text-gray-500 text-sm mb-1">שם מלא</label>
+                      <label className="block text-gray-700 text-sm mb-1">שם מלא</label>
                       <input
                         type="text"
                         value={editData.name}
@@ -221,7 +247,7 @@ export default function ProfilePage() {
                       />
                     </div>
                     <div>
-                      <label className="block text-gray-500 text-sm mb-1">טלפון</label>
+                      <label className="block text-gray-700 text-sm mb-1">טלפון</label>
                       <input
                         type="tel"
                         value={editData.phone}
@@ -230,7 +256,7 @@ export default function ProfilePage() {
                       />
                     </div>
                     <div>
-                      <label className="block text-gray-500 text-sm mb-1">חברה</label>
+                      <label className="block text-gray-700 text-sm mb-1">חברה</label>
                       <input
                         type="text"
                         value={editData.company}
@@ -239,7 +265,7 @@ export default function ProfilePage() {
                       />
                     </div>
                     <div>
-                      <label className="block text-gray-500 text-sm mb-1">כתובת</label>
+                      <label className="block text-gray-700 text-sm mb-1">כתובת</label>
                       <input
                         type="text"
                         value={editData.address}
@@ -256,9 +282,9 @@ export default function ProfilePage() {
                         {currentUser.tier}
                       </span>
                     </div>
-                    <p className="text-gray-500 mb-4">{currentUser.company || 'לא צוין עסק'}</p>
+                    <p className="text-gray-700 mb-4">{currentUser.company || 'לא צוין עסק'}</p>
 
-                    <div className="flex flex-wrap justify-center md:justify-start gap-4 text-sm text-gray-500">
+                    <div className="flex flex-wrap justify-center md:justify-start gap-4 text-sm text-gray-700">
                       <div className="flex items-center gap-2">
                         <Mail size={14} />
                         <span>{currentUser.email}</span>
@@ -328,7 +354,7 @@ export default function ProfilePage() {
               <GlassCard className="text-center">
                 <stat.icon size={24} className={`mx-auto mb-2 ${stat.color}`} />
                 <p className="text-2xl font-bold text-gray-800 mb-1">{stat.value}</p>
-                <p className="text-gray-500 text-sm">{stat.label}</p>
+                <p className="text-gray-700 text-sm">{stat.label}</p>
               </GlassCard>
             </motion.div>
           ))}
@@ -355,7 +381,7 @@ export default function ProfilePage() {
                     >
                       <div>
                         <p className="text-gray-800">{activity.description}</p>
-                        <p className="text-gray-400 text-sm">{formatDate(activity.date)}</p>
+                        <p className="text-gray-600 text-sm">{formatDate(activity.date)}</p>
                       </div>
                       {activity.points !== 0 && (
                         <span className={`font-bold ${activity.points > 0 ? 'text-green-400' : 'text-red-400'}`}>
@@ -365,7 +391,7 @@ export default function ProfilePage() {
                     </div>
                   ))
                 ) : (
-                  <div className="text-center py-8 text-gray-400">
+                  <div className="text-center py-8 text-gray-600">
                     <TrendingUp size={48} className="mx-auto mb-4 opacity-30" />
                     <p>אין פעילות אחרונה להצגה</p>
                   </div>
@@ -393,7 +419,7 @@ export default function ProfilePage() {
                     <User size={18} />
                     <span>עריכת פרטים אישיים</span>
                   </div>
-                  <ChevronLeft size={16} className="text-gray-400" />
+                  <ChevronLeft size={16} className="text-gray-600" />
                 </button>
                 <button
                   onClick={() => router.push('/settings#notifications')}
@@ -403,7 +429,7 @@ export default function ProfilePage() {
                     <Bell size={18} />
                     <span>הגדרות התראות</span>
                   </div>
-                  <ChevronLeft size={16} className="text-gray-400" />
+                  <ChevronLeft size={16} className="text-gray-600" />
                 </button>
                 <button
                   onClick={() => router.push('/settings#security')}
@@ -413,7 +439,7 @@ export default function ProfilePage() {
                     <Shield size={18} />
                     <span>אבטחה ופרטיות</span>
                   </div>
-                  <ChevronLeft size={16} className="text-gray-400" />
+                  <ChevronLeft size={16} className="text-gray-600" />
                 </button>
                 <button
                   onClick={() => router.push('/wallet')}
@@ -423,7 +449,7 @@ export default function ProfilePage() {
                     <CreditCard size={18} />
                     <span>הארנק שלי</span>
                   </div>
-                  <ChevronLeft size={16} className="text-gray-400" />
+                  <ChevronLeft size={16} className="text-gray-600" />
                 </button>
                 <button
                   onClick={() => router.push('/invoices')}
@@ -433,7 +459,7 @@ export default function ProfilePage() {
                     <Building2 size={18} />
                     <span>החשבוניות שלי</span>
                   </div>
-                  <ChevronLeft size={16} className="text-gray-400" />
+                  <ChevronLeft size={16} className="text-gray-600" />
                 </button>
               </div>
             </GlassCard>
@@ -460,7 +486,7 @@ export default function ProfilePage() {
             >
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-xl font-semibold text-gray-800">עדכון תמונת פרופיל</h3>
-                <button onClick={() => setShowPhotoModal(false)} className="text-gray-400 hover:text-gray-600">
+                <button onClick={() => setShowPhotoModal(false)} className="text-gray-600 hover:text-gray-600">
                   <X size={20} />
                 </button>
               </div>
@@ -488,17 +514,34 @@ export default function ProfilePage() {
                   accept="image/*"
                   onChange={handlePhotoUpload}
                   className="hidden"
+                  disabled={isUploading}
                 />
+
+                {uploadError && (
+                  <div className="mb-3 p-3 bg-red-100 text-red-700 rounded-lg text-sm">
+                    {uploadError}
+                  </div>
+                )}
 
                 <button
                   onClick={() => fileInputRef.current?.click()}
-                  className="w-full btn-gold mb-3"
+                  disabled={isUploading}
+                  className="w-full btn-gold mb-3 disabled:opacity-50"
                 >
-                  <Camera size={18} className="inline ml-2" />
-                  בחר תמונה
+                  {isUploading ? (
+                    <>
+                      <span className="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin ml-2" />
+                      מעלה...
+                    </>
+                  ) : (
+                    <>
+                      <Camera size={18} className="inline ml-2" />
+                      בחר תמונה
+                    </>
+                  )}
                 </button>
 
-                <p className="text-gray-400 text-sm">
+                <p className="text-gray-600 text-sm">
                   JPG, PNG או GIF. מקסימום 5MB.
                 </p>
               </div>

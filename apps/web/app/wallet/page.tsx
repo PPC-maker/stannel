@@ -1,7 +1,8 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
+import { useState } from 'react';
 import {
   Wallet,
   CreditCard,
@@ -12,6 +13,19 @@ import {
   Clock,
   Gift,
   Building2,
+  User,
+  Camera,
+  FileUp,
+  Calendar,
+  Wrench,
+  Users,
+  ShoppingBag,
+  FileText,
+  History,
+  CheckCircle,
+  XCircle,
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-react';
 import { useWalletBalance, useWalletCard, useWalletTransactions } from '@/lib/api-hooks';
 import { useAuth } from '@/lib/auth-context';
@@ -19,22 +33,106 @@ import { useAuthGuard, AuthGuardLoader } from '@/lib/useAuthGuard';
 import Link from 'next/link';
 
 const rankConfig = {
-  BRONZE: { label: 'ברונזה', color: 'text-amber-600', bg: 'bg-amber-100', emoji: '🥉' },
-  SILVER: { label: 'כסף', color: 'text-gray-500', bg: 'bg-gray-100', emoji: '🥈' },
-  GOLD: { label: 'זהב', color: 'text-amber-500', bg: 'bg-amber-50', emoji: '🥇' },
-  PLATINUM: { label: 'פלטינה', color: 'text-cyan-600', bg: 'bg-cyan-50', emoji: '💎' },
+  BRONZE: { label: 'ברונזה', color: 'text-amber-600', bg: 'bg-amber-100', emoji: '🥉', minPoints: 0, maxPoints: 5000 },
+  SILVER: { label: 'כסף', color: 'text-gray-700', bg: 'bg-gray-100', emoji: '🥈', minPoints: 5000, maxPoints: 15000 },
+  GOLD: { label: 'זהב', color: 'text-amber-500', bg: 'bg-amber-50', emoji: '🥇', minPoints: 15000, maxPoints: 50000 },
+  PLATINUM: { label: 'פלטינה', color: 'text-cyan-600', bg: 'bg-cyan-50', emoji: '💎', minPoints: 50000, maxPoints: 100000 },
 };
+
+// Quick action categories with sub-items
+const quickActionCategories = [
+  {
+    id: 'invoices',
+    label: 'חשבוניות',
+    icon: FileUp,
+    bgColor: 'bg-green-500',
+    iconColor: 'text-green-500',
+    hoverBg: 'hover:bg-green-50',
+    iconBg: 'bg-green-100',
+    items: [
+      { label: 'העלאת חשבונית', href: '/invoices/upload', icon: FileUp },
+      { label: 'החשבוניות שלי', href: '/invoices', icon: FileText },
+      { label: 'היסטוריה', href: '/invoices?filter=history', icon: History },
+      { label: 'ממתינות לאישור', href: '/invoices?filter=pending', icon: Clock },
+      { label: 'אושרו', href: '/invoices?filter=approved', icon: CheckCircle },
+    ],
+  },
+  {
+    id: 'events',
+    label: 'אירועים',
+    icon: Calendar,
+    bgColor: 'bg-purple-500',
+    iconColor: 'text-purple-500',
+    hoverBg: 'hover:bg-purple-50',
+    iconBg: 'bg-purple-100',
+    items: [
+      { label: 'אירועים קרובים', href: '/events', icon: Calendar },
+      { label: 'האירועים שלי', href: '/events?filter=registered', icon: CheckCircle },
+      { label: 'היסטוריית אירועים', href: '/events?filter=past', icon: History },
+    ],
+  },
+  {
+    id: 'tools',
+    label: 'כלי עבודה',
+    icon: Wrench,
+    bgColor: 'bg-orange-500',
+    iconColor: 'text-orange-500',
+    hoverBg: 'hover:bg-orange-50',
+    iconBg: 'bg-orange-100',
+    items: [
+      { label: 'מחשבון נקודות', href: '/tools/calculator', icon: TrendingUp },
+      { label: 'דוחות', href: '/tools/reports', icon: FileText },
+      { label: 'הגדרות', href: '/settings', icon: Wrench },
+    ],
+  },
+  {
+    id: 'suppliers',
+    label: 'ספקים',
+    icon: Building2,
+    bgColor: 'bg-blue-500',
+    iconColor: 'text-blue-500',
+    hoverBg: 'hover:bg-blue-50',
+    iconBg: 'bg-blue-100',
+    items: [
+      { label: 'כל הספקים', href: '/suppliers', icon: Building2 },
+      { label: 'ספקים מומלצים', href: '/suppliers?filter=recommended', icon: Award },
+      { label: 'הספקים שלי', href: '/suppliers?filter=my', icon: Users },
+    ],
+  },
+  {
+    id: 'rewards',
+    label: 'מתנות והטבות',
+    icon: Gift,
+    bgColor: 'bg-pink-500',
+    iconColor: 'text-pink-500',
+    hoverBg: 'hover:bg-pink-50',
+    iconBg: 'bg-pink-100',
+    items: [
+      { label: 'קטלוג הטבות', href: '/rewards', icon: ShoppingBag },
+      { label: 'ההטבות שלי', href: '/rewards?filter=my', icon: Gift },
+      { label: 'היסטוריית מימושים', href: '/rewards?filter=history', icon: History },
+    ],
+  },
+];
 
 export default function WalletPage() {
   const { isReady } = useAuthGuard();
   const { user } = useAuth();
+  const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const { data: balance, isLoading: balanceLoading } = useWalletBalance();
   const { data: card, isLoading: cardLoading } = useWalletCard();
   const { data: transactions, isLoading: transactionsLoading } = useWalletTransactions();
 
-  const rank = rankConfig[(card?.rank as keyof typeof rankConfig) || 'BRONZE'];
+
+  const currentRank = (card?.rank as keyof typeof rankConfig) || 'BRONZE';
+  const rank = rankConfig[currentRank];
   const isLoading = balanceLoading || cardLoading;
   const isSupplier = user?.role === 'SUPPLIER';
+
+  // Calculate progress to next rank
+  const totalEarned = balance?.totalEarned || 0;
+  const progressPercent = Math.min(100, ((totalEarned - rank.minPoints) / (rank.maxPoints - rank.minPoints)) * 100);
+  const pointsToNextRank = Math.max(0, rank.maxPoints - totalEarned);
 
   if (!isReady) {
     return <AuthGuardLoader />;
@@ -82,7 +180,41 @@ export default function WalletPage() {
           >
             <div className="bg-white rounded-3xl p-6 shadow-xl">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-bold text-[#1E293B]">כרטיס דיגיטלי</h2>
+                {/* User Profile & Progress */}
+                <div className="flex items-center gap-3">
+                  <Link href="/profile" className="relative group">
+                    <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-[#0066CC] shadow-lg">
+                      {user?.profileImage ? (
+                        <img
+                          src={user.profileImage}
+                          alt={user.name || 'משתמש'}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-gradient-to-br from-[#0066CC] to-[#004499] flex items-center justify-center">
+                          <User size={28} className="text-white" />
+                        </div>
+                      )}
+                    </div>
+                    <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-white rounded-full shadow flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                      <Camera size={12} className="text-[#0066CC]" />
+                    </div>
+                  </Link>
+                  <div className="flex flex-col">
+                    <span className="text-sm font-semibold text-[#1E293B]">{user?.name || 'משתמש'}</span>
+                    <div className="flex items-center gap-2 mt-1">
+                      <div className="w-24 h-2 bg-gray-200 rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-gradient-to-r from-[#0066CC] to-[#00AAFF] rounded-full transition-all duration-500"
+                          style={{ width: `${progressPercent}%` }}
+                        />
+                      </div>
+                      <span className="text-xs text-[#64748B]">{pointsToNextRank.toLocaleString()} לדרגה הבאה</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Rank Badge */}
                 <div className={`px-3 py-1 rounded-full ${rank.bg}`}>
                   <span className={`text-sm font-semibold ${rank.color}`}>
                     {rank.emoji} {rank.label}
@@ -137,8 +269,8 @@ export default function WalletPage() {
             </div>
           </motion.div>
 
-          {/* Stats Cards */}
-          <div className="lg:col-span-2 grid sm:grid-cols-2 gap-4">
+          {/* Stats Cards - Circles on Mobile, Cards on Desktop */}
+          <div className="lg:col-span-2 grid grid-cols-2 gap-4 md:gap-6">
             {[
               {
                 icon: Award,
@@ -146,6 +278,7 @@ export default function WalletPage() {
                 value: isLoading ? '...' : (balance?.points || 0).toLocaleString(),
                 color: 'text-[#0066CC]',
                 bgColor: 'bg-blue-50',
+                borderColor: 'border-blue-200',
                 suffix: 'נק׳',
                 show: true,
               },
@@ -155,6 +288,7 @@ export default function WalletPage() {
                 value: isLoading ? '...' : (balance?.cash || 0).toLocaleString(),
                 color: 'text-green-600',
                 bgColor: 'bg-green-50',
+                borderColor: 'border-green-200',
                 prefix: '₪',
                 show: !isSupplier,
               },
@@ -164,6 +298,7 @@ export default function WalletPage() {
                 value: isLoading ? '...' : (balance?.totalEarned || 0).toLocaleString(),
                 color: 'text-purple-600',
                 bgColor: 'bg-purple-50',
+                borderColor: 'border-purple-200',
                 suffix: 'נק׳',
                 show: true,
               },
@@ -173,6 +308,7 @@ export default function WalletPage() {
                 value: isLoading ? '...' : (balance?.totalRedeemed || 0).toLocaleString(),
                 color: 'text-amber-600',
                 bgColor: 'bg-amber-50',
+                borderColor: 'border-amber-200',
                 suffix: 'נק׳',
                 show: true,
               },
@@ -182,8 +318,28 @@ export default function WalletPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 + index * 0.05 }}
+                className="flex justify-center"
               >
-                <div className="bg-white rounded-2xl p-5 shadow-lg h-full">
+                {/* Mobile: Circle | Desktop: Rectangle Card */}
+                <div className={`
+                  md:hidden
+                  w-[140px] h-[140px] rounded-full
+                  bg-white shadow-lg border-2 ${stat.borderColor}
+                  flex flex-col items-center justify-center
+                  text-center p-3
+                `}>
+                  <div className={`p-2 rounded-full ${stat.bgColor} mb-2`}>
+                    <stat.icon size={20} className={stat.color} />
+                  </div>
+                  <p className="text-[#64748B] text-xs mb-1">{stat.label}</p>
+                  <p className={`text-xl font-bold ${stat.color}`}>
+                    {stat.prefix}{stat.value}
+                  </p>
+                  {stat.suffix && <span className={`text-xs ${stat.color}`}>{stat.suffix}</span>}
+                </div>
+
+                {/* Desktop: Regular Card */}
+                <div className="hidden md:block bg-white rounded-2xl p-5 shadow-lg h-full w-full">
                   <div className="flex items-start justify-between">
                     <div>
                       <p className="text-[#64748B] text-sm mb-1">{stat.label}</p>
@@ -203,7 +359,7 @@ export default function WalletPage() {
           </div>
         </div>
 
-        {/* Quick Actions */}
+        {/* Quick Actions - Circular Slider */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -211,39 +367,107 @@ export default function WalletPage() {
           className="mb-8"
         >
           <div className="bg-white rounded-3xl p-6 shadow-lg">
-            <h2 className="text-lg font-bold text-[#1E293B] mb-4">פעולות מהירות</h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-              <Link
-                href={user?.role === 'SUPPLIER' ? '/invoices' : '/invoices/upload'}
-                className="flex flex-col items-center gap-2 p-4 rounded-xl bg-green-50 hover:bg-green-100 transition-colors"
-              >
-                <ArrowUpRight className="text-green-600" size={24} />
-                <span className="text-[#1E293B] text-sm font-medium">
-                  {user?.role === 'SUPPLIER' ? 'צפייה בחשבונית' : 'העלאת חשבונית'}
-                </span>
-              </Link>
-              <Link
-                href="/rewards"
-                className="flex flex-col items-center gap-2 p-4 rounded-xl bg-purple-50 hover:bg-purple-100 transition-colors"
-              >
-                <Gift className="text-purple-600" size={24} />
-                <span className="text-[#1E293B] text-sm font-medium">מימוש הטבות</span>
-              </Link>
-              <Link
-                href="/invoices"
-                className="flex flex-col items-center gap-2 p-4 rounded-xl bg-amber-50 hover:bg-amber-100 transition-colors"
-              >
-                <Clock className="text-amber-600" size={24} />
-                <span className="text-[#1E293B] text-sm font-medium">היסטוריית חשבוניות</span>
-              </Link>
-              <Link
-                href="/events"
-                className="flex flex-col items-center gap-2 p-4 rounded-xl bg-blue-50 hover:bg-blue-100 transition-colors"
-              >
-                <Award className="text-[#0066CC]" size={24} />
-                <span className="text-[#1E293B] text-sm font-medium">אירועים</span>
-              </Link>
+            <h2 className="text-lg font-bold text-[#1E293B] mb-6">פעולות מהירות</h2>
+
+            {/* Circular Icons Slider - Native Scroll for Mobile */}
+            <div
+              className="flex gap-3 md:gap-5 py-2 px-1 overflow-x-auto md:overflow-visible md:justify-center"
+              style={{
+                scrollbarWidth: 'none',
+                msOverflowStyle: 'none',
+                WebkitOverflowScrolling: 'touch',
+              }}
+            >
+              {/* Items in order - CSS handles RTL scroll direction */}
+              {quickActionCategories.map((category) => {
+                const IconComponent = category.icon;
+                const isActive = activeCategory === category.id;
+
+                return (
+                  <motion.button
+                    key={category.id}
+                    onClick={() => setActiveCategory(isActive ? null : category.id)}
+                    whileTap={{ scale: 0.95 }}
+                    transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+                    className="flex flex-col items-center gap-2 md:gap-3 min-w-[95px] md:min-w-[115px] flex-shrink-0 touch-manipulation"
+                  >
+                    <div
+                      className={`
+                        w-[88px] h-[88px] md:w-[110px] md:h-[110px] rounded-full flex items-center justify-center shadow-lg
+                        transition-all duration-200
+                        ${isActive
+                          ? `${category.bgColor} ring-4 ring-offset-2 ring-gray-200 scale-105`
+                          : 'bg-gradient-to-br from-gray-50 to-gray-100 active:from-gray-100 active:to-gray-200'
+                        }
+                      `}
+                    >
+                      <IconComponent
+                        size={36}
+                        className={`md:w-11 md:h-11 transition-colors duration-200 ${isActive ? 'text-white' : 'text-gray-600'}`}
+                      />
+                    </div>
+                    <span className={`text-xs md:text-sm font-medium text-center whitespace-nowrap transition-colors duration-200 ${isActive ? 'text-[#0066CC] font-semibold' : 'text-[#64748B]'}`}>
+                      {category.label}
+                    </span>
+                  </motion.button>
+                );
+              })}
             </div>
+
+            {/* Expanded Content */}
+            <AnimatePresence>
+              {activeCategory && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="mt-6 pt-6 border-t border-gray-100 overflow-hidden"
+                >
+                  {quickActionCategories
+                    .filter(cat => cat.id === activeCategory)
+                    .map(category => (
+                      <div key={category.id}>
+                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+                          {category.items.map((item, index) => {
+                            const ItemIcon = item.icon;
+                            return (
+                              <motion.div
+                                key={item.href}
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: index * 0.05 }}
+                              >
+                                <Link
+                                  href={item.href}
+                                  className={`
+                                    flex flex-col items-center gap-2 p-4 rounded-xl
+                                    bg-gradient-to-br from-gray-50 to-gray-100
+                                    ${category.hoverBg}
+                                    border border-gray-100 hover:border-gray-200
+                                    transition-all duration-200 group hover:shadow-md
+                                  `}
+                                >
+                                  <div className={`
+                                    w-10 h-10 rounded-full flex items-center justify-center
+                                    ${category.iconBg} transition-colors
+                                  `}>
+                                    <ItemIcon size={20} className={category.iconColor} />
+                                  </div>
+                                  <span className="text-sm font-medium text-[#1E293B] text-center">
+                                    {item.label}
+                                  </span>
+                                </Link>
+                              </motion.div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    ))
+                  }
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </motion.div>
 
@@ -308,7 +532,7 @@ export default function WalletPage() {
               ) : (
                 <div className="text-center py-12">
                   <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gray-100 flex items-center justify-center">
-                    <Wallet size={32} className="text-gray-400" />
+                    <Wallet size={32} className="text-gray-600" />
                   </div>
                   <p className="text-[#64748B]">אין תנועות להצגה</p>
                 </div>

@@ -29,6 +29,12 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'randomuser.me',
       },
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '7070',
+        pathname: '/uploads/**',
+      },
     ],
     formats: ['image/avif', 'image/webp'],
   },

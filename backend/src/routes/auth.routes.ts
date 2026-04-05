@@ -4,6 +4,7 @@ import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import { getFirebaseAuth } from '../lib/firebase.js';
 import prisma from '../lib/prisma.js';
 import { authMiddleware } from '../middleware/auth.middleware.js';
+import { storageService } from '../services/storage.service.js';
 import { z } from 'zod';
 import { Prisma } from '@prisma/client';
 import type { DecodedIdToken } from 'firebase-admin/auth';
@@ -292,5 +293,46 @@ export async function authRoutes(server: FastifyInstance) {
     });
 
     return user;
+  });
+
+  // Upload profile image
+  server.post('/profile/image', { preHandler: [authMiddleware] }, async (request: FastifyRequest, reply: FastifyReply) => {
+    try {
+      const data = await request.file();
+
+      if (!data) {
+        return reply.code(400).send({ error: 'No file uploaded' });
+      }
+
+      // Validate file type
+      const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+      if (!allowedTypes.includes(data.mimetype)) {
+        return reply.code(400).send({ error: 'Invalid file type. Only images are allowed.' });
+      }
+
+      // Validate file size (max 5MB)
+      const buffer = await data.toBuffer();
+      if (buffer.length > 5 * 1024 * 1024) {
+        return reply.code(400).send({ error: 'File too large. Maximum size is 5MB.' });
+      }
+
+      // Upload to storage
+      const imageUrl = await storageService.uploadProfileImage(buffer, request.user!.id, data.filename);
+
+      // Update user profile
+      const user = await prisma.user.update({
+        where: { id: request.user!.id },
+        data: { profileImage: imageUrl },
+        include: {
+          architectProfile: true,
+          supplierProfile: true,
+        },
+      });
+
+      return { user, imageUrl };
+    } catch (error) {
+      console.error('[Auth] Profile image upload error:', error);
+      return reply.code(500).send({ error: 'Failed to upload profile image' });
+    }
   });
 }

@@ -90,8 +90,9 @@ async function registerPlugins() {
   // WebSocket for real-time updates
   await server.register(websocket);
 
-  // Static file serving for local uploads (development only)
-  if (process.env.NODE_ENV === 'development') {
+  // Static file serving for local uploads (when not using GCS)
+  const useLocalStorage = !process.env.GOOGLE_APPLICATION_CREDENTIALS;
+  if (useLocalStorage) {
     const uploadsDir = path.join(process.cwd(), 'uploads');
     if (!fs.existsSync(uploadsDir)) {
       fs.mkdirSync(uploadsDir, { recursive: true });

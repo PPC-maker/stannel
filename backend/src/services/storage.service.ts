@@ -46,7 +46,7 @@ export const storageService = {
       const localPath = path.join(LOCAL_UPLOAD_DIR, filename);
       fs.writeFileSync(localPath, buffer);
       // Return a local URL that can be served by the backend
-      const port = process.env.PORT || 8080;
+      const port = process.env.PORT || 7070;
       return `http://localhost:${port}/uploads/${filename}`;
     }
 
@@ -74,7 +74,7 @@ export const storageService = {
       }
       const localPath = path.join(LOCAL_UPLOAD_DIR, filename);
       fs.writeFileSync(localPath, buffer);
-      const port = process.env.PORT || 8080;
+      const port = process.env.PORT || 7070;
       return `http://localhost:${port}/uploads/${filename}`;
     }
 
@@ -90,6 +90,34 @@ export const storageService = {
     return `https://storage.googleapis.com/${INVOICE_BUCKET}/${filename}`;
   },
 
+  async uploadProfileImage(buffer: Buffer, userId: string, originalFilename: string): Promise<string> {
+    const extension = originalFilename.split('.').pop() || 'jpg';
+    const filename = `profile-images/${userId}-${Date.now()}.${extension}`;
+
+    if (USE_LOCAL_STORAGE || !storage) {
+      // Save locally for development
+      const localDir = path.join(LOCAL_UPLOAD_DIR, 'profile-images');
+      if (!fs.existsSync(localDir)) {
+        fs.mkdirSync(localDir, { recursive: true });
+      }
+      const localPath = path.join(LOCAL_UPLOAD_DIR, filename);
+      fs.writeFileSync(localPath, buffer);
+      const port = process.env.PORT || 7070;
+      return `http://localhost:${port}/uploads/${filename}`;
+    }
+
+    // Use GCS in production
+    const bucket = storage.bucket(ASSETS_BUCKET);
+    const file = bucket.file(filename);
+    await file.save(buffer, {
+      metadata: {
+        contentType: this.getContentType(extension),
+      },
+    });
+
+    return `https://storage.googleapis.com/${ASSETS_BUCKET}/${filename}`;
+  },
+
   async uploadAsset(buffer: Buffer, assetPath: string, filename: string): Promise<string> {
     const fullPath = `${assetPath}/${filename}`;
 
@@ -101,7 +129,7 @@ export const storageService = {
       }
       const localPath = path.join(localDir, filename);
       fs.writeFileSync(localPath, buffer);
-      const port = process.env.PORT || 8080;
+      const port = process.env.PORT || 7070;
       return `http://localhost:${port}/uploads/assets/${fullPath}`;
     }
 
@@ -125,7 +153,7 @@ export const storageService = {
   async getSignedUrl(bucket: string, filename: string, expiresInMinutes = 60): Promise<string> {
     if (USE_LOCAL_STORAGE || !storage) {
       // For local development, just return the direct URL
-      const port = process.env.PORT || 8080;
+      const port = process.env.PORT || 7070;
       return `http://localhost:${port}/uploads/${filename}`;
     }
 
