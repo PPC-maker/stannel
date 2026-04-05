@@ -3,6 +3,7 @@ import { Assistant } from 'next/font/google';
 import './globals.css';
 import Navbar from '@/components/layout/Navbar';
 import AccessibilityWidget from '@/components/layout/AccessibilityWidget';
+import VideoIntro from '@/components/layout/VideoIntro';
 import { Providers } from './providers';
 
 const assistant = Assistant({
@@ -34,6 +35,9 @@ export default function RootLayout({
     <html lang="he" dir="rtl" className={assistant.variable} suppressHydrationWarning>
       <body className="min-h-screen antialiased" suppressHydrationWarning>
         <Providers>
+          {/* Video Intro Overlay */}
+          <VideoIntro />
+
           {/* Main app shell */}
           <div className="relative z-10 min-h-screen flex flex-col items-center">
             <Navbar />
