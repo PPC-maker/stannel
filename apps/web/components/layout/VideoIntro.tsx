@@ -87,7 +87,7 @@ export default function VideoIntro() {
               onEnded={handleVideoEnd}
               className="w-full h-full object-cover"
             >
-              <source src="/exmple.mp4" type="video/mp4" />
+              <source src="https://storage.googleapis.com/stannel-app.appspot.com/videos/intro.mp4" type="video/mp4" />
             </video>
 
             {/* Gradient Overlay */}
