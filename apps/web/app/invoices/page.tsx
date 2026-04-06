@@ -55,22 +55,24 @@ export default function InvoicesPage() {
       <PageSlider images={sliderImages.invoices} />
       <div className="p-6 max-w-7xl mx-auto relative z-10">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-        <div>
-          <h1 className="text-3xl font-display font-bold text-gray-900">חשבוניות</h1>
-          <p className="text-gray-600 mt-1">
-            {isArchitect ? 'ניהול והעלאת חשבוניות לצבירת נקודות' : 'צפייה בחשבוניות שהועלו'}
-          </p>
+      <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-6 shadow-sm mb-8">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <h1 className="text-3xl font-display font-bold text-gray-900">חשבוניות</h1>
+            <p className="text-gray-600 mt-1">
+              {isArchitect ? 'ניהול והעלאת חשבוניות לצבירת נקודות' : 'צפייה בחשבוניות שהועלו'}
+            </p>
+          </div>
+          {isArchitect && (
+            <Link
+              href="/invoices/upload"
+              className="btn-gold flex items-center gap-2 justify-center"
+            >
+              <Upload size={20} />
+              <span>העלאת חשבונית</span>
+            </Link>
+          )}
         </div>
-{isArchitect && (
-          <Link
-            href="/invoices/upload"
-            className="btn-gold flex items-center gap-2 justify-center"
-          >
-            <Upload size={20} />
-            <span>העלאת חשבונית</span>
-          </Link>
-        )}
       </div>
 
       {/* Stats Cards */}
