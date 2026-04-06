@@ -588,4 +588,154 @@ export const adminApi = {
 
     return res.json();
   },
+
+  // Products Management
+  async getProducts(): Promise<{ data: any[]; total: number }> {
+    const res = await fetch(`${config.baseUrl}/admin/products`, {
+      headers: getHeaders(),
+    });
+
+    if (!res.ok) {
+      const error = await res.json().catch(() => ({ message: 'Failed to get products' }));
+      throw new Error(error.message || 'Failed to get products');
+    }
+
+    return res.json();
+  },
+
+  async createProduct(data: {
+    name: string;
+    description?: string;
+    pointCost: number;
+    cashCost?: number;
+    stock: number;
+    imageUrl?: string;
+  }): Promise<any> {
+    const res = await fetch(`${config.baseUrl}/admin/products`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify(data),
+    });
+
+    if (!res.ok) {
+      const error = await res.json().catch(() => ({ message: 'Failed to create product' }));
+      throw new Error(error.message || 'Failed to create product');
+    }
+
+    return res.json();
+  },
+
+  async updateProduct(id: string, data: {
+    name?: string;
+    description?: string;
+    pointCost?: number;
+    cashCost?: number;
+    stock?: number;
+    imageUrl?: string;
+    isActive?: boolean;
+  }): Promise<any> {
+    const res = await fetch(`${config.baseUrl}/admin/products/${id}`, {
+      method: 'PATCH',
+      headers: getHeaders(),
+      body: JSON.stringify(data),
+    });
+
+    if (!res.ok) {
+      const error = await res.json().catch(() => ({ message: 'Failed to update product' }));
+      throw new Error(error.message || 'Failed to update product');
+    }
+
+    return res.json();
+  },
+
+  async deleteProduct(id: string): Promise<{ success: boolean }> {
+    const res = await fetch(`${config.baseUrl}/admin/products/${id}`, {
+      method: 'DELETE',
+      headers: getHeaders(),
+    });
+
+    if (!res.ok) {
+      const error = await res.json().catch(() => ({ message: 'Failed to delete product' }));
+      throw new Error(error.message || 'Failed to delete product');
+    }
+
+    return res.json();
+  },
+
+  // ============ System Status ============
+
+  async getSystemStatus(): Promise<{
+    overall: 'healthy' | 'degraded' | 'down';
+    services: Array<{
+      name: string;
+      status: 'healthy' | 'degraded' | 'down';
+      message: string;
+      lastCheck: string;
+      responseTime?: number;
+    }>;
+    alerts: Array<{
+      type: 'critical' | 'warning' | 'info';
+      title: string;
+      message: string;
+      action?: string;
+    }>;
+    lastUpdated: string;
+  }> {
+    const res = await fetch(`${config.baseUrl}/admin/system-status`, {
+      headers: getHeaders(),
+    });
+
+    if (!res.ok) {
+      const error = await res.json().catch(() => ({ message: 'Failed to get system status' }));
+      throw new Error(error.message || 'Failed to get system status');
+    }
+
+    return res.json();
+  },
+
+  async sendSystemAlert(data?: { subject?: string; message?: string }): Promise<{ success: boolean; sentTo: string[] }> {
+    const res = await fetch(`${config.baseUrl}/admin/system-status/alert`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify(data || {}),
+    });
+
+    if (!res.ok) {
+      const error = await res.json().catch(() => ({ message: 'Failed to send system alert' }));
+      throw new Error(error.message || 'Failed to send system alert');
+    }
+
+    return res.json();
+  },
+
+  async getSystemStatusHistory(hours: number = 24): Promise<{
+    logs: any[];
+    hourlyStats: Array<{ hour: string; errors: number; warnings: number; total: number }>;
+    totalInPeriod: number;
+  }> {
+    const res = await fetch(`${config.baseUrl}/admin/system-status/history?hours=${hours}`, {
+      headers: getHeaders(),
+    });
+
+    if (!res.ok) {
+      const error = await res.json().catch(() => ({ message: 'Failed to get status history' }));
+      throw new Error(error.message || 'Failed to get status history');
+    }
+
+    return res.json();
+  },
+
+  async sendTestEmail(): Promise<{ success: boolean; sentTo: string[] }> {
+    const res = await fetch(`${config.baseUrl}/admin/system-status/test-email`, {
+      method: 'POST',
+      headers: getHeaders(),
+    });
+
+    if (!res.ok) {
+      const error = await res.json().catch(() => ({ message: 'Failed to send test email' }));
+      throw new Error(error.message || 'Failed to send test email');
+    }
+
+    return res.json();
+  },
 };
