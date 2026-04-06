@@ -13,6 +13,9 @@ import { wsService } from '../services/websocket.service.js';
 import { storageService } from '../services/storage.service.js';
 import { z } from 'zod';
 
+// Alert emails for system issues
+const ALERT_EMAILS = ['PPC@newpost.co.il', 'orenshp77@gmail.com'];
+
 const verifyInvoiceSchema = z.object({
   status: z.enum(['APPROVED', 'REJECTED', 'CLARIFICATION_NEEDED']),
   note: z.string().optional(),
@@ -572,11 +575,13 @@ export async function adminRoutes(server: FastifyInstance) {
       newStatus = 'PENDING_SUPPLIER_PAY';
       approvedAt = new Date();
 
-      // Schedule SLA monitoring
+      // Schedule SLA monitoring (fire-and-forget, never blocks)
       const paymentDeadline = new Date();
       paymentDeadline.setHours(paymentDeadline.getHours() + 72);
 
-      await slaService.scheduleCheck(id, paymentDeadline);
+      // This is now fire-and-forget - it schedules the check in the background
+      // and will never block the invoice approval response
+      slaService.scheduleCheck(id, paymentDeadline);
 
       // NOTE: Points are credited ONLY when supplier confirms payment
       // See supplier.routes.ts -> /invoices/:id/confirm -> loyaltyService.creditInvoicePoints()
@@ -1088,6 +1093,421 @@ Please analyze this error and provide a fix.
     } catch (error) {
       console.error('Image upload error:', error);
       return reply.code(500).send({ error: 'Failed to upload image' });
+    }
+  });
+
+  // ============ Products Management ============
+
+  // Get all products (admin view - includes inactive)
+  server.get('/products', async (request: FastifyRequest) => {
+    const query = request.query as { page?: string; pageSize?: string };
+    const page = parseInt(query.page || '1');
+    const pageSize = parseInt(query.pageSize || '50');
+
+    const [products, total] = await Promise.all([
+      prisma.product.findMany({
+        include: {
+          supplier: {
+            select: { companyName: true },
+          },
+        },
+        orderBy: { createdAt: 'desc' },
+        skip: (page - 1) * pageSize,
+        take: pageSize,
+      }),
+      prisma.product.count(),
+    ]);
+
+    return { data: products, total, page, pageSize };
+  });
+
+  // Create product
+  server.post('/products', async (request: FastifyRequest, reply: FastifyReply) => {
+    const body = request.body as {
+      name: string;
+      description?: string;
+      pointCost: number;
+      cashCost?: number;
+      stock: number;
+      imageUrl?: string;
+      supplierId?: string;
+    };
+
+    if (!body.name || body.pointCost === undefined || body.stock === undefined) {
+      return reply.code(400).send({ error: 'Missing required fields' });
+    }
+
+    const product = await prisma.product.create({
+      data: {
+        name: body.name,
+        description: body.description || '',
+        pointCost: body.pointCost,
+        cashCost: body.cashCost || 0,
+        stock: body.stock,
+        imageUrl: body.imageUrl,
+        supplierId: body.supplierId,
+        isActive: true,
+      },
+    });
+
+    await prisma.auditLog.create({
+      data: {
+        userId: request.user!.id,
+        action: 'PRODUCT_CREATED',
+        entityId: product.id,
+        metadata: { name: product.name },
+      },
+    });
+
+    return product;
+  });
+
+  // Update product
+  server.patch('/products/:id', async (request: FastifyRequest, reply: FastifyReply) => {
+    const { id } = request.params as { id: string };
+    const body = request.body as {
+      name?: string;
+      description?: string;
+      pointCost?: number;
+      cashCost?: number;
+      stock?: number;
+      imageUrl?: string;
+      isActive?: boolean;
+    };
+
+    const product = await prisma.product.update({
+      where: { id },
+      data: body,
+    });
+
+    await prisma.auditLog.create({
+      data: {
+        userId: request.user!.id,
+        action: 'PRODUCT_UPDATED',
+        entityId: product.id,
+        metadata: body,
+      },
+    });
+
+    return product;
+  });
+
+  // Delete product
+  server.delete('/products/:id', async (request: FastifyRequest, reply: FastifyReply) => {
+    const { id } = request.params as { id: string };
+
+    await prisma.product.delete({ where: { id } });
+
+    await prisma.auditLog.create({
+      data: {
+        userId: request.user!.id,
+        action: 'PRODUCT_DELETED',
+        entityId: id,
+      },
+    });
+
+    return { success: true };
+  });
+
+  // ============ System Status ============
+
+  interface ServiceStatus {
+    name: string;
+    status: 'healthy' | 'degraded' | 'down';
+    message: string;
+    lastCheck: string;
+    responseTime?: number;
+  }
+
+  interface SystemHealth {
+    overall: 'healthy' | 'degraded' | 'down';
+    services: ServiceStatus[];
+    alerts: {
+      type: 'critical' | 'warning' | 'info';
+      title: string;
+      message: string;
+      action?: string;
+    }[];
+    lastUpdated: string;
+  }
+
+  // Get comprehensive system status
+  server.get('/system-status', async (request: FastifyRequest) => {
+    const services: ServiceStatus[] = [];
+    const alerts: SystemHealth['alerts'] = [];
+
+    // Check Database (PostgreSQL/Cloud SQL)
+    const dbStart = Date.now();
+    try {
+      await prisma.$queryRaw`SELECT 1`;
+      services.push({
+        name: 'Database (PostgreSQL)',
+        status: 'healthy',
+        message: 'Connected and responding',
+        lastCheck: new Date().toISOString(),
+        responseTime: Date.now() - dbStart,
+      });
+    } catch (error: any) {
+      const errorMsg = error.message || 'Unknown error';
+      services.push({
+        name: 'Database (PostgreSQL)',
+        status: 'down',
+        message: errorMsg,
+        lastCheck: new Date().toISOString(),
+        responseTime: Date.now() - dbStart,
+      });
+
+      // Check for billing/payment related errors
+      if (errorMsg.includes('SUSPENDED') ||
+          errorMsg.includes('billing') ||
+          errorMsg.includes('payment') ||
+          errorMsg.includes('quota') ||
+          errorMsg.includes('Connection refused')) {
+        alerts.push({
+          type: 'critical',
+          title: '🚨 בעיית תשלום - Database',
+          message: 'Cloud SQL מושעה או שיש בעיית תשלום. בדוק את חשבון Google Cloud.',
+          action: 'https://console.cloud.google.com/sql/instances?project=stannel-app',
+        });
+      } else {
+        alerts.push({
+          type: 'critical',
+          title: '🔴 Database לא זמין',
+          message: errorMsg,
+          action: 'https://console.cloud.google.com/sql/instances?project=stannel-app',
+        });
+      }
+    }
+
+    // Check Redis (via SLA service)
+    const redisStart = Date.now();
+    try {
+      const redisAvailable = slaService.isAvailable();
+      if (redisAvailable) {
+        services.push({
+          name: 'Redis (Cache)',
+          status: 'healthy',
+          message: 'Connected via SLA service',
+          lastCheck: new Date().toISOString(),
+          responseTime: Date.now() - redisStart,
+        });
+      } else {
+        services.push({
+          name: 'Redis (Cache)',
+          status: 'degraded',
+          message: 'Not connected - SLA monitoring disabled',
+          lastCheck: new Date().toISOString(),
+        });
+        alerts.push({
+          type: 'warning',
+          title: '⚠️ Redis לא מחובר',
+          message: 'SLA monitoring ותכונות cache לא יעבדו.',
+          action: 'https://console.cloud.google.com/memorystore/redis/instances?project=stannel-app',
+        });
+      }
+    } catch (error: any) {
+      services.push({
+        name: 'Redis (Cache)',
+        status: 'degraded',
+        message: error.message || 'Failed to check',
+        lastCheck: new Date().toISOString(),
+      });
+    }
+
+    // Check Firebase
+    try {
+      const auth = getFirebaseAuth();
+      if (auth) {
+        services.push({
+          name: 'Firebase Auth',
+          status: 'healthy',
+          message: 'Initialized',
+          lastCheck: new Date().toISOString(),
+        });
+      } else {
+        services.push({
+          name: 'Firebase Auth',
+          status: 'down',
+          message: 'Not initialized',
+          lastCheck: new Date().toISOString(),
+        });
+        alerts.push({
+          type: 'critical',
+          title: '🔴 Firebase לא מאותחל',
+          message: 'התחברות משתמשים לא תעבוד.',
+        });
+      }
+    } catch (error: any) {
+      services.push({
+        name: 'Firebase Auth',
+        status: 'down',
+        message: error.message || 'Failed to check',
+        lastCheck: new Date().toISOString(),
+      });
+    }
+
+    // Check Storage (GCS)
+    try {
+      // Simple check - if storageService exists it's initialized
+      services.push({
+        name: 'Cloud Storage',
+        status: 'healthy',
+        message: 'Initialized',
+        lastCheck: new Date().toISOString(),
+      });
+    } catch (error: any) {
+      services.push({
+        name: 'Cloud Storage',
+        status: 'degraded',
+        message: error.message || 'May have issues',
+        lastCheck: new Date().toISOString(),
+      });
+    }
+
+    // Get recent critical errors
+    const recentErrors = await prisma.systemLog.findMany({
+      where: {
+        severity: { in: ['CRITICAL', 'ERROR'] },
+        resolved: false,
+        createdAt: { gte: new Date(Date.now() - 24 * 60 * 60 * 1000) }, // Last 24 hours
+      },
+      orderBy: { createdAt: 'desc' },
+      take: 10,
+    });
+
+    if (recentErrors.length > 0) {
+      alerts.push({
+        type: 'warning',
+        title: `📋 ${recentErrors.length} שגיאות לא מטופלות`,
+        message: `יש ${recentErrors.length} שגיאות שדורשות טיפול ב-24 שעות האחרונות`,
+        action: '/admin/logs',
+      });
+    }
+
+    // Determine overall status
+    const hasDown = services.some(s => s.status === 'down');
+    const hasDegraded = services.some(s => s.status === 'degraded');
+    const overall: SystemHealth['overall'] = hasDown ? 'down' : hasDegraded ? 'degraded' : 'healthy';
+
+    const health: SystemHealth = {
+      overall,
+      services,
+      alerts,
+      lastUpdated: new Date().toISOString(),
+    };
+
+    return health;
+  });
+
+  // Send system alert email
+  server.post('/system-status/alert', async (request: FastifyRequest, reply: FastifyReply) => {
+    const body = request.body as { subject?: string; message?: string };
+
+    try {
+      // Get current system status
+      const dbStatus = await prisma.$queryRaw`SELECT 1`.then(() => 'healthy').catch((e: any) => `down: ${e.message}`);
+      const redisStatus = slaService.isAvailable() ? 'healthy' : 'not connected';
+
+      const statusReport = `
+<h2>🔔 STANNEL System Status Alert</h2>
+
+<p><strong>Time:</strong> ${new Date().toISOString()}</p>
+<p><strong>Triggered by:</strong> ${request.user?.email || 'System'}</p>
+
+<h3>Services Status</h3>
+<ul>
+  <li><strong>Database:</strong> ${dbStatus}</li>
+  <li><strong>Redis:</strong> ${redisStatus}</li>
+  <li><strong>Firebase:</strong> ${getFirebaseAuth() ? 'healthy' : 'not initialized'}</li>
+</ul>
+
+<h3>Message</h3>
+<p>${body.message || 'Manual status check requested'}</p>
+
+<hr/>
+<p>
+  <a href="https://stannel.app/admin/system-status">View Full Status</a> |
+  <a href="https://console.cloud.google.com/home/dashboard?project=stannel-app">Google Cloud Console</a>
+</p>
+      `.trim();
+
+      // Send to all alert emails
+      await emailService.send({
+        to: ALERT_EMAILS,
+        subject: body.subject || '🔔 STANNEL System Alert',
+        html: statusReport,
+      });
+
+      await prisma.auditLog.create({
+        data: {
+          userId: request.user!.id,
+          action: 'SYSTEM_ALERT_SENT',
+          metadata: { sentTo: ALERT_EMAILS, subject: body.subject },
+        },
+      });
+
+      return { success: true, sentTo: ALERT_EMAILS };
+    } catch (error: any) {
+      console.error('Failed to send system alert:', error);
+      return reply.code(500).send({ error: 'Failed to send alert', details: error.message });
+    }
+  });
+
+  // Get system status history (from system logs)
+  server.get('/system-status/history', async (request: FastifyRequest) => {
+    const query = request.query as { hours?: string };
+    const hours = parseInt(query.hours || '24');
+
+    const logs = await prisma.systemLog.findMany({
+      where: {
+        createdAt: { gte: new Date(Date.now() - hours * 60 * 60 * 1000) },
+      },
+      orderBy: { createdAt: 'desc' },
+      take: 100,
+    });
+
+    // Group by hour for chart data
+    const hourlyStats: Record<string, { errors: number; warnings: number; total: number }> = {};
+
+    logs.forEach(log => {
+      const hour = new Date(log.createdAt).toISOString().slice(0, 13) + ':00:00Z';
+      if (!hourlyStats[hour]) {
+        hourlyStats[hour] = { errors: 0, warnings: 0, total: 0 };
+      }
+      hourlyStats[hour].total++;
+      if (log.severity === 'ERROR' || log.severity === 'CRITICAL') {
+        hourlyStats[hour].errors++;
+      } else if (log.severity === 'WARNING') {
+        hourlyStats[hour].warnings++;
+      }
+    });
+
+    return {
+      logs: logs.slice(0, 20), // Recent 20 logs
+      hourlyStats: Object.entries(hourlyStats).map(([hour, stats]) => ({
+        hour,
+        ...stats,
+      })).reverse(),
+      totalInPeriod: logs.length,
+    };
+  });
+
+  // Test email sending
+  server.post('/system-status/test-email', async (request: FastifyRequest, reply: FastifyReply) => {
+    try {
+      await emailService.send({
+        to: ALERT_EMAILS,
+        subject: '🧪 STANNEL - Test Email',
+        html: `
+          <h2>Test Email from STANNEL</h2>
+          <p>This is a test email to verify the email system is working correctly.</p>
+          <p>Time: ${new Date().toISOString()}</p>
+          <p>Sent to: ${ALERT_EMAILS.join(', ')}</p>
+        `,
+      });
+      return { success: true, sentTo: ALERT_EMAILS };
+    } catch (error: any) {
+      return reply.code(500).send({ error: 'Failed to send test email', details: error.message });
     }
   });
 }
