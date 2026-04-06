@@ -264,13 +264,13 @@ export default function AdminPage() {
     return () => clearInterval(interval);
   }, [isReady, activeTab]);
 
-  // Auto-refresh invoices every 10 seconds
+  // Auto-refresh invoices every 5 seconds
   useEffect(() => {
     if (!isReady || activeTab !== 'invoices') return;
 
     const interval = setInterval(() => {
       fetchInvoices();
-    }, 10000); // 10 seconds
+    }, 5000); // 5 seconds
 
     return () => clearInterval(interval);
   }, [isReady, activeTab]);
@@ -285,6 +285,16 @@ export default function AdminPage() {
 
     return () => clearInterval(interval);
   }, [isReady, activeTab]);
+
+  // Keep selectedInvoice in sync with invoices list (for real-time updates)
+  useEffect(() => {
+    if (selectedInvoice && invoices.length > 0) {
+      const updated = invoices.find(inv => inv.id === selectedInvoice.id);
+      if (updated && JSON.stringify(updated) !== JSON.stringify(selectedInvoice)) {
+        setSelectedInvoice(updated);
+      }
+    }
+  }, [invoices, selectedInvoice]);
 
   if (!isReady) {
     return <AuthGuardLoader />;
