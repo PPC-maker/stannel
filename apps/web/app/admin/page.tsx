@@ -50,6 +50,7 @@ import {
   BarChart3,
   Target,
   Building2,
+  Gift,
 } from 'lucide-react';
 import Swal from 'sweetalert2';
 import Link from 'next/link';
@@ -840,6 +841,19 @@ Please analyze this error and provide a fix.
                 <div>
                   <p className="text-gray-800 font-medium group-hover:text-[#0066CC] transition-colors">יומן פעולות</p>
                   <p className="text-gray-700 text-xs">מעקב פעולות מערכת</p>
+                </div>
+              </div>
+            </GlassCard>
+          </Link>
+          <Link href="/admin/rewards" className="group">
+            <GlassCard hover={true}>
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-gold-500/20">
+                  <Gift size={20} className="text-gold-400" />
+                </div>
+                <div>
+                  <p className="text-gray-800 font-medium group-hover:text-[#0066CC] transition-colors">חנות הטבות</p>
+                  <p className="text-gray-700 text-xs">ניהול מוצרים</p>
                 </div>
               </div>
             </GlassCard>
