@@ -217,7 +217,7 @@ export default function AdminRewardsPage() {
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
-          className="mb-8"
+          className="mb-8 bg-white/95 backdrop-blur-sm rounded-2xl p-6 shadow-lg"
         >
           <Link
             href="/admin"
