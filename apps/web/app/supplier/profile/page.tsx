@@ -21,14 +21,13 @@ import {
   Loader2,
   ExternalLink,
   Trash2,
-  Check,
 } from 'lucide-react';
+import Swal from 'sweetalert2';
 
 export default function SupplierProfilePage() {
   const { isReady, user } = useSupplierGuard();
   const [isSaving, setIsSaving] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [saveMessage, setSaveMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [uploadingImage, setUploadingImage] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -84,7 +83,6 @@ export default function SupplierProfilePage() {
 
   const handleSave = async () => {
     setIsSaving(true);
-    setSaveMessage(null);
     try {
       await supplierApi.updateProfile({
         companyName: formData.companyName,
@@ -96,11 +94,26 @@ export default function SupplierProfilePage() {
         instagram: formData.instagram || undefined,
         linkedin: formData.linkedin || undefined,
       });
-      setSaveMessage({ type: 'success', text: 'השינויים נשמרו בהצלחה!' });
-      setTimeout(() => setSaveMessage(null), 3000);
+      Swal.fire({
+        title: 'נשמר בהצלחה!',
+        text: 'השינויים בפרופיל נשמרו',
+        icon: 'success',
+        confirmButtonText: 'אישור',
+        background: '#fff',
+        color: '#1a1a2e',
+        confirmButtonColor: '#d4af37',
+      });
     } catch (error) {
       console.error('Failed to save profile:', error);
-      setSaveMessage({ type: 'error', text: 'שגיאה בשמירת הפרופיל' });
+      Swal.fire({
+        title: 'שגיאה',
+        text: 'לא הצלחנו לשמור את השינויים',
+        icon: 'error',
+        confirmButtonText: 'אישור',
+        background: '#fff',
+        color: '#1a1a2e',
+        confirmButtonColor: '#d4af37',
+      });
     } finally {
       setIsSaving(false);
     }
@@ -114,14 +127,29 @@ export default function SupplierProfilePage() {
     try {
       const result = await supplierApi.uploadBusinessImage(file);
       setImages(prev => [...prev, result.url]);
-      setSaveMessage({ type: 'success', text: 'התמונה הועלתה בהצלחה!' });
-      setTimeout(() => setSaveMessage(null), 3000);
+      Swal.fire({
+        title: 'התמונה הועלתה!',
+        icon: 'success',
+        confirmButtonText: 'אישור',
+        background: '#fff',
+        color: '#1a1a2e',
+        confirmButtonColor: '#d4af37',
+        timer: 2000,
+        timerProgressBar: true,
+      });
     } catch (error) {
       console.error('Failed to upload image:', error);
-      setSaveMessage({ type: 'error', text: 'שגיאה בהעלאת התמונה' });
+      Swal.fire({
+        title: 'שגיאה',
+        text: 'לא הצלחנו להעלות את התמונה',
+        icon: 'error',
+        confirmButtonText: 'אישור',
+        background: '#fff',
+        color: '#1a1a2e',
+        confirmButtonColor: '#d4af37',
+      });
     } finally {
       setUploadingImage(false);
-      // Reset input
       if (fileInputRef.current) {
         fileInputRef.current.value = '';
       }
@@ -129,14 +157,44 @@ export default function SupplierProfilePage() {
   };
 
   const handleDeleteImage = async (imageUrl: string) => {
+    const result = await Swal.fire({
+      title: 'למחוק את התמונה?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'כן, מחק',
+      cancelButtonText: 'ביטול',
+      background: '#fff',
+      color: '#1a1a2e',
+      confirmButtonColor: '#ef4444',
+      cancelButtonColor: '#6b7280',
+    });
+
+    if (!result.isConfirmed) return;
+
     try {
       await supplierApi.deleteBusinessImage(imageUrl);
       setImages(prev => prev.filter(img => img !== imageUrl));
-      setSaveMessage({ type: 'success', text: 'התמונה נמחקה' });
-      setTimeout(() => setSaveMessage(null), 3000);
+      Swal.fire({
+        title: 'התמונה נמחקה',
+        icon: 'success',
+        confirmButtonText: 'אישור',
+        background: '#fff',
+        color: '#1a1a2e',
+        confirmButtonColor: '#d4af37',
+        timer: 1500,
+        timerProgressBar: true,
+      });
     } catch (error) {
       console.error('Failed to delete image:', error);
-      setSaveMessage({ type: 'error', text: 'שגיאה במחיקת התמונה' });
+      Swal.fire({
+        title: 'שגיאה',
+        text: 'לא הצלחנו למחוק את התמונה',
+        icon: 'error',
+        confirmButtonText: 'אישור',
+        background: '#fff',
+        color: '#1a1a2e',
+        confirmButtonColor: '#d4af37',
+      });
     }
   };
 
@@ -167,22 +225,6 @@ export default function SupplierProfilePage() {
           </h1>
           <p className="text-gray-600 mt-1 font-medium">המידע הזה יוצג לאדריכלים</p>
         </motion.div>
-
-        {/* Save Message */}
-        {saveMessage && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className={`mb-6 p-4 rounded-lg flex items-center gap-2 ${
-              saveMessage.type === 'success'
-                ? 'bg-green-100 text-green-800 border border-green-200'
-                : 'bg-red-100 text-red-800 border border-red-200'
-            }`}
-          >
-            {saveMessage.type === 'success' && <Check size={18} />}
-            {saveMessage.text}
-          </motion.div>
-        )}
 
         {isLoading ? (
           <div className="flex justify-center items-center py-20">
