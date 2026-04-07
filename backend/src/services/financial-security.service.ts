@@ -112,19 +112,19 @@ export const financialSecurityService = {
     // 4. Verify user has sufficient balance
     const profile = await prisma.architectProfile.findUnique({
       where: { userId },
-      select: { points: true },
+      select: { pointsBalance: true },
     });
 
     if (!profile) {
       return { valid: false, reason: 'Profile not found' };
     }
 
-    if (type === 'REDEMPTION' && profile.points < amount) {
+    if (type === 'REDEMPTION' && profile.pointsBalance < amount) {
       await this.reportAlert({
         type: 'SUSPICIOUS_TRANSACTION',
         severity: 'HIGH',
         userId,
-        details: `Insufficient balance: ${profile.points} < ${amount}`,
+        details: `Insufficient balance: ${profile.pointsBalance} < ${amount}`,
         amount,
         context,
       });
@@ -158,7 +158,7 @@ export const financialSecurityService = {
   ): Promise<boolean> {
     const profile = await prisma.architectProfile.findUnique({
       where: { userId },
-      select: { points: true },
+      select: { pointsBalance: true },
     });
 
     if (!profile) return false;
@@ -166,7 +166,7 @@ export const financialSecurityService = {
     const snapshot = balanceSnapshots.get(userId);
     if (snapshot && snapshot.timestamp > new Date(Date.now() - 5000)) {
       const expectedBalance = snapshot.balance + expectedChange;
-      const actualBalance = profile.points;
+      const actualBalance = profile.pointsBalance;
 
       if (Math.abs(expectedBalance - actualBalance) > 0.01) {
         await this.reportAlert({
@@ -182,7 +182,7 @@ export const financialSecurityService = {
 
     // Update snapshot
     balanceSnapshots.set(userId, {
-      balance: profile.points,
+      balance: profile.pointsBalance,
       timestamp: new Date(),
     });
 
@@ -327,8 +327,8 @@ export const financialSecurityService = {
     try {
       // 1. Check for negative balances
       const negativeBalances = await prisma.architectProfile.findMany({
-        where: { points: { lt: 0 } },
-        select: { userId: true, points: true },
+        where: { pointsBalance: { lt: 0 } },
+        select: { userId: true, pointsBalance: true },
       });
 
       if (negativeBalances.length > 0) {
@@ -338,7 +338,7 @@ export const financialSecurityService = {
             type: 'BALANCE_MISMATCH',
             severity: 'CRITICAL',
             userId: user.userId,
-            details: `Negative balance detected: ${user.points}`,
+            details: `Negative balance detected: ${user.pointsBalance}`,
           });
         }
       }

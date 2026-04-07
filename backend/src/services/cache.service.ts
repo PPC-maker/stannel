@@ -115,13 +115,13 @@ export const cacheService = {
     fetchFn: () => Promise<T>,
     ttlSeconds: number = CACHE_TTL.MEDIUM
   ): Promise<T> {
-    const cached = this.get<T>(key);
+    const cached = cacheService.get(key) as T | null;
     if (cached !== null) {
       return cached;
     }
 
     const value = await fetchFn();
-    this.set(key, value, ttlSeconds);
+    cacheService.set(key, value, ttlSeconds);
     return value;
   },
 

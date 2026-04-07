@@ -358,6 +358,7 @@ enum SystemLogCategory {
   EMAIL
   STORAGE
   AI
+  FINANCIAL
 }
 
 model SystemLog {

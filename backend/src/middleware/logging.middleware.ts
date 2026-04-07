@@ -26,7 +26,7 @@ export function requestLogger(
 ) {
   request.startTime = Date.now();
   request.logContext = {
-    endpoint: request.url || request.routerPath || 'unknown',
+    endpoint: request.url || 'unknown',
     method: request.method,
     userId: (request as any).user?.id,
     userEmail: (request as any).user?.email,

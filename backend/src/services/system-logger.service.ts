@@ -7,7 +7,7 @@ type LogSeverity = 'INFO' | 'WARNING' | 'ERROR' | 'CRITICAL';
 type LogCategory =
   | 'HEALTH_CHECK' | 'SECURITY' | 'API_TEST' | 'DATABASE' | 'PERFORMANCE'
   | 'SCHEDULER' | 'AUTH' | 'INVOICE' | 'REWARDS' | 'WALLET' | 'EVENTS'
-  | 'ADMIN' | 'SUPPLIER' | 'USER' | 'EMAIL' | 'STORAGE' | 'AI';
+  | 'ADMIN' | 'SUPPLIER' | 'USER' | 'EMAIL' | 'STORAGE' | 'AI' | 'FINANCIAL';
 
 interface LogEntry {
   severity: LogSeverity;
