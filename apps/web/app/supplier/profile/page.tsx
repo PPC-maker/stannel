@@ -1,10 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import PageSlider, { sliderImages } from '@/components/layout/PageSlider';
 import { useSupplierGuard, AuthGuardLoader } from '@/lib/useAuthGuard';
+import { supplierApi } from '@stannel/api-client';
 import {
   Building2,
   ArrowRight,
@@ -19,18 +20,24 @@ import {
   Save,
   Loader2,
   ExternalLink,
+  Trash2,
+  Check,
 } from 'lucide-react';
 
 export default function SupplierProfilePage() {
   const { isReady, user } = useSupplierGuard();
   const [isSaving, setIsSaving] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [saveMessage, setSaveMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Form state
   const [formData, setFormData] = useState({
-    businessName: user?.name || '',
+    companyName: '',
     description: '',
     phone: '',
-    email: user?.email || '',
+    email: '',
     address: '',
     website: '',
     facebook: '',
@@ -40,6 +47,36 @@ export default function SupplierProfilePage() {
 
   const [images, setImages] = useState<string[]>([]);
 
+  // Load profile data on mount
+  useEffect(() => {
+    if (isReady && user) {
+      loadProfile();
+    }
+  }, [isReady, user]);
+
+  const loadProfile = async () => {
+    try {
+      setIsLoading(true);
+      const profile = await supplierApi.getProfile();
+      setFormData({
+        companyName: profile.companyName || '',
+        description: profile.description || '',
+        phone: profile.phone || '',
+        email: profile.user?.email || user?.email || '',
+        address: profile.address || '',
+        website: profile.website || '',
+        facebook: profile.facebook || '',
+        instagram: profile.instagram || '',
+        linkedin: profile.linkedin || '',
+      });
+      setImages(profile.businessImages || []);
+    } catch (error) {
+      console.error('Failed to load profile:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
@@ -47,9 +84,60 @@ export default function SupplierProfilePage() {
 
   const handleSave = async () => {
     setIsSaving(true);
-    // TODO: Implement API call to save profile
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    setIsSaving(false);
+    setSaveMessage(null);
+    try {
+      await supplierApi.updateProfile({
+        companyName: formData.companyName,
+        description: formData.description,
+        phone: formData.phone,
+        address: formData.address,
+        website: formData.website || undefined,
+        facebook: formData.facebook || undefined,
+        instagram: formData.instagram || undefined,
+        linkedin: formData.linkedin || undefined,
+      });
+      setSaveMessage({ type: 'success', text: 'השינויים נשמרו בהצלחה!' });
+      setTimeout(() => setSaveMessage(null), 3000);
+    } catch (error) {
+      console.error('Failed to save profile:', error);
+      setSaveMessage({ type: 'error', text: 'שגיאה בשמירת הפרופיל' });
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploadingImage(true);
+    try {
+      const result = await supplierApi.uploadBusinessImage(file);
+      setImages(prev => [...prev, result.url]);
+      setSaveMessage({ type: 'success', text: 'התמונה הועלתה בהצלחה!' });
+      setTimeout(() => setSaveMessage(null), 3000);
+    } catch (error) {
+      console.error('Failed to upload image:', error);
+      setSaveMessage({ type: 'error', text: 'שגיאה בהעלאת התמונה' });
+    } finally {
+      setUploadingImage(false);
+      // Reset input
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    }
+  };
+
+  const handleDeleteImage = async (imageUrl: string) => {
+    try {
+      await supplierApi.deleteBusinessImage(imageUrl);
+      setImages(prev => prev.filter(img => img !== imageUrl));
+      setSaveMessage({ type: 'success', text: 'התמונה נמחקה' });
+      setTimeout(() => setSaveMessage(null), 3000);
+    } catch (error) {
+      console.error('Failed to delete image:', error);
+      setSaveMessage({ type: 'error', text: 'שגיאה במחיקת התמונה' });
+    }
   };
 
   if (!isReady) {
@@ -80,232 +168,278 @@ export default function SupplierProfilePage() {
           <p className="text-gray-600 mt-1 font-medium">המידע הזה יוצג לאדריכלים</p>
         </motion.div>
 
-        {/* Business Info */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="mb-6"
-        >
-          <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-gray-200">
-            <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-              <Building2 size={18} className="text-gold-500" />
-              פרטים כלליים
-            </h2>
-
-            <div className="space-y-4">
-              <div>
-                <label className="block text-gray-700 text-sm font-semibold mb-1">שם העסק</label>
-                <input
-                  type="text"
-                  name="businessName"
-                  value={formData.businessName}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-colors"
-                  placeholder="הזן את שם העסק"
-                />
-              </div>
-
-              <div>
-                <label className="block text-gray-700 text-sm font-semibold mb-1">תיאור העסק</label>
-                <textarea
-                  name="description"
-                  value={formData.description}
-                  onChange={handleInputChange}
-                  rows={4}
-                  className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-colors resize-none"
-                  placeholder="ספר על העסק שלך, השירותים שאתה מציע..."
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-gray-700 text-sm font-semibold mb-1">
-                    <Phone size={14} className="inline ml-1 text-gray-500" />
-                    טלפון
-                  </label>
-                  <input
-                    type="tel"
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-colors"
-                    placeholder="050-0000000"
-                    dir="ltr"
-                  />
-                </div>
-                <div>
-                  <label className="block text-gray-700 text-sm font-semibold mb-1">
-                    <Mail size={14} className="inline ml-1 text-gray-500" />
-                    אימייל
-                  </label>
-                  <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-colors"
-                    placeholder="email@example.com"
-                    dir="ltr"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-gray-700 text-sm font-semibold mb-1">
-                  <MapPin size={14} className="inline ml-1 text-gray-500" />
-                  כתובת
-                </label>
-                <input
-                  type="text"
-                  name="address"
-                  value={formData.address}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-colors"
-                  placeholder="רחוב, עיר"
-                />
-              </div>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Social Links */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="mb-6"
-        >
-          <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-gray-200">
-            <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-              <ExternalLink size={18} className="text-gold-500" />
-              קישורים ורשתות חברתיות
-            </h2>
-
-            <div className="space-y-4">
-              <div>
-                <label className="block text-gray-700 text-sm font-semibold mb-1">
-                  <Globe size={14} className="inline ml-1 text-gray-500" />
-                  אתר אינטרנט
-                </label>
-                <input
-                  type="url"
-                  name="website"
-                  value={formData.website}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-colors"
-                  placeholder="https://www.example.com"
-                  dir="ltr"
-                />
-              </div>
-
-              <div className="grid grid-cols-3 gap-4">
-                <div>
-                  <label className="block text-gray-700 text-sm font-semibold mb-1">
-                    <Facebook size={14} className="inline ml-1 text-blue-600" />
-                    Facebook
-                  </label>
-                  <input
-                    type="url"
-                    name="facebook"
-                    value={formData.facebook}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-colors text-sm"
-                    placeholder="קישור לפייסבוק"
-                    dir="ltr"
-                  />
-                </div>
-                <div>
-                  <label className="block text-gray-700 text-sm font-semibold mb-1">
-                    <Instagram size={14} className="inline ml-1 text-pink-600" />
-                    Instagram
-                  </label>
-                  <input
-                    type="url"
-                    name="instagram"
-                    value={formData.instagram}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-colors text-sm"
-                    placeholder="קישור לאינסטגרם"
-                    dir="ltr"
-                  />
-                </div>
-                <div>
-                  <label className="block text-gray-700 text-sm font-semibold mb-1">
-                    <Linkedin size={14} className="inline ml-1 text-blue-700" />
-                    LinkedIn
-                  </label>
-                  <input
-                    type="url"
-                    name="linkedin"
-                    value={formData.linkedin}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-colors text-sm"
-                    placeholder="קישור ללינקדאין"
-                    dir="ltr"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* Images Gallery */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="mb-6"
-        >
-          <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-gray-200">
-            <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-              <ImageIcon size={18} className="text-gold-500" />
-              תמונות העסק
-            </h2>
-
-            <div className="grid grid-cols-3 gap-4">
-              {images.map((img, index) => (
-                <div
-                  key={index}
-                  className="aspect-video bg-gray-100 border border-gray-200 rounded-lg overflow-hidden"
-                >
-                  <img src={img} alt={`תמונה ${index + 1}`} className="w-full h-full object-cover" />
-                </div>
-              ))}
-
-              {/* Add Image Button */}
-              <button className="aspect-video bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center gap-2 hover:border-gold-500 hover:bg-gray-100 transition-colors group">
-                <ImageIcon size={32} className="text-gray-400 group-hover:text-gold-500 transition-colors" />
-                <span className="text-gray-500 text-sm font-medium group-hover:text-gray-700 transition-colors">הוסף תמונה</span>
-              </button>
-            </div>
-
-            <p className="text-gray-500 text-xs mt-4 font-medium">
-              * התמונות יוצגו באדריכלים כשהם צופים בפרופיל העסק שלך
-            </p>
-          </div>
-        </motion.div>
-
-        {/* Save Button */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="flex justify-end"
-        >
-          <button
-            onClick={handleSave}
-            disabled={isSaving}
-            className="flex items-center gap-2 px-8 py-3 bg-gold-500 hover:bg-gold-600 text-white font-bold rounded-lg transition-colors disabled:opacity-50 shadow-lg"
+        {/* Save Message */}
+        {saveMessage && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className={`mb-6 p-4 rounded-lg flex items-center gap-2 ${
+              saveMessage.type === 'success'
+                ? 'bg-green-100 text-green-800 border border-green-200'
+                : 'bg-red-100 text-red-800 border border-red-200'
+            }`}
           >
-            {isSaving ? (
-              <Loader2 size={18} className="animate-spin" />
-            ) : (
-              <Save size={18} />
-            )}
-            שמור שינויים
-          </button>
-        </motion.div>
+            {saveMessage.type === 'success' && <Check size={18} />}
+            {saveMessage.text}
+          </motion.div>
+        )}
+
+        {isLoading ? (
+          <div className="flex justify-center items-center py-20">
+            <Loader2 className="animate-spin text-primary-600" size={32} />
+          </div>
+        ) : (
+          <>
+            {/* Business Info */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="mb-6"
+            >
+              <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-gray-200">
+                <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                  <Building2 size={18} className="text-gold-500" />
+                  פרטים כלליים
+                </h2>
+
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-gray-700 text-sm font-semibold mb-1">שם העסק</label>
+                    <input
+                      type="text"
+                      name="companyName"
+                      value={formData.companyName}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-colors"
+                      placeholder="הזן את שם העסק"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-gray-700 text-sm font-semibold mb-1">תיאור העסק</label>
+                    <textarea
+                      name="description"
+                      value={formData.description}
+                      onChange={handleInputChange}
+                      rows={4}
+                      className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-colors resize-none"
+                      placeholder="ספר על העסק שלך, השירותים שאתה מציע..."
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-gray-700 text-sm font-semibold mb-1">
+                        <Phone size={14} className="inline ml-1 text-gray-500" />
+                        טלפון
+                      </label>
+                      <input
+                        type="tel"
+                        name="phone"
+                        value={formData.phone}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-colors"
+                        placeholder="050-0000000"
+                        dir="ltr"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-gray-700 text-sm font-semibold mb-1">
+                        <Mail size={14} className="inline ml-1 text-gray-500" />
+                        אימייל
+                      </label>
+                      <input
+                        type="email"
+                        name="email"
+                        value={formData.email}
+                        disabled
+                        className="w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-lg text-gray-500 cursor-not-allowed"
+                        dir="ltr"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-gray-700 text-sm font-semibold mb-1">
+                      <MapPin size={14} className="inline ml-1 text-gray-500" />
+                      כתובת
+                    </label>
+                    <input
+                      type="text"
+                      name="address"
+                      value={formData.address}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-colors"
+                      placeholder="רחוב, עיר"
+                    />
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Social Links */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="mb-6"
+            >
+              <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-gray-200">
+                <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                  <ExternalLink size={18} className="text-gold-500" />
+                  קישורים ורשתות חברתיות
+                </h2>
+
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-gray-700 text-sm font-semibold mb-1">
+                      <Globe size={14} className="inline ml-1 text-gray-500" />
+                      אתר אינטרנט
+                    </label>
+                    <input
+                      type="url"
+                      name="website"
+                      value={formData.website}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-colors"
+                      placeholder="https://www.example.com"
+                      dir="ltr"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-3 gap-4">
+                    <div>
+                      <label className="block text-gray-700 text-sm font-semibold mb-1">
+                        <Facebook size={14} className="inline ml-1 text-blue-600" />
+                        Facebook
+                      </label>
+                      <input
+                        type="url"
+                        name="facebook"
+                        value={formData.facebook}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-colors text-sm"
+                        placeholder="קישור לפייסבוק"
+                        dir="ltr"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-gray-700 text-sm font-semibold mb-1">
+                        <Instagram size={14} className="inline ml-1 text-pink-600" />
+                        Instagram
+                      </label>
+                      <input
+                        type="url"
+                        name="instagram"
+                        value={formData.instagram}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-colors text-sm"
+                        placeholder="קישור לאינסטגרם"
+                        dir="ltr"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-gray-700 text-sm font-semibold mb-1">
+                        <Linkedin size={14} className="inline ml-1 text-blue-700" />
+                        LinkedIn
+                      </label>
+                      <input
+                        type="url"
+                        name="linkedin"
+                        value={formData.linkedin}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-colors text-sm"
+                        placeholder="קישור ללינקדאין"
+                        dir="ltr"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Images Gallery */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="mb-6"
+            >
+              <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-gray-200">
+                <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                  <ImageIcon size={18} className="text-gold-500" />
+                  תמונות העסק
+                </h2>
+
+                <div className="grid grid-cols-3 gap-4">
+                  {images.map((img, index) => (
+                    <div
+                      key={index}
+                      className="aspect-video bg-gray-100 border border-gray-200 rounded-lg overflow-hidden relative group"
+                    >
+                      <img src={img} alt={`תמונה ${index + 1}`} className="w-full h-full object-cover" />
+                      <button
+                        onClick={() => handleDeleteImage(img)}
+                        className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
+                  ))}
+
+                  {/* Add Image Button */}
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    className="hidden"
+                  />
+                  <button
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={uploadingImage}
+                    className="aspect-video bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center gap-2 hover:border-gold-500 hover:bg-gray-100 transition-colors group disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {uploadingImage ? (
+                      <Loader2 size={32} className="text-gold-500 animate-spin" />
+                    ) : (
+                      <>
+                        <ImageIcon size={32} className="text-gray-400 group-hover:text-gold-500 transition-colors" />
+                        <span className="text-gray-500 text-sm font-medium group-hover:text-gray-700 transition-colors">הוסף תמונה</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+
+                <p className="text-gray-500 text-xs mt-4 font-medium">
+                  * התמונות יוצגו לאדריכלים כשהם צופים בפרופיל העסק שלך
+                </p>
+              </div>
+            </motion.div>
+
+            {/* Save Button */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              className="flex justify-end"
+            >
+              <button
+                onClick={handleSave}
+                disabled={isSaving}
+                className="flex items-center gap-2 px-8 py-3 bg-gold-500 hover:bg-gold-600 text-white font-bold rounded-lg transition-colors disabled:opacity-50 shadow-lg"
+              >
+                {isSaving ? (
+                  <Loader2 size={18} className="animate-spin" />
+                ) : (
+                  <Save size={18} />
+                )}
+                שמור שינויים
+              </button>
+            </motion.div>
+          </>
+        )}
       </div>
     </div>
   );

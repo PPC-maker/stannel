@@ -21,6 +21,17 @@ const productSchema = z.object({
   stock: z.number().int().min(0),
 });
 
+const updateProfileSchema = z.object({
+  companyName: z.string().min(1).optional(),
+  description: z.string().optional(),
+  phone: z.string().optional(),
+  address: z.string().optional(),
+  website: z.string().url().optional().or(z.literal('')),
+  facebook: z.string().url().optional().or(z.literal('')),
+  instagram: z.string().url().optional().or(z.literal('')),
+  linkedin: z.string().url().optional().or(z.literal('')),
+});
+
 export async function supplierRoutes(server: FastifyInstance) {
   // Apply supplier middleware
   server.addHook('preHandler', authMiddleware);
@@ -200,6 +211,99 @@ export async function supplierRoutes(server: FastifyInstance) {
     });
 
     return updated;
+  });
+
+  // Get supplier profile
+  server.get('/profile', async (request: FastifyRequest) => {
+    const profile = await prisma.supplierProfile.findUnique({
+      where: { id: request.user!.supplierProfile!.id },
+      include: {
+        user: { select: { name: true, email: true } },
+      },
+    });
+
+    return profile;
+  });
+
+  // Update supplier profile
+  server.put('/profile', async (request: FastifyRequest) => {
+    const body = updateProfileSchema.parse(request.body);
+
+    const updated = await prisma.supplierProfile.update({
+      where: { id: request.user!.supplierProfile!.id },
+      data: {
+        companyName: body.companyName,
+        description: body.description,
+        phone: body.phone,
+        address: body.address,
+        website: body.website || null,
+        facebook: body.facebook || null,
+        instagram: body.instagram || null,
+        linkedin: body.linkedin || null,
+      },
+    });
+
+    return updated;
+  });
+
+  // Upload business image
+  server.post('/upload-business-image', async (request: FastifyRequest, reply: FastifyReply) => {
+    try {
+      const data = await request.file();
+
+      if (!data) {
+        return reply.code(400).send({ error: 'No file uploaded' });
+      }
+
+      const buffer = await data.toBuffer();
+      const url = await storageService.uploadSupplierImage(buffer, request.user!.supplierProfile!.id, data.filename);
+
+      // Add to businessImages array
+      const supplierId = request.user!.supplierProfile!.id;
+      const profile = await prisma.supplierProfile.findUnique({
+        where: { id: supplierId },
+        select: { businessImages: true },
+      });
+
+      const currentImages = profile?.businessImages || [];
+
+      await prisma.supplierProfile.update({
+        where: { id: supplierId },
+        data: {
+          businessImages: [...currentImages, url],
+        },
+      });
+
+      return { url };
+    } catch (error) {
+      console.error('[Supplier] Business image upload error:', error);
+      return reply.code(500).send({ error: 'Failed to upload image' });
+    }
+  });
+
+  // Delete business image
+  server.delete('/business-image', async (request: FastifyRequest, reply: FastifyReply) => {
+    const { imageUrl } = request.body as { imageUrl: string };
+
+    if (!imageUrl) {
+      return reply.code(400).send({ error: 'Image URL required' });
+    }
+
+    const supplierId = request.user!.supplierProfile!.id;
+    const profile = await prisma.supplierProfile.findUnique({
+      where: { id: supplierId },
+      select: { businessImages: true },
+    });
+
+    const currentImages = profile?.businessImages || [];
+    const newImages = currentImages.filter(img => img !== imageUrl);
+
+    await prisma.supplierProfile.update({
+      where: { id: supplierId },
+      data: { businessImages: newImages },
+    });
+
+    return { success: true };
   });
 
   // Dashboard stats

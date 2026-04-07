@@ -118,6 +118,34 @@ export const storageService = {
     return `https://storage.googleapis.com/${ASSETS_BUCKET}/${filename}`;
   },
 
+  async uploadSupplierImage(buffer: Buffer, supplierId: string, originalFilename: string): Promise<string> {
+    const extension = originalFilename.split('.').pop() || 'jpg';
+    const filename = `supplier-images/${supplierId}/${Date.now()}-${randomUUID()}.${extension}`;
+
+    if (USE_LOCAL_STORAGE || !storage) {
+      // Save locally for development
+      const localDir = path.join(LOCAL_UPLOAD_DIR, 'supplier-images', supplierId);
+      if (!fs.existsSync(localDir)) {
+        fs.mkdirSync(localDir, { recursive: true });
+      }
+      const localPath = path.join(LOCAL_UPLOAD_DIR, filename);
+      fs.writeFileSync(localPath, buffer);
+      const port = process.env.PORT || 7070;
+      return `http://localhost:${port}/uploads/${filename}`;
+    }
+
+    // Use GCS in production
+    const bucket = storage.bucket(ASSETS_BUCKET);
+    const file = bucket.file(filename);
+    await file.save(buffer, {
+      metadata: {
+        contentType: this.getContentType(extension),
+      },
+    });
+
+    return `https://storage.googleapis.com/${ASSETS_BUCKET}/${filename}`;
+  },
+
   async uploadAsset(buffer: Buffer, assetPath: string, filename: string): Promise<string> {
     const fullPath = `${assetPath}/${filename}`;
 

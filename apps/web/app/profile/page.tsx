@@ -148,10 +148,19 @@ export default function ProfilePage() {
   };
 
   const handleSaveProfile = async () => {
-    // TODO: Implement profile update API call
-    setIsEditing(false);
-    // Clear URL params
-    router.replace('/profile');
+    try {
+      await authApi.updateProfile({
+        name: editData.name,
+        phone: editData.phone,
+      });
+      setIsEditing(false);
+      // Clear URL params
+      router.replace('/profile');
+      // Refresh the page to show updated data
+      window.location.reload();
+    } catch (error) {
+      console.error('Failed to update profile:', error);
+    }
   };
 
   const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {

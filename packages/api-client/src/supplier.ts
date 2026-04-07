@@ -62,7 +62,96 @@ export interface SupplierProduct {
   stock: number;
 }
 
+export interface SupplierProfile {
+  id: string;
+  companyName: string;
+  description?: string;
+  phone?: string;
+  address?: string;
+  website?: string;
+  facebook?: string;
+  instagram?: string;
+  linkedin?: string;
+  businessImages: string[];
+  user: { name: string; email: string };
+}
+
+export interface UpdateProfileData {
+  companyName?: string;
+  description?: string;
+  phone?: string;
+  address?: string;
+  website?: string;
+  facebook?: string;
+  instagram?: string;
+  linkedin?: string;
+}
+
 export const supplierApi = {
+  // Profile methods
+  async getProfile(): Promise<SupplierProfile> {
+    const response = await fetch(`${config.baseUrl}/supplier/profile`, {
+      method: 'GET',
+      headers: getHeaders(),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || 'Failed to get profile');
+    }
+
+    return response.json();
+  },
+
+  async updateProfile(data: UpdateProfileData): Promise<SupplierProfile> {
+    const response = await fetch(`${config.baseUrl}/supplier/profile`, {
+      method: 'PUT',
+      headers: getHeaders(),
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || 'Failed to update profile');
+    }
+
+    return response.json();
+  },
+
+  async uploadBusinessImage(file: File): Promise<{ url: string }> {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const token = getAuthToken();
+    const response = await fetch(`${config.baseUrl}/supplier/upload-business-image`, {
+      method: 'POST',
+      headers: {
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+      body: formData,
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || 'Failed to upload image');
+    }
+
+    return response.json();
+  },
+
+  async deleteBusinessImage(imageUrl: string): Promise<void> {
+    const response = await fetch(`${config.baseUrl}/supplier/business-image`, {
+      method: 'DELETE',
+      headers: getHeaders(),
+      body: JSON.stringify({ imageUrl }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || 'Failed to delete image');
+    }
+  },
+
   async getInvoices(params?: { page?: number; pageSize?: number; status?: string }): Promise<{
     data: SupplierInvoice[];
     total: number;

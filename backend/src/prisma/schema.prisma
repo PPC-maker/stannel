@@ -119,6 +119,16 @@ model SupplierProfile {
   onboardingStatus String     @default("pending_review") // pending_review, approved, rejected
   status          String      @default("active") // active, suspended, inactive
 
+  // Public profile info
+  description     String?
+  phone           String?
+  address         String?
+  website         String?
+  facebook        String?
+  instagram       String?
+  linkedin        String?
+  businessImages  String[]    @default([])
+
   contracts     Contract[]
   invoices      Invoice[]
   supplierGoals SupplierGoal[]
