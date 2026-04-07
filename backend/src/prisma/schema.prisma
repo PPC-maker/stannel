@@ -44,6 +44,8 @@ model User {
   email           String          @unique
   name            String
   phone           String?
+  company         String?
+  address         String?
   role            UserRole
   rank            UserRank        @default(BRONZE)
   isActive        Boolean         @default(false)

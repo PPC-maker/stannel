@@ -144,7 +144,7 @@ export default function RewardsPage() {
       </GlassCard>
 
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-6 bg-white/95 backdrop-blur-sm rounded-2xl p-6 shadow-lg">
         <div>
           <h1 className="text-3xl font-display font-bold text-gray-900">חנות ההטבות</h1>
           <p className="text-gray-600 mt-1">ממשו את הנקודות שצברתם להטבות מגוונות</p>

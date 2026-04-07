@@ -277,13 +277,15 @@ export async function authRoutes(server: FastifyInstance) {
 
   // Update profile
   server.patch('/profile', { preHandler: [authMiddleware] }, async (request: FastifyRequest, reply: FastifyReply) => {
-    const body = request.body as { name?: string; phone?: string; profileImage?: string };
+    const body = request.body as { name?: string; phone?: string; company?: string; address?: string; profileImage?: string };
 
     const user = await prisma.user.update({
       where: { id: request.user!.id },
       data: {
         ...(body.name && { name: body.name }),
-        ...(body.phone && { phone: body.phone }),
+        ...(body.phone !== undefined && { phone: body.phone || null }),
+        ...(body.company !== undefined && { company: body.company || null }),
+        ...(body.address !== undefined && { address: body.address || null }),
         ...(body.profileImage && { profileImage: body.profileImage }),
       },
       include: {

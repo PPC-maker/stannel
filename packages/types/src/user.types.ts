@@ -19,6 +19,8 @@ export interface User {
   email: string;
   name: string;
   phone?: string;
+  company?: string;
+  address?: string;
   role: UserRole;
   rank: UserRank;
   isActive: boolean;

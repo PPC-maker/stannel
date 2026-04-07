@@ -77,8 +77,8 @@ export default function ProfilePage() {
       setEditData({
         name: user.name || '',
         phone: user.phone || '',
-        company: user.supplierProfile?.companyName || '',
-        address: '',
+        company: user.company || '',
+        address: user.address || '',
       });
     }
   }, [user, isReady]);
@@ -107,8 +107,8 @@ export default function ProfilePage() {
     phone: user?.phone || '',
     avatar: user?.profileImage || null,
     role: user?.role || 'ARCHITECT',
-    company: user?.supplierProfile?.companyName || '',
-    address: '',
+    company: user?.company || '',
+    address: user?.address || '',
     joinDate: user?.createdAt ? new Date(user.createdAt).toISOString() : new Date().toISOString(),
     tier: user?.rank || 'GOLD',
   };
@@ -152,6 +152,8 @@ export default function ProfilePage() {
       await authApi.updateProfile({
         name: editData.name,
         phone: editData.phone,
+        company: editData.company,
+        address: editData.address,
       });
       setIsEditing(false);
       // Clear URL params
