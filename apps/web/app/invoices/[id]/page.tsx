@@ -38,7 +38,7 @@ export default function InvoiceDetailPage() {
           <GlassCard className="text-center py-12">
             <AlertTriangle size={48} className="mx-auto text-red-400 mb-4" />
             <h1 className="text-2xl font-bold text-gray-900 mb-2">חשבונית לא נמצאה</h1>
-            <p className="text-gray-500 mb-6">החשבונית המבוקשת לא נמצאה או שאין לך הרשאה לצפות בה</p>
+            <p className="text-gray-700 mb-6">החשבונית המבוקשת לא נמצאה או שאין לך הרשאה לצפות בה</p>
             <Link href="/invoices" className="btn-gold inline-block">
               חזרה לחשבוניות
             </Link>
@@ -65,7 +65,7 @@ export default function InvoiceDetailPage() {
           </button>
           <div>
             <h1 className="text-3xl font-display font-bold text-gray-900">פרטי חשבונית</h1>
-            <p className="text-gray-500 mt-1">#{invoice.id.slice(-8)}</p>
+            <p className="text-gray-700 mt-1">#{invoice.id.slice(-8)}</p>
           </div>
         </div>
 
@@ -89,7 +89,7 @@ export default function InvoiceDetailPage() {
                         <FileIcon size={48} className="text-red-400" />
                       </div>
                       <p className="text-gray-900 font-medium mb-1">קובץ PDF</p>
-                      <p className="text-gray-500 text-sm">לחץ למטה לצפייה או הורדה</p>
+                      <p className="text-gray-700 text-sm">לחץ למטה לצפייה או הורדה</p>
                     </div>
                     <div className="flex gap-3">
                       <a
@@ -124,12 +124,12 @@ export default function InvoiceDetailPage() {
                       alt="חשבונית"
                       className="w-full rounded-lg object-contain max-h-96 hover:opacity-90 transition-opacity cursor-zoom-in"
                     />
-                    <p className="text-center text-gray-500 text-sm mt-2">לחץ להגדלה</p>
+                    <p className="text-center text-gray-700 text-sm mt-2">לחץ להגדלה</p>
                   </a>
                 )
               ) : (
                 <div className="h-64 flex items-center justify-center bg-gray-50 rounded-lg">
-                  <p className="text-gray-500">אין תמונה</p>
+                  <p className="text-gray-700">אין תמונה</p>
                 </div>
               )}
             </GlassCard>
@@ -149,7 +149,7 @@ export default function InvoiceDetailPage() {
                 <div className="flex items-center gap-3">
                   <StatusIcon size={24} className={status.color} />
                   <div>
-                    <p className="text-gray-500 text-sm">סטטוס</p>
+                    <p className="text-gray-700 text-sm">סטטוס</p>
                     <p className={`text-lg font-semibold ${status.color}`}>{status.label}</p>
                   </div>
                 </div>
@@ -157,7 +157,7 @@ export default function InvoiceDetailPage() {
 
               {/* Amount */}
               <div className="mb-6">
-                <p className="text-gray-500 text-sm mb-1">סכום</p>
+                <p className="text-gray-700 text-sm mb-1">סכום</p>
                 <p className="text-3xl font-bold text-gold-500">
                   ₪{invoice.amount?.toLocaleString()}
                 </p>
@@ -165,9 +165,9 @@ export default function InvoiceDetailPage() {
 
               {/* Supplier */}
               <div className="mb-4 flex items-start gap-3">
-                <Building2 size={20} className="text-gray-400 mt-1" />
+                <Building2 size={20} className="text-gray-600 mt-1" />
                 <div>
-                  <p className="text-gray-500 text-sm">ספק</p>
+                  <p className="text-gray-700 text-sm">ספק</p>
                   <p className="text-gray-900">
                     {invoice.supplier?.companyName || invoice.supplier?.user?.name || 'לא ידוע'}
                   </p>
@@ -176,9 +176,9 @@ export default function InvoiceDetailPage() {
 
               {/* Architect */}
               <div className="mb-4 flex items-start gap-3">
-                <User size={20} className="text-gray-400 mt-1" />
+                <User size={20} className="text-gray-600 mt-1" />
                 <div>
-                  <p className="text-gray-500 text-sm">אדריכל</p>
+                  <p className="text-gray-700 text-sm">אדריכל</p>
                   <p className="text-gray-900">
                     {invoice.architect?.user?.name || invoice.architect?.user?.email || 'לא ידוע'}
                   </p>
@@ -187,9 +187,9 @@ export default function InvoiceDetailPage() {
 
               {/* Date */}
               <div className="mb-6 flex items-start gap-3">
-                <Calendar size={20} className="text-gray-400 mt-1" />
+                <Calendar size={20} className="text-gray-600 mt-1" />
                 <div>
-                  <p className="text-gray-500 text-sm">תאריך העלאה</p>
+                  <p className="text-gray-700 text-sm">תאריך העלאה</p>
                   <p className="text-gray-900">
                     {new Date(invoice.createdAt).toLocaleDateString('he-IL', {
                       year: 'numeric',
@@ -205,7 +205,7 @@ export default function InvoiceDetailPage() {
               {/* AI Validation */}
               {invoice.aiStatus && (
                 <div className="p-4 rounded-lg bg-gray-50 mb-6">
-                  <p className="text-gray-500 text-sm mb-2">בדיקת AI</p>
+                  <p className="text-gray-700 text-sm mb-2">בדיקת AI</p>
                   <div className="flex items-center gap-2">
                     {invoice.aiStatus === 'MATCH' ? (
                       <CheckCircle size={16} className="text-green-500" />
@@ -216,7 +216,7 @@ export default function InvoiceDetailPage() {
                       {invoice.aiStatus === 'MATCH' ? 'הסכום תואם' : 'אי-התאמה'}
                     </span>
                     {invoice.aiConfidence && (
-                      <span className="text-gray-500 text-sm">
+                      <span className="text-gray-700 text-sm">
                         ({Math.round(invoice.aiConfidence * 100)}% ביטחון)
                       </span>
                     )}

@@ -6,6 +6,7 @@ import multipart from '@fastify/multipart';
 import rateLimit from '@fastify/rate-limit';
 import fastifyStatic from '@fastify/static';
 import websocket from '@fastify/websocket';
+import compress from '@fastify/compress';
 import * as path from 'path';
 import * as fs from 'fs';
 
@@ -16,7 +17,9 @@ import { schedulerService } from './services/scheduler.service.js';
 import { healthMonitorService } from './services/health-monitor.service.js';
 import { systemScannerService } from './services/system-scanner.service.js';
 import { securityMiddleware, securityHeadersMiddleware } from './middleware/security.middleware.js';
+import { financialRateLimitMiddleware } from './middleware/financial-rate-limit.middleware.js';
 import { wsService } from './services/websocket.service.js';
+import { requestLogger, responseLogger, errorLogger } from './middleware/logging.middleware.js';
 
 // Validate environment variables
 validateEnv();
@@ -87,6 +90,13 @@ async function registerPlugins() {
     timeWindow: '1 minute',
   });
 
+  // Response compression (gzip/brotli)
+  await server.register(compress, {
+    global: true,
+    threshold: 1024, // Only compress responses > 1KB
+    encodings: ['gzip', 'deflate'],
+  });
+
   // WebSocket for real-time updates
   await server.register(websocket);
 
@@ -109,6 +119,12 @@ async function registerPlugins() {
 // Register security hooks
 server.addHook('onRequest', securityHeadersMiddleware);
 server.addHook('preHandler', securityMiddleware);
+server.addHook('preHandler', financialRateLimitMiddleware);
+
+// Register logging hooks
+server.addHook('preHandler', requestLogger);
+server.addHook('onResponse', responseLogger);
+server.setErrorHandler(errorLogger);
 
 // Register routes
 async function registerRoutes() {

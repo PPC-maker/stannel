@@ -32,7 +32,7 @@ export default function GoalsPage() {
         <div className="p-6 max-w-4xl mx-auto relative z-10 text-center py-20">
           <Target size={64} className="mx-auto text-gray-300 mb-4" />
           <h1 className="text-2xl font-bold text-gray-900 mb-2">גישה מוגבלת</h1>
-          <p className="text-gray-500">עמוד זה זמין לאדריכלים בלבד</p>
+          <p className="text-gray-700">עמוד זה זמין לאדריכלים בלבד</p>
         </div>
       </div>
     );
@@ -60,7 +60,7 @@ export default function GoalsPage() {
             <Target className="text-gold-400" />
             יעדים ובונוסים
           </h1>
-          <p className="text-gray-500 mt-1">מעקב אחר הביצועים שלך</p>
+          <p className="text-gray-700 mt-1">מעקב אחר הביצועים שלך</p>
         </motion.div>
 
         {/* Stats */}
@@ -94,7 +94,7 @@ export default function GoalsPage() {
               <GlassCard className="h-full">
                 <div className="flex items-start justify-between">
                   <div>
-                    <p className="text-gray-500 text-sm mb-1">{stat.label}</p>
+                    <p className="text-gray-700 text-sm mb-1">{stat.label}</p>
                     <p className={`text-3xl font-bold ${stat.color}`}>{isLoading ? '...' : stat.value}</p>
                   </div>
                   <div className={`p-3 rounded-xl bg-gray-100`}>
@@ -171,8 +171,8 @@ export default function GoalsPage() {
             <GlassCard>
               <div className="text-center py-12">
                 <Target size={48} className="mx-auto text-gray-300 mb-4" />
-                <p className="text-gray-500 text-lg">אין יעד פעיל כרגע</p>
-                <p className="text-gray-400 text-sm mt-1">פנה למנהל המערכת להגדרת יעד</p>
+                <p className="text-gray-700 text-lg">אין יעד פעיל כרגע</p>
+                <p className="text-gray-600 text-sm mt-1">פנה למנהל המערכת להגדרת יעד</p>
               </div>
             </GlassCard>
           )}
@@ -205,8 +205,8 @@ export default function GoalsPage() {
             ) : bonuses.length === 0 ? (
               <div className="text-center py-12">
                 <Award size={48} className="mx-auto text-gray-300 mb-4" />
-                <p className="text-gray-500">אין בונוסים</p>
-                <p className="text-gray-400 text-sm mt-1">בונוסים יופיעו כאן כשתשיג יעדים</p>
+                <p className="text-gray-700">אין בונוסים</p>
+                <p className="text-gray-600 text-sm mt-1">בונוסים יופיעו כאן כשתשיג יעדים</p>
               </div>
             ) : (
               <div className="divide-y divide-gray-100">
@@ -230,7 +230,7 @@ export default function GoalsPage() {
                         <p className="text-gray-900 font-medium">
                           ₪{bonus.amount?.toLocaleString()}
                         </p>
-                        <p className="text-gray-500 text-sm">
+                        <p className="text-gray-700 text-sm">
                           {bonus.bonusType === 'goal_achieved' ? 'בונוס השגת יעד' : bonus.bonusType}
                         </p>
                       </div>
@@ -244,7 +244,7 @@ export default function GoalsPage() {
                         {bonus.status === 'CREDITED' ? 'זוכה' : bonus.status === 'PENDING' ? 'ממתין' : 'נכשל'}
                       </span>
                       {bonus.creditedAt && (
-                        <p className="text-gray-400 text-xs mt-1">
+                        <p className="text-gray-600 text-xs mt-1">
                           {new Date(bonus.creditedAt).toLocaleDateString('he-IL')}
                         </p>
                       )}

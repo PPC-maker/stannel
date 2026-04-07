@@ -65,6 +65,14 @@ export function useSuppliers(enabled: boolean = true) {
   });
 }
 
+export function useArchitectSuppliers(enabled: boolean = true) {
+  return useQuery({
+    queryKey: ['my-suppliers'],
+    queryFn: () => invoicesApi.getMySuppliers(),
+    enabled,
+  });
+}
+
 export function useUploadInvoice() {
   const queryClient = useQueryClient();
 
@@ -89,7 +97,8 @@ export function useRedeemReward() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (productId: string) => rewardsApi.redeem({ productId }),
+    mutationFn: ({ productId, cashPayment = 0 }: { productId: string; cashPayment?: number }) =>
+      rewardsApi.redeem({ productId, cashAmount: cashPayment }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['rewards'] });
       queryClient.invalidateQueries({ queryKey: ['wallet'] });

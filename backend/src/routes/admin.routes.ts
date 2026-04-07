@@ -1127,7 +1127,7 @@ Please analyze this error and provide a fix.
       name: string;
       description?: string;
       pointCost: number;
-      cashCost?: number;
+      pointsPerShekel?: number;
       stock: number;
       imageUrl?: string;
       supplierId?: string;
@@ -1142,7 +1142,7 @@ Please analyze this error and provide a fix.
         name: body.name,
         description: body.description || '',
         pointCost: body.pointCost,
-        cashCost: body.cashCost || 0,
+        pointsPerShekel: body.pointsPerShekel || 100,
         stock: body.stock,
         imageUrl: body.imageUrl,
         supplierId: body.supplierId,
@@ -1169,7 +1169,7 @@ Please analyze this error and provide a fix.
       name?: string;
       description?: string;
       pointCost?: number;
-      cashCost?: number;
+      pointsPerShekel?: number;
       stock?: number;
       imageUrl?: string;
       isActive?: boolean;
@@ -1196,6 +1196,29 @@ Please analyze this error and provide a fix.
   server.delete('/products/:id', async (request: FastifyRequest, reply: FastifyReply) => {
     const { id } = request.params as { id: string };
 
+    // Check if product has redemptions
+    const redemptionCount = await prisma.redemption.count({ where: { productId: id } });
+
+    if (redemptionCount > 0) {
+      // Can't delete product with redemptions - deactivate instead
+      await prisma.product.update({
+        where: { id },
+        data: { isActive: false, stock: 0 },
+      });
+
+      await prisma.auditLog.create({
+        data: {
+          userId: request.user!.id,
+          action: 'PRODUCT_DEACTIVATED',
+          entityId: id,
+          metadata: { reason: 'Has redemptions, cannot delete' },
+        },
+      });
+
+      return { success: true, deactivated: true, message: 'המוצר הושבת כי יש לו מימושים' };
+    }
+
+    // No redemptions - safe to delete
     await prisma.product.delete({ where: { id } });
 
     await prisma.auditLog.create({
@@ -1508,6 +1531,217 @@ Please analyze this error and provide a fix.
       return { success: true, sentTo: ALERT_EMAILS };
     } catch (error: any) {
       return reply.code(500).send({ error: 'Failed to send test email', details: error.message });
+    }
+  });
+
+  // Send test email to specific address
+  server.post('/send-test-email', async (request: FastifyRequest, reply: FastifyReply) => {
+    const { email } = request.body as { email?: string };
+    const targetEmail = email || 'orenshp77@gmail.com';
+
+    try {
+      const sent = await emailService.sendTestEmail(targetEmail);
+      if (sent) {
+        return { success: true, message: `Test email sent to ${targetEmail}` };
+      } else {
+        return reply.code(500).send({ error: 'Failed to send email - check SendGrid API key' });
+      }
+    } catch (error: any) {
+      return reply.code(500).send({ error: 'Failed to send test email', details: error.message });
+    }
+  });
+
+  // Force send daily report
+  server.post('/system-logs/force-daily-report', async (request: FastifyRequest, reply: FastifyReply) => {
+    try {
+      const { dailyReportService } = await import('../services/daily-report.service.js');
+      const sent = await dailyReportService.forceSendReport();
+      return { success: sent, message: sent ? 'Daily report sent successfully' : 'Failed to send daily report' };
+    } catch (error: any) {
+      return reply.code(500).send({ error: 'Failed to send daily report', details: error.message });
+    }
+  });
+
+  // Get system logs with filtering
+  server.get('/system-logs', async (request: FastifyRequest) => {
+    const query = request.query as {
+      page?: string;
+      pageSize?: string;
+      severity?: string;
+      category?: string;
+      resolved?: string;
+      hours?: string;
+    };
+
+    const page = parseInt(query.page || '1');
+    const pageSize = parseInt(query.pageSize || '50');
+    const hours = parseInt(query.hours || '24');
+
+    const since = new Date();
+    since.setHours(since.getHours() - hours);
+
+    const where: any = {
+      createdAt: { gte: since },
+    };
+
+    if (query.severity) {
+      where.severity = query.severity;
+    }
+    if (query.category) {
+      where.category = query.category;
+    }
+    if (query.resolved !== undefined) {
+      where.resolved = query.resolved === 'true';
+    }
+
+    const [logs, total] = await Promise.all([
+      prisma.systemLog.findMany({
+        where,
+        orderBy: { createdAt: 'desc' },
+        skip: (page - 1) * pageSize,
+        take: pageSize,
+      }),
+      prisma.systemLog.count({ where }),
+    ]);
+
+    return {
+      data: logs,
+      total,
+      page,
+      pageSize,
+      totalPages: Math.ceil(total / pageSize),
+    };
+  });
+
+  // Get single log with full details (for copying to Claude)
+  server.get('/system-logs/:id', async (request: FastifyRequest, reply: FastifyReply) => {
+    const { id } = request.params as { id: string };
+
+    const log = await prisma.systemLog.findUnique({
+      where: { id },
+    });
+
+    if (!log) {
+      return reply.code(404).send({ error: 'Log not found' });
+    }
+
+    return log;
+  });
+
+  // Mark log as resolved
+  server.patch('/system-logs/:id/resolve', async (request: FastifyRequest, reply: FastifyReply) => {
+    const { id } = request.params as { id: string };
+
+    const log = await prisma.systemLog.update({
+      where: { id },
+      data: {
+        resolved: true,
+        resolvedAt: new Date(),
+        resolvedBy: request.user?.email || 'admin',
+      },
+    });
+
+    return log;
+  });
+
+  // Get error statistics
+  server.get('/system-logs/stats', async (request: FastifyRequest) => {
+    const query = request.query as { hours?: string };
+    const hours = parseInt(query.hours || '24');
+
+    const since = new Date();
+    since.setHours(since.getHours() - hours);
+
+    const logs = await prisma.systemLog.findMany({
+      where: {
+        createdAt: { gte: since },
+      },
+      select: {
+        severity: true,
+        category: true,
+      },
+    });
+
+    const byCategory: Record<string, number> = {};
+    const bySeverity: Record<string, number> = {};
+
+    for (const log of logs) {
+      byCategory[log.category] = (byCategory[log.category] || 0) + 1;
+      bySeverity[log.severity] = (bySeverity[log.severity] || 0) + 1;
+    }
+
+    return {
+      total: logs.length,
+      byCategory,
+      bySeverity,
+      timeRange: `${hours} hours`,
+    };
+  });
+
+  // Security scan endpoint
+  server.post('/security-scan', async (request: FastifyRequest, reply: FastifyReply) => {
+    try {
+      const { securityScannerService } = await import('../services/security-scanner.service.js');
+      const result = await securityScannerService.runFullScan();
+
+      return {
+        success: true,
+        result: {
+          timestamp: result.timestamp,
+          score: result.overallScore,
+          readyForProduction: result.readyForProduction,
+          passed: result.passed,
+          failed: result.failed,
+          critical: result.critical,
+          high: result.high,
+          checks: result.checks,
+        },
+        claudeFormat: securityScannerService.formatForClaude(result),
+      };
+    } catch (error) {
+      reply.code(500).send({
+        success: false,
+        error: 'Security scan failed',
+        message: (error as Error).message,
+      });
+    }
+  });
+
+  // Force backup endpoint
+  server.post('/force-backup', async (request: FastifyRequest, reply: FastifyReply) => {
+    try {
+      const { backupService } = await import('../services/backup.service.js');
+      const result = await backupService.forceBackup();
+
+      return {
+        success: result.success,
+        result,
+      };
+    } catch (error) {
+      reply.code(500).send({
+        success: false,
+        error: 'Backup failed',
+        message: (error as Error).message,
+      });
+    }
+  });
+
+  // Financial integrity check endpoint
+  server.post('/financial-integrity-check', async (request: FastifyRequest, reply: FastifyReply) => {
+    try {
+      const { financialSecurityService } = await import('../services/financial-security.service.js');
+      const result = await financialSecurityService.runIntegrityCheck();
+
+      return {
+        success: true,
+        result,
+      };
+    } catch (error) {
+      reply.code(500).send({
+        success: false,
+        error: 'Financial integrity check failed',
+        message: (error as Error).message,
+      });
     }
   });
 }

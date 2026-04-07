@@ -89,7 +89,7 @@ export default function NotificationsPage() {
                 <Bell className="text-gold-400" />
                 התראות
               </h1>
-              <p className="text-gray-500 mt-1">
+              <p className="text-gray-700 mt-1">
                 {unreadCount > 0 ? `${unreadCount} התראות שלא נקראו` : 'אין התראות חדשות'}
               </p>
             </div>
@@ -130,8 +130,8 @@ export default function NotificationsPage() {
             ) : notifications.length === 0 ? (
               <div className="text-center py-16">
                 <Bell size={48} className="mx-auto text-gray-300 mb-4" />
-                <p className="text-gray-500 text-lg">אין התראות</p>
-                <p className="text-gray-400 text-sm mt-1">התראות חדשות יופיעו כאן</p>
+                <p className="text-gray-700 text-lg">אין התראות</p>
+                <p className="text-gray-600 text-sm mt-1">התראות חדשות יופיעו כאן</p>
               </div>
             ) : (
               <div className="divide-y divide-gray-100">
@@ -157,8 +157,8 @@ export default function NotificationsPage() {
                         <p className={`text-gray-900 ${!notif.isRead ? 'font-medium' : ''}`}>
                           {notif.title}
                         </p>
-                        <p className="text-gray-500 text-sm mt-0.5">{notif.message}</p>
-                        <p className="text-gray-400 text-xs mt-2">
+                        <p className="text-gray-700 text-sm mt-0.5">{notif.message}</p>
+                        <p className="text-gray-600 text-xs mt-2">
                           {new Date(notif.createdAt).toLocaleString('he-IL')}
                         </p>
                       </div>

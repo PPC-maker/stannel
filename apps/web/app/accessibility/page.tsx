@@ -52,7 +52,7 @@ export default function AccessibilityPage() {
         >
           <Link
             href="/"
-            className="text-gray-500 hover:text-gray-900 transition-colors inline-flex items-center gap-2 mb-6"
+            className="text-gray-700 hover:text-gray-900 transition-colors inline-flex items-center gap-2 mb-6"
           >
             <ArrowRight size={20} />
             <span>חזרה לדף הבית</span>
@@ -60,7 +60,7 @@ export default function AccessibilityPage() {
           <h1 className="text-4xl md:text-5xl font-display font-bold text-gray-900 mb-4">
             הצהרת נגישות
           </h1>
-          <p className="text-gray-500 text-lg">
+          <p className="text-gray-700 text-lg">
             עודכן לאחרונה: {new Date().toLocaleDateString('he-IL')}
           </p>
         </motion.div>
@@ -68,7 +68,7 @@ export default function AccessibilityPage() {
         {/* Main Content */}
         <GlassCard hover={false} className="mb-8">
           <h2 className="text-2xl font-semibold text-gray-900 mb-4">מחויבות לנגישות</h2>
-          <div className="space-y-4 text-gray-600 leading-relaxed">
+          <div className="space-y-4 text-gray-800 leading-relaxed">
             <p>
               STANNEL מחויבת להנגשת האתר והשירותים שלה לכל המשתמשים, כולל אנשים עם מוגבלויות.
               אנו משקיעים מאמצים רבים כדי להבטיח שהאתר שלנו יהיה נגיש ושימושי לכולם.
@@ -90,7 +90,7 @@ export default function AccessibilityPage() {
                 </div>
                 <div>
                   <h3 className="text-lg font-semibold text-gray-900 mb-2">{feature.title}</h3>
-                  <p className="text-gray-500 text-sm">{feature.description}</p>
+                  <p className="text-gray-700 text-sm">{feature.description}</p>
                 </div>
               </div>
             </GlassCard>
@@ -100,7 +100,7 @@ export default function AccessibilityPage() {
         {/* Additional Info */}
         <GlassCard hover={false} className="mb-8">
           <h2 className="text-2xl font-semibold text-gray-900 mb-4">התאמות נגישות באתר</h2>
-          <ul className="space-y-3 text-gray-600">
+          <ul className="space-y-3 text-gray-800">
             <li className="flex items-start gap-2">
               <span className="text-gold-400 mt-1">•</span>
               <span>מבנה כותרות היררכי ברור</span>

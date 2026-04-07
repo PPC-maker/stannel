@@ -10,7 +10,7 @@ import type {
 } from '@stannel/types';
 
 export const invoicesApi = {
-  async getSuppliers(): Promise<{ data: { id: string; companyName: string }[] }> {
+  async getSuppliers(): Promise<{ data: { id: string; companyName: string; email?: string }[] }> {
     const response = await fetch(`${config.baseUrl}/invoices/suppliers`, {
       method: 'GET',
       headers: getHeaders(),
@@ -19,6 +19,20 @@ export const invoicesApi = {
     if (!response.ok) {
       const error = await response.json();
       throw new Error(error.message || 'Failed to get suppliers');
+    }
+
+    return response.json();
+  },
+
+  async getMySuppliers(): Promise<{ data: { id: string; companyName: string; email?: string; invoiceCount: number; totalAmount: number }[] }> {
+    const response = await fetch(`${config.baseUrl}/invoices/my-suppliers`, {
+      method: 'GET',
+      headers: getHeaders(),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || 'Failed to get my suppliers');
     }
 
     return response.json();

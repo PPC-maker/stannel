@@ -131,7 +131,7 @@ export default function SettingsPage() {
           className="mb-8 bg-white/90 backdrop-blur-sm rounded-2xl p-6 shadow-sm"
         >
           <h1 className="text-3xl font-display font-bold text-gray-900">הגדרות</h1>
-          <p className="text-gray-500 mt-1">נהל את החשבון וההעדפות שלך</p>
+          <p className="text-gray-700 mt-1">נהל את החשבון וההעדפות שלך</p>
         </motion.div>
 
         <div className="space-y-6">
@@ -157,7 +157,7 @@ export default function SettingsPage() {
               </div>
               <div>
                 <h2 className="text-xl font-semibold text-gray-800">{currentUser.name}</h2>
-                <p className="text-gray-500">{currentUser.role} {currentUser.company !== '-' && `• ${currentUser.company}`}</p>
+                <p className="text-gray-700">{currentUser.role} {currentUser.company !== '-' && `• ${currentUser.company}`}</p>
               </div>
             </div>
 
@@ -168,7 +168,7 @@ export default function SettingsPage() {
                   className="flex items-center justify-between py-3 border-b border-gray-200 last:border-0"
                 >
                   <div className="flex items-center gap-3">
-                    <item.icon size={18} className="text-gray-400" />
+                    <item.icon size={18} className="text-gray-600" />
                     <span className="text-gray-600">{item.label}</span>
                   </div>
                   <span className="text-gray-800">{item.value}</span>
@@ -203,10 +203,10 @@ export default function SettingsPage() {
                   className="flex items-center justify-between py-3 border-b border-gray-200 last:border-0"
                 >
                   <div className="flex items-center gap-3">
-                    <item.icon size={18} className="text-gray-400" />
+                    <item.icon size={18} className="text-gray-600" />
                     <div>
                       <p className="text-gray-800">{item.label}</p>
-                      <p className="text-gray-400 text-sm">{item.desc}</p>
+                      <p className="text-gray-600 text-sm">{item.desc}</p>
                     </div>
                   </div>
                   <button
@@ -245,10 +245,10 @@ export default function SettingsPage() {
             <div className="space-y-4">
               <div className="flex items-center justify-between py-3 border-b border-gray-200">
                 <div className="flex items-center gap-3">
-                  {darkMode ? <Moon size={18} className="text-gray-400" /> : <Sun size={18} className="text-gray-400" />}
+                  {darkMode ? <Moon size={18} className="text-gray-600" /> : <Sun size={18} className="text-gray-600" />}
                   <div>
                     <p className="text-gray-800">מצב כהה</p>
-                    <p className="text-gray-400 text-sm">התאמת ערכת הצבעים</p>
+                    <p className="text-gray-600 text-sm">התאמת ערכת הצבעים</p>
                   </div>
                 </div>
                 <button
@@ -270,10 +270,10 @@ export default function SettingsPage() {
                 className="flex items-center justify-between py-3 w-full hover:bg-gray-50 rounded-lg px-2 -mx-2 transition-colors"
               >
                 <div className="flex items-center gap-3">
-                  <Globe size={18} className="text-gray-400" />
+                  <Globe size={18} className="text-gray-600" />
                   <div className="text-right">
                     <p className="text-gray-800">שפה</p>
-                    <p className="text-gray-400 text-sm">שפת הממשק</p>
+                    <p className="text-gray-600 text-sm">שפת הממשק</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2 text-gray-600">
@@ -297,13 +297,13 @@ export default function SettingsPage() {
                 className="w-full flex items-center justify-between py-4 px-4 rounded-lg hover:bg-gray-50 transition-colors"
               >
                 <div className="flex items-center gap-3">
-                  <Key size={18} className="text-gray-400" />
+                  <Key size={18} className="text-gray-600" />
                   <div className="text-right">
                     <p className="text-gray-800">שינוי סיסמה</p>
-                    <p className="text-gray-400 text-sm">עדכון סיסמת החשבון</p>
+                    <p className="text-gray-600 text-sm">עדכון סיסמת החשבון</p>
                   </div>
                 </div>
-                <ChevronLeft size={20} className="text-gray-400" />
+                <ChevronLeft size={20} className="text-gray-600" />
               </button>
 
               <button
@@ -311,43 +311,27 @@ export default function SettingsPage() {
                 className="w-full flex items-center justify-between py-4 px-4 rounded-lg hover:bg-gray-50 transition-colors"
               >
                 <div className="flex items-center gap-3">
-                  <Smartphone size={18} className="text-gray-400" />
+                  <Smartphone size={18} className="text-gray-600" />
                   <div className="text-right">
                     <p className="text-gray-800">אימות דו-שלבי</p>
-                    <p className="text-gray-400 text-sm">הוספת שכבת אבטחה נוספת</p>
+                    <p className="text-gray-600 text-sm">הוספת שכבת אבטחה נוספת</p>
                   </div>
                 </div>
-                <ChevronLeft size={20} className="text-gray-400" />
+                <ChevronLeft size={20} className="text-gray-600" />
               </button>
 
               <a
-                href="/privacy-policy"
-                target="_blank"
+                href="/privacy"
                 className="w-full flex items-center justify-between py-4 px-4 rounded-lg hover:bg-gray-50 transition-colors"
               >
                 <div className="flex items-center gap-3">
-                  <FileText size={18} className="text-gray-400" />
+                  <FileText size={18} className="text-gray-600" />
                   <div className="text-right">
-                    <p className="text-gray-800">מדיניות פרטיות</p>
-                    <p className="text-gray-400 text-sm">צפייה במדיניות הפרטיות</p>
+                    <p className="text-gray-800">מדיניות פרטיות ותנאי שימוש</p>
+                    <p className="text-gray-600 text-sm">צפייה במדיניות ובתנאים</p>
                   </div>
                 </div>
-                <ChevronLeft size={20} className="text-gray-400" />
-              </a>
-
-              <a
-                href="/terms"
-                target="_blank"
-                className="w-full flex items-center justify-between py-4 px-4 rounded-lg hover:bg-gray-50 transition-colors"
-              >
-                <div className="flex items-center gap-3">
-                  <FileText size={18} className="text-gray-400" />
-                  <div className="text-right">
-                    <p className="text-gray-800">תנאי שימוש</p>
-                    <p className="text-gray-400 text-sm">צפייה בתנאי השימוש</p>
-                  </div>
-                </div>
-                <ChevronLeft size={20} className="text-gray-400" />
+                <ChevronLeft size={20} className="text-gray-600" />
               </a>
             </div>
           </GlassCard>
@@ -387,7 +371,7 @@ export default function SettingsPage() {
               <p className="text-gray-600 text-sm">החברה תהיה בעלת השליטה המלאה ב:</p>
               <ul className="space-y-2 mr-4">
                 {['קוד מקור', 'בסיס נתונים', 'שירותי ענן', 'שירותי AI', 'מערכת גיבויים'].map((item) => (
-                  <li key={item} className="text-gray-500 text-sm flex items-center gap-2">
+                  <li key={item} className="text-gray-700 text-sm flex items-center gap-2">
                     <span className="w-1.5 h-1.5 rounded-full bg-gold-400" />
                     {item}
                   </li>
@@ -410,14 +394,14 @@ export default function SettingsPage() {
                   <RefreshCw size={20} className="text-green-400" />
                   <div>
                     <p className="text-gray-800 text-sm">גיבוי אוטומטי</p>
-                    <p className="text-gray-400 text-xs">יומי לכמות מתגלגלת</p>
+                    <p className="text-gray-600 text-xs">יומי לכמות מתגלגלת</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3 p-4 rounded-xl bg-gray-50 border border-gray-200">
                   <Database size={20} className="text-blue-400" />
                   <div>
                     <p className="text-gray-800 text-sm">גיבוי שבועי</p>
-                    <p className="text-gray-400 text-xs">מלא למערכת</p>
+                    <p className="text-gray-600 text-xs">מלא למערכת</p>
                   </div>
                 </div>
               </div>
@@ -456,7 +440,7 @@ export default function SettingsPage() {
             </p>
             <ul className="space-y-2 mt-3 mr-4">
               {['קוד מקור מלא ומעודכן', 'תיעוד טכני מלא', 'הרשאות גישה לכל השירותים'].map((item) => (
-                <li key={item} className="text-gray-500 text-sm flex items-center gap-2">
+                <li key={item} className="text-gray-700 text-sm flex items-center gap-2">
                   <CheckCircle size={14} className="text-green-400" />
                   {item}
                 </li>
@@ -496,7 +480,7 @@ export default function SettingsPage() {
             >
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-xl font-semibold text-gray-800">בחר שפה</h3>
-                <button onClick={() => setShowLanguageModal(false)} className="text-gray-400 hover:text-[#0066CC]">
+                <button onClick={() => setShowLanguageModal(false)} className="text-gray-600 hover:text-[#0066CC]">
                   <X size={20} />
                 </button>
               </div>
@@ -544,7 +528,7 @@ export default function SettingsPage() {
             >
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-xl font-semibold text-gray-800">שינוי סיסמה</h3>
-                <button onClick={() => setShowPasswordModal(false)} className="text-gray-400 hover:text-[#0066CC]">
+                <button onClick={() => setShowPasswordModal(false)} className="text-gray-600 hover:text-[#0066CC]">
                   <X size={20} />
                 </button>
               </div>
@@ -601,14 +585,14 @@ export default function SettingsPage() {
             >
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-xl font-semibold text-gray-800">אימות דו-שלבי</h3>
-                <button onClick={() => setShow2FAModal(false)} className="text-gray-400 hover:text-[#0066CC]">
+                <button onClick={() => setShow2FAModal(false)} className="text-gray-600 hover:text-[#0066CC]">
                   <X size={20} />
                 </button>
               </div>
               <div className="text-center py-8">
                 <Smartphone size={48} className="mx-auto text-gold-400 mb-4" />
                 <p className="text-gray-800 mb-2">אימות דו-שלבי יתווסף בקרוב</p>
-                <p className="text-gray-400 text-sm">
+                <p className="text-gray-600 text-sm">
                   תכונה זו תאפשר לך להוסיף שכבת אבטחה נוספת לחשבונך
                 </p>
               </div>
@@ -645,7 +629,7 @@ export default function SettingsPage() {
                   <AlertTriangle size={32} className="text-red-400" />
                 </div>
                 <h3 className="text-xl font-semibold text-gray-800 mb-2">התנתקות מהחשבון</h3>
-                <p className="text-gray-500">האם אתה בטוח שברצונך להתנתק?</p>
+                <p className="text-gray-700">האם אתה בטוח שברצונך להתנתק?</p>
               </div>
               <div className="flex gap-3">
                 <button

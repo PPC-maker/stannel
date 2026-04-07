@@ -17,7 +17,7 @@ const productSchema = z.object({
   description: z.string().optional(),
   imageUrl: z.string().url(),
   pointCost: z.number().positive(),
-  cashCost: z.number().min(0).default(0),
+  pointsPerShekel: z.number().positive().default(100),
   stock: z.number().int().min(0),
 });
 
@@ -168,7 +168,7 @@ export async function supplierRoutes(server: FastifyInstance) {
         description: body.description,
         imageUrl: body.imageUrl,
         pointCost: body.pointCost,
-        cashCost: body.cashCost,
+        pointsPerShekel: body.pointsPerShekel,
         stock: body.stock,
         supplier: {
           connect: { id: request.user!.supplierProfile!.id },

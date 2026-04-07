@@ -22,7 +22,7 @@ export async function invoiceRoutes(server: FastifyInstance) {
         id: true,
         companyName: true,
         user: {
-          select: { name: true },
+          select: { name: true, email: true },
         },
       },
       orderBy: { companyName: 'asc' },
@@ -32,6 +32,58 @@ export async function invoiceRoutes(server: FastifyInstance) {
       data: suppliers.map(s => ({
         id: s.id,
         companyName: s.companyName || s.user.name || 'ספק',
+        email: s.user.email,
+      })),
+    };
+  });
+
+  // Get suppliers connected to architect (suppliers with invoices from this architect)
+  server.get('/my-suppliers', {
+    preHandler: [authMiddleware, requireArchitect],
+  }, async (request: FastifyRequest) => {
+    const architectId = request.user!.architectProfile!.id;
+
+    // Get unique suppliers from architect's invoices
+    const invoices = await prisma.invoice.findMany({
+      where: {
+        architectId,
+        deletedAt: null,
+      },
+      select: {
+        supplierId: true,
+        supplier: {
+          select: {
+            id: true,
+            companyName: true,
+            user: {
+              select: { name: true, email: true },
+            },
+          },
+        },
+      },
+      distinct: ['supplierId'],
+    });
+
+    // Get invoice counts per supplier
+    const supplierStats = await prisma.invoice.groupBy({
+      by: ['supplierId'],
+      where: {
+        architectId,
+        deletedAt: null,
+      },
+      _count: { id: true },
+      _sum: { amount: true },
+    });
+
+    const statsMap = new Map(supplierStats.map(s => [s.supplierId, { count: s._count.id, totalAmount: s._sum.amount || 0 }]));
+
+    return {
+      data: invoices.map(inv => ({
+        id: inv.supplier.id,
+        companyName: inv.supplier.companyName || inv.supplier.user.name || 'ספק',
+        email: inv.supplier.user.email,
+        invoiceCount: statsMap.get(inv.supplierId)?.count || 0,
+        totalAmount: statsMap.get(inv.supplierId)?.totalAmount || 0,
       })),
     };
   });
@@ -40,31 +92,19 @@ export async function invoiceRoutes(server: FastifyInstance) {
   server.post('/upload', {
     preHandler: [authMiddleware, requireArchitect],
   }, async (request: FastifyRequest, reply: FastifyReply) => {
-    console.log('[Invoice Upload] Starting upload...');
-    console.log('[Invoice Upload] User:', request.user?.email, 'Role:', request.user?.role);
-    console.log('[Invoice Upload] ArchitectProfile:', request.user?.architectProfile?.id || 'MISSING!');
-
     let data;
     try {
       data = await request.file();
-      console.log('[Invoice Upload] File received:', data?.filename || 'NO FILE');
     } catch (fileError) {
       console.error('[Invoice Upload] Error getting file:', fileError);
       return reply.code(400).send({ error: 'Failed to process file upload' });
     }
 
     if (!data) {
-      console.error('[Invoice Upload] No file in request');
       return reply.code(400).send({ error: 'No file uploaded' });
     }
 
     const fields = data.fields as Record<string, any>;
-    console.log('[Invoice Upload] Field keys:', Object.keys(fields));
-    // Log each field's value safely
-    for (const key of Object.keys(fields)) {
-      const field = fields[key];
-      console.log(`[Invoice Upload] Field "${key}" type:`, typeof field, 'value:', field?.value ?? field?._buf?.toString() ?? String(field).substring(0, 100));
-    }
 
     // Handle both field structures: { value: string } or direct string
     const getFieldValue = (field: any): string => {
@@ -74,16 +114,10 @@ export async function invoiceRoutes(server: FastifyInstance) {
       return '';
     };
 
-    // Log raw field values for debugging
-    console.log('[Invoice Upload] Raw fields.amount:', fields.amount);
-    console.log('[Invoice Upload] Raw fields.supplierId:', fields.supplierId);
-
     const amount = parseFloat(getFieldValue(fields.amount) || '0');
     const supplierId = getFieldValue(fields.supplierId);
-    console.log('[Invoice Upload] Parsed - amount:', amount, 'supplierId:', supplierId);
 
     if (!amount || !supplierId) {
-      console.error('[Invoice Upload] Missing required fields');
       return reply.code(400).send({ error: 'Amount and supplierId are required' });
     }
 
@@ -91,7 +125,6 @@ export async function invoiceRoutes(server: FastifyInstance) {
     const supplier = await prisma.supplierProfile.findUnique({
       where: { id: supplierId },
     });
-    console.log('[Invoice Upload] Supplier found:', supplier?.id || 'NOT FOUND');
 
     if (!supplier) {
       return reply.code(404).send({ error: 'Supplier not found' });
@@ -99,7 +132,6 @@ export async function invoiceRoutes(server: FastifyInstance) {
 
     // Check architect profile exists
     if (!request.user?.architectProfile?.id) {
-      console.error('[Invoice Upload] User has no architect profile!');
       return reply.code(400).send({ error: 'User does not have an architect profile' });
     }
 
@@ -107,9 +139,7 @@ export async function invoiceRoutes(server: FastifyInstance) {
     let imageUrl: string;
     try {
       const buffer = await data.toBuffer();
-      console.log('[Invoice Upload] Buffer size:', buffer.length);
       imageUrl = await storageService.uploadInvoice(buffer, data.filename);
-      console.log('[Invoice Upload] Uploaded to:', imageUrl);
     } catch (uploadError) {
       console.error('[Invoice Upload] Storage upload failed:', uploadError);
       return reply.code(500).send({ error: 'Failed to upload file to storage' });
@@ -134,7 +164,6 @@ export async function invoiceRoutes(server: FastifyInstance) {
           supplier: { include: { user: true } },
         },
       });
-      console.log('[Invoice Upload] Invoice created:', invoice.id);
     } catch (dbError) {
       console.error('[Invoice Upload] Database error:', dbError);
       return reply.code(500).send({ error: 'Failed to create invoice in database' });
@@ -180,11 +209,6 @@ export async function invoiceRoutes(server: FastifyInstance) {
     const page = parseInt(query.page || '1');
     const pageSize = parseInt(query.pageSize || '10');
 
-    console.log('[Invoices GET] User:', request.user?.email);
-    console.log('[Invoices GET] Role:', request.user?.role);
-    console.log('[Invoices GET] ArchitectProfile ID:', request.user?.architectProfile?.id);
-    console.log('[Invoices GET] SupplierProfile ID:', request.user?.supplierProfile?.id);
-
     // Build where clause based on user role
     // Always exclude soft-deleted invoices (deletedAt: null)
     let where: any = {
@@ -194,17 +218,13 @@ export async function invoiceRoutes(server: FastifyInstance) {
     if (request.user!.role === 'ARCHITECT' && request.user!.architectProfile) {
       // Architects see invoices they uploaded
       where.architectId = request.user!.architectProfile.id;
-      console.log('[Invoices GET] Filtering by architectId:', where.architectId);
     } else if (request.user!.role === 'SUPPLIER' && request.user!.supplierProfile) {
       // Suppliers see invoices uploaded for them
       where.supplierId = request.user!.supplierProfile.id;
-      console.log('[Invoices GET] Filtering by supplierId:', where.supplierId);
     } else if (request.user!.role === 'ADMIN') {
       // Admins see all invoices
-      console.log('[Invoices GET] Admin - no filter');
     } else {
       // No valid profile, return empty
-      console.log('[Invoices GET] No valid profile, returning empty');
       return { data: [], total: 0, page, pageSize, totalPages: 0 };
     }
 
@@ -227,9 +247,6 @@ export async function invoiceRoutes(server: FastifyInstance) {
       }),
       prisma.invoice.count({ where }),
     ]);
-
-    // Production logging - minimal info only
-    console.log(`[Invoices GET] User: ${request.user?.email}, Found: ${total} invoices`);
 
     return {
       data: invoices,
@@ -262,6 +279,17 @@ export async function invoiceRoutes(server: FastifyInstance) {
     // Non-admins can't view deleted invoices
     if (invoice.deletedAt && request.user!.role !== 'ADMIN') {
       return reply.code(404).send({ error: 'Invoice not found' });
+    }
+
+    // Verify user has permission to view this invoice
+    const isAdmin = request.user!.role === 'ADMIN';
+    const isOwnerArchitect = request.user!.role === 'ARCHITECT' &&
+      request.user!.architectProfile?.id === invoice.architectId;
+    const isOwnerSupplier = request.user!.role === 'SUPPLIER' &&
+      request.user!.supplierProfile?.id === invoice.supplierId;
+
+    if (!isAdmin && !isOwnerArchitect && !isOwnerSupplier) {
+      return reply.code(403).send({ error: 'You do not have permission to view this invoice' });
     }
 
     return invoice;

@@ -157,13 +157,13 @@ export default function SupplierDashboardPage() {
           animate={{ opacity: 1, x: 0 }}
           className="mb-8 text-center bg-white/90 backdrop-blur-sm rounded-2xl p-6 shadow-sm"
         >
-          <p className="text-gray-500 text-sm mb-2">פורטל ספק</p>
+          <p className="text-gray-700 text-sm mb-2">פורטל ספק</p>
           <h1 className="text-3xl font-display font-bold text-gray-900 flex items-center justify-center gap-3">
             <Building2 className="text-gold-400" />
             {user?.name || 'ספק'}
           </h1>
           <div className="flex items-center justify-center gap-2 mt-2">
-            <span className="text-gray-500 text-sm">{user?.email}</span>
+            <span className="text-gray-700 text-sm">{user?.email}</span>
             <span className="flex items-center gap-1 text-green-500 text-sm">
               <Shield size={14} />
               מאושר
@@ -247,15 +247,15 @@ export default function SupplierDashboardPage() {
           className="grid grid-cols-3 gap-4 mb-8"
         >
           <Link href="/supplier/profile" className="p-6 bg-gray-50 border border-gray-200 rounded-xl hover:bg-gray-100 transition-colors text-center group">
-            <Building2 className="mx-auto text-gray-400 group-hover:text-gold-400 mb-2 transition-colors" size={32} />
+            <Building2 className="mx-auto text-gray-600 group-hover:text-gold-400 mb-2 transition-colors" size={32} />
             <span className="text-gray-600 text-sm">פרטי הספק</span>
           </Link>
           <Link href="/supplier/payments" className="p-6 bg-gray-50 border border-gray-200 rounded-xl hover:bg-gray-100 transition-colors text-center group">
-            <CreditCard className="mx-auto text-gray-400 group-hover:text-gold-400 mb-2 transition-colors" size={32} />
+            <CreditCard className="mx-auto text-gray-600 group-hover:text-gold-400 mb-2 transition-colors" size={32} />
             <span className="text-gray-600 text-sm">תשלומים</span>
           </Link>
           <Link href="/supplier/invoices" className="p-6 bg-gray-50 border border-gray-200 rounded-xl hover:bg-gray-100 transition-colors text-center group">
-            <FileText className="mx-auto text-gray-400 group-hover:text-gold-400 mb-2 transition-colors" size={32} />
+            <FileText className="mx-auto text-gray-600 group-hover:text-gold-400 mb-2 transition-colors" size={32} />
             <span className="text-gray-600 text-sm">חשבוניות</span>
           </Link>
         </motion.div>
@@ -316,7 +316,7 @@ export default function SupplierDashboardPage() {
             ) : invoices.length === 0 ? (
               <div className="text-center py-12">
                 <Receipt className="w-12 h-12 mx-auto text-gray-300 mb-4" />
-                <p className="text-gray-500">אין חשבוניות</p>
+                <p className="text-gray-700">אין חשבוניות</p>
               </div>
             ) : (
               <div className="space-y-3 max-h-[500px] overflow-y-auto">
@@ -336,13 +336,13 @@ export default function SupplierDashboardPage() {
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4">
                           <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center">
-                            <User size={20} className="text-gray-500" />
+                            <User size={20} className="text-gray-700" />
                           </div>
                           <div>
                             <p className="text-gray-800 font-medium">
                               {invoice.architect.user.name}
                             </p>
-                            <p className="text-gray-400 text-sm">
+                            <p className="text-gray-600 text-sm">
                               {new Date(invoice.createdAt).toLocaleDateString('he-IL')}
                             </p>
                           </div>
@@ -406,23 +406,23 @@ export default function SupplierDashboardPage() {
                   onClick={() => setIsModalOpen(false)}
                   className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
                 >
-                  <X size={20} className="text-gray-400" />
+                  <X size={20} className="text-gray-600" />
                 </button>
               </div>
 
               {/* Invoice Details */}
               <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 mb-6">
                 <div className="flex justify-between items-center mb-3">
-                  <span className="text-gray-500">אדריכל:</span>
+                  <span className="text-gray-700">אדריכל:</span>
                   <span className="text-gray-800 font-medium">{selectedInvoice.architect.user.name}</span>
                 </div>
                 <div className="flex justify-between items-center mb-3">
-                  <span className="text-gray-500">סכום חשבונית:</span>
+                  <span className="text-gray-700">סכום חשבונית:</span>
                   <span className="text-gray-800 font-bold text-lg">₪{selectedInvoice.amount.toLocaleString()}</span>
                 </div>
                 {selectedInvoice.slaDeadline && (
                   <div className="flex justify-between items-center">
-                    <span className="text-gray-500">תאריך יעד:</span>
+                    <span className="text-gray-700">תאריך יעד:</span>
                     <span className={selectedInvoice.status === 'OVERDUE' ? 'text-red-400' : 'text-yellow-400'}>
                       {new Date(selectedInvoice.slaDeadline).toLocaleDateString('he-IL')}
                     </span>
@@ -432,7 +432,7 @@ export default function SupplierDashboardPage() {
 
               {/* Payment Reference Input */}
               <div className="mb-4">
-                <label className="block text-gray-500 text-sm mb-2">
+                <label className="block text-gray-700 text-sm mb-2">
                   אסמכתא / מספר אישור העברה
                 </label>
                 <input
@@ -447,7 +447,7 @@ export default function SupplierDashboardPage() {
 
               {/* Payment Proof Upload */}
               <div className="mb-6">
-                <label className="block text-gray-500 text-sm mb-2">
+                <label className="block text-gray-700 text-sm mb-2">
                   העלאת מסמך אישור העברה <span className="text-red-400">*</span>
                 </label>
                 {paymentProofFile ? (
@@ -465,14 +465,14 @@ export default function SupplierDashboardPage() {
                       onClick={() => setPaymentProofFile(null)}
                       className="p-1 hover:bg-gray-100 rounded transition-colors"
                     >
-                      <X size={18} className="text-gray-400" />
+                      <X size={18} className="text-gray-600" />
                     </button>
                   </div>
                 ) : (
                   <label className="flex flex-col items-center justify-center p-6 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-[#0066CC]/50 hover:bg-gray-50 transition-colors">
-                    <Upload className="text-gray-400 mb-2" size={32} />
-                    <span className="text-gray-500 text-sm">לחץ להעלאת קובץ</span>
-                    <span className="text-gray-400 text-xs mt-1">PDF, תמונה או מסמך</span>
+                    <Upload className="text-gray-600 mb-2" size={32} />
+                    <span className="text-gray-700 text-sm">לחץ להעלאת קובץ</span>
+                    <span className="text-gray-600 text-xs mt-1">PDF, תמונה או מסמך</span>
                     <input
                       type="file"
                       accept=".pdf,.png,.jpg,.jpeg,.doc,.docx"

@@ -202,18 +202,18 @@ export default function EventsPage() {
                 {/* Event Details */}
                 <div className="space-y-2 mb-4">
                   {event.time && (
-                    <div className="flex items-center gap-2 text-gray-500 text-sm">
+                    <div className="flex items-center gap-2 text-gray-700 text-sm">
                       <Clock size={14} />
                       <span>{event.time}</span>
                     </div>
                   )}
                   {event.location && (
-                    <div className="flex items-center gap-2 text-gray-500 text-sm">
+                    <div className="flex items-center gap-2 text-gray-700 text-sm">
                       <MapPin size={14} />
                       <span>{event.location}</span>
                     </div>
                   )}
-                  <div className="flex items-center gap-2 text-gray-500 text-sm">
+                  <div className="flex items-center gap-2 text-gray-700 text-sm">
                     <Users size={14} />
                     <span>{event.registered || 0} / {event.capacity || '∞'} משתתפים</span>
                   </div>
@@ -231,7 +231,7 @@ export default function EventsPage() {
                       registered
                         ? 'bg-green-500/20 text-green-400 cursor-default'
                         : full
-                        ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                        ? 'bg-gray-100 text-gray-600 cursor-not-allowed'
                         : 'bg-gold-400 text-primary-900 hover:bg-gold-300'
                     }`}
                   >

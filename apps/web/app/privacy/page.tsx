@@ -75,7 +75,7 @@ export default function PrivacyPage() {
         >
           <Link
             href="/"
-            className="text-gray-500 hover:text-gray-900 transition-colors inline-flex items-center gap-2 mb-6"
+            className="text-gray-700 hover:text-gray-900 transition-colors inline-flex items-center gap-2 mb-6"
           >
             <ArrowRight size={20} />
             <span>חזרה לדף הבית</span>
@@ -83,7 +83,7 @@ export default function PrivacyPage() {
           <h1 className="text-4xl md:text-5xl font-display font-bold text-gray-900 mb-4">
             מדיניות פרטיות
           </h1>
-          <p className="text-gray-500 text-lg">
+          <p className="text-gray-700 text-lg">
             עודכן לאחרונה: {new Date().toLocaleDateString('he-IL')}
           </p>
         </motion.div>
@@ -96,7 +96,7 @@ export default function PrivacyPage() {
             </div>
             <div>
               <h2 className="text-2xl font-semibold text-gray-900 mb-4">מחויבות לפרטיותכם</h2>
-              <div className="space-y-4 text-gray-600 leading-relaxed">
+              <div className="space-y-4 text-gray-800 leading-relaxed">
                 <p>
                   ב-STANNEL אנו מייחסים חשיבות עליונה לפרטיות המשתמשים שלנו. מדיניות פרטיות זו
                   מתארת כיצד אנו אוספים, משתמשים ומגנים על המידע האישי שלכם בעת השימוש בפלטפורמה.
@@ -119,7 +119,7 @@ export default function PrivacyPage() {
               </div>
               <div className="flex-1">
                 <h2 className="text-xl font-semibold text-gray-900 mb-4">{section.title}</h2>
-                <ul className="space-y-2 text-gray-600">
+                <ul className="space-y-2 text-gray-800">
                   {section.content.map((item, itemIndex) => (
                     <li key={itemIndex} className="flex items-start gap-2">
                       <span className="text-gold-400 mt-1">•</span>
@@ -135,7 +135,7 @@ export default function PrivacyPage() {
         {/* Cookies */}
         <GlassCard hover={false} className="mb-8">
           <h2 className="text-xl font-semibold text-gray-900 mb-4">שימוש בעוגיות (Cookies)</h2>
-          <div className="space-y-4 text-gray-600">
+          <div className="space-y-4 text-gray-800">
             <p>
               האתר משתמש בעוגיות לצורך שיפור חווית המשתמש ותפקוד תקין של השירותים:
             </p>
@@ -162,7 +162,7 @@ export default function PrivacyPage() {
         {/* User Rights */}
         <GlassCard hover={false} className="mb-8">
           <h2 className="text-xl font-semibold text-gray-900 mb-4">הזכויות שלכם</h2>
-          <div className="space-y-4 text-gray-600">
+          <div className="space-y-4 text-gray-800">
             <p>על פי חוק, עומדות לכם הזכויות הבאות:</p>
             <ul className="space-y-2">
               <li className="flex items-start gap-2">

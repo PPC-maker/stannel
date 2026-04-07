@@ -119,7 +119,7 @@ export default function InvoiceUploadPage() {
                 <CheckCircle size={40} className="text-white" />
               </div>
               <h1 className="text-2xl font-bold text-gray-900 mb-2">החשבונית הועלתה בהצלחה!</h1>
-              <p className="text-gray-500 mb-8">
+              <p className="text-gray-700 mb-8">
                 החשבונית נשלחה לאישור. נעדכן אותך ברגע שתאושר.
               </p>
               <div className="flex gap-4 justify-center">
@@ -151,7 +151,7 @@ export default function InvoiceUploadPage() {
         </Link>
         <div>
           <h1 className="text-3xl font-display font-bold text-gray-900">העלאת חשבונית</h1>
-          <p className="text-gray-500 mt-1">העלו חשבונית לצבירת נקודות</p>
+          <p className="text-gray-700 mt-1">העלו חשבונית לצבירת נקודות</p>
         </div>
       </div>
 
@@ -165,7 +165,7 @@ export default function InvoiceUploadPage() {
           <GlassCard className="text-center py-8">
             <Building2 size={48} className="mx-auto text-gold-400 mb-4" />
             <h2 className="text-xl font-semibold text-gray-900 mb-2">אין ספקים זמינים</h2>
-            <p className="text-gray-500 mb-4">
+            <p className="text-gray-700 mb-4">
               כרגע אין ספקים פעילים במערכת. צור קשר עם מנהל המערכת להוספת ספקים.
             </p>
             <Link href="/invoices" className="btn-gold inline-block">
@@ -216,7 +216,7 @@ export default function InvoiceUploadPage() {
                       <FileIcon size={40} className="text-red-400" />
                     </div>
                     <p className="text-gray-900 font-medium">{file?.name}</p>
-                    <p className="text-gray-500 text-sm mt-1">קובץ PDF</p>
+                    <p className="text-gray-700 text-sm mt-1">קובץ PDF</p>
                   </div>
                 ) : (
                   // Image Preview
@@ -242,12 +242,12 @@ export default function InvoiceUploadPage() {
             ) : (
               <>
                 <div className="w-16 h-16 mx-auto mb-4 rounded-xl bg-gray-100 flex items-center justify-center">
-                  <Upload size={32} className="text-gray-400" />
+                  <Upload size={32} className="text-gray-600" />
                 </div>
                 <p className="text-gray-600 mb-2">
                   {isDragActive ? 'שחררו כאן...' : 'גררו חשבונית לכאן או לחצו לבחירה'}
                 </p>
-                <p className="text-gray-400 text-sm">JPG, PNG, PDF עד 10MB</p>
+                <p className="text-gray-600 text-sm">JPG, PNG, PDF עד 10MB</p>
               </>
             )}
           </div>
@@ -288,7 +288,7 @@ export default function InvoiceUploadPage() {
             <div>
               <label className="block text-gray-600 text-sm mb-2">ספק</label>
               {suppliersLoading ? (
-                <div className="w-full bg-gray-100 border border-gray-200 rounded-xl px-4 py-3 text-gray-400 animate-pulse">
+                <div className="w-full bg-gray-100 border border-gray-200 rounded-xl px-4 py-3 text-gray-600 animate-pulse">
                   טוען ספקים...
                 </div>
               ) : (
@@ -339,7 +339,7 @@ export default function InvoiceUploadPage() {
               </button>
             </div>
 
-            <p className="text-gray-400 text-sm text-center">
+            <p className="text-gray-600 text-sm text-center">
               החשבונית תיבדק על ידי מערכת AI ולאחר מכן תאושר על ידי מנהל
             </p>
           </div>

@@ -23,11 +23,8 @@ import {
   FileText,
   History,
   CheckCircle,
-  XCircle,
-  ChevronLeft,
-  ChevronRight,
 } from 'lucide-react';
-import { useWalletBalance, useWalletCard, useWalletTransactions } from '@/lib/api-hooks';
+import { useWalletBalance, useWalletCard, useWalletTransactions, useSuppliers, useArchitectSuppliers } from '@/lib/api-hooks';
 import { useAuth } from '@/lib/auth-context';
 import { useAuthGuard, AuthGuardLoader } from '@/lib/useAuthGuard';
 import Link from 'next/link';
@@ -80,8 +77,7 @@ const quickActionCategories = [
     hoverBg: 'hover:bg-orange-50',
     iconBg: 'bg-orange-100',
     items: [
-      { label: 'מחשבון נקודות', href: '/tools/calculator', icon: TrendingUp },
-      { label: 'דוחות', href: '/tools/reports', icon: FileText },
+      { label: 'דוחות חשבוניות', href: '/invoices', icon: FileText },
       { label: 'הגדרות', href: '/settings', icon: Wrench },
     ],
   },
@@ -94,9 +90,9 @@ const quickActionCategories = [
     hoverBg: 'hover:bg-blue-50',
     iconBg: 'bg-blue-100',
     items: [
-      { label: 'כל הספקים', href: '/suppliers', icon: Building2 },
-      { label: 'ספקים מומלצים', href: '/suppliers?filter=recommended', icon: Award },
-      { label: 'הספקים שלי', href: '/suppliers?filter=my', icon: Users },
+      { label: 'כל הספקים', href: '/supplier', icon: Building2 },
+      { label: 'ספקים מומלצים', href: '/supplier?filter=recommended', icon: Award },
+      { label: 'הספקים שלי', href: '/supplier?filter=my', icon: Users },
     ],
   },
   {
@@ -122,6 +118,12 @@ export default function WalletPage() {
   const { data: balance, isLoading: balanceLoading } = useWalletBalance();
   const { data: card, isLoading: cardLoading } = useWalletCard();
   const { data: transactions, isLoading: transactionsLoading } = useWalletTransactions();
+
+  // Suppliers data - fetch based on role
+  const isAdmin = user?.role === 'ADMIN';
+  const isArchitect = user?.role === 'ARCHITECT';
+  const { data: allSuppliers, isLoading: suppliersLoading } = useSuppliers(activeCategory === 'suppliers' && isAdmin);
+  const { data: mySuppliers, isLoading: mySuppliersLoading } = useArchitectSuppliers(activeCategory === 'suppliers' && isArchitect);
 
 
   const currentRank = (card?.rank as keyof typeof rankConfig) || 'BRONZE';
@@ -424,47 +426,159 @@ export default function WalletPage() {
                   transition={{ duration: 0.3 }}
                   className="mt-6 pt-6 border-t border-gray-100 overflow-hidden"
                 >
-                  {quickActionCategories
-                    .filter(cat => cat.id === activeCategory)
-                    .map(category => (
-                      <div key={category.id}>
-                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
-                          {category.items.map((item, index) => {
-                            const ItemIcon = item.icon;
-                            return (
-                              <motion.div
-                                key={item.href}
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: index * 0.05 }}
-                              >
-                                <Link
-                                  href={item.href}
-                                  className={`
-                                    flex flex-col items-center gap-2 p-4 rounded-xl
-                                    bg-gradient-to-br from-gray-50 to-gray-100
-                                    ${category.hoverBg}
-                                    border border-gray-100 hover:border-gray-200
-                                    transition-all duration-200 group hover:shadow-md
-                                  `}
-                                >
-                                  <div className={`
-                                    w-10 h-10 rounded-full flex items-center justify-center
-                                    ${category.iconBg} transition-colors
-                                  `}>
-                                    <ItemIcon size={20} className={category.iconColor} />
-                                  </div>
-                                  <span className="text-sm font-medium text-[#1E293B] text-center">
-                                    {item.label}
-                                  </span>
-                                </Link>
-                              </motion.div>
-                            );
-                          })}
+                  {/* Suppliers Table - Special Case */}
+                  {activeCategory === 'suppliers' ? (
+                    <div>
+                      <h3 className="text-lg font-semibold text-[#1E293B] mb-4">
+                        {isAdmin ? 'כל הספקים במערכת' : 'הספקים שלי'}
+                      </h3>
+
+                      {(suppliersLoading || mySuppliersLoading) ? (
+                        <div className="space-y-3">
+                          {[...Array(3)].map((_, i) => (
+                            <div key={i} className="flex items-center gap-4 p-4 bg-gray-50 rounded-xl animate-pulse">
+                              <div className="w-12 h-12 bg-gray-200 rounded-full" />
+                              <div className="flex-1">
+                                <div className="h-4 w-32 bg-gray-200 rounded mb-2" />
+                                <div className="h-3 w-24 bg-gray-100 rounded" />
+                              </div>
+                            </div>
+                          ))}
                         </div>
-                      </div>
-                    ))
-                  }
+                      ) : (
+                        <div className="overflow-x-auto">
+                          <table className="w-full">
+                            <thead>
+                              <tr className="border-b border-gray-200">
+                                <th className="text-right py-3 px-4 text-sm font-semibold text-[#64748B]">ספק</th>
+                                <th className="text-right py-3 px-4 text-sm font-semibold text-[#64748B]">אימייל</th>
+                                {isArchitect && (
+                                  <>
+                                    <th className="text-right py-3 px-4 text-sm font-semibold text-[#64748B]">חשבוניות</th>
+                                    <th className="text-right py-3 px-4 text-sm font-semibold text-[#64748B]">סה״כ</th>
+                                  </>
+                                )}
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {isAdmin && allSuppliers?.data && allSuppliers.data.length > 0 ? (
+                                allSuppliers.data.map((supplier, index) => (
+                                  <motion.tr
+                                    key={supplier.id}
+                                    initial={{ opacity: 0, x: -10 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: index * 0.03 }}
+                                    className="border-b border-gray-100 hover:bg-blue-50/50 transition-colors"
+                                  >
+                                    <td className="py-3 px-4">
+                                      <div className="flex items-center gap-3">
+                                        <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
+                                          <Building2 size={18} className="text-blue-600" />
+                                        </div>
+                                        <span className="font-medium text-[#1E293B]">{supplier.companyName}</span>
+                                      </div>
+                                    </td>
+                                    <td className="py-3 px-4 text-[#64748B] text-sm">{supplier.email || '-'}</td>
+                                  </motion.tr>
+                                ))
+                              ) : isArchitect && mySuppliers?.data && mySuppliers.data.length > 0 ? (
+                                mySuppliers.data.map((supplier, index) => (
+                                  <motion.tr
+                                    key={supplier.id}
+                                    initial={{ opacity: 0, x: -10 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: index * 0.03 }}
+                                    className="border-b border-gray-100 hover:bg-blue-50/50 transition-colors"
+                                  >
+                                    <td className="py-3 px-4">
+                                      <div className="flex items-center gap-3">
+                                        <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
+                                          <Building2 size={18} className="text-blue-600" />
+                                        </div>
+                                        <span className="font-medium text-[#1E293B]">{supplier.companyName}</span>
+                                      </div>
+                                    </td>
+                                    <td className="py-3 px-4 text-[#64748B] text-sm">{supplier.email || '-'}</td>
+                                    <td className="py-3 px-4 text-center">
+                                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                        {supplier.invoiceCount}
+                                      </span>
+                                    </td>
+                                    <td className="py-3 px-4 text-[#1E293B] font-medium">
+                                      ₪{supplier.totalAmount.toLocaleString()}
+                                    </td>
+                                  </motion.tr>
+                                ))
+                              ) : (
+                                <tr>
+                                  <td colSpan={isArchitect ? 4 : 2} className="py-12 text-center">
+                                    <div className="flex flex-col items-center gap-3">
+                                      <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center">
+                                        <Building2 size={32} className="text-gray-400" />
+                                      </div>
+                                      <p className="text-[#64748B]">
+                                        {isArchitect ? 'עדיין אין לך ספקים מחוברים. העלה חשבונית כדי להתחיל!' : 'אין ספקים במערכת'}
+                                      </p>
+                                      {isArchitect && (
+                                        <Link
+                                          href="/invoices/upload"
+                                          className="mt-2 px-4 py-2 bg-blue-500 text-white rounded-lg text-sm font-medium hover:bg-blue-600 transition-colors"
+                                        >
+                                          העלאת חשבונית
+                                        </Link>
+                                      )}
+                                    </div>
+                                  </td>
+                                </tr>
+                              )}
+                            </tbody>
+                          </table>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    /* Other Categories - Regular Link Buttons */
+                    quickActionCategories
+                      .filter(cat => cat.id === activeCategory)
+                      .map(category => (
+                        <div key={category.id}>
+                          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+                            {category.items.map((item, index) => {
+                              const ItemIcon = item.icon;
+                              return (
+                                <motion.div
+                                  key={item.href}
+                                  initial={{ opacity: 0, y: 10 }}
+                                  animate={{ opacity: 1, y: 0 }}
+                                  transition={{ delay: index * 0.05 }}
+                                >
+                                  <Link
+                                    href={item.href}
+                                    className={`
+                                      flex flex-col items-center gap-2 p-4 rounded-xl
+                                      bg-gradient-to-br from-gray-50 to-gray-100
+                                      ${category.hoverBg}
+                                      border border-gray-100 hover:border-gray-200
+                                      transition-all duration-200 group hover:shadow-md
+                                    `}
+                                  >
+                                    <div className={`
+                                      w-10 h-10 rounded-full flex items-center justify-center
+                                      ${category.iconBg} transition-colors
+                                    `}>
+                                      <ItemIcon size={20} className={category.iconColor} />
+                                    </div>
+                                    <span className="text-sm font-medium text-[#1E293B] text-center">
+                                      {item.label}
+                                    </span>
+                                  </Link>
+                                </motion.div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      ))
+                  )}
                 </motion.div>
               )}
             </AnimatePresence>

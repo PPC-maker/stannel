@@ -208,7 +208,7 @@ export default function DashboardPage() {
                 ) : recentTransactions.length === 0 ? (
                   <div className="text-center py-12">
                     <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gray-100 flex items-center justify-center">
-                      <Wallet className="w-8 h-8 text-gray-400" />
+                      <Wallet className="w-8 h-8 text-gray-600" />
                     </div>
                     <p className="text-[#64748B]">אין תנועות עדיין</p>
                   </div>

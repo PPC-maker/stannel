@@ -1,7 +1,10 @@
 // Scheduler Service - STANNEL Platform
-// Handles scheduled tasks like weekly reports
+// Handles scheduled tasks like weekly reports and daily system reports
 
 import { healthReportService } from './health-report.service.js';
+import { dailyReportService } from './daily-report.service.js';
+import { backupService } from './backup.service.js';
+import { financialSecurityService } from './financial-security.service.js';
 
 interface ScheduledTask {
   name: string;
@@ -27,10 +30,55 @@ function getNextSunday9AM(): Date {
   return nextSunday;
 }
 
+// Calculate next 10:00 AM (daily)
+function getNext10AM(): Date {
+  const now = new Date();
+  const next = new Date(now);
+  next.setHours(10, 0, 0, 0);
+
+  // If it's already past 10:00 AM today, schedule for tomorrow
+  if (next <= now) {
+    next.setDate(next.getDate() + 1);
+  }
+  return next;
+}
+
+// Calculate next 1:00 AM (daily backup)
+function getNext1AM(): Date {
+  const now = new Date();
+  const next = new Date(now);
+  next.setHours(1, 0, 0, 0);
+
+  // If it's already past 1:00 AM today, schedule for tomorrow
+  if (next <= now) {
+    next.setDate(next.getDate() + 1);
+  }
+  return next;
+}
+
+// Calculate next 2:00 AM (financial integrity check)
+function getNext2AM(): Date {
+  const now = new Date();
+  const next = new Date(now);
+  next.setHours(2, 0, 0, 0);
+
+  // If it's already past 2:00 AM today, schedule for tomorrow
+  if (next <= now) {
+    next.setDate(next.getDate() + 1);
+  }
+  return next;
+}
+
 function getNextRunTime(name: string): Date {
   switch (name) {
     case 'weekly-health-report':
       return getNextSunday9AM();
+    case 'daily-system-report':
+      return getNext10AM();
+    case 'daily-backup':
+      return getNext1AM();
+    case 'financial-integrity-check':
+      return getNext2AM();
     default:
       // Default to next hour
       const next = new Date();
@@ -51,6 +99,45 @@ export const schedulerService = {
       handler: async () => {
         console.log('[Scheduler] Running weekly health report...');
         await healthReportService.sendWeeklyReport();
+      },
+    });
+
+    // Daily system report at 10:00 AM
+    this.registerTask({
+      name: 'daily-system-report',
+      cronExpression: '0 10 * * *', // Every day at 10:00 AM
+      lastRun: null,
+      nextRun: getNextRunTime('daily-system-report'),
+      enabled: true,
+      handler: async () => {
+        console.log('[Scheduler] Running daily system report...');
+        await dailyReportService.sendDailyReport();
+      },
+    });
+
+    // Daily backup at 1:00 AM
+    this.registerTask({
+      name: 'daily-backup',
+      cronExpression: '0 1 * * *', // Every day at 1:00 AM
+      lastRun: null,
+      nextRun: getNextRunTime('daily-backup'),
+      enabled: true,
+      handler: async () => {
+        console.log('[Scheduler] Running daily backup...');
+        await backupService.performBackup();
+      },
+    });
+
+    // Financial integrity check at 2:00 AM
+    this.registerTask({
+      name: 'financial-integrity-check',
+      cronExpression: '0 2 * * *', // Every day at 2:00 AM
+      lastRun: null,
+      nextRun: getNextRunTime('financial-integrity-check'),
+      enabled: true,
+      handler: async () => {
+        console.log('[Scheduler] Running financial integrity check...');
+        await financialSecurityService.runIntegrityCheck();
       },
     });
 

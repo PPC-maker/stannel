@@ -4,7 +4,8 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import GlassCard from '@/components/layout/GlassCard';
-import { Mail, Lock, User, Phone, Building2, ArrowLeft, Check, AlertCircle } from 'lucide-react';
+import { Mail, Lock, User, Phone, Building2, ArrowLeft, Check, AlertCircle, Camera, X } from 'lucide-react';
+import Image from 'next/image';
 import { useAuth } from '@/lib/auth-context';
 
 type UserRole = 'ARCHITECT' | 'SUPPLIER';
@@ -27,8 +28,31 @@ export default function RegisterPage() {
     password: '',
     companyName: '',
   });
+  const [profileImage, setProfileImage] = useState<string | null>(null);
+  const [imageFile, setImageFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        setError('הקובץ גדול מדי. גודל מקסימלי 5MB');
+        return;
+      }
+      setImageFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setProfileImage(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const removeImage = () => {
+    setProfileImage(null);
+    setImageFile(null);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -87,7 +111,7 @@ export default function RegisterPage() {
             >
               <div className="text-center mb-8">
                 <h1 className="text-2xl font-bold text-gray-900 mb-2">הצטרפו ל-STANNEL</h1>
-                <p className="text-gray-500">בחרו את סוג החשבון שלכם</p>
+                <p className="text-gray-700">בחרו את סוג החשבון שלכם</p>
               </div>
 
               <div className="grid gap-4">
@@ -104,11 +128,11 @@ export default function RegisterPage() {
                     </div>
                     <div className="flex-1">
                       <h3 className="text-lg font-semibold text-gray-800 mb-1">אדריכל / מעצב</h3>
-                      <p className="text-gray-500 text-sm">
+                      <p className="text-gray-700 text-sm">
                         צברו נקודות על רכישות, ממשו הטבות ונהנו מאירועים בלעדיים
                       </p>
                     </div>
-                    <ArrowLeft className="text-gray-400 group-hover:text-gold-400 transition-colors" />
+                    <ArrowLeft className="text-gray-600 group-hover:text-gold-500 transition-colors" />
                   </div>
                 </button>
 
@@ -125,18 +149,18 @@ export default function RegisterPage() {
                     </div>
                     <div className="flex-1">
                       <h3 className="text-lg font-semibold text-gray-800 mb-1">ספק / יצרן</h3>
-                      <p className="text-gray-500 text-sm">
+                      <p className="text-gray-700 text-sm">
                         הגדילו מכירות, נהלו יעדים והתחברו לאדריכלים מובילים
                       </p>
                     </div>
-                    <ArrowLeft className="text-gray-400 group-hover:text-gold-400 transition-colors" />
+                    <ArrowLeft className="text-gray-600 group-hover:text-gold-500 transition-colors" />
                   </div>
                 </button>
               </div>
 
-              <p className="text-center mt-6 text-gray-500">
+              <p className="text-center mt-6 text-gray-700">
                 יש לכם חשבון?{' '}
-                <Link href="/login" className="text-gold-400 hover:text-gold-300 transition-colors font-medium">
+                <Link href="/login" className="text-[#0066CC] hover:text-[#004499] transition-colors font-medium">
                   היכנסו כאן
                 </Link>
               </p>
@@ -149,12 +173,53 @@ export default function RegisterPage() {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
             >
-              <div className="text-center mb-8">
+              <div className="text-center mb-6">
                 <h1 className="text-2xl font-bold text-gray-900 mb-2">
                   {role === 'ARCHITECT' ? 'הרשמה כאדריכל' : 'הרשמה כספק'}
                 </h1>
-                <p className="text-gray-500">מלאו את הפרטים שלכם</p>
+                <p className="text-gray-700">מלאו את הפרטים שלכם</p>
               </div>
+
+              {/* Profile Image Upload */}
+              <div className="flex justify-center mb-6">
+                <div className="relative">
+                  <div className="w-24 h-24 rounded-full overflow-hidden border-3 border-[#0066CC] shadow-lg bg-gray-100">
+                    {profileImage ? (
+                      <Image
+                        src={profileImage}
+                        alt="תמונת פרופיל"
+                        width={96}
+                        height={96}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
+                        <User size={40} className="text-gray-400" />
+                      </div>
+                    )}
+                  </div>
+                  <label className="absolute bottom-0 right-0 w-8 h-8 bg-[#0066CC] rounded-full shadow-lg flex items-center justify-center cursor-pointer hover:bg-[#0055AA] transition-colors">
+                    <Camera size={16} className="text-white" />
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageUpload}
+                      className="hidden"
+                      disabled={isLoading}
+                    />
+                  </label>
+                  {profileImage && (
+                    <button
+                      type="button"
+                      onClick={removeImage}
+                      className="absolute top-0 left-0 w-6 h-6 bg-red-500 rounded-full shadow flex items-center justify-center hover:bg-red-600 transition-colors"
+                    >
+                      <X size={12} className="text-white" />
+                    </button>
+                  )}
+                </div>
+              </div>
+              <p className="text-center text-gray-500 text-xs mb-4">תמונת פרופיל (אופציונלי)</p>
 
               {/* Error Alert */}
               {error && (
@@ -164,13 +229,13 @@ export default function RegisterPage() {
                   className="mb-6 p-4 bg-red-500/20 border border-red-500/30 rounded-xl flex items-center gap-3"
                 >
                   <AlertCircle className="text-red-400 flex-shrink-0" size={20} />
-                  <p className="text-red-300 text-sm">{error}</p>
+                  <p className="text-red-600 text-sm">{error}</p>
                 </motion.div>
               )}
 
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                  <label className="block text-gray-600 text-sm mb-2">שם מלא</label>
+                  <label className="block text-gray-800 text-sm mb-2">שם מלא</label>
                   <div className="relative">
                     <User className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                     <input
@@ -187,7 +252,7 @@ export default function RegisterPage() {
 
                 {role === 'SUPPLIER' && (
                   <div>
-                    <label className="block text-gray-600 text-sm mb-2">שם החברה</label>
+                    <label className="block text-gray-800 text-sm mb-2">שם החברה</label>
                     <div className="relative">
                       <Building2 className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                       <input
@@ -204,7 +269,7 @@ export default function RegisterPage() {
                 )}
 
                 <div>
-                  <label className="block text-gray-600 text-sm mb-2">אימייל</label>
+                  <label className="block text-gray-800 text-sm mb-2">אימייל</label>
                   <div className="relative">
                     <Mail className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                     <input
@@ -221,7 +286,7 @@ export default function RegisterPage() {
                 </div>
 
                 <div>
-                  <label className="block text-gray-600 text-sm mb-2">טלפון</label>
+                  <label className="block text-gray-800 text-sm mb-2">טלפון</label>
                   <div className="relative">
                     <Phone className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                     <input
@@ -237,7 +302,7 @@ export default function RegisterPage() {
                 </div>
 
                 <div>
-                  <label className="block text-gray-600 text-sm mb-2">סיסמה</label>
+                  <label className="block text-gray-800 text-sm mb-2">סיסמה</label>
                   <div className="relative">
                     <Lock className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
                     <input
@@ -252,7 +317,7 @@ export default function RegisterPage() {
                       disabled={isLoading}
                     />
                   </div>
-                  <p className="text-gray-400 text-xs mt-1">לפחות 8 תווים</p>
+                  <p className="text-gray-600 text-xs mt-1">לפחות 8 תווים</p>
                 </div>
 
                 <div className="flex gap-3 pt-4">
@@ -260,7 +325,7 @@ export default function RegisterPage() {
                     type="button"
                     onClick={() => setStep(1)}
                     disabled={isLoading}
-                    className="flex-1 bg-gray-100 border border-gray-200 rounded-xl py-3 text-gray-600 hover:bg-gray-200 transition-colors disabled:opacity-50"
+                    className="flex-1 bg-gray-100 border border-gray-200 rounded-xl py-3 text-gray-800 hover:bg-gray-200 transition-colors disabled:opacity-50"
                   >
                     חזרה
                   </button>
@@ -294,7 +359,7 @@ export default function RegisterPage() {
                 <Check size={40} className="text-white" />
               </div>
               <h1 className="text-2xl font-bold text-gray-900 mb-2">נרשמת בהצלחה!</h1>
-              <p className="text-gray-500 mb-8">
+              <p className="text-gray-700 mb-8">
                 החשבון שלך ממתין לאישור מנהל. נעדכן אותך במייל ברגע שהחשבון יאושר.
               </p>
               <Link href="/" className="btn-primary px-8 py-3 inline-block">

@@ -240,20 +240,34 @@ export default function LoginPage() {
 
 function translateFirebaseError(error: string): string {
   const errorMap: Record<string, string> = {
-    'auth/user-not-found': 'משתמש לא נמצא',
+    'auth/user-not-found': 'משתמש לא נמצא. אנא הירשמו תחילה',
     'auth/wrong-password': 'סיסמה שגויה',
     'auth/invalid-email': 'כתובת אימייל לא תקינה',
     'auth/user-disabled': 'החשבון מושבת',
     'auth/too-many-requests': 'יותר מדי ניסיונות. נסו שוב מאוחר יותר',
     'auth/network-request-failed': 'בעיית רשת. בדקו את החיבור לאינטרנט',
     'auth/popup-closed-by-user': 'החלון נסגר. נסו שוב',
+    'auth/popup-blocked': 'החלון נחסם. אנא אפשרו חלונות קופצים',
+    'auth/cancelled-popup-request': 'הבקשה בוטלה. נסו שוב',
     'auth/invalid-credential': 'פרטי התחברות שגויים',
+    'auth/account-exists-with-different-credential': 'קיים חשבון עם אימייל זה. נסו להתחבר בדרך אחרת',
+    'auth/operation-not-supported-in-this-environment': 'הפעולה לא נתמכת בסביבה זו',
+    'auth/unauthorized-domain': 'הדומיין לא מורשה. פנו לתמיכה',
+    'Google login failed': 'התחברות עם Google נכשלה. נסו שוב או הירשמו',
+    'Google authentication failed': 'התחברות עם Google נכשלה. נסו שוב או הירשמו',
+    'not found': 'משתמש לא נמצא. אנא הירשמו תחילה',
+    '404': 'משתמש לא נמצא. אנא הירשמו תחילה',
   };
 
   for (const [key, value] of Object.entries(errorMap)) {
-    if (error.includes(key)) {
+    if (error.toLowerCase().includes(key.toLowerCase())) {
       return value;
     }
+  }
+
+  // Default Hebrew message for unknown errors
+  if (!error.match(/[\u0590-\u05FF]/)) {
+    return 'התחברות נכשלה. נסו שוב או פנו לתמיכה';
   }
 
   return error;

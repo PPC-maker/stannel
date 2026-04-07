@@ -45,7 +45,7 @@ export default function ForgotPasswordPage() {
               <span className="text-primary-900 font-bold text-2xl">S</span>
             </div>
             <h1 className="text-2xl font-bold text-gray-900 mb-2">שכחתם סיסמה?</h1>
-            <p className="text-gray-500">הזינו את האימייל שלכם ונשלח לכם קישור לאיפוס</p>
+            <p className="text-gray-700">הזינו את האימייל שלכם ונשלח לכם קישור לאיפוס</p>
           </div>
 
           {/* Success Message */}
@@ -59,10 +59,10 @@ export default function ForgotPasswordPage() {
                 <CheckCircle className="text-green-500" size={32} />
               </div>
               <h2 className="text-xl font-bold text-gray-900 mb-2">האימייל נשלח!</h2>
-              <p className="text-gray-500 mb-6">
+              <p className="text-gray-700 mb-6">
                 בדקו את תיבת הדואר שלכם ({email}) ולחצו על הקישור לאיפוס הסיסמה.
               </p>
-              <p className="text-gray-400 text-sm mb-6">
+              <p className="text-gray-600 text-sm mb-6">
                 לא קיבלתם? בדקו בתיקיית הספאם או נסו שוב.
               </p>
               <div className="space-y-3">
@@ -93,21 +93,21 @@ export default function ForgotPasswordPage() {
                   className="mb-6 p-4 bg-red-500/20 border border-red-500/30 rounded-xl flex items-center gap-3"
                 >
                   <AlertCircle className="text-red-400 flex-shrink-0" size={20} />
-                  <p className="text-red-300 text-sm">{error}</p>
+                  <p className="text-red-600 text-sm">{error}</p>
                 </motion.div>
               )}
 
               {/* Form */}
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div>
-                  <label className="block text-gray-600 text-sm mb-2">אימייל</label>
+                  <label className="block text-gray-800 text-sm mb-2">אימייל</label>
                   <div className="relative">
-                    <Mail className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+                    <Mail className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-600" size={20} />
                     <input
                       type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      className="w-full bg-gray-100 border border-gray-200 rounded-xl px-4 py-3 pr-12 text-gray-900 placeholder:text-gray-400 focus:border-gold-400 focus:ring-1 focus:ring-gold-400 transition-all"
+                      className="w-full bg-gray-100 border border-gray-200 rounded-xl px-4 py-3 pr-12 text-gray-900 placeholder:text-gray-600 focus:border-gold-400 focus:ring-1 focus:ring-gold-400 transition-all"
                       placeholder="your@email.com"
                       required
                       dir="ltr"
@@ -133,9 +133,9 @@ export default function ForgotPasswordPage() {
               </form>
 
               {/* Back to login */}
-              <p className="text-center mt-6 text-gray-500">
+              <p className="text-center mt-6 text-gray-700">
                 נזכרתם בסיסמה?{' '}
-                <Link href="/login" className="text-gold-500 hover:text-gold-600 transition-colors font-medium">
+                <Link href="/login" className="text-[#0066CC] hover:text-[#004499] transition-colors font-medium">
                   חזרה להתחברות
                 </Link>
               </p>

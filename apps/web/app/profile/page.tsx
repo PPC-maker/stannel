@@ -174,8 +174,7 @@ export default function ProfilePage() {
     setUploadError(null);
 
     try {
-      const result = await authApi.uploadProfileImage(file);
-      console.log('Profile image uploaded:', result.imageUrl);
+      await authApi.uploadProfileImage(file);
       setShowPhotoModal(false);
       // Refresh the page to show new image
       window.location.reload();

@@ -472,6 +472,281 @@ export const emailService = {
       html,
     });
   },
+
+  // Send error alert email to admin
+  async sendErrorAlert(
+    adminEmails: string[],
+    error: {
+      title: string;
+      message: string;
+      category: string;
+      endpoint?: string;
+      userId?: string;
+      userEmail?: string;
+      stackTrace?: string;
+      details?: string;
+      timestamp: Date;
+    }
+  ): Promise<boolean> {
+    const html = `
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>STANNEL - התראת שגיאה</title>
+</head>
+<body style="font-family: 'Segoe UI', Arial, sans-serif; background-color: #1a1a2e; margin: 0; padding: 20px;">
+  <div style="max-width: 700px; margin: 0 auto; background-color: #16213e; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.5); border: 1px solid #ef4444;">
+    <!-- Header -->
+    <div style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); padding: 25px; text-align: center;">
+      <h1 style="color: white; margin: 0; font-size: 24px;">🚨 התראת שגיאה במערכת</h1>
+      <p style="color: rgba(255,255,255,0.9); margin: 10px 0 0 0; font-size: 14px;">
+        ${error.timestamp.toLocaleDateString('he-IL')} ${error.timestamp.toLocaleTimeString('he-IL')}
+      </p>
+    </div>
+
+    <!-- Content -->
+    <div style="padding: 25px;">
+      <!-- Error Title -->
+      <div style="background-color: #fee2e2; border-radius: 8px; padding: 20px; margin-bottom: 20px; border-right: 4px solid #ef4444;">
+        <h2 style="color: #dc2626; margin: 0 0 10px 0; font-size: 18px;">${escapeHtml(error.title)}</h2>
+        <p style="color: #7f1d1d; margin: 0; font-size: 14px;">${escapeHtml(error.message)}</p>
+      </div>
+
+      <!-- Details Grid -->
+      <div style="background-color: #1f2937; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+        <h3 style="color: #d4af37; margin: 0 0 15px 0; font-size: 16px;">פרטי השגיאה</h3>
+        <table style="width: 100%; border-collapse: collapse;">
+          <tr>
+            <td style="padding: 8px 0; color: #9ca3af; font-size: 14px; width: 120px;">קטגוריה:</td>
+            <td style="padding: 8px 0; color: #f3f4f6; font-size: 14px;">${escapeHtml(error.category)}</td>
+          </tr>
+          ${error.endpoint ? '<tr><td style="padding: 8px 0; color: #9ca3af; font-size: 14px;">נקודת קצה:</td><td style="padding: 8px 0; color: #60a5fa; font-size: 14px; font-family: monospace;">' + escapeHtml(error.endpoint) + '</td></tr>' : ''}
+          ${error.userEmail ? '<tr><td style="padding: 8px 0; color: #9ca3af; font-size: 14px;">משתמש:</td><td style="padding: 8px 0; color: #f3f4f6; font-size: 14px;">' + escapeHtml(error.userEmail) + '</td></tr>' : ''}
+        </table>
+      </div>
+
+      ${error.stackTrace ? `
+      <!-- Stack Trace - For copying to Claude -->
+      <div style="background-color: #0f172a; border-radius: 8px; padding: 20px; margin-bottom: 20px; border: 1px solid #334155;">
+        <h3 style="color: #fbbf24; margin: 0 0 15px 0; font-size: 16px;">📋 העתק לקלוד לניתוח:</h3>
+        <pre style="color: #e2e8f0; font-size: 12px; font-family: 'Courier New', monospace; white-space: pre-wrap; word-break: break-all; margin: 0; background-color: #020617; padding: 15px; border-radius: 6px; max-height: 300px; overflow: auto;">${escapeHtml(error.stackTrace)}</pre>
+      </div>
+      ` : ''}
+
+      ${error.details ? `
+      <!-- Full Details for Claude -->
+      <div style="background-color: #0f172a; border-radius: 8px; padding: 20px; margin-bottom: 20px; border: 1px solid #334155;">
+        <h3 style="color: #22c55e; margin: 0 0 15px 0; font-size: 16px;">📄 פרטים מלאים להעתקה:</h3>
+        <pre style="color: #e2e8f0; font-size: 11px; font-family: 'Courier New', monospace; white-space: pre-wrap; word-break: break-all; margin: 0; background-color: #020617; padding: 15px; border-radius: 6px; max-height: 400px; overflow: auto;">${escapeHtml(error.details)}</pre>
+      </div>
+      ` : ''}
+
+      <!-- Instructions -->
+      <div style="background-color: #1e3a5f; border-radius: 8px; padding: 15px; text-align: center;">
+        <p style="color: #93c5fd; margin: 0; font-size: 13px;">
+          💡 העתק את הטקסט מהחלק העליון והדבק אותו לקלוד לקבלת פתרון מהיר
+        </p>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div style="background: rgba(0,0,0,0.3); padding: 20px; text-align: center; border-top: 1px solid #374151;">
+      <p style="color: #6b7280; font-size: 12px; margin: 0;">
+        התראה אוטומטית מ-STANNEL System Logger
+      </p>
+    </div>
+  </div>
+</body>
+</html>
+    `;
+
+    return this.send({
+      to: adminEmails,
+      subject: `🚨 שגיאה ב-STANNEL: ${error.title}`,
+      html,
+    });
+  },
+
+  // Send daily system report
+  async sendDailyReport(
+    adminEmails: string[],
+    report: {
+      isHealthy: boolean;
+      totalLogs24h: number;
+      errorsCount: number;
+      warningsCount: number;
+      criticalCount: number;
+      errorsByCategory: Record<string, number>;
+      recentErrors: Array<{
+        title: string;
+        message: string;
+        category: string;
+        createdAt: Date;
+      }>;
+      systemStatus: {
+        database: boolean;
+        api: boolean;
+        storage: boolean;
+      };
+      timestamp: Date;
+    }
+  ): Promise<boolean> {
+    const statusIcon = report.isHealthy ? '✅' : '⚠️';
+    const statusColor = report.isHealthy ? '#10b981' : '#ef4444';
+    const statusText = report.isHealthy ? 'המערכת פועלת תקין' : 'נמצאו בעיות במערכת';
+
+    const categoryErrorsHtml = Object.entries(report.errorsByCategory)
+      .filter(([_, count]) => count > 0)
+      .map(([category, count]) => `<div style="display: inline-block; background-color: #fee2e2; color: #dc2626; padding: 5px 12px; border-radius: 20px; margin: 3px; font-size: 12px;">${category}: ${count}</div>`)
+      .join('') || '<span style="color: #10b981;">אין שגיאות 🎉</span>';
+
+    const recentErrorsHtml = report.recentErrors.length > 0
+      ? report.recentErrors.slice(0, 5).map(err => `
+        <div style="background-color: #1f2937; border-radius: 6px; padding: 12px; margin-bottom: 8px; border-right: 3px solid #ef4444;">
+          <div style="color: #f87171; font-size: 13px; font-weight: 600;">${escapeHtml(err.title)}</div>
+          <div style="color: #9ca3af; font-size: 12px; margin-top: 4px;">${escapeHtml(err.message.slice(0, 100))}</div>
+          <div style="color: #6b7280; font-size: 11px; margin-top: 4px;">${err.category} • ${new Date(err.createdAt).toLocaleTimeString('he-IL')}</div>
+        </div>
+      `).join('')
+      : '<p style="color: #10b981; text-align: center;">אין שגיאות ב-24 שעות האחרונות 🎉</p>';
+
+    const html = `
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>STANNEL - דו״ח יומי</title>
+</head>
+<body style="font-family: 'Segoe UI', Arial, sans-serif; background-color: #f4f4f5; margin: 0; padding: 20px;">
+  <div style="max-width: 650px; margin: 0 auto; background-color: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+    <!-- Header -->
+    <div style="background: linear-gradient(135deg, #1a3a6b 0%, #0f2347 100%); padding: 30px; text-align: center;">
+      <h1 style="color: #d4af37; margin: 0; font-size: 26px;">STANNEL</h1>
+      <p style="color: white; margin: 10px 0 0 0; font-size: 16px;">דו״ח יומי - ${report.timestamp.toLocaleDateString('he-IL')}</p>
+    </div>
+
+    <!-- Status Banner -->
+    <div style="background-color: ${report.isHealthy ? '#dcfce7' : '#fee2e2'}; padding: 20px; text-align: center; border-bottom: 2px solid ${statusColor};">
+      <h2 style="color: ${statusColor}; margin: 0; font-size: 22px;">${statusIcon} ${statusText}</h2>
+    </div>
+
+    <!-- Content -->
+    <div style="padding: 25px;">
+      <!-- Stats Grid -->
+      <table style="width: 100%; margin-bottom: 25px;">
+        <tr>
+          <td style="padding: 8px; text-align: center; background-color: #f8fafc; border-radius: 10px;">
+            <div style="color: #1a3a6b; font-size: 28px; font-weight: bold;">${report.totalLogs24h}</div>
+            <div style="color: #64748b; font-size: 11px;">לוגים ב-24ש</div>
+          </td>
+          <td style="padding: 8px; text-align: center; background-color: ${report.errorsCount > 0 ? '#fee2e2' : '#dcfce7'}; border-radius: 10px;">
+            <div style="color: ${report.errorsCount > 0 ? '#dc2626' : '#10b981'}; font-size: 28px; font-weight: bold;">${report.errorsCount}</div>
+            <div style="color: #64748b; font-size: 11px;">שגיאות</div>
+          </td>
+          <td style="padding: 8px; text-align: center; background-color: ${report.warningsCount > 0 ? '#fef3c7' : '#dcfce7'}; border-radius: 10px;">
+            <div style="color: ${report.warningsCount > 0 ? '#f59e0b' : '#10b981'}; font-size: 28px; font-weight: bold;">${report.warningsCount}</div>
+            <div style="color: #64748b; font-size: 11px;">אזהרות</div>
+          </td>
+          <td style="padding: 8px; text-align: center; background-color: ${report.criticalCount > 0 ? '#fecaca' : '#dcfce7'}; border-radius: 10px;">
+            <div style="color: ${report.criticalCount > 0 ? '#b91c1c' : '#10b981'}; font-size: 28px; font-weight: bold;">${report.criticalCount}</div>
+            <div style="color: #64748b; font-size: 11px;">קריטי</div>
+          </td>
+        </tr>
+      </table>
+
+      <!-- System Components -->
+      <div style="background-color: #f8fafc; border-radius: 10px; padding: 20px; margin-bottom: 25px;">
+        <h3 style="color: #1a3a6b; margin: 0 0 15px 0; font-size: 16px;">סטטוס רכיבי מערכת</h3>
+        <p style="margin: 0;">
+          <span style="color: ${report.systemStatus.database ? '#10b981' : '#ef4444'};">${report.systemStatus.database ? '✅' : '❌'}</span> מסד נתונים &nbsp;&nbsp;
+          <span style="color: ${report.systemStatus.api ? '#10b981' : '#ef4444'};">${report.systemStatus.api ? '✅' : '❌'}</span> API &nbsp;&nbsp;
+          <span style="color: ${report.systemStatus.storage ? '#10b981' : '#ef4444'};">${report.systemStatus.storage ? '✅' : '❌'}</span> אחסון
+        </p>
+      </div>
+
+      <!-- Errors by Category -->
+      <div style="background-color: #f8fafc; border-radius: 10px; padding: 20px; margin-bottom: 25px;">
+        <h3 style="color: #1a3a6b; margin: 0 0 15px 0; font-size: 16px;">שגיאות לפי קטגוריה</h3>
+        <div>${categoryErrorsHtml}</div>
+      </div>
+
+      <!-- Recent Errors -->
+      <div style="background-color: #0f172a; border-radius: 10px; padding: 20px;">
+        <h3 style="color: #f87171; margin: 0 0 15px 0; font-size: 16px;">שגיאות אחרונות</h3>
+        ${recentErrorsHtml}
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div style="background-color: #f1f5f9; padding: 20px; text-align: center; border-top: 1px solid #e2e8f0;">
+      <p style="color: #64748b; font-size: 12px; margin: 0;">
+        דו״ח אוטומטי • ${report.timestamp.toLocaleTimeString('he-IL')} • STANNEL System Monitor
+      </p>
+      <p style="color: #94a3b8; font-size: 11px; margin: 8px 0 0 0;">
+        הדו״ח נשלח כל יום בשעה 10:00
+      </p>
+    </div>
+  </div>
+</body>
+</html>
+    `;
+
+    return this.send({
+      to: adminEmails,
+      subject: `${statusIcon} דו״ח יומי STANNEL - ${report.timestamp.toLocaleDateString('he-IL')} ${report.isHealthy ? '(תקין)' : '(נמצאו בעיות)'}`,
+      html,
+    });
+  },
+
+  // Send test email
+  async sendTestEmail(to: string): Promise<boolean> {
+    const html = `
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>STANNEL - מייל בדיקה</title>
+</head>
+<body style="font-family: 'Segoe UI', Arial, sans-serif; background-color: #f4f4f5; margin: 0; padding: 20px;">
+  <div style="max-width: 500px; margin: 0 auto; background-color: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+    <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); padding: 30px; text-align: center;">
+      <h1 style="color: white; margin: 0; font-size: 24px;">✅ מייל בדיקה</h1>
+    </div>
+    <div style="padding: 30px; text-align: center;">
+      <div style="width: 80px; height: 80px; margin: 0 auto 20px; background: linear-gradient(135deg, #d4af37 0%, #f5d77e 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+        <span style="font-size: 40px;">📧</span>
+      </div>
+      <h2 style="color: #1a3a6b; margin: 0 0 15px 0;">המייל הגיע בהצלחה!</h2>
+      <p style="color: #64748b; margin: 0; font-size: 14px;">
+        מערכת המיילים של STANNEL פועלת תקין.<br/>
+        כעת תקבל התראות על שגיאות ודו״חות יומיים.
+      </p>
+      <div style="margin-top: 25px; padding: 15px; background-color: #f0fdf4; border-radius: 8px;">
+        <p style="color: #10b981; margin: 0; font-size: 13px;">
+          🕐 דו״ח יומי יישלח כל יום בשעה 10:00
+        </p>
+      </div>
+    </div>
+    <div style="background-color: #f8fafc; padding: 15px; text-align: center; border-top: 1px solid #e2e8f0;">
+      <p style="color: #94a3b8; font-size: 11px; margin: 0;">
+        נשלח ב-${new Date().toLocaleString('he-IL')} • STANNEL Platform
+      </p>
+    </div>
+  </div>
+</body>
+</html>
+    `;
+
+    return this.send({
+      to,
+      subject: '✅ STANNEL - מייל בדיקה הצליח!',
+      html,
+    });
+  },
 };
 
 // Helper function to escape HTML and prevent XSS in email templates

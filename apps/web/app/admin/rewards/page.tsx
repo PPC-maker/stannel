@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
 import GlassCard from '@/components/layout/GlassCard';
@@ -20,6 +20,11 @@ import {
   Package,
   X,
   Upload,
+  Eye,
+  Calendar,
+  Coins,
+  Banknote,
+  BoxIcon,
 } from 'lucide-react';
 
 interface Product {
@@ -27,7 +32,7 @@ interface Product {
   name: string;
   description: string;
   pointCost: number;
-  cashCost: number;
+  pointsPerShekel: number;
   stock: number;
   imageUrl?: string;
   isActive: boolean;
@@ -38,6 +43,8 @@ export default function AdminRewardsPage() {
   const { isReady } = useAdminGuard();
   const queryClient = useQueryClient();
   const [showModal, setShowModal] = useState(false);
+  const [showDetailModal, setShowDetailModal] = useState(false);
+  const [viewingProduct, setViewingProduct] = useState<Product | null>(null);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [uploading, setUploading] = useState(false);
 
@@ -45,7 +52,7 @@ export default function AdminRewardsPage() {
     name: '',
     description: '',
     pointCost: 0,
-    cashCost: 0,
+    pointsPerShekel: 100,
     stock: 10,
     imageUrl: '',
   });
@@ -95,13 +102,30 @@ export default function AdminRewardsPage() {
 
   const deleteMutation = useMutation({
     mutationFn: (id: string) => adminApi.deleteProduct(id),
-    onSuccess: () => {
+    onSuccess: (data: any) => {
       queryClient.invalidateQueries({ queryKey: ['admin', 'products'] });
+      if (data.deactivated) {
+        Swal.fire({
+          title: 'המוצר הושבת',
+          text: data.message || 'המוצר הושבת כי יש לו מימושים',
+          icon: 'info',
+          timer: 3000,
+          showConfirmButton: false,
+        });
+      } else {
+        Swal.fire({
+          title: 'המוצר נמחק!',
+          icon: 'success',
+          timer: 2000,
+          showConfirmButton: false,
+        });
+      }
+    },
+    onError: (error: any) => {
       Swal.fire({
-        title: 'המוצר נמחק!',
-        icon: 'success',
-        timer: 2000,
-        showConfirmButton: false,
+        title: 'שגיאה במחיקת המוצר',
+        text: error.message,
+        icon: 'error',
       });
     },
   });
@@ -111,10 +135,15 @@ export default function AdminRewardsPage() {
       name: '',
       description: '',
       pointCost: 0,
-      cashCost: 0,
+      pointsPerShekel: 100,
       stock: 10,
       imageUrl: '',
     });
+  };
+
+  const handleView = (product: Product) => {
+    setViewingProduct(product);
+    setShowDetailModal(true);
   };
 
   const handleEdit = (product: Product) => {
@@ -123,7 +152,7 @@ export default function AdminRewardsPage() {
       name: product.name,
       description: product.description,
       pointCost: product.pointCost,
-      cashCost: product.cashCost,
+      pointsPerShekel: product.pointsPerShekel || 100,
       stock: product.stock,
       imageUrl: product.imageUrl || '',
     });
@@ -263,15 +292,19 @@ export default function AdminRewardsPage() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {products.map((product: Product) => (
-                <GlassCard key={product.id} className="overflow-hidden">
-                  {/* Product Image */}
-                  <div className="relative h-40 -mx-6 -mt-6 mb-4 bg-gray-100">
+                <GlassCard key={product.id} className="overflow-hidden group">
+                  {/* Product Image - Click to view */}
+                  <div
+                    className="relative h-48 -mx-6 -mt-6 mb-4 bg-gradient-to-br from-gray-100 to-gray-50 cursor-pointer"
+                    onClick={() => handleView(product)}
+                  >
                     {product.imageUrl ? (
                       <Image
                         src={product.imageUrl}
                         alt={product.name}
                         fill
-                        className="object-cover"
+                        className="object-contain p-2"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center">
@@ -280,9 +313,13 @@ export default function AdminRewardsPage() {
                     )}
                     {!product.isActive && (
                       <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                        <span className="text-white text-sm">לא פעיל</span>
+                        <span className="text-white text-sm font-medium px-3 py-1 bg-red-500 rounded-full">לא פעיל</span>
                       </div>
                     )}
+                    {/* Hover overlay */}
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
+                      <Eye className="text-white drop-shadow-lg" size={32} />
+                    </div>
                   </div>
 
                   {/* Product Info */}
@@ -291,12 +328,12 @@ export default function AdminRewardsPage() {
 
                   <div className="flex items-center justify-between mb-4">
                     <div>
-                      <span className="text-gold-500 font-bold text-lg">
+                      <span className="text-amber-600 font-bold text-lg">
                         {product.pointCost.toLocaleString()} נק׳
                       </span>
-                      {product.cashCost > 0 && (
-                        <span className="text-gray-600 text-sm mr-2">+ ₪{product.cashCost}</span>
-                      )}
+                      <span className="text-gray-500 text-xs mr-2 block">
+                        ({product.pointsPerShekel || 100} נק׳ = ₪1)
+                      </span>
                     </div>
                     <span className={`text-sm px-2 py-1 rounded ${
                       product.stock > 5 ? 'bg-green-100 text-green-700' :
@@ -310,6 +347,12 @@ export default function AdminRewardsPage() {
                   {/* Actions */}
                   <div className="flex gap-2">
                     <button
+                      onClick={() => handleView(product)}
+                      className="flex items-center justify-center gap-2 px-3 py-2 bg-gray-50 text-gray-600 rounded-lg hover:bg-gray-100 transition-colors"
+                    >
+                      <Eye size={16} />
+                    </button>
+                    <button
                       onClick={() => handleEdit(product)}
                       className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors"
                     >
@@ -318,9 +361,10 @@ export default function AdminRewardsPage() {
                     </button>
                     <button
                       onClick={() => handleDelete(product)}
-                      className="flex items-center justify-center gap-2 px-3 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors"
+                      disabled={deleteMutation.isPending}
+                      className="flex items-center justify-center gap-2 px-3 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors disabled:opacity-50"
                     >
-                      <Trash2 size={16} />
+                      {deleteMutation.isPending ? <Loader2 size={16} className="animate-spin" /> : <Trash2 size={16} />}
                     </button>
                   </div>
                 </GlassCard>
@@ -438,14 +482,15 @@ export default function AdminRewardsPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">עלות במזומן (₪)</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">נקודות לשקל</label>
                   <input
                     type="number"
-                    value={form.cashCost}
-                    onChange={(e) => setForm({ ...form, cashCost: parseInt(e.target.value) || 0 })}
-                    min="0"
+                    value={form.pointsPerShekel}
+                    onChange={(e) => setForm({ ...form, pointsPerShekel: parseInt(e.target.value) || 100 })}
+                    min="1"
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0066CC] focus:border-transparent"
                   />
+                  <p className="text-xs text-gray-500 mt-1">כמה נקודות שוות ₪1 להשלמה</p>
                 </div>
               </div>
 
@@ -489,6 +534,121 @@ export default function AdminRewardsPage() {
           </motion.div>
         </div>
       )}
+
+      {/* Detail Modal */}
+      <AnimatePresence>
+        {showDetailModal && viewingProduct && (
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden shadow-2xl"
+            >
+              {/* Image Header */}
+              <div className="relative h-64 bg-gradient-to-br from-gray-100 to-gray-50">
+                {viewingProduct.imageUrl ? (
+                  <Image
+                    src={viewingProduct.imageUrl}
+                    alt={viewingProduct.name}
+                    fill
+                    className="object-contain p-4"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <Gift size={80} className="text-gray-300" />
+                  </div>
+                )}
+                <button
+                  onClick={() => setShowDetailModal(false)}
+                  className="absolute top-4 left-4 p-2 bg-white/80 backdrop-blur rounded-full hover:bg-white transition-colors shadow-lg"
+                >
+                  <X size={20} />
+                </button>
+                {!viewingProduct.isActive && (
+                  <div className="absolute top-4 right-4 px-3 py-1 bg-red-500 text-white text-sm font-medium rounded-full">
+                    לא פעיל
+                  </div>
+                )}
+              </div>
+
+              {/* Content */}
+              <div className="p-6">
+                <h2 className="text-2xl font-bold text-gray-900 mb-2">{viewingProduct.name}</h2>
+
+                {viewingProduct.description && (
+                  <p className="text-gray-600 mb-6 leading-relaxed">{viewingProduct.description}</p>
+                )}
+
+                {/* Stats Grid */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                  <div className="bg-amber-50 rounded-xl p-4 text-center">
+                    <Coins className="mx-auto text-amber-600 mb-2" size={24} />
+                    <p className="text-2xl font-bold text-amber-600">{viewingProduct.pointCost.toLocaleString()}</p>
+                    <p className="text-amber-700 text-sm">נקודות</p>
+                  </div>
+
+                  <div className="bg-green-50 rounded-xl p-4 text-center">
+                    <Banknote className="mx-auto text-green-600 mb-2" size={24} />
+                    <p className="text-2xl font-bold text-green-600">{viewingProduct.pointsPerShekel || 100}</p>
+                    <p className="text-green-700 text-sm">נקודות = ₪1</p>
+                  </div>
+
+                  <div className={`rounded-xl p-4 text-center ${
+                    viewingProduct.stock > 5 ? 'bg-blue-50' :
+                    viewingProduct.stock > 0 ? 'bg-yellow-50' : 'bg-red-50'
+                  }`}>
+                    <BoxIcon className={`mx-auto mb-2 ${
+                      viewingProduct.stock > 5 ? 'text-blue-600' :
+                      viewingProduct.stock > 0 ? 'text-yellow-600' : 'text-red-600'
+                    }`} size={24} />
+                    <p className={`text-2xl font-bold ${
+                      viewingProduct.stock > 5 ? 'text-blue-600' :
+                      viewingProduct.stock > 0 ? 'text-yellow-600' : 'text-red-600'
+                    }`}>{viewingProduct.stock}</p>
+                    <p className={`text-sm ${
+                      viewingProduct.stock > 5 ? 'text-blue-700' :
+                      viewingProduct.stock > 0 ? 'text-yellow-700' : 'text-red-700'
+                    }`}>במלאי</p>
+                  </div>
+
+                  <div className="bg-purple-50 rounded-xl p-4 text-center">
+                    <Calendar className="mx-auto text-purple-600 mb-2" size={24} />
+                    <p className="text-sm font-bold text-purple-600">
+                      {new Date(viewingProduct.createdAt).toLocaleDateString('he-IL')}
+                    </p>
+                    <p className="text-purple-700 text-sm">תאריך הוספה</p>
+                  </div>
+                </div>
+
+                {/* Actions */}
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => {
+                      setShowDetailModal(false);
+                      handleEdit(viewingProduct);
+                    }}
+                    className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-[#0066CC] text-white rounded-xl hover:bg-[#0055AA] transition-colors font-medium"
+                  >
+                    <Edit2 size={18} />
+                    עריכה
+                  </button>
+                  <button
+                    onClick={() => {
+                      setShowDetailModal(false);
+                      handleDelete(viewingProduct);
+                    }}
+                    className="flex items-center justify-center gap-2 px-4 py-3 bg-red-50 text-red-600 rounded-xl hover:bg-red-100 transition-colors font-medium"
+                  >
+                    <Trash2 size={18} />
+                    מחיקה
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

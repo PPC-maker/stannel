@@ -1,10 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
 import { CheckCircle, ArrowLeft } from 'lucide-react';
+import VideoIntro from '@/components/layout/VideoIntro';
 
 // Hero images grid
 const heroImages = [
@@ -69,6 +70,11 @@ const projects = [
 export default function HomePage() {
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -76,8 +82,16 @@ export default function HomePage() {
     window.location.href = `/register?email=${encodeURIComponent(email)}&name=${encodeURIComponent(name)}`;
   };
 
+  if (!mounted) {
+    return <div className="min-h-screen bg-white" />;
+  }
+
   return (
-    <div className="min-h-screen bg-white">
+    <>
+      {/* Video Intro - Only on home page */}
+      <VideoIntro />
+
+      <div className="min-h-screen bg-white">
       {/* Hero Section */}
       <section className="bg-[#0a6847] min-h-[70vh] relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-6 py-16 flex flex-col lg:flex-row items-center gap-12">
@@ -443,5 +457,6 @@ export default function HomePage() {
         </div>
       </footer>
     </div>
+    </>
   );
 }

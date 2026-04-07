@@ -168,7 +168,7 @@ export const loyaltyService = {
     }
   },
 
-  // Redeem product with points
+  // Redeem product with points (and optional cash completion)
   async redeemProduct(architectId: string, productId: string, cashAmount: number = 0) {
     const [architect, product] = await Promise.all([
       prisma.architectProfile.findUnique({ where: { id: architectId } }),
@@ -179,19 +179,41 @@ export const loyaltyService = {
     if (!product) throw new Error('Product not found');
     if (!product.isActive) throw new Error('Product not available');
     if (product.stock < 1) throw new Error('Product out of stock');
-    if (architect.pointsBalance < product.pointCost) {
-      throw new Error('Insufficient points');
+
+    const userPoints = architect.pointsBalance;
+    const pointsPerShekel = product.pointsPerShekel || 100;
+
+    // Calculate how much is needed
+    let pointsToUse: number;
+    let requiredCash: number;
+
+    if (userPoints >= product.pointCost) {
+      // User has enough points - full point redemption
+      pointsToUse = product.pointCost;
+      requiredCash = 0;
+    } else {
+      // User needs cash completion
+      pointsToUse = userPoints; // Use all available points
+      const missingPoints = product.pointCost - userPoints;
+      requiredCash = Math.ceil(missingPoints / pointsPerShekel);
+
+      // Verify cash amount is sufficient
+      if (cashAmount < requiredCash) {
+        throw new Error(`נדרש תשלום של ₪${requiredCash} להשלמת המימוש. יתרת הנקודות שלך: ${userPoints.toLocaleString()}`);
+      }
     }
 
     const redemption = await prisma.$transaction(async (tx) => {
-      // Deduct points
-      await tx.architectProfile.update({
-        where: { id: architectId },
-        data: {
-          pointsBalance: { decrement: product.pointCost },
-          totalRedeemed: { increment: product.pointCost },
-        },
-      });
+      // Deduct points (use whatever the user has, up to the product cost)
+      if (pointsToUse > 0) {
+        await tx.architectProfile.update({
+          where: { id: architectId },
+          data: {
+            pointsBalance: { decrement: pointsToUse },
+            totalRedeemed: { increment: pointsToUse },
+          },
+        });
+      }
 
       // Reduce stock
       await tx.product.update({
@@ -204,21 +226,35 @@ export const loyaltyService = {
         data: {
           productId,
           architectId,
-          pointsUsed: product.pointCost,
-          cashPaid: cashAmount,
+          pointsUsed: pointsToUse,
+          cashPaid: requiredCash,
         },
         include: { product: true },
       });
 
-      // Create transaction
-      await tx.cardTransaction.create({
-        data: {
-          architectId,
-          type: 'DEBIT',
-          amount: product.pointCost,
-          description: `מימוש: ${product.name}`,
-        },
-      });
+      // Create transaction for points used
+      if (pointsToUse > 0) {
+        await tx.cardTransaction.create({
+          data: {
+            architectId,
+            type: 'DEBIT',
+            amount: pointsToUse,
+            description: requiredCash > 0
+              ? `מימוש: ${product.name} (+ ₪${requiredCash} השלמה)`
+              : `מימוש: ${product.name}`,
+          },
+        });
+      } else {
+        // If no points used, still create a record with 0 points
+        await tx.cardTransaction.create({
+          data: {
+            architectId,
+            type: 'DEBIT',
+            amount: 0,
+            description: `מימוש: ${product.name} (₪${requiredCash} מזומן)`,
+          },
+        });
+      }
 
       return redemption;
     });

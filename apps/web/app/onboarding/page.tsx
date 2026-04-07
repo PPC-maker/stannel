@@ -108,7 +108,7 @@ export default function OnboardingPage() {
                       ? 'bg-green-500 text-white'
                       : index === currentStep
                       ? 'bg-gold-400 text-primary-900'
-                      : 'bg-gray-200 text-gray-400'
+                      : 'bg-gray-200 text-gray-600'
                   }`}
                 >
                   {index < currentStep ? <Check size={18} /> : index + 1}
@@ -147,7 +147,7 @@ export default function OnboardingPage() {
                     <h1 className="text-3xl font-display font-bold text-gray-900 mb-4">
                       ברוכים הבאים ל-STANNEL
                     </h1>
-                    <p className="text-gray-500 mb-8">
+                    <p className="text-gray-700 mb-8">
                       שלום {user?.name}! אנחנו שמחים שהצטרפת לתוכנית הנאמנות שלנו.
                       <br />
                       בואו נשלים את ההרשמה בכמה צעדים פשוטים.
@@ -192,13 +192,13 @@ export default function OnboardingPage() {
                   <h2 className="text-2xl font-display font-bold text-gray-900 mb-2 text-center">
                     פרטים נוספים
                   </h2>
-                  <p className="text-gray-500 mb-6 text-center">
+                  <p className="text-gray-700 mb-6 text-center">
                     עזרו לנו להכיר אתכם טוב יותר (אופציונלי)
                   </p>
 
                   <div className="space-y-4 mb-6">
                     <div>
-                      <label className="text-gray-500 text-sm mb-2 flex items-center gap-2">
+                      <label className="text-gray-700 text-sm mb-2 flex items-center gap-2">
                         <Building2 size={16} />
                         שם החברה / משרד
                       </label>
@@ -206,13 +206,13 @@ export default function OnboardingPage() {
                         type="text"
                         value={formData.company}
                         onChange={(e) => setFormData({ ...formData, company: e.target.value })}
-                        className="w-full bg-gray-100 border border-gray-200 rounded-lg px-4 py-3 text-gray-900 placeholder:text-gray-400"
+                        className="w-full bg-gray-100 border border-gray-200 rounded-lg px-4 py-3 text-gray-900 placeholder:text-gray-600"
                         placeholder="שם המשרד או החברה שלך"
                       />
                     </div>
 
                     <div>
-                      <label className="text-gray-500 text-sm mb-2 flex items-center gap-2">
+                      <label className="text-gray-700 text-sm mb-2 flex items-center gap-2">
                         <Phone size={16} />
                         טלפון
                       </label>
@@ -220,14 +220,14 @@ export default function OnboardingPage() {
                         type="tel"
                         value={formData.phone}
                         onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                        className="w-full bg-gray-100 border border-gray-200 rounded-lg px-4 py-3 text-gray-900 placeholder:text-gray-400"
+                        className="w-full bg-gray-100 border border-gray-200 rounded-lg px-4 py-3 text-gray-900 placeholder:text-gray-600"
                         placeholder="מספר טלפון ליצירת קשר"
                         dir="ltr"
                       />
                     </div>
 
                     <div>
-                      <label className="text-gray-500 text-sm mb-2 flex items-center gap-2">
+                      <label className="text-gray-700 text-sm mb-2 flex items-center gap-2">
                         <MapPin size={16} />
                         כתובת
                       </label>
@@ -235,7 +235,7 @@ export default function OnboardingPage() {
                         type="text"
                         value={formData.address}
                         onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                        className="w-full bg-gray-100 border border-gray-200 rounded-lg px-4 py-3 text-gray-900 placeholder:text-gray-400"
+                        className="w-full bg-gray-100 border border-gray-200 rounded-lg px-4 py-3 text-gray-900 placeholder:text-gray-600"
                         placeholder="כתובת המשרד"
                       />
                     </div>
@@ -283,7 +283,7 @@ export default function OnboardingPage() {
                     <h2 className="text-2xl font-display font-bold text-gray-900 mb-2">
                       מעולה! הכל מוכן
                     </h2>
-                    <p className="text-gray-500 mb-8">
+                    <p className="text-gray-700 mb-8">
                       החשבון שלך מוגדר ומוכן לשימוש.
                       <br />
                       התחל להעלות חשבוניות וצבור נקודות!
@@ -296,11 +296,11 @@ export default function OnboardingPage() {
                         </div>
                         <div className="text-right flex-1">
                           <p className="text-gray-900 font-bold">{user?.name}</p>
-                          <p className="text-gray-500 text-sm">{user?.email}</p>
+                          <p className="text-gray-700 text-sm">{user?.email}</p>
                         </div>
                       </div>
                       {formData.company && (
-                        <div className="mt-3 pt-3 border-t border-gray-200 text-gray-500 text-sm">
+                        <div className="mt-3 pt-3 border-t border-gray-200 text-gray-700 text-sm">
                           {formData.company}
                         </div>
                       )}

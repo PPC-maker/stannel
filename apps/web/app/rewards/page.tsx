@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import Image from 'next/image';
 import GlassCard from '@/components/layout/GlassCard';
 import PageSlider, { sliderImages } from '@/components/layout/PageSlider';
-import { Gift, Star, ShoppingCart, Loader2 } from 'lucide-react';
+import { Gift, Star, ShoppingCart, Loader2, Coins, Banknote } from 'lucide-react';
 import { useWalletBalance, useRewardProducts, useRedeemReward, useWalletCard } from '@/lib/api-hooks';
 import { useAuth } from '@/lib/auth-context';
 import { useAuthGuard, AuthGuardLoader } from '@/lib/useAuthGuard';
@@ -17,6 +17,23 @@ const rankEmojis: Record<string, string> = {
   GOLD: '🥇',
   PLATINUM: '💎',
 };
+
+// Calculate cash needed to complete redemption
+function calculateCashCompletion(userPoints: number, productPointCost: number, pointsPerShekel: number) {
+  if (userPoints >= productPointCost) {
+    return { canAffordFull: true, missingPoints: 0, cashNeeded: 0, useAllPoints: true };
+  }
+
+  const missingPoints = productPointCost - userPoints;
+  const cashNeeded = Math.ceil(missingPoints / pointsPerShekel);
+
+  return {
+    canAffordFull: false,
+    missingPoints,
+    cashNeeded,
+    useAllPoints: userPoints > 0,
+  };
+}
 
 export default function RewardsPage() {
   const { isReady } = useAuthGuard();
@@ -40,13 +57,46 @@ export default function RewardsPage() {
 
   const canAfford = (product: any) => points >= product.pointCost;
 
-  const handleRedeem = async (productId: string) => {
+  const handleRedeem = async (productId: string, useCash: boolean = false) => {
+    const product = products.find((p: any) => p.id === productId);
+    if (!product) return;
+
+    const completion = calculateCashCompletion(points, product.pointCost, product.pointsPerShekel || 100);
+
+    // Show confirmation dialog
+    let confirmMessage = `האם ברצונך לממש את "${product.name}"?`;
+    let confirmDetails = '';
+
+    if (useCash && !completion.canAffordFull) {
+      confirmDetails = `
+        <div style="text-align: right; direction: rtl; margin-top: 10px;">
+          <p>יתרת הנקודות שלך: <strong>${points.toLocaleString()}</strong></p>
+          <p>עלות המוצר: <strong>${product.pointCost.toLocaleString()} נק׳</strong></p>
+          <p>נקודות חסרות: <strong>${completion.missingPoints.toLocaleString()}</strong></p>
+          <hr style="margin: 10px 0; opacity: 0.3;">
+          <p style="color: #16a34a; font-weight: bold;">תשלום להשלמה: ₪${completion.cashNeeded.toLocaleString()}</p>
+        </div>
+      `;
+    }
+
+    const result = await Swal.fire({
+      title: 'אישור מימוש',
+      html: confirmMessage + confirmDetails,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: useCash ? `מימוש עם ₪${completion.cashNeeded}` : 'מימוש',
+      cancelButtonText: 'ביטול',
+      confirmButtonColor: '#d4af37',
+    });
+
+    if (!result.isConfirmed) return;
+
     setRedeemingId(productId);
     try {
-      await redeemMutation.mutateAsync(productId);
+      await redeemMutation.mutateAsync({ productId, cashPayment: useCash ? completion.cashNeeded : 0 });
       Swal.fire({
         title: 'המוצר נרכש בהצלחה!',
-        text: 'המימוש בוצע בהצלחה',
+        text: useCash ? `שילמת ₪${completion.cashNeeded} + ${points.toLocaleString()} נקודות` : 'המימוש בוצע בהצלחה',
         icon: 'success',
         confirmButtonText: 'אישור',
         background: '#1a1a2e',
@@ -121,6 +171,7 @@ export default function RewardsPage() {
         ) : products.map((product: any, index: number) => {
           const affordable = canAfford(product);
           const isRedeeming = redeemingId === product.id;
+          const completion = calculateCashCompletion(points, product.pointCost, product.pointsPerShekel || 100);
 
           return (
             <motion.div
@@ -159,11 +210,6 @@ export default function RewardsPage() {
                       <span className="text-white/80 text-sm">אזל מהמלאי</span>
                     </div>
                   )}
-                  {!affordable && product.stock > 0 && (
-                    <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                      <span className="text-white/80 text-sm">חסרים נקודות</span>
-                    </div>
-                  )}
                 </div>
 
                 {/* Product Info */}
@@ -171,38 +217,82 @@ export default function RewardsPage() {
                 <p className="text-gray-600 text-sm mb-4 line-clamp-2">{product.description}</p>
 
                 {/* Price & Action */}
-                <div className="flex items-center justify-between">
-                  <div>
+                <div className="flex flex-col gap-3">
+                  <div className="flex items-center justify-between">
                     <span className="text-gold-400 font-bold text-xl">
                       {product.pointCost.toLocaleString()} נק׳
                     </span>
-                    {product.cashCost > 0 && (
-                      <span className="text-gray-500 text-sm mr-2">+ ₪{product.cashCost}</span>
+                    {product.stock > 0 && (
+                      <span className={`text-xs px-2 py-1 rounded ${
+                        product.stock > 5 ? 'bg-green-100 text-green-700' :
+                        'bg-yellow-100 text-yellow-700'
+                      }`}>
+                        מלאי: {product.stock}
+                      </span>
                     )}
                   </div>
-                  <button
-                    disabled={!affordable || product.stock === 0 || isRedeeming}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleRedeem(product.id);
-                    }}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${
-                      affordable && product.stock > 0
-                        ? 'bg-gold-400 text-primary-900 hover:bg-gold-300'
-                        : 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                    }`}
-                  >
-                    {isRedeeming ? (
-                      <Loader2 size={16} className="animate-spin" />
-                    ) : affordable && product.stock > 0 ? (
-                      <>
-                        <ShoppingCart size={16} />
-                        <span>מימוש</span>
-                      </>
+
+                  {/* Cash completion info when not enough points */}
+                  {!affordable && product.stock > 0 && (
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-sm">
+                      <div className="flex items-center gap-2 text-blue-700 mb-1">
+                        <Coins size={14} />
+                        <span>חסרים {completion.missingPoints.toLocaleString()} נק׳</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-green-700 font-medium">
+                        <Banknote size={14} />
+                        <span>השלם עם ₪{completion.cashNeeded.toLocaleString()}</span>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Action Buttons */}
+                  <div className="flex gap-2">
+                    {affordable && product.stock > 0 ? (
+                      <button
+                        disabled={isRedeeming}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleRedeem(product.id, false);
+                        }}
+                        className="flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center justify-center gap-2 bg-gold-400 text-primary-900 hover:bg-gold-300"
+                      >
+                        {isRedeeming ? (
+                          <Loader2 size={16} className="animate-spin" />
+                        ) : (
+                          <>
+                            <ShoppingCart size={16} />
+                            <span>מימוש</span>
+                          </>
+                        )}
+                      </button>
+                    ) : product.stock > 0 ? (
+                      <button
+                        disabled={isRedeeming}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleRedeem(product.id, true);
+                        }}
+                        className="flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center justify-center gap-2 bg-green-500 text-white hover:bg-green-600"
+                      >
+                        {isRedeeming ? (
+                          <Loader2 size={16} className="animate-spin" />
+                        ) : (
+                          <>
+                            <Banknote size={16} />
+                            <span>מימוש עם ₪{completion.cashNeeded}</span>
+                          </>
+                        )}
+                      </button>
                     ) : (
-                      <span>{product.stock === 0 ? 'אזל' : 'חסר'}</span>
+                      <button
+                        disabled
+                        className="flex-1 px-4 py-2 rounded-lg text-sm font-medium bg-gray-100 text-gray-400 cursor-not-allowed"
+                      >
+                        אזל מהמלאי
+                      </button>
                     )}
-                  </button>
+                  </div>
                 </div>
               </GlassCard>
             </motion.div>

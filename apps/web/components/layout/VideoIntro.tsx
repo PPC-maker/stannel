@@ -2,23 +2,44 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useAuth } from '@/lib/auth-context';
+
+const INTRO_SEEN_KEY = 'stannel_intro_seen';
 
 export default function VideoIntro() {
+  const { user, loading } = useAuth();
   const [showIntro, setShowIntro] = useState(false);
-  const [isVisible, setIsVisible] = useState(true);
+  const [isVisible, setIsVisible] = useState(false);
   const [progress, setProgress] = useState(0);
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
-    // Show intro on every page load (home page only)
+    // Wait for auth to load before deciding
+    if (loading) return;
+
+    // Don't show for logged-in users
+    if (user) {
+      setIsVisible(false);
+      return;
+    }
+
+    // Check if user has already seen the intro
+    const hasSeenIntro = localStorage.getItem(INTRO_SEEN_KEY);
+    if (hasSeenIntro) {
+      setIsVisible(false);
+      return;
+    }
+
+    // Show intro for first-time visitors (not logged in)
     setShowIntro(true);
+    setIsVisible(true);
     // Prevent scrolling while intro is showing
     document.body.style.overflow = 'hidden';
 
     return () => {
       document.body.style.overflow = '';
     };
-  }, []);
+  }, [user, loading]);
 
   // Track video progress
   useEffect(() => {
@@ -42,6 +63,9 @@ export default function VideoIntro() {
   const closeIntro = () => {
     setShowIntro(false);
     document.body.style.overflow = '';
+
+    // Mark as seen so it doesn't show again
+    localStorage.setItem(INTRO_SEEN_KEY, 'true');
 
     // Delay hiding completely to allow fade out animation
     setTimeout(() => {

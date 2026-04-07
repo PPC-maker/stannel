@@ -61,6 +61,9 @@ model User {
   notifications     Notification[]
   profilesViewed    ProfileView[]  @relation("ProfileViewer")
   profileViewers    ProfileView[]  @relation("ProfileViewed")
+
+  @@index([role, isActive])
+  @@index([createdAt])
 }
 
 model ArchitectProfile {
@@ -110,7 +113,7 @@ model SupplierProfile {
   pointsBalance   Float       @default(0)
   totalEarned     Float       @default(0)
   totalRedeemed   Float       @default(0)
-  cardNumber      String      @unique @default(cuid())
+  cardNumber      String?     @unique
 
   // Onboarding status
   onboardingStatus String     @default("pending_review") // pending_review, approved, rejected
@@ -193,17 +196,17 @@ model Contract {
 }
 
 model Product {
-  id            String    @id @default(cuid())
-  name          String
-  description   String?
-  imageUrl      String
-  pointCost     Float
-  cashCost      Float     @default(0)
-  stock         Int       @default(0)
-  isActive      Boolean   @default(true)
-  supplierId    String?
-  supplier      SupplierProfile? @relation(fields: [supplierId], references: [id])
-  createdAt     DateTime  @default(now())
+  id              String    @id @default(cuid())
+  name            String
+  description     String?
+  imageUrl        String
+  pointCost       Float                   // Total points required for the product
+  pointsPerShekel Float     @default(100) // Exchange rate: how many points = 1 shekel (for cash completion)
+  stock           Int       @default(0)
+  isActive        Boolean   @default(true)
+  supplierId      String?
+  supplier        SupplierProfile? @relation(fields: [supplierId], references: [id])
+  createdAt       DateTime  @default(now())
 
   redemptions   Redemption[]
 
@@ -223,6 +226,8 @@ model Redemption {
 
   @@index([architectId])
   @@index([productId])
+  @@index([architectId, createdAt])
+  @@index([createdAt])
 }
 
 model CardTransaction {
@@ -342,6 +347,17 @@ enum SystemLogCategory {
   DATABASE
   PERFORMANCE
   SCHEDULER
+  AUTH
+  INVOICE
+  REWARDS
+  WALLET
+  EVENTS
+  ADMIN
+  SUPPLIER
+  USER
+  EMAIL
+  STORAGE
+  AI
 }
 
 model SystemLog {
@@ -350,18 +366,28 @@ model SystemLog {
   category    SystemLogCategory
   title       String
   message     String
-  details     String?             // Full error details for copy/paste to Claude
+  details     String?             @db.Text // Full error details for copy/paste to Claude
   endpoint    String?
+  method      String?             // HTTP method (GET, POST, etc.)
+  userId      String?             // User who triggered the action
+  userEmail   String?
+  requestBody String?             @db.Text // Request payload (sanitized)
   responseTime Int?               // Response time in ms
-  stackTrace  String?
+  statusCode  Int?                // HTTP status code
+  stackTrace  String?             @db.Text
+  userAgent   String?
+  ipAddress   String?
   resolved    Boolean             @default(false)
   resolvedAt  DateTime?
   resolvedBy  String?
+  alertSent   Boolean             @default(false) // Was email alert sent?
   createdAt   DateTime            @default(now())
 
   @@index([createdAt])
   @@index([severity])
   @@index([resolved])
+  @@index([category])
+  @@index([userId])
 }
 
 model SystemScanReport {

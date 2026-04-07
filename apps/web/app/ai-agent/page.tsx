@@ -97,7 +97,7 @@ export default function AiAgentPage() {
               הסוכן שלך כאן
             </h1>
           </div>
-          <p className="text-gray-500">
+          <p className="text-gray-700">
             ברוכים הבאים לעוזר החכם של המערכת. כאן תוכלו לשאול שאלות, לקבל הדרכה והמלצות על השימוש באתר.
           </p>
         </motion.div>
@@ -109,8 +109,8 @@ export default function AiAgentPage() {
             {messages.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-full text-center">
                 <Sparkles size={48} className="text-gold-400/50 mb-4" />
-                <p className="text-gray-400 text-lg mb-2">שלום! איך אוכל לעזור לך היום?</p>
-                <p className="text-gray-400 text-sm">בחר שאלה מוצעת או כתוב שאלה משלך</p>
+                <p className="text-gray-600 text-lg mb-2">שלום! איך אוכל לעזור לך היום?</p>
+                <p className="text-gray-600 text-sm">בחר שאלה מוצעת או כתוב שאלה משלך</p>
               </div>
             ) : (
               <AnimatePresence>
@@ -174,7 +174,7 @@ export default function AiAgentPage() {
           {/* Suggested Prompts */}
           {messages.length === 0 && suggestedPrompts.length > 0 && (
             <div className="px-4 pb-4">
-              <p className="text-gray-400 text-xs mb-2">שאלות מוצעות:</p>
+              <p className="text-gray-600 text-xs mb-2">שאלות מוצעות:</p>
               <div className="flex flex-wrap gap-2">
                 {suggestedPrompts.slice(0, 6).map((prompt) => (
                   <button
