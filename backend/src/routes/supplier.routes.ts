@@ -26,10 +26,10 @@ const updateProfileSchema = z.object({
   description: z.string().optional(),
   phone: z.string().optional(),
   address: z.string().optional(),
-  website: z.string().url().optional().or(z.literal('')),
-  facebook: z.string().url().optional().or(z.literal('')),
-  instagram: z.string().url().optional().or(z.literal('')),
-  linkedin: z.string().url().optional().or(z.literal('')),
+  website: z.string().optional().nullable(),
+  facebook: z.string().optional().nullable(),
+  instagram: z.string().optional().nullable(),
+  linkedin: z.string().optional().nullable(),
 });
 
 export async function supplierRoutes(server: FastifyInstance) {
