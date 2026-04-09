@@ -249,7 +249,7 @@ export default function AdminPage() {
     if (isReady && activeTab === 'logs') {
       fetchLogs();
     }
-  }, [filter, isReady]);
+  }, [filter, isReady, activeTab]);
 
   // Auto-refresh users every 10 seconds for real-time updates
   useEffect(() => {
@@ -882,6 +882,7 @@ Please analyze this error and provide a fix.
         {/* Tabs - Horizontal scroll on mobile */}
         <div className="flex gap-2 mb-6 overflow-x-auto -mx-2 px-2 scrollbar-hide">
           <button
+            type="button"
             onClick={() => setActiveTab('users')}
             className={`px-6 py-3 rounded-xl font-medium transition-all flex items-center gap-2 whitespace-nowrap flex-shrink-0 ${
               activeTab === 'users'
@@ -898,6 +899,7 @@ Please analyze this error and provide a fix.
             )}
           </button>
           <button
+            type="button"
             onClick={() => setActiveTab('invoices')}
             className={`px-6 py-3 rounded-xl font-medium transition-all flex items-center gap-2 whitespace-nowrap flex-shrink-0 ${
               activeTab === 'invoices'
@@ -914,6 +916,7 @@ Please analyze this error and provide a fix.
             )}
           </button>
           <button
+            type="button"
             onClick={() => setActiveTab('recycle-bin')}
             className={`px-6 py-3 rounded-xl font-medium transition-all flex items-center gap-2 whitespace-nowrap flex-shrink-0 ${
               activeTab === 'recycle-bin'
@@ -930,6 +933,7 @@ Please analyze this error and provide a fix.
             )}
           </button>
           <button
+            type="button"
             onClick={() => setActiveTab('scan')}
             className={`px-6 py-3 rounded-xl font-medium transition-all flex items-center gap-2 whitespace-nowrap flex-shrink-0 ${
               activeTab === 'scan'
@@ -941,6 +945,7 @@ Please analyze this error and provide a fix.
             סריקת מערכת
           </button>
           <button
+            type="button"
             onClick={() => setActiveTab('logs')}
             className={`px-6 py-3 rounded-xl font-medium transition-all flex items-center gap-2 whitespace-nowrap flex-shrink-0 ${
               activeTab === 'logs'
@@ -1818,6 +1823,7 @@ Please analyze this error and provide a fix.
             {/* Filters */}
             <div className="bg-white/5 backdrop-blur border border-white/10 rounded-2xl p-6 mb-6">
               <button
+                type="button"
                 onClick={() => setShowFilters(!showFilters)}
                 className="flex items-center justify-between w-full text-white"
               >
