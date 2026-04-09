@@ -88,7 +88,7 @@ export default function LoginPage() {
       {/* Background Image - positioned at top */}
       <div className="absolute inset-x-0 top-0 h-[50vh]">
         <Image
-          src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1920&q=80"
+          src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1920&q=80"
           alt="Modern architecture"
           fill
           className="object-cover object-center"
@@ -100,7 +100,7 @@ export default function LoginPage() {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 min-h-screen flex flex-col items-center justify-center px-6 py-12 pt-[20vh]">
+      <div className="relative z-10 min-h-screen flex flex-col items-center justify-center px-6 py-12 pt-[50vh]">
         {/* Tagline */}
         <motion.div
           initial={{ opacity: 0 }}

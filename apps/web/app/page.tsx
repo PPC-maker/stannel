@@ -79,27 +79,28 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-[#0f2620] -mt-16">
       {/* Hero Section */}
-      <section className="relative min-h-screen overflow-hidden">
-        {/* Background Image */}
-        <div className="absolute inset-0">
+      <section className="relative">
+        {/* Background Image Container - Limited Height */}
+        <div className="relative h-[60vh] min-h-[400px]">
           <Image
-            src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1920&q=80"
+            src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1920&q=80"
             alt="Modern architecture"
             fill
             className="object-cover"
             priority
           />
-          <div className="absolute inset-0 bg-black/40" />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#0f2620]/30 via-transparent to-[#0f2620]" />
+          <div className="absolute inset-0 bg-black/30" />
+          {/* Strong fade at bottom of image */}
+          <div className="absolute inset-0 bg-gradient-to-b from-[#0f2620]/20 via-transparent via-40% to-[#0f2620]" />
         </div>
 
-        {/* Hero Content */}
-        <div className="relative z-10 min-h-screen flex flex-col items-center justify-center px-6 pt-20">
+        {/* Hero Content - Below the image */}
+        <div className="bg-[#0f2620] px-6 py-8">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="text-center max-w-3xl"
+            className="text-center max-w-3xl mx-auto"
           >
             <h1 className="text-4xl md:text-6xl font-bold text-white mb-4">
               STANNEL CLUB
@@ -107,7 +108,7 @@ export default function HomePage() {
             <h2 className="text-2xl md:text-3xl text-white/90 font-light mb-6">
               קהילת הערך למעצבים ואדריכלים
             </h2>
-            <p className="text-white/70 text-lg mb-10 max-w-xl mx-auto">
+            <p className="text-white/70 text-lg mb-8 max-w-xl mx-auto">
               פלטפורמה חדשנית המחברת אדריכלים ומעצבים עם ספקים מובחרים.
               הצטרפו והתחילו להרוויח מכל פרויקט.
             </p>
@@ -127,27 +128,11 @@ export default function HomePage() {
               </Link>
             </div>
           </motion.div>
-
-          {/* Scroll indicator */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1, duration: 0.5 }}
-            className="absolute bottom-10 left-1/2 -translate-x-1/2"
-          >
-            <div className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center pt-2">
-              <motion.div
-                animate={{ y: [0, 8, 0] }}
-                transition={{ repeat: Infinity, duration: 1.5 }}
-                className="w-1.5 h-1.5 bg-white/60 rounded-full"
-              />
-            </div>
-          </motion.div>
         </div>
       </section>
 
       {/* Stats Section */}
-      <section className="py-16 px-6 bg-[#0f2620]">
+      <section className="py-8 px-6 bg-[#0f2620]">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {stats.map((stat, index) => (
