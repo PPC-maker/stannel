@@ -883,11 +883,11 @@ Please analyze this error and provide a fix.
           </Link>
         </motion.div>
 
-        {/* Tabs */}
-        <div className="flex gap-2 mb-6">
+        {/* Tabs - Horizontal scroll on mobile */}
+        <div className="flex gap-2 mb-6 overflow-x-auto pb-2 -mx-2 px-2 scrollbar-hide" style={{ WebkitOverflowScrolling: 'touch' }}>
           <button
             onClick={() => setActiveTab('users')}
-            className={`px-6 py-3 rounded-xl font-medium transition-all flex items-center gap-2 ${
+            className={`px-6 py-3 rounded-xl font-medium transition-all flex items-center gap-2 whitespace-nowrap flex-shrink-0 ${
               activeTab === 'users'
                 ? 'bg-gold-400 text-primary-900'
                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -903,7 +903,7 @@ Please analyze this error and provide a fix.
           </button>
           <button
             onClick={() => setActiveTab('invoices')}
-            className={`px-6 py-3 rounded-xl font-medium transition-all flex items-center gap-2 ${
+            className={`px-6 py-3 rounded-xl font-medium transition-all flex items-center gap-2 whitespace-nowrap flex-shrink-0 ${
               activeTab === 'invoices'
                 ? 'bg-gold-400 text-primary-900'
                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -919,7 +919,7 @@ Please analyze this error and provide a fix.
           </button>
           <button
             onClick={() => setActiveTab('recycle-bin')}
-            className={`px-6 py-3 rounded-xl font-medium transition-all flex items-center gap-2 ${
+            className={`px-6 py-3 rounded-xl font-medium transition-all flex items-center gap-2 whitespace-nowrap flex-shrink-0 ${
               activeTab === 'recycle-bin'
                 ? 'bg-gold-400 text-primary-900'
                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -935,7 +935,7 @@ Please analyze this error and provide a fix.
           </button>
           <button
             onClick={() => setActiveTab('scan')}
-            className={`px-6 py-3 rounded-xl font-medium transition-all flex items-center gap-2 ${
+            className={`px-6 py-3 rounded-xl font-medium transition-all flex items-center gap-2 whitespace-nowrap flex-shrink-0 ${
               activeTab === 'scan'
                 ? 'bg-gold-400 text-primary-900'
                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -946,7 +946,7 @@ Please analyze this error and provide a fix.
           </button>
           <button
             onClick={() => setActiveTab('logs')}
-            className={`px-6 py-3 rounded-xl font-medium transition-all flex items-center gap-2 ${
+            className={`px-6 py-3 rounded-xl font-medium transition-all flex items-center gap-2 whitespace-nowrap flex-shrink-0 ${
               activeTab === 'logs'
                 ? 'bg-gold-400 text-primary-900'
                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
