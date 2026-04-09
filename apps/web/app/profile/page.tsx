@@ -3,9 +3,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import Image from 'next/image';
-import GlassCard from '@/components/layout/GlassCard';
-import PageSlider, { sliderImages } from '@/components/layout/PageSlider';
 import { useAuth } from '@/lib/auth-context';
 import { useAuthGuard, AuthGuardLoader } from '@/lib/useAuthGuard';
 import { useWalletBalance, useInvoices } from '@/lib/api-hooks';
@@ -131,19 +128,19 @@ export default function ProfilePage() {
 
   const getTierColor = (tier: string) => {
     switch (tier) {
-      case 'GOLD': return 'text-gold-400';
+      case 'GOLD': return 'text-yellow-400';
       case 'SILVER': return 'text-gray-300';
       case 'BRONZE': return 'text-amber-600';
       default: return 'text-white';
     }
   };
 
-  const getTierEmoji = (tier: string) => {
+  const getTierBg = (tier: string) => {
     switch (tier) {
-      case 'GOLD': return '';
-      case 'SILVER': return '';
-      case 'BRONZE': return '';
-      default: return '';
+      case 'GOLD': return 'from-yellow-500/20 to-amber-500/20 border-yellow-500/30';
+      case 'SILVER': return 'from-gray-400/20 to-slate-400/20 border-gray-400/30';
+      case 'BRONZE': return 'from-amber-600/20 to-orange-600/20 border-amber-600/30';
+      default: return 'from-emerald-500/20 to-teal-500/20 border-emerald-500/30';
     }
   };
 
@@ -198,9 +195,15 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="relative bg-[#F8FAFC] min-h-screen">
-      <PageSlider images={sliderImages.profile} />
-      <div className="p-6 max-w-6xl mx-auto relative z-10">
+    <div className="min-h-screen bg-[#0f2620] -mt-16">
+      {/* Hero Background - Gradient */}
+      <div className="relative h-72 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-[#0f2620] via-[#1a4a3a] to-[#0f2620]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(16,185,129,0.2),transparent_50%)]" />
+      </div>
+
+      {/* Content */}
+      <div className="px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto -mt-32 relative z-10 pb-12">
         {/* Profile Header */}
         <motion.div
           ref={profileRef}
@@ -208,16 +211,16 @@ export default function ProfilePage() {
           animate={{
             opacity: 1,
             y: 0,
-            boxShadow: highlightProfile ? '0 0 0 3px #d4af37, 0 0 30px rgba(212, 175, 55, 0.5)' : 'none'
+            boxShadow: highlightProfile ? '0 0 0 3px #10b981, 0 0 30px rgba(16, 185, 129, 0.5)' : 'none'
           }}
           transition={{ duration: 0.3 }}
-          className={`mb-8 rounded-2xl ${highlightProfile ? 'ring-2 ring-gold-400 ring-offset-2 ring-offset-transparent' : ''}`}
+          className={`mb-8 rounded-2xl ${highlightProfile ? 'ring-2 ring-emerald-400 ring-offset-2 ring-offset-transparent' : ''}`}
         >
-          <GlassCard className={`relative overflow-visible transition-all duration-300 ${highlightProfile ? 'border-gold-400 border-2' : ''}`}>
+          <div className={`bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 relative overflow-visible transition-all duration-300 ${highlightProfile ? 'border-emerald-400 border-2' : ''}`}>
             <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
               {/* Avatar */}
               <div className="relative group">
-                <div className="w-32 h-32 rounded-2xl overflow-hidden ring-4 ring-gold-400/30 bg-gradient-to-br from-gold-400 to-gold-600">
+                <div className={`w-32 h-32 rounded-2xl overflow-hidden ring-4 ring-emerald-500/30 bg-gradient-to-br ${getTierBg(currentUser.tier)}`}>
                   {currentUser.avatar ? (
                     <img
                       src={currentUser.avatar}
@@ -225,8 +228,8 @@ export default function ProfilePage() {
                       className="w-full h-full object-cover"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center">
-                      <span className="text-4xl font-bold text-primary-900">
+                    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-emerald-500 to-teal-600">
+                      <span className="text-4xl font-bold text-white">
                         {currentUser.name.charAt(0)}
                       </span>
                     </div>
@@ -234,12 +237,12 @@ export default function ProfilePage() {
                 </div>
                 <button
                   onClick={() => setShowPhotoModal(true)}
-                  className="absolute bottom-2 right-2 w-8 h-8 bg-gold-400 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-gold-500"
+                  className="absolute bottom-2 right-2 w-8 h-8 bg-emerald-500 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-emerald-600"
                 >
-                  <Camera size={16} className="text-primary-900" />
+                  <Camera size={16} className="text-white" />
                 </button>
-                <div className="absolute -top-2 -right-2 w-10 h-10 bg-gradient-to-br from-gold-400 to-gold-600 rounded-full flex items-center justify-center text-lg">
-                  {getTierEmoji(currentUser.tier)}
+                <div className={`absolute -top-2 -right-2 px-3 py-1 bg-gradient-to-r ${getTierBg(currentUser.tier)} rounded-full border`}>
+                  <span className={`text-xs font-bold ${getTierColor(currentUser.tier)}`}>{currentUser.tier}</span>
                 </div>
               </div>
 
@@ -248,66 +251,63 @@ export default function ProfilePage() {
                 {isEditing ? (
                   <div className="space-y-4">
                     <div>
-                      <label className="block text-gray-700 text-sm mb-1">שם מלא</label>
+                      <label className="block text-white/60 text-sm mb-1">שם מלא</label>
                       <input
                         type="text"
                         value={editData.name}
                         onChange={(e) => setEditData({ ...editData, name: e.target.value })}
-                        className="w-full bg-gray-100 border border-gray-200 rounded-xl px-4 py-2 text-gray-800 focus:border-[#0066CC] transition-all"
+                        className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-2 text-white placeholder-white/40 focus:border-emerald-500 focus:bg-white/15 transition-all"
                       />
                     </div>
                     <div>
-                      <label className="block text-gray-700 text-sm mb-1">טלפון</label>
+                      <label className="block text-white/60 text-sm mb-1">טלפון</label>
                       <input
                         type="tel"
                         value={editData.phone}
                         onChange={(e) => setEditData({ ...editData, phone: e.target.value })}
-                        className="w-full bg-gray-100 border border-gray-200 rounded-xl px-4 py-2 text-gray-800 focus:border-[#0066CC] transition-all"
+                        className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-2 text-white placeholder-white/40 focus:border-emerald-500 focus:bg-white/15 transition-all"
                       />
                     </div>
                     <div>
-                      <label className="block text-gray-700 text-sm mb-1">חברה</label>
+                      <label className="block text-white/60 text-sm mb-1">חברה</label>
                       <input
                         type="text"
                         value={editData.company}
                         onChange={(e) => setEditData({ ...editData, company: e.target.value })}
-                        className="w-full bg-gray-100 border border-gray-200 rounded-xl px-4 py-2 text-gray-800 focus:border-[#0066CC] transition-all"
+                        className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-2 text-white placeholder-white/40 focus:border-emerald-500 focus:bg-white/15 transition-all"
                       />
                     </div>
                     <div>
-                      <label className="block text-gray-700 text-sm mb-1">כתובת</label>
+                      <label className="block text-white/60 text-sm mb-1">כתובת</label>
                       <input
                         type="text"
                         value={editData.address}
                         onChange={(e) => setEditData({ ...editData, address: e.target.value })}
-                        className="w-full bg-gray-100 border border-gray-200 rounded-xl px-4 py-2 text-gray-800 focus:border-[#0066CC] transition-all"
+                        className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-2 text-white placeholder-white/40 focus:border-emerald-500 focus:bg-white/15 transition-all"
                       />
                     </div>
                   </div>
                 ) : (
                   <>
                     <div className="flex items-center justify-center md:justify-start gap-3 mb-2">
-                      <h1 className="text-3xl font-display font-bold text-gray-900">{currentUser.name}</h1>
-                      <span className={`text-lg font-bold ${getTierColor(currentUser.tier)}`}>
-                        {currentUser.tier}
-                      </span>
+                      <h1 className="text-3xl font-bold text-white">{currentUser.name}</h1>
                     </div>
-                    <p className="text-gray-700 mb-4">{currentUser.company || 'לא צוין עסק'}</p>
+                    <p className="text-white/60 mb-4">{currentUser.company || 'לא צוין עסק'}</p>
 
-                    <div className="flex flex-wrap justify-center md:justify-start gap-4 text-sm text-gray-700">
+                    <div className="flex flex-wrap justify-center md:justify-start gap-4 text-sm text-white/60">
                       <div className="flex items-center gap-2">
-                        <Mail size={14} />
+                        <Mail size={14} className="text-emerald-400" />
                         <span>{currentUser.email}</span>
                       </div>
                       {currentUser.phone && (
                         <div className="flex items-center gap-2">
-                          <Phone size={14} />
+                          <Phone size={14} className="text-emerald-400" />
                           <span>{currentUser.phone}</span>
                         </div>
                       )}
                       {currentUser.address && (
                         <div className="flex items-center gap-2">
-                          <MapPin size={14} />
+                          <MapPin size={14} className="text-emerald-400" />
                           <span>{currentUser.address}</span>
                         </div>
                       )}
@@ -324,48 +324,47 @@ export default function ProfilePage() {
                       setIsEditing(false);
                       router.replace('/profile');
                     }}
-                    className="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors"
+                    className="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors"
                   >
-                    <X size={18} className="text-gray-600" />
+                    <X size={18} className="text-white/60" />
                   </button>
                   <button
                     onClick={handleSaveProfile}
-                    className="p-2 rounded-lg bg-gold-400 hover:bg-gold-500 transition-colors"
+                    className="p-2 rounded-lg bg-emerald-500 hover:bg-emerald-600 transition-colors"
                   >
-                    <Save size={18} className="text-primary-900" />
+                    <Save size={18} className="text-white" />
                   </button>
                 </div>
               ) : (
                 <button
                   onClick={() => setIsEditing(true)}
-                  className="absolute top-4 left-4 p-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors"
+                  className="absolute top-4 left-4 p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors"
                 >
-                  <Edit3 size={18} className="text-gray-600" />
+                  <Edit3 size={18} className="text-white/60" />
                 </button>
               )}
             </div>
-          </GlassCard>
+          </div>
         </motion.div>
 
         {/* Stats Grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           {[
-            { icon: Award, label: 'נקודות נוכחיות', value: stats.currentPoints.toLocaleString(), color: 'text-gold-400' },
-            { icon: TrendingUp, label: 'סה"כ נצבר', value: stats.totalPoints.toLocaleString(), color: 'text-green-400' },
-            { icon: CreditCard, label: 'חשבוניות', value: stats.totalTransactions.toString(), color: 'text-blue-400' },
-            { icon: Calendar, label: 'חבר מאז', value: formatDate(currentUser.joinDate), color: 'text-purple-400' },
+            { icon: Award, label: 'נקודות נוכחיות', value: stats.currentPoints.toLocaleString(), color: 'text-yellow-400', borderColor: 'border-yellow-500/30' },
+            { icon: TrendingUp, label: 'סה"כ נצבר', value: stats.totalPoints.toLocaleString(), color: 'text-emerald-400', borderColor: 'border-emerald-500/30' },
+            { icon: CreditCard, label: 'חשבוניות', value: stats.totalTransactions.toString(), color: 'text-blue-400', borderColor: 'border-blue-500/30' },
+            { icon: Calendar, label: 'חבר מאז', value: formatDate(currentUser.joinDate), color: 'text-purple-400', borderColor: 'border-purple-500/30' },
           ].map((stat, index) => (
             <motion.div
               key={stat.label}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
+              className={`bg-white/5 backdrop-blur-md border-l-4 ${stat.borderColor} border border-white/10 rounded-2xl p-4 text-center`}
             >
-              <GlassCard className="text-center">
-                <stat.icon size={24} className={`mx-auto mb-2 ${stat.color}`} />
-                <p className="text-2xl font-bold text-gray-800 mb-1">{stat.value}</p>
-                <p className="text-gray-700 text-sm">{stat.label}</p>
-              </GlassCard>
+              <stat.icon size={24} className={`mx-auto mb-2 ${stat.color}`} />
+              <p className="text-2xl font-bold text-white mb-1">{stat.value}</p>
+              <p className="text-white/50 text-sm">{stat.label}</p>
             </motion.div>
           ))}
         </div>
@@ -377,9 +376,9 @@ export default function ProfilePage() {
             animate={{ opacity: 1, x: 0 }}
             className="md:col-span-2"
           >
-            <GlassCard>
-              <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                <TrendingUp size={20} className="text-gold-400" />
+            <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6">
+              <h2 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
+                <TrendingUp size={20} className="text-emerald-400" />
                 פעילות אחרונה
               </h2>
               <div className="space-y-3">
@@ -387,27 +386,27 @@ export default function ProfilePage() {
                   recentActivity.map((activity: any) => (
                     <div
                       key={activity.id}
-                      className="flex items-center justify-between p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors"
+                      className="flex items-center justify-between p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/5"
                     >
                       <div>
-                        <p className="text-gray-800">{activity.description}</p>
-                        <p className="text-gray-600 text-sm">{formatDate(activity.date)}</p>
+                        <p className="text-white">{activity.description}</p>
+                        <p className="text-white/50 text-sm">{formatDate(activity.date)}</p>
                       </div>
                       {activity.points !== 0 && (
-                        <span className={`font-bold ${activity.points > 0 ? 'text-green-400' : 'text-red-400'}`}>
+                        <span className={`font-bold ${activity.points > 0 ? 'text-emerald-400' : 'text-red-400'}`}>
                           {activity.points > 0 ? '+' : ''}{activity.points.toLocaleString()} נק׳
                         </span>
                       )}
                     </div>
                   ))
                 ) : (
-                  <div className="text-center py-8 text-gray-600">
+                  <div className="text-center py-8 text-white/50">
                     <TrendingUp size={48} className="mx-auto mb-4 opacity-30" />
                     <p>אין פעילות אחרונה להצגה</p>
                   </div>
                 )}
               </div>
-            </GlassCard>
+            </div>
           </motion.div>
 
           {/* Quick Settings */}
@@ -415,64 +414,64 @@ export default function ProfilePage() {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
           >
-            <GlassCard>
-              <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                <Shield size={20} className="text-gold-400" />
+            <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6">
+              <h2 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
+                <Shield size={20} className="text-emerald-400" />
                 הגדרות מהירות
               </h2>
               <div className="space-y-2">
                 <button
                   onClick={scrollToEditProfile}
-                  className="w-full flex items-center justify-between gap-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors text-gray-600 hover:text-gray-800"
+                  className="w-full flex items-center justify-between gap-3 p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors text-white/70 hover:text-white border border-white/5"
                 >
                   <div className="flex items-center gap-3">
-                    <User size={18} />
+                    <User size={18} className="text-emerald-400" />
                     <span>עריכת פרטים אישיים</span>
                   </div>
-                  <ChevronLeft size={16} className="text-gray-600" />
+                  <ChevronLeft size={16} className="text-white/40" />
                 </button>
                 <button
                   onClick={() => router.push('/settings#notifications')}
-                  className="w-full flex items-center justify-between gap-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors text-gray-600 hover:text-gray-800"
+                  className="w-full flex items-center justify-between gap-3 p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors text-white/70 hover:text-white border border-white/5"
                 >
                   <div className="flex items-center gap-3">
-                    <Bell size={18} />
+                    <Bell size={18} className="text-emerald-400" />
                     <span>הגדרות התראות</span>
                   </div>
-                  <ChevronLeft size={16} className="text-gray-600" />
+                  <ChevronLeft size={16} className="text-white/40" />
                 </button>
                 <button
                   onClick={() => router.push('/settings#security')}
-                  className="w-full flex items-center justify-between gap-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors text-gray-600 hover:text-gray-800"
+                  className="w-full flex items-center justify-between gap-3 p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors text-white/70 hover:text-white border border-white/5"
                 >
                   <div className="flex items-center gap-3">
-                    <Shield size={18} />
+                    <Shield size={18} className="text-emerald-400" />
                     <span>אבטחה ופרטיות</span>
                   </div>
-                  <ChevronLeft size={16} className="text-gray-600" />
+                  <ChevronLeft size={16} className="text-white/40" />
                 </button>
                 <button
                   onClick={() => router.push('/wallet')}
-                  className="w-full flex items-center justify-between gap-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors text-gray-600 hover:text-gray-800"
+                  className="w-full flex items-center justify-between gap-3 p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors text-white/70 hover:text-white border border-white/5"
                 >
                   <div className="flex items-center gap-3">
-                    <CreditCard size={18} />
+                    <CreditCard size={18} className="text-emerald-400" />
                     <span>הארנק שלי</span>
                   </div>
-                  <ChevronLeft size={16} className="text-gray-600" />
+                  <ChevronLeft size={16} className="text-white/40" />
                 </button>
                 <button
                   onClick={() => router.push('/invoices')}
-                  className="w-full flex items-center justify-between gap-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors text-gray-600 hover:text-gray-800"
+                  className="w-full flex items-center justify-between gap-3 p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors text-white/70 hover:text-white border border-white/5"
                 >
                   <div className="flex items-center gap-3">
-                    <Building2 size={18} />
+                    <Building2 size={18} className="text-emerald-400" />
                     <span>החשבוניות שלי</span>
                   </div>
-                  <ChevronLeft size={16} className="text-gray-600" />
+                  <ChevronLeft size={16} className="text-white/40" />
                 </button>
               </div>
-            </GlassCard>
+            </div>
           </motion.div>
         </div>
       </div>
@@ -491,18 +490,18 @@ export default function ProfilePage() {
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="glass-card p-6 max-w-sm w-full"
+              className="bg-[#0a1f18] border border-white/10 rounded-2xl p-6 max-w-sm w-full"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-semibold text-gray-800">עדכון תמונת פרופיל</h3>
-                <button onClick={() => setShowPhotoModal(false)} className="text-gray-600 hover:text-gray-600">
+                <h3 className="text-xl font-semibold text-white">עדכון תמונת פרופיל</h3>
+                <button onClick={() => setShowPhotoModal(false)} className="text-white/60 hover:text-white">
                   <X size={20} />
                 </button>
               </div>
 
               <div className="text-center">
-                <div className="w-32 h-32 mx-auto rounded-2xl overflow-hidden ring-4 ring-gold-400/30 bg-gradient-to-br from-gold-400 to-gold-600 mb-6">
+                <div className="w-32 h-32 mx-auto rounded-2xl overflow-hidden ring-4 ring-emerald-500/30 bg-gradient-to-br from-emerald-500 to-teal-600 mb-6">
                   {currentUser.avatar ? (
                     <img
                       src={currentUser.avatar}
@@ -511,7 +510,7 @@ export default function ProfilePage() {
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center">
-                      <span className="text-4xl font-bold text-primary-900">
+                      <span className="text-4xl font-bold text-white">
                         {currentUser.name.charAt(0)}
                       </span>
                     </div>
@@ -528,7 +527,7 @@ export default function ProfilePage() {
                 />
 
                 {uploadError && (
-                  <div className="mb-3 p-3 bg-red-100 text-red-700 rounded-lg text-sm">
+                  <div className="mb-3 p-3 bg-red-500/20 border border-red-500/30 text-red-400 rounded-lg text-sm">
                     {uploadError}
                   </div>
                 )}
@@ -536,7 +535,7 @@ export default function ProfilePage() {
                 <button
                   onClick={() => fileInputRef.current?.click()}
                   disabled={isUploading}
-                  className="w-full btn-gold mb-3 disabled:opacity-50"
+                  className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white py-3 px-6 rounded-xl font-semibold hover:from-emerald-600 hover:to-teal-700 transition-all disabled:opacity-50 mb-3"
                 >
                   {isUploading ? (
                     <>
@@ -551,7 +550,7 @@ export default function ProfilePage() {
                   )}
                 </button>
 
-                <p className="text-gray-600 text-sm">
+                <p className="text-white/50 text-sm">
                   JPG, PNG או GIF. מקסימום 5MB.
                 </p>
               </div>

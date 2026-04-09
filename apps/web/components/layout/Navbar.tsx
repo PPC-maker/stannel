@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, User, LogOut, Settings, Wallet, FileText, Gift, Calendar, Home, LogIn, Bot, Shield, Bell, Target, Wrench, X } from 'lucide-react';
 import { useAuth } from '@/lib/auth-context';
@@ -27,7 +27,7 @@ const architectLinks = [
 
 // Links for SUPPLIER users - view only, no wallet
 const supplierLinks = [
-  { href: '/supplier', label: 'דשבורד', icon: Home },
+  { href: '/supplier', label: 'לוח בקרה', icon: Home },
   { href: '/notifications', label: 'התראות', icon: Bell },
   { href: '/ai-agent', label: 'תובנות AI', icon: Bot },
 ];
@@ -36,18 +36,26 @@ export default function Navbar() {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const { user, logout } = useAuth();
   const router = useRouter();
+  const pathname = usePathname();
+
+  // All pages now use the dark green theme - make navbar transparent on all pages
+  const isDarkPage = true;
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100">
-      <div className="w-full px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-center relative">
+    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all ${
+      isDarkPage
+        ? 'bg-transparent'
+        : 'bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100'
+    }`}>
+      <div className={`w-full px-4 sm:px-6 lg:px-8 flex items-center justify-center relative ${isDarkPage ? 'h-20' : 'h-16'}`}>
         {/* Centered Logo */}
         <Link href="/" className="flex items-center">
           <Image
             src="/logo_black.png"
             alt="Stannel"
-            width={160}
-            height={48}
-            className="h-10 w-auto"
+            width={isDarkPage ? 220 : 160}
+            height={isDarkPage ? 66 : 48}
+            className={isDarkPage ? "h-14 w-auto brightness-0 invert" : "h-10 w-auto"}
             priority
           />
         </Link>
@@ -56,12 +64,16 @@ export default function Navbar() {
         <div className="absolute right-4 top-1/2 -translate-y-1/2">
           <button
             onClick={() => setIsProfileOpen(!isProfileOpen)}
-            className="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 transition-colors bg-white shadow-sm"
+            className={`w-10 h-10 rounded-full border-2 flex items-center justify-center transition-colors ${
+              isDarkPage
+                ? 'border-white/50 hover:bg-white/20 bg-white/15 shadow-[0_0_10px_rgba(255,255,255,0.2)]'
+                : 'border-gray-200 hover:bg-gray-50 bg-white shadow-sm'
+            }`}
           >
             {isProfileOpen ? (
-              <X size={20} className="text-gray-600" />
+              <X size={20} className={isDarkPage ? "text-white" : "text-gray-600"} />
             ) : (
-              <Menu size={20} className="text-gray-600" />
+              <Menu size={20} className={isDarkPage ? "text-white" : "text-gray-600"} />
             )}
           </button>
 

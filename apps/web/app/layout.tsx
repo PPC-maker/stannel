@@ -37,7 +37,7 @@ export default function RootLayout({
           {/* Main app shell */}
           <div className="relative z-10 min-h-screen flex flex-col items-center">
             <Navbar />
-            <main className="flex-1 pt-16 w-full">
+            <main className="flex-1 pt-16 w-full bg-transparent">
               {children}
             </main>
           </div>

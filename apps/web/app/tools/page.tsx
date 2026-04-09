@@ -2,8 +2,7 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import GlassCard from '@/components/layout/GlassCard';
-import PageSlider, { sliderImages } from '@/components/layout/PageSlider';
+import Image from 'next/image';
 import {
   Palette,
   Briefcase,
@@ -18,7 +17,6 @@ import { useServiceProviders, useServiceProviderCategories } from '@/lib/api-hoo
 import { useAuth } from '@/lib/auth-context';
 import { useAuthGuard, AuthGuardLoader } from '@/lib/useAuthGuard';
 
-// Nirlat color families
 const COLOR_FAMILIES = [
   { name: 'אדומים', key: 'red', colors: [
     { name: 'IS 0062', hex: '#C0392B' },
@@ -99,15 +97,13 @@ export default function ToolsPage() {
     return <AuthGuardLoader />;
   }
 
-  // Architects and admins can access tools
   if (user?.role !== 'ARCHITECT' && user?.role !== 'ADMIN') {
     return (
-      <div className="relative">
-        <PageSlider images={sliderImages.dashboard} />
-        <div className="p-6 max-w-4xl mx-auto relative z-10 text-center py-20">
-          <Wrench size={64} className="mx-auto text-gray-300 mb-4" />
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">גישה מוגבלת</h1>
-          <p className="text-gray-700">עמוד זה זמין לאדריכלים בלבד</p>
+      <div className="min-h-screen bg-[#0f2620] -mt-16 flex items-center justify-center">
+        <div className="text-center">
+          <Wrench size={64} className="mx-auto text-white/30 mb-4" />
+          <h1 className="text-2xl font-bold text-white mb-2">גישה מוגבלת</h1>
+          <p className="text-white/60">עמוד זה זמין לאדריכלים בלבד</p>
         </div>
       </div>
     );
@@ -119,20 +115,32 @@ export default function ToolsPage() {
   ];
 
   return (
-    <div className="relative">
-      <PageSlider images={sliderImages.dashboard} />
-      <div className="p-6 max-w-6xl mx-auto relative z-10">
+    <div className="min-h-screen bg-[#0f2620] -mt-16">
+      {/* Hero Background */}
+      <div className="absolute inset-x-0 top-0 h-[35vh]">
+        <Image
+          src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=1920&q=80"
+          alt="Tools"
+          fill
+          className="object-cover"
+          priority
+        />
+        <div className="absolute inset-0 bg-black/50" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0f2620]/30 via-transparent to-[#0f2620]" />
+      </div>
+
+      <div className="relative z-10 p-6 pt-28 max-w-6xl mx-auto">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           className="mb-8"
         >
-          <h1 className="text-3xl font-display font-bold text-gray-900 flex items-center gap-3">
-            <Wrench className="text-gold-400" />
+          <h1 className="text-3xl font-bold text-white flex items-center gap-3">
+            <Wrench className="text-emerald-400" />
             כלים לאדריכלים
           </h1>
-          <p className="text-gray-700 mt-1">מניפות צבעים ונותני שירות</p>
+          <p className="text-white/60 mt-1">מניפות צבעים ונותני שירות</p>
         </motion.div>
 
         {/* Tabs */}
@@ -147,10 +155,10 @@ export default function ToolsPage() {
               <button
                 key={tab.key}
                 onClick={() => setActiveTab(tab.key)}
-                className={`flex items-center gap-2 px-5 py-3 rounded-lg text-sm font-medium transition-all ${
+                className={`flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-medium transition-all ${
                   activeTab === tab.key
-                    ? 'bg-gold-400 text-primary-900'
-                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200 hover:text-gray-900'
+                    ? 'bg-emerald-500 text-white'
+                    : 'bg-white/10 text-white/70 hover:bg-white/20 border border-white/10'
                 }`}
               >
                 <tab.icon size={18} />
@@ -167,17 +175,17 @@ export default function ToolsPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
           >
-            <GlassCard>
+            <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
-                  <Palette size={20} className="text-gold-400" />
+                <h2 className="text-xl font-semibold text-white flex items-center gap-2">
+                  <Palette size={20} className="text-emerald-400" />
                   קטלוג צבעי נירלאט
                 </h2>
                 <a
                   href="https://nirlat.com/fan/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 text-sm text-gray-700 hover:text-gold-400 transition-colors"
+                  className="flex items-center gap-2 text-sm text-white/60 hover:text-emerald-400 transition-colors"
                 >
                   <ExternalLink size={16} />
                   מניפה מלאה באתר נירלאט
@@ -185,18 +193,18 @@ export default function ToolsPage() {
               </div>
 
               {selectedColor && (
-                <div className="mb-6 p-4 bg-gray-100 rounded-xl flex items-center gap-4">
+                <div className="mb-6 p-4 bg-white/10 rounded-xl flex items-center gap-4">
                   <div
-                    className="w-16 h-16 rounded-lg border-2 border-gray-200"
+                    className="w-16 h-16 rounded-lg border-2 border-white/20"
                     style={{ backgroundColor: selectedColor.hex }}
                   />
                   <div>
-                    <p className="text-gray-900 font-medium">{selectedColor.name}</p>
-                    <p className="text-gray-700 text-sm">HEX: {selectedColor.hex}</p>
+                    <p className="text-white font-medium">{selectedColor.name}</p>
+                    <p className="text-white/60 text-sm">HEX: {selectedColor.hex}</p>
                   </div>
                   <button
                     onClick={() => setSelectedColor(null)}
-                    className="mr-auto text-gray-600 hover:text-gray-900 text-sm"
+                    className="mr-auto text-white/50 hover:text-white text-sm"
                   >
                     סגור
                   </button>
@@ -210,9 +218,9 @@ export default function ToolsPage() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: familyIndex * 0.05 }}
-                    className="bg-gray-50 rounded-xl p-4"
+                    className="bg-white/5 rounded-xl p-4"
                   >
-                    <p className="text-gray-700 text-sm uppercase tracking-wider mb-3 font-medium">
+                    <p className="text-white/60 text-sm uppercase tracking-wider mb-3 font-medium">
                       {family.name}
                     </p>
                     <div className="flex flex-wrap gap-2">
@@ -221,12 +229,12 @@ export default function ToolsPage() {
                           key={color.name}
                           onClick={() => setSelectedColor(color)}
                           className={`group relative transition-transform hover:scale-110 ${
-                            selectedColor?.hex === color.hex ? 'ring-2 ring-gold-400 ring-offset-2 ring-offset-white' : ''
+                            selectedColor?.hex === color.hex ? 'ring-2 ring-emerald-400 ring-offset-2 ring-offset-[#0f2620]' : ''
                           }`}
                           title={`${color.name} — ${color.hex}`}
                         >
                           <div
-                            className="w-12 h-12 rounded-lg border border-gray-200"
+                            className="w-12 h-12 rounded-lg border border-white/20"
                             style={{ backgroundColor: color.hex }}
                           />
                         </button>
@@ -235,7 +243,7 @@ export default function ToolsPage() {
                   </motion.div>
                 ))}
               </div>
-            </GlassCard>
+            </div>
           </motion.div>
         )}
 
@@ -246,10 +254,10 @@ export default function ToolsPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
           >
-            <GlassCard>
+            <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
-                  <Users size={20} className="text-gold-400" />
+                <h2 className="text-xl font-semibold text-white flex items-center gap-2">
+                  <Users size={20} className="text-emerald-400" />
                   נותני שירות
                 </h2>
               </div>
@@ -258,22 +266,22 @@ export default function ToolsPage() {
               <div className="flex flex-wrap gap-2 mb-6">
                 <button
                   onClick={() => setSelectedCategory(undefined)}
-                  className={`px-4 py-2 rounded-lg text-sm transition-colors ${
+                  className={`px-4 py-2 rounded-xl text-sm transition-colors ${
                     !selectedCategory
-                      ? 'bg-gold-400 text-primary-900'
-                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                      ? 'bg-emerald-500 text-white'
+                      : 'bg-white/10 text-white/70 hover:bg-white/20 border border-white/10'
                   }`}
                 >
                   הכל
                 </button>
-                {categories.map(cat => (
+                {categories.map((cat: any) => (
                   <button
                     key={cat.value}
                     onClick={() => setSelectedCategory(cat.value)}
-                    className={`px-4 py-2 rounded-lg text-sm transition-colors ${
+                    className={`px-4 py-2 rounded-xl text-sm transition-colors ${
                       selectedCategory === cat.value
-                        ? 'bg-gold-400 text-primary-900'
-                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                        ? 'bg-emerald-500 text-white'
+                        : 'bg-white/10 text-white/70 hover:bg-white/20 border border-white/10'
                     }`}
                   >
                     {cat.label}
@@ -284,17 +292,17 @@ export default function ToolsPage() {
               {providersLoading ? (
                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {[...Array(6)].map((_, i) => (
-                    <div key={i} className="bg-gray-50 rounded-xl p-4 animate-pulse">
-                      <div className="h-5 w-32 bg-gray-100 rounded mb-3" />
-                      <div className="h-4 w-48 bg-gray-100 rounded mb-2" />
-                      <div className="h-3 w-24 bg-gray-100 rounded" />
+                    <div key={i} className="bg-white/5 rounded-xl p-4 animate-pulse">
+                      <div className="h-5 w-32 bg-white/10 rounded mb-3" />
+                      <div className="h-4 w-48 bg-white/5 rounded mb-2" />
+                      <div className="h-3 w-24 bg-white/5 rounded" />
                     </div>
                   ))}
                 </div>
               ) : providers.length === 0 ? (
                 <div className="text-center py-12">
-                  <Briefcase size={48} className="mx-auto text-gray-300 mb-4" />
-                  <p className="text-gray-700">אין נותני שירות בקטגוריה זו</p>
+                  <Briefcase size={48} className="mx-auto text-white/30 mb-4" />
+                  <p className="text-white/70">אין נותני שירות בקטגוריה זו</p>
                 </div>
               ) : (
                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -304,27 +312,27 @@ export default function ToolsPage() {
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: index * 0.03 }}
-                      className="bg-gray-50 rounded-xl p-4 hover:bg-gray-100 transition-colors"
+                      className="bg-white/5 rounded-xl p-4 hover:bg-white/10 transition-colors"
                     >
                       <div className="flex items-start justify-between mb-2">
-                        <p className="text-gray-900 font-medium">{provider.name}</p>
+                        <p className="text-white font-medium">{provider.name}</p>
                         {provider.isVerified && (
-                          <span className="text-xs bg-green-500/20 text-green-600 px-2 py-0.5 rounded">
+                          <span className="text-xs bg-green-500/20 text-green-400 px-2 py-0.5 rounded">
                             מאומת
                           </span>
                         )}
                       </div>
-                      <p className="text-gray-600 text-xs mb-2">
+                      <p className="text-white/50 text-xs mb-2">
                         {CATEGORY_LABELS[provider.category] || provider.category}
                       </p>
                       {provider.description && (
-                        <p className="text-gray-700 text-sm mb-3">{provider.description}</p>
+                        <p className="text-white/60 text-sm mb-3">{provider.description}</p>
                       )}
                       <div className="space-y-1.5">
                         {provider.phone && (
                           <a
                             href={`tel:${provider.phone}`}
-                            className="flex items-center gap-2 text-sm text-gray-700 hover:text-gold-500 transition-colors"
+                            className="flex items-center gap-2 text-sm text-white/60 hover:text-emerald-400 transition-colors"
                           >
                             <Phone size={14} /> {provider.phone}
                           </a>
@@ -332,7 +340,7 @@ export default function ToolsPage() {
                         {provider.email && (
                           <a
                             href={`mailto:${provider.email}`}
-                            className="flex items-center gap-2 text-sm text-gray-700 hover:text-gold-500 transition-colors"
+                            className="flex items-center gap-2 text-sm text-white/60 hover:text-emerald-400 transition-colors"
                           >
                             <Mail size={14} /> {provider.email}
                           </a>
@@ -342,7 +350,7 @@ export default function ToolsPage() {
                             href={provider.website}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center gap-2 text-sm text-gray-700 hover:text-gold-500 transition-colors"
+                            className="flex items-center gap-2 text-sm text-white/60 hover:text-emerald-400 transition-colors"
                           >
                             <Globe size={14} /> אתר
                           </a>
@@ -352,7 +360,7 @@ export default function ToolsPage() {
                   ))}
                 </div>
               )}
-            </GlassCard>
+            </div>
           </motion.div>
         )}
       </div>

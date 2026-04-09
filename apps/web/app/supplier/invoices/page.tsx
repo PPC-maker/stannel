@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
-import PageSlider, { sliderImages } from '@/components/layout/PageSlider';
+import Image from 'next/image';
 import { useSupplierGuard, AuthGuardLoader } from '@/lib/useAuthGuard';
 import { useSupplierInvoices, useConfirmPayment } from '@/lib/api-hooks';
 import Swal from 'sweetalert2';
@@ -39,7 +39,7 @@ const STATUS_CONFIG: Record<string, { label: string; color: string; bg: string }
   PENDING_ADMIN: { label: 'ממתין לאישור', color: 'text-blue-400', bg: 'bg-blue-500/20' },
   PENDING_SUPPLIER_PAY: { label: 'ממתין לתשלום', color: 'text-yellow-400', bg: 'bg-yellow-500/20' },
   OVERDUE: { label: 'באיחור', color: 'text-red-400', bg: 'bg-red-500/20' },
-  PAID: { label: 'שולם', color: 'text-green-400', bg: 'bg-green-500/20' },
+  PAID: { label: 'שולם', color: 'text-emerald-400', bg: 'bg-emerald-500/20' },
   CREDITED: { label: 'זוכה', color: 'text-purple-400', bg: 'bg-purple-500/20' },
   REJECTED: { label: 'נדחה', color: 'text-red-400', bg: 'bg-red-500/20' },
 };
@@ -82,10 +82,10 @@ export default function SupplierInvoicesPage() {
         title: 'התשלום אושר בהצלחה!',
         html: '<p style="color: rgba(255,255,255,0.7);">הנקודות זוכו לארנק האדריכל</p>',
         icon: 'success',
-        iconColor: '#d4af37',
+        iconColor: '#10b981',
         confirmButtonText: 'סגור',
-        confirmButtonColor: '#d4af37',
-        background: 'linear-gradient(135deg, #0a1628 0%, #1a3a6b 100%)',
+        confirmButtonColor: '#10b981',
+        background: '#0a1f18',
         color: '#ffffff',
       });
     } catch (error: any) {
@@ -93,8 +93,8 @@ export default function SupplierInvoicesPage() {
         title: 'שגיאה',
         text: error.message || 'לא ניתן לאשר את התשלום',
         icon: 'error',
-        confirmButtonColor: '#d4af37',
-        background: 'linear-gradient(135deg, #0a1628 0%, #1a3a6b 100%)',
+        confirmButtonColor: '#10b981',
+        background: '#0a1f18',
         color: '#ffffff',
       });
     }
@@ -111,27 +111,42 @@ export default function SupplierInvoicesPage() {
   }
 
   return (
-    <div className="relative min-h-screen bg-[#F8FAFC]">
-      <PageSlider images={sliderImages.dashboard}  />
-      <div className="p-6 max-w-6xl mx-auto relative z-10 pt-24">
+    <div className="min-h-screen bg-[#0f2620] -mt-16">
+      {/* Hero Section with Image */}
+      <div className="relative h-80 overflow-hidden">
+        {/* Background Image */}
+        <Image
+          src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&w=2000&q=80"
+          alt="Documents"
+          fill
+          className="object-cover"
+          priority
+        />
+        {/* Dark Overlay with Fade */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0f2620]/60 via-[#0f2620]/70 to-[#0f2620]" />
+        {/* Emerald Glow */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(16,185,129,0.15),transparent_60%)]" />
+      </div>
+
+      <div className="px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto -mt-48 relative z-10 pb-12">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
-          className="mb-8 bg-white/95 backdrop-blur-sm rounded-2xl p-6 shadow-lg"
+          className="mb-8"
         >
           <Link
             href="/supplier"
-            className="inline-flex items-center gap-2 text-gray-500 hover:text-primary-700 mb-4 transition-colors font-medium"
+            className="inline-flex items-center gap-2 text-white/60 hover:text-emerald-400 mb-4 transition-colors font-medium"
           >
             <ArrowRight size={16} />
             חזרה לדשבורד
           </Link>
-          <h1 className="text-3xl font-display font-bold text-gray-900 flex items-center gap-3">
-            <FileText className="text-gold-500" />
+          <h1 className="text-3xl font-display font-bold text-white flex items-center gap-3">
+            <FileText className="text-emerald-400" />
             חשבוניות
           </h1>
-          <p className="text-gray-600 mt-1 font-medium">כל החשבוניות שהוגשו על ידי אדריכלים</p>
+          <p className="text-white/60 mt-1 font-medium">כל החשבוניות שהוגשו על ידי אדריכלים</p>
         </motion.div>
 
         {/* Filter & Stats */}
@@ -139,10 +154,10 @@ export default function SupplierInvoicesPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="flex items-center justify-between mb-6 bg-white/95 backdrop-blur-sm rounded-xl p-4 shadow-md"
+          className="flex items-center justify-between mb-6 bg-white/5 backdrop-blur-md border border-white/10 rounded-xl p-4"
         >
           <div className="flex items-center gap-4">
-            <span className="text-gray-700 text-sm font-semibold">
+            <span className="text-white/70 text-sm font-semibold">
               {invoices.length} חשבוניות
             </span>
           </div>
@@ -151,7 +166,7 @@ export default function SupplierInvoicesPage() {
           <div className="relative">
             <button
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-              className="flex items-center gap-2 px-4 py-2 bg-gray-100 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-200 transition-colors min-w-[180px] justify-between"
+              className="flex items-center gap-2 px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white font-medium hover:bg-white/20 transition-colors min-w-[180px] justify-between"
             >
               <span>{STATUS_OPTIONS.find(s => s.value === statusFilter)?.label || 'כל הסטטוסים'}</span>
               <ChevronDown size={16} className={`transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
@@ -161,7 +176,7 @@ export default function SupplierInvoicesPage() {
               <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="absolute top-full right-0 mt-1 w-full bg-white border border-gray-200 rounded-lg overflow-hidden z-10 shadow-xl"
+                className="absolute top-full right-0 mt-1 w-full bg-[#0a1f18] border border-white/20 rounded-lg overflow-hidden z-10 shadow-xl"
               >
                 {STATUS_OPTIONS.map((option) => (
                   <button
@@ -170,8 +185,8 @@ export default function SupplierInvoicesPage() {
                       setStatusFilter(option.value);
                       setIsDropdownOpen(false);
                     }}
-                    className={`w-full px-4 py-2 text-right hover:bg-gray-100 transition-colors flex items-center justify-between ${
-                      statusFilter === option.value ? 'bg-gray-100 text-gold-600 font-semibold' : 'text-gray-700'
+                    className={`w-full px-4 py-2 text-right hover:bg-white/10 transition-colors flex items-center justify-between ${
+                      statusFilter === option.value ? 'bg-emerald-500/20 text-emerald-400 font-semibold' : 'text-white/80'
                     }`}
                   >
                     <span>{option.label}</span>
@@ -189,21 +204,21 @@ export default function SupplierInvoicesPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
         >
-          <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-gray-200">
+          <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6">
             {isLoading ? (
               <div className="text-center py-12">
-                <Loader2 className="w-8 h-8 mx-auto text-gold-500 animate-spin" />
+                <Loader2 className="w-8 h-8 mx-auto text-emerald-400 animate-spin" />
               </div>
             ) : invoices.length === 0 ? (
               <div className="text-center py-12">
-                <Receipt className="w-12 h-12 mx-auto text-gray-300 mb-4" />
-                <p className="text-gray-500 font-medium">אין חשבוניות</p>
+                <Receipt className="w-12 h-12 mx-auto text-white/20 mb-4" />
+                <p className="text-white/60 font-medium">אין חשבוניות</p>
               </div>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
-                    <tr className="text-gray-600 text-sm font-semibold border-b-2 border-gray-200">
+                    <tr className="text-white/60 text-sm font-semibold border-b border-white/10">
                       <th className="text-right py-3 px-4">אדריכל</th>
                       <th className="text-right py-3 px-4">תאריך</th>
                       <th className="text-right py-3 px-4">SLA</th>
@@ -212,7 +227,7 @@ export default function SupplierInvoicesPage() {
                       <th className="text-right py-3 px-4">פעולות</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-100">
+                  <tbody className="divide-y divide-white/5">
                     {invoices.map((invoice: Invoice, index: number) => {
                       const statusConfig = STATUS_CONFIG[invoice.status] || STATUS_CONFIG.PENDING_SUPPLIER_PAY;
                       const canConfirm = invoice.status === 'PENDING_SUPPLIER_PAY' || invoice.status === 'OVERDUE';
@@ -224,37 +239,37 @@ export default function SupplierInvoicesPage() {
                           initial={{ opacity: 0, x: -20 }}
                           animate={{ opacity: 1, x: 0 }}
                           transition={{ delay: index * 0.02 }}
-                          className={`hover:bg-gray-50 transition-colors ${isOverdue ? 'bg-red-50' : ''}`}
+                          className={`hover:bg-white/5 transition-colors ${isOverdue ? 'bg-red-500/10' : ''}`}
                         >
                           <td className="py-4 px-4">
                             <div className="flex items-center gap-3">
-                              <div className="w-10 h-10 rounded-full bg-primary-100 flex items-center justify-center">
-                                <User size={18} className="text-primary-600" />
+                              <div className="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center">
+                                <User size={18} className="text-emerald-400" />
                               </div>
                               <div>
-                                <p className="text-gray-900 font-semibold">{invoice.architect.user.name}</p>
-                                <p className="text-gray-500 text-xs">{invoice.architect.user.email}</p>
+                                <p className="text-white font-semibold">{invoice.architect.user.name}</p>
+                                <p className="text-white/40 text-xs">{invoice.architect.user.email}</p>
                               </div>
                             </div>
                           </td>
                           <td className="py-4 px-4">
-                            <div className="flex items-center gap-2 text-gray-700 font-medium">
-                              <Calendar size={14} className="text-gray-400" />
+                            <div className="flex items-center gap-2 text-white/70 font-medium">
+                              <Calendar size={14} className="text-white/40" />
                               {new Date(invoice.createdAt).toLocaleDateString('he-IL')}
                             </div>
                           </td>
                           <td className="py-4 px-4">
                             {invoice.slaDeadline && canConfirm ? (
-                              <div className={`flex items-center gap-2 text-sm font-semibold ${isOverdue ? 'text-red-600' : 'text-amber-600'}`}>
+                              <div className={`flex items-center gap-2 text-sm font-semibold ${isOverdue ? 'text-red-400' : 'text-amber-400'}`}>
                                 {isOverdue ? <AlertTriangle size={14} /> : <Clock size={14} />}
                                 {new Date(invoice.slaDeadline).toLocaleDateString('he-IL')}
                               </div>
                             ) : (
-                              <span className="text-gray-400">-</span>
+                              <span className="text-white/30">-</span>
                             )}
                           </td>
                           <td className="py-4 px-4">
-                            <p className="text-gray-900 font-bold text-lg">₪{invoice.amount.toLocaleString()}</p>
+                            <p className="text-white font-bold text-lg">₪{invoice.amount.toLocaleString()}</p>
                           </td>
                           <td className="py-4 px-4">
                             <span className={`inline-block px-3 py-1.5 rounded-full text-xs font-bold ${statusConfig.bg} ${statusConfig.color}`}>
@@ -265,22 +280,22 @@ export default function SupplierInvoicesPage() {
                             {canConfirm ? (
                               <button
                                 onClick={() => openPaymentModal(invoice)}
-                                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-colors shadow-sm ${
+                                className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-colors ${
                                   isOverdue
-                                    ? 'bg-red-100 text-red-700 hover:bg-red-200 border border-red-200'
-                                    : 'bg-amber-100 text-amber-700 hover:bg-amber-200 border border-amber-200'
+                                    ? 'bg-red-500/20 text-red-400 hover:bg-red-500/30 border border-red-500/30'
+                                    : 'bg-amber-500/20 text-amber-400 hover:bg-amber-500/30 border border-amber-500/30'
                                 }`}
                               >
                                 <CreditCard size={16} />
                                 אשר תשלום
                               </button>
                             ) : invoice.status === 'PAID' ? (
-                              <span className="text-green-600 text-sm font-semibold flex items-center gap-1">
+                              <span className="text-emerald-400 text-sm font-semibold flex items-center gap-1">
                                 <CheckCircle size={14} />
                                 שולם
                               </span>
                             ) : (
-                              <span className="text-gray-400 text-sm">-</span>
+                              <span className="text-white/30 text-sm">-</span>
                             )}
                           </td>
                         </motion.tr>
@@ -308,12 +323,12 @@ export default function SupplierInvoicesPage() {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="w-full max-w-md bg-primary-900 border border-white/20 rounded-2xl p-6 shadow-2xl"
+              className="w-full max-w-md bg-[#0a1f18] border border-white/20 rounded-2xl p-6 shadow-2xl"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-xl font-bold text-white flex items-center gap-2">
-                  <CreditCard className="text-gold-400" size={24} />
+                  <CreditCard className="text-emerald-400" size={24} />
                   אישור תשלום
                 </h3>
                 <button
@@ -354,7 +369,7 @@ export default function SupplierInvoicesPage() {
                   value={paymentReference}
                   onChange={(e) => setPaymentReference(e.target.value)}
                   placeholder="הכנס מספר אסמכתא..."
-                  className="w-full px-4 py-3 bg-white/5 border border-white/20 rounded-lg text-white placeholder-white/30 focus:outline-none focus:border-gold-400 transition-colors"
+                  className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/40 focus:outline-none focus:border-emerald-500 transition-colors"
                   dir="ltr"
                 />
               </div>
@@ -363,14 +378,14 @@ export default function SupplierInvoicesPage() {
               <div className="flex gap-3">
                 <button
                   onClick={() => setIsModalOpen(false)}
-                  className="flex-1 px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white/70 hover:bg-white/20 transition-colors"
+                  className="flex-1 px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white/70 hover:bg-white/20 transition-colors"
                 >
                   ביטול
                 </button>
                 <button
                   onClick={handleConfirmPayment}
                   disabled={!paymentReference.trim() || confirmPayment.isPending}
-                  className="flex-1 px-4 py-3 bg-gold-400 rounded-lg text-primary-900 font-medium hover:bg-gold-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  className="flex-1 px-4 py-3 bg-emerald-500 rounded-xl text-white font-medium hover:bg-emerald-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
                   {confirmPayment.isPending ? (
                     <Loader2 size={18} className="animate-spin" />

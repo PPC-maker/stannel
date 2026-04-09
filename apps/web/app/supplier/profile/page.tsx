@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import PageSlider, { sliderImages } from '@/components/layout/PageSlider';
+import Image from 'next/image';
 import { useSupplierGuard, AuthGuardLoader } from '@/lib/useAuthGuard';
 import { supplierApi } from '@stannel/api-client';
 import {
@@ -21,6 +21,7 @@ import {
   Loader2,
   ExternalLink,
   Trash2,
+  Camera,
 } from 'lucide-react';
 import Swal from 'sweetalert2';
 
@@ -98,21 +99,18 @@ export default function SupplierProfilePage() {
         title: 'נשמר בהצלחה!',
         text: 'השינויים בפרופיל נשמרו',
         icon: 'success',
-        confirmButtonText: 'אישור',
-        background: '#fff',
-        color: '#1a1a2e',
-        confirmButtonColor: '#d4af37',
+        confirmButtonColor: '#10b981',
+        background: '#0a1f18',
+        color: '#ffffff',
       });
-    } catch (error) {
-      console.error('Failed to save profile:', error);
+    } catch (error: any) {
       Swal.fire({
         title: 'שגיאה',
-        text: 'לא הצלחנו לשמור את השינויים',
+        text: error.message || 'לא ניתן לשמור את הפרופיל',
         icon: 'error',
-        confirmButtonText: 'אישור',
-        background: '#fff',
-        color: '#1a1a2e',
-        confirmButtonColor: '#d4af37',
+        confirmButtonColor: '#10b981',
+        background: '#0a1f18',
+        color: '#ffffff',
       });
     } finally {
       setIsSaving(false);
@@ -130,23 +128,19 @@ export default function SupplierProfilePage() {
       Swal.fire({
         title: 'התמונה הועלתה!',
         icon: 'success',
-        confirmButtonText: 'אישור',
-        background: '#fff',
-        color: '#1a1a2e',
-        confirmButtonColor: '#d4af37',
-        timer: 2000,
-        timerProgressBar: true,
+        timer: 1500,
+        showConfirmButton: false,
+        background: '#0a1f18',
+        color: '#ffffff',
       });
-    } catch (error) {
-      console.error('Failed to upload image:', error);
+    } catch (error: any) {
       Swal.fire({
         title: 'שגיאה',
-        text: 'לא הצלחנו להעלות את התמונה',
+        text: error.message || 'לא ניתן להעלות את התמונה',
         icon: 'error',
-        confirmButtonText: 'אישור',
-        background: '#fff',
-        color: '#1a1a2e',
-        confirmButtonColor: '#d4af37',
+        confirmButtonColor: '#10b981',
+        background: '#0a1f18',
+        color: '#ffffff',
       });
     } finally {
       setUploadingImage(false);
@@ -156,45 +150,22 @@ export default function SupplierProfilePage() {
     }
   };
 
-  const handleDeleteImage = async (imageUrl: string) => {
+  const handleRemoveImage = async (imageUrl: string) => {
     const result = await Swal.fire({
-      title: 'למחוק את התמונה?',
+      title: 'מחיקת תמונה',
+      text: 'האם למחוק את התמונה?',
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonText: 'כן, מחק',
-      cancelButtonText: 'ביטול',
-      background: '#fff',
-      color: '#1a1a2e',
       confirmButtonColor: '#ef4444',
-      cancelButtonColor: '#6b7280',
+      cancelButtonColor: '#374151',
+      confirmButtonText: 'מחק',
+      cancelButtonText: 'ביטול',
+      background: '#0a1f18',
+      color: '#ffffff',
     });
 
-    if (!result.isConfirmed) return;
-
-    try {
-      await supplierApi.deleteBusinessImage(imageUrl);
+    if (result.isConfirmed) {
       setImages(prev => prev.filter(img => img !== imageUrl));
-      Swal.fire({
-        title: 'התמונה נמחקה',
-        icon: 'success',
-        confirmButtonText: 'אישור',
-        background: '#fff',
-        color: '#1a1a2e',
-        confirmButtonColor: '#d4af37',
-        timer: 1500,
-        timerProgressBar: true,
-      });
-    } catch (error) {
-      console.error('Failed to delete image:', error);
-      Swal.fire({
-        title: 'שגיאה',
-        text: 'לא הצלחנו למחוק את התמונה',
-        icon: 'error',
-        confirmButtonText: 'אישור',
-        background: '#fff',
-        color: '#1a1a2e',
-        confirmButtonColor: '#d4af37',
-      });
     }
   };
 
@@ -203,119 +174,143 @@ export default function SupplierProfilePage() {
   }
 
   return (
-    <div className="relative min-h-screen bg-[#F8FAFC]">
-      <PageSlider images={sliderImages.dashboard}  />
-      <div className="p-6 max-w-4xl mx-auto relative z-10 pt-24">
+    <div className="min-h-screen bg-[#0f2620] -mt-16">
+      {/* Hero Section with Image */}
+      <div className="relative h-80 overflow-hidden">
+        {/* Background Image */}
+        <Image
+          src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=2000&q=80"
+          alt="Office Interior"
+          fill
+          className="object-cover"
+          priority
+        />
+        {/* Dark Overlay with Fade */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0f2620]/60 via-[#0f2620]/70 to-[#0f2620]" />
+        {/* Emerald Glow */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(16,185,129,0.15),transparent_60%)]" />
+      </div>
+
+      <div className="px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto -mt-48 relative z-10 pb-12">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
-          className="mb-8 bg-white/95 backdrop-blur-sm rounded-2xl p-6 shadow-lg"
+          className="mb-8"
         >
           <Link
             href="/supplier"
-            className="inline-flex items-center gap-2 text-gray-500 hover:text-primary-700 mb-4 transition-colors font-medium"
+            className="inline-flex items-center gap-2 text-white/60 hover:text-emerald-400 mb-4 transition-colors font-medium"
           >
             <ArrowRight size={16} />
             חזרה לדשבורד
           </Link>
-          <h1 className="text-3xl font-display font-bold text-gray-900 flex items-center gap-3">
-            <Building2 className="text-gold-500" />
+          <h1 className="text-3xl font-display font-bold text-white flex items-center gap-3">
+            <Building2 className="text-emerald-400" />
             פרטי העסק
           </h1>
-          <p className="text-gray-600 mt-1 font-medium">המידע הזה יוצג לאדריכלים</p>
+          <p className="text-white/60 mt-1 font-medium">המידע הזה יוצג לאדריכלים</p>
         </motion.div>
 
         {isLoading ? (
-          <div className="flex justify-center items-center py-20">
-            <Loader2 className="animate-spin text-primary-600" size={32} />
+          <div className="flex justify-center py-12">
+            <Loader2 className="w-8 h-8 text-emerald-400 animate-spin" />
           </div>
         ) : (
-          <>
-            {/* Business Info */}
+          <div className="space-y-6">
+            {/* Basic Info */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="mb-6"
+              className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6"
             >
-              <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-gray-200">
-                <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <Building2 size={18} className="text-gold-500" />
-                  פרטים כלליים
-                </h2>
+              <h2 className="text-lg font-semibold text-white mb-6 flex items-center gap-2">
+                <Building2 size={20} className="text-emerald-400" />
+                פרטים כלליים
+              </h2>
 
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-gray-700 text-sm font-semibold mb-1">שם העסק</label>
-                    <input
-                      type="text"
-                      name="companyName"
-                      value={formData.companyName}
-                      onChange={handleInputChange}
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-colors"
-                      placeholder="הזן את שם העסק"
-                    />
-                  </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="md:col-span-2">
+                  <label className="block text-white/60 text-sm mb-2">שם העסק</label>
+                  <input
+                    type="text"
+                    name="companyName"
+                    value={formData.companyName}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/40 focus:outline-none focus:border-emerald-500 transition-colors"
+                    placeholder="שם העסק..."
+                  />
+                </div>
+                <div className="md:col-span-2">
+                  <label className="block text-white/60 text-sm mb-2">תיאור העסק</label>
+                  <textarea
+                    name="description"
+                    value={formData.description}
+                    onChange={handleInputChange}
+                    rows={4}
+                    className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/40 focus:outline-none focus:border-emerald-500 transition-colors resize-none"
+                    placeholder="ספר על העסק שלך..."
+                  />
+                </div>
+              </div>
+            </motion.div>
 
-                  <div>
-                    <label className="block text-gray-700 text-sm font-semibold mb-1">תיאור העסק</label>
-                    <textarea
-                      name="description"
-                      value={formData.description}
-                      onChange={handleInputChange}
-                      rows={4}
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-colors resize-none"
-                      placeholder="ספר על העסק שלך, השירותים שאתה מציע..."
-                    />
-                  </div>
+            {/* Contact Info */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.15 }}
+              className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6"
+            >
+              <h2 className="text-lg font-semibold text-white mb-6 flex items-center gap-2">
+                <Phone size={20} className="text-emerald-400" />
+                פרטי התקשרות
+              </h2>
 
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-gray-700 text-sm font-semibold mb-1">
-                        <Phone size={14} className="inline ml-1 text-gray-500" />
-                        טלפון
-                      </label>
-                      <input
-                        type="tel"
-                        name="phone"
-                        value={formData.phone}
-                        onChange={handleInputChange}
-                        className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-colors"
-                        placeholder="050-0000000"
-                        dir="ltr"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-gray-700 text-sm font-semibold mb-1">
-                        <Mail size={14} className="inline ml-1 text-gray-500" />
-                        אימייל
-                      </label>
-                      <input
-                        type="email"
-                        name="email"
-                        value={formData.email}
-                        disabled
-                        className="w-full px-4 py-3 bg-gray-100 border border-gray-300 rounded-lg text-gray-500 cursor-not-allowed"
-                        dir="ltr"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="block text-gray-700 text-sm font-semibold mb-1">
-                      <MapPin size={14} className="inline ml-1 text-gray-500" />
-                      כתובת
-                    </label>
-                    <input
-                      type="text"
-                      name="address"
-                      value={formData.address}
-                      onChange={handleInputChange}
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-colors"
-                      placeholder="רחוב, עיר"
-                    />
-                  </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-white/60 text-sm mb-2 flex items-center gap-2">
+                    <Phone size={14} />
+                    טלפון
+                  </label>
+                  <input
+                    type="tel"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/40 focus:outline-none focus:border-emerald-500 transition-colors"
+                    placeholder="050-0000000"
+                    dir="ltr"
+                  />
+                </div>
+                <div>
+                  <label className="block text-white/60 text-sm mb-2 flex items-center gap-2">
+                    <Mail size={14} />
+                    אימייל
+                  </label>
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    disabled
+                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white/50 cursor-not-allowed"
+                    dir="ltr"
+                  />
+                </div>
+                <div className="md:col-span-2">
+                  <label className="block text-white/60 text-sm mb-2 flex items-center gap-2">
+                    <MapPin size={14} />
+                    כתובת
+                  </label>
+                  <input
+                    type="text"
+                    name="address"
+                    value={formData.address}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/40 focus:outline-none focus:border-emerald-500 transition-colors"
+                    placeholder="כתובת העסק..."
+                  />
                 </div>
               </div>
             </motion.div>
@@ -325,138 +320,126 @@ export default function SupplierProfilePage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="mb-6"
+              className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6"
             >
-              <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-gray-200">
-                <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <ExternalLink size={18} className="text-gold-500" />
-                  קישורים ורשתות חברתיות
-                </h2>
+              <h2 className="text-lg font-semibold text-white mb-6 flex items-center gap-2">
+                <Globe size={20} className="text-emerald-400" />
+                קישורים
+              </h2>
 
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-gray-700 text-sm font-semibold mb-1">
-                      <Globe size={14} className="inline ml-1 text-gray-500" />
-                      אתר אינטרנט
-                    </label>
-                    <input
-                      type="url"
-                      name="website"
-                      value={formData.website}
-                      onChange={handleInputChange}
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-colors"
-                      placeholder="https://www.example.com"
-                      dir="ltr"
-                    />
-                  </div>
-
-                  <div className="grid grid-cols-3 gap-4">
-                    <div>
-                      <label className="block text-gray-700 text-sm font-semibold mb-1">
-                        <Facebook size={14} className="inline ml-1 text-blue-600" />
-                        Facebook
-                      </label>
-                      <input
-                        type="url"
-                        name="facebook"
-                        value={formData.facebook}
-                        onChange={handleInputChange}
-                        className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-colors text-sm"
-                        placeholder="קישור לפייסבוק"
-                        dir="ltr"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-gray-700 text-sm font-semibold mb-1">
-                        <Instagram size={14} className="inline ml-1 text-pink-600" />
-                        Instagram
-                      </label>
-                      <input
-                        type="url"
-                        name="instagram"
-                        value={formData.instagram}
-                        onChange={handleInputChange}
-                        className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-colors text-sm"
-                        placeholder="קישור לאינסטגרם"
-                        dir="ltr"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-gray-700 text-sm font-semibold mb-1">
-                        <Linkedin size={14} className="inline ml-1 text-blue-700" />
-                        LinkedIn
-                      </label>
-                      <input
-                        type="url"
-                        name="linkedin"
-                        value={formData.linkedin}
-                        onChange={handleInputChange}
-                        className="w-full px-4 py-3 bg-gray-50 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-colors text-sm"
-                        placeholder="קישור ללינקדאין"
-                        dir="ltr"
-                      />
-                    </div>
-                  </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="md:col-span-2">
+                  <label className="block text-white/60 text-sm mb-2 flex items-center gap-2">
+                    <ExternalLink size={14} />
+                    אתר אינטרנט
+                  </label>
+                  <input
+                    type="url"
+                    name="website"
+                    value={formData.website}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/40 focus:outline-none focus:border-emerald-500 transition-colors"
+                    placeholder="https://www.example.com"
+                    dir="ltr"
+                  />
+                </div>
+                <div>
+                  <label className="block text-white/60 text-sm mb-2 flex items-center gap-2">
+                    <Facebook size={14} />
+                    פייסבוק
+                  </label>
+                  <input
+                    type="url"
+                    name="facebook"
+                    value={formData.facebook}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/40 focus:outline-none focus:border-emerald-500 transition-colors"
+                    placeholder="https://facebook.com/..."
+                    dir="ltr"
+                  />
+                </div>
+                <div>
+                  <label className="block text-white/60 text-sm mb-2 flex items-center gap-2">
+                    <Instagram size={14} />
+                    אינסטגרם
+                  </label>
+                  <input
+                    type="url"
+                    name="instagram"
+                    value={formData.instagram}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/40 focus:outline-none focus:border-emerald-500 transition-colors"
+                    placeholder="https://instagram.com/..."
+                    dir="ltr"
+                  />
+                </div>
+                <div className="md:col-span-2">
+                  <label className="block text-white/60 text-sm mb-2 flex items-center gap-2">
+                    <Linkedin size={14} />
+                    לינקדאין
+                  </label>
+                  <input
+                    type="url"
+                    name="linkedin"
+                    value={formData.linkedin}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/40 focus:outline-none focus:border-emerald-500 transition-colors"
+                    placeholder="https://linkedin.com/company/..."
+                    dir="ltr"
+                  />
                 </div>
               </div>
             </motion.div>
 
-            {/* Images Gallery */}
+            {/* Business Images */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="mb-6"
+              transition={{ delay: 0.25 }}
+              className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6"
             >
-              <div className="bg-white/95 backdrop-blur-sm rounded-2xl p-6 shadow-lg border border-gray-200">
-                <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <ImageIcon size={18} className="text-gold-500" />
-                  תמונות העסק
-                </h2>
+              <h2 className="text-lg font-semibold text-white mb-6 flex items-center gap-2">
+                <ImageIcon size={20} className="text-emerald-400" />
+                תמונות העסק
+              </h2>
 
-                <div className="grid grid-cols-3 gap-4">
-                  {images.map((img, index) => (
-                    <div
-                      key={index}
-                      className="aspect-video bg-gray-100 border border-gray-200 rounded-lg overflow-hidden relative group"
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {images.map((img, index) => (
+                  <div key={index} className="relative aspect-square rounded-xl overflow-hidden group">
+                    <Image
+                      src={img}
+                      alt={`Business image ${index + 1}`}
+                      fill
+                      className="object-cover"
+                    />
+                    <button
+                      onClick={() => handleRemoveImage(img)}
+                      className="absolute top-2 left-2 p-2 bg-red-500/80 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"
                     >
-                      <img src={img} alt={`תמונה ${index + 1}`} className="w-full h-full object-cover" />
-                      <button
-                        onClick={() => handleDeleteImage(img)}
-                        className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
-                      >
-                        <Trash2 size={14} />
-                      </button>
-                    </div>
-                  ))}
+                      <Trash2 size={16} className="text-white" />
+                    </button>
+                  </div>
+                ))}
 
-                  {/* Add Image Button */}
+                {/* Upload Button */}
+                <label className="aspect-square rounded-xl border-2 border-dashed border-white/20 flex flex-col items-center justify-center cursor-pointer hover:border-emerald-500/50 hover:bg-white/5 transition-colors">
+                  {uploadingImage ? (
+                    <Loader2 size={24} className="text-emerald-400 animate-spin" />
+                  ) : (
+                    <>
+                      <Camera size={24} className="text-white/40 mb-2" />
+                      <span className="text-white/40 text-xs">הוסף תמונה</span>
+                    </>
+                  )}
                   <input
                     ref={fileInputRef}
                     type="file"
                     accept="image/*"
                     onChange={handleImageUpload}
                     className="hidden"
-                  />
-                  <button
-                    onClick={() => fileInputRef.current?.click()}
                     disabled={uploadingImage}
-                    className="aspect-video bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center gap-2 hover:border-gold-500 hover:bg-gray-100 transition-colors group disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {uploadingImage ? (
-                      <Loader2 size={32} className="text-gold-500 animate-spin" />
-                    ) : (
-                      <>
-                        <ImageIcon size={32} className="text-gray-400 group-hover:text-gold-500 transition-colors" />
-                        <span className="text-gray-500 text-sm font-medium group-hover:text-gray-700 transition-colors">הוסף תמונה</span>
-                      </>
-                    )}
-                  </button>
-                </div>
-
-                <p className="text-gray-500 text-xs mt-4 font-medium">
-                  * התמונות יוצגו לאדריכלים כשהם צופים בפרופיל העסק שלך
-                </p>
+                  />
+                </label>
               </div>
             </motion.div>
 
@@ -464,23 +447,27 @@ export default function SupplierProfilePage() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-              className="flex justify-end"
+              transition={{ delay: 0.3 }}
             >
               <button
                 onClick={handleSave}
                 disabled={isSaving}
-                className="flex items-center gap-2 px-8 py-3 bg-gold-500 hover:bg-gold-600 text-white font-bold rounded-lg transition-colors disabled:opacity-50 shadow-lg"
+                className="w-full py-4 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-xl text-white font-semibold hover:from-emerald-600 hover:to-teal-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
                 {isSaving ? (
-                  <Loader2 size={18} className="animate-spin" />
+                  <>
+                    <Loader2 size={20} className="animate-spin" />
+                    שומר...
+                  </>
                 ) : (
-                  <Save size={18} />
+                  <>
+                    <Save size={20} />
+                    שמור שינויים
+                  </>
                 )}
-                שמור שינויים
               </button>
             </motion.div>
-          </>
+          </div>
         )}
       </div>
     </div>

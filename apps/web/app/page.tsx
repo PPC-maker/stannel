@@ -4,41 +4,33 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
-import { CheckCircle, ArrowLeft } from 'lucide-react';
-import VideoIntro from '@/components/layout/VideoIntro';
-
-// Hero images grid
-const heroImages = [
-  'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400&q=80',
-  'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=400&q=80',
-  'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=400&q=80',
-  'https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=400&q=80',
-];
+import { CheckCircle, ArrowLeft, Users, Gift, Building2, Star, ChevronLeft } from 'lucide-react';
 
 // Why choose us features
 const whyChooseUs = [
   {
-    image: 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=400&q=80',
+    icon: Building2,
     title: 'ספקים מובחרים',
-    description: 'רק הספקים הטובים ביותר',
+    description: 'רק הספקים הטובים ביותר בתעשייה',
   },
   {
-    image: 'https://images.unsplash.com/photo-1556761175-4b46a572b786?w=400&q=80',
+    icon: Gift,
     title: 'תגמולים ובונוסים',
-    description: 'הרוויחו מכל עסקה',
+    description: 'הרוויחו מכל עסקה שתבצעו',
   },
   {
-    image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400&q=80',
+    icon: Users,
     title: 'קהילה חזקה',
-    description: 'התחברו עם מעצבים אחרים',
+    description: 'התחברו עם מעצבים ואדריכלים',
   },
 ];
 
 // Suppliers
 const suppliers = [
-  { name: 'Samsung', category: 'אלקטרוניקה', initial: 'S', color: 'bg-[#1428a0]' },
-  { name: 'Bezeq', category: 'תקשורת', initial: 'B', color: 'bg-[#00a6e0]' },
-  { name: 'דברת', category: 'ריהוט', initial: 'ד', color: 'bg-[#0a6847]' },
+  { name: 'Samsung', category: 'אלקטרוניקה', initial: 'S', color: 'bg-blue-600' },
+  { name: 'Bezeq', category: 'תקשורת', initial: 'B', color: 'bg-cyan-500' },
+  { name: 'דברת', category: 'ריהוט', initial: 'ד', color: 'bg-emerald-600' },
+  { name: 'ACE', category: 'חומרי בניין', initial: 'A', color: 'bg-orange-500' },
 ];
 
 // Testimonials
@@ -46,15 +38,23 @@ const testimonials = [
   {
     name: 'ארתור משפחתי',
     role: 'אדריכל',
-    text: '"STANNEL שינתה את דרך עבודתי עם ספקים. מאוד מרשים!"',
+    text: '"STANNEL שינתה את דרך עבודתי עם ספקים. השירות מצוין והתגמולים משתלמים!"',
     avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face',
   },
   {
     name: 'מיכל סילבר',
     role: 'מעצבת פנים',
-    text: '"STANNEL שינתה את דרך עבודתי עם ספקים. מאוד מרשים!"',
+    text: '"הפלטפורמה הכי מקצועית שנתקלתי בה. ממליצה בחום לכל קולגה!"',
     avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&crop=face',
   },
+];
+
+// Stats
+const stats = [
+  { value: '+100', label: 'אדריכלים' },
+  { value: '+50', label: 'ספקים' },
+  { value: '+250', label: 'פרויקטים' },
+  { value: '+5M', label: 'תגמולים' },
 ];
 
 // Featured projects
@@ -63,154 +63,130 @@ const projects = [
   { image: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&q=80', title: 'מטבח מעוצב' },
   { image: 'https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?w=400&q=80', title: 'חדר שינה' },
   { image: 'https://images.unsplash.com/photo-1600573472591-ee6b68d14c68?w=400&q=80', title: 'אמבטיה יוקרתית' },
-  { image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=400&q=80', title: 'חלל עבודה' },
-  { image: 'https://images.unsplash.com/photo-1600607687644-c7171b42498f?w=400&q=80', title: 'בניה מודרנית' },
 ];
 
 export default function HomePage() {
-  const [email, setEmail] = useState('');
-  const [name, setName] = useState('');
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Redirect to register with pre-filled data
-    window.location.href = `/register?email=${encodeURIComponent(email)}&name=${encodeURIComponent(name)}`;
-  };
-
   if (!mounted) {
-    return <div className="min-h-screen bg-white" />;
+    return <div className="min-h-screen bg-[#0f2620]" />;
   }
 
   return (
-    <>
-      {/* Video Intro - Only on home page */}
-      <VideoIntro />
-
-      <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-[#0f2620] -mt-16">
       {/* Hero Section */}
-      <section className="bg-[#0a6847] min-h-[70vh] relative overflow-hidden">
-        <div className="max-w-7xl mx-auto px-6 py-16 flex flex-col lg:flex-row items-center gap-12">
-          {/* Images Grid */}
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-            className="grid grid-cols-2 gap-3 w-full lg:w-1/2"
-          >
-            {heroImages.map((img, index) => (
-              <div
-                key={index}
-                className="relative aspect-[4/3] rounded-xl overflow-hidden shadow-lg"
-              >
-                <Image
-                  src={img}
-                  alt={`Interior design ${index + 1}`}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 768px) 50vw, 25vw"
-                />
-              </div>
-            ))}
-          </motion.div>
-
-          {/* Hero Content */}
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-center lg:text-right lg:w-1/2"
-          >
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4">
-              STANNEL CLUB
-            </h1>
-            <h2 className="text-2xl md:text-3xl font-bold text-white mb-6">
-              קהילת ערך למעצבים
-            </h2>
-            <p className="text-white/80 text-lg mb-8 leading-relaxed">
-              פלטפורמה חדשנית המחברת אדריכלים ומעצבים עם ספקים מובחרים
-            </p>
-            <Link
-              href="/register"
-              className="inline-flex items-center gap-2 bg-white text-[#0a6847] px-8 py-4 rounded-lg font-semibold text-lg hover:bg-gray-100 transition-colors group"
-            >
-              <span>התחל עכשיו</span>
-              <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
-            </Link>
-          </motion.div>
+      <section className="relative min-h-screen overflow-hidden">
+        {/* Background Image */}
+        <div className="absolute inset-0">
+          <Image
+            src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1920&q=80"
+            alt="Modern architecture"
+            fill
+            className="object-cover"
+            priority
+          />
+          <div className="absolute inset-0 bg-black/40" />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#0f2620]/30 via-transparent to-[#0f2620]" />
         </div>
-      </section>
 
-      {/* Join Community Form Section */}
-      <section className="py-20 px-6">
-        <div className="max-w-5xl mx-auto">
+        {/* Hero Content */}
+        <div className="relative z-10 min-h-screen flex flex-col items-center justify-center px-6 pt-20">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="bg-white rounded-3xl shadow-xl overflow-hidden flex flex-col lg:flex-row"
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="text-center max-w-3xl"
           >
-            {/* Form Image */}
-            <div className="relative w-full lg:w-1/2 h-64 lg:h-auto">
-              <Image
-                src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=600&q=80"
-                alt="Join us"
-                fill
-                className="object-cover"
-              />
+            <h1 className="text-4xl md:text-6xl font-bold text-white mb-4">
+              STANNEL CLUB
+            </h1>
+            <h2 className="text-2xl md:text-3xl text-white/90 font-light mb-6">
+              קהילת הערך למעצבים ואדריכלים
+            </h2>
+            <p className="text-white/70 text-lg mb-10 max-w-xl mx-auto">
+              פלטפורמה חדשנית המחברת אדריכלים ומעצבים עם ספקים מובחרים.
+              הצטרפו והתחילו להרוויח מכל פרויקט.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link
+                href="/register"
+                className="inline-flex items-center justify-center gap-2 bg-white text-[#0f2620] px-8 py-4 rounded-2xl font-semibold text-lg hover:bg-white/90 transition-all group"
+              >
+                <span>הצטרפו עכשיו</span>
+                <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
+              </Link>
+              <Link
+                href="/login"
+                className="inline-flex items-center justify-center gap-2 bg-white/10 backdrop-blur border border-white/20 text-white px-8 py-4 rounded-2xl font-semibold text-lg hover:bg-white/20 transition-all"
+              >
+                <span>התחברות</span>
+              </Link>
             </div>
+          </motion.div>
 
-            {/* Form */}
-            <div className="w-full lg:w-1/2 p-8 lg:p-12">
-              <h3 className="text-2xl font-bold text-gray-900 mb-2 text-right">הצטרפו לקהילה</h3>
-              <p className="text-gray-600 mb-6 text-right">השאירו את פרטיכם ונציג יחזור אליכם בקרוב</p>
-
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <input
-                  type="email"
-                  placeholder="כתובת אימייל"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg text-right bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#0a6847] focus:border-transparent"
-                />
-                <input
-                  type="text"
-                  placeholder="שם מלא"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  required
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg text-right bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#0a6847] focus:border-transparent"
-                />
-                <button
-                  type="submit"
-                  className="w-full bg-[#d4af37] hover:bg-[#c9a432] text-white font-semibold py-3 rounded-lg transition-colors"
-                >
-                  שלח
-                </button>
-              </form>
+          {/* Scroll indicator */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1, duration: 0.5 }}
+            className="absolute bottom-10 left-1/2 -translate-x-1/2"
+          >
+            <div className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center pt-2">
+              <motion.div
+                animate={{ y: [0, 8, 0] }}
+                transition={{ repeat: Infinity, duration: 1.5 }}
+                className="w-1.5 h-1.5 bg-white/60 rounded-full"
+              />
             </div>
           </motion.div>
         </div>
       </section>
 
-      {/* Why Choose STANNEL Section */}
-      <section className="py-16 px-6 bg-gray-50">
+      {/* Stats Section */}
+      <section className="py-16 px-6 bg-[#0f2620]">
         <div className="max-w-6xl mx-auto">
-          <motion.h2
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {stats.map((stat, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="text-center"
+              >
+                <div className="text-4xl md:text-5xl font-bold text-white mb-2">
+                  {stat.value}
+                </div>
+                <div className="text-white/60 text-sm">{stat.label}</div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Why Choose Us Section */}
+      <section className="py-20 px-6 bg-[#0f2620]">
+        <div className="max-w-6xl mx-auto">
+          <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
-            className="text-3xl font-bold text-center text-gray-900 mb-12"
+            className="text-center mb-16"
           >
-            למה לבחור ב-STANNEL?
-          </motion.h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+              למה לבחור ב-STANNEL?
+            </h2>
+            <p className="text-white/60 max-w-2xl mx-auto">
+              אנחנו מציעים את הפלטפורמה המתקדמת ביותר לאדריכלים ומעצבים
+            </p>
+          </motion.div>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-3 gap-6">
             {whyChooseUs.map((item, index) => (
               <motion.div
                 key={index}
@@ -218,24 +194,13 @@ export default function HomePage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
-                className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow"
+                className="bg-white/5 backdrop-blur border border-white/10 rounded-3xl p-8 text-center hover:bg-white/10 transition-all group"
               >
-                <div className="relative h-48 w-full">
-                  <Image
-                    src={item.image}
-                    alt={item.title}
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 768px) 100vw, 33vw"
-                  />
+                <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-colors">
+                  <item.icon size={32} className="text-white/80" />
                 </div>
-                <div className="p-6 text-center">
-                  <div className="w-12 h-12 mx-auto mb-4 rounded-full bg-[#0a6847]/10 flex items-center justify-center">
-                    <CheckCircle size={24} className="text-[#0a6847]" />
-                  </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">{item.title}</h3>
-                  <p className="text-gray-600 text-sm">{item.description}</p>
-                </div>
+                <h3 className="text-xl font-bold text-white mb-3">{item.title}</h3>
+                <p className="text-white/60">{item.description}</p>
               </motion.div>
             ))}
           </div>
@@ -243,32 +208,96 @@ export default function HomePage() {
       </section>
 
       {/* Suppliers Section */}
-      <section className="py-16 px-6">
+      <section className="py-20 px-6 bg-[#0a1f18]">
         <div className="max-w-6xl mx-auto">
-          <motion.h2
+          <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
-            className="text-3xl font-bold text-center text-gray-900 mb-12"
+            className="text-center mb-16"
           >
-            ספקים שלנו
-          </motion.h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+              הספקים שלנו
+            </h2>
+            <p className="text-white/60">
+              שותפויות עם המותגים המובילים בתעשייה
+            </p>
+          </motion.div>
 
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {suppliers.map((supplier, index) => (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
-                className="bg-white border border-gray-200 rounded-2xl p-6 text-center hover:shadow-lg transition-shadow"
+                className="bg-white/5 backdrop-blur border border-white/10 rounded-2xl p-6 text-center hover:bg-white/10 transition-all"
               >
-                <div className={`w-16 h-16 mx-auto mb-4 rounded-xl ${supplier.color} flex items-center justify-center`}>
-                  <span className="text-white font-bold text-2xl">{supplier.initial}</span>
+                <div className={`w-14 h-14 mx-auto mb-4 rounded-xl ${supplier.color} flex items-center justify-center`}>
+                  <span className="text-white font-bold text-xl">{supplier.initial}</span>
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-1">{supplier.name}</h3>
-                <p className="text-gray-500 text-sm">{supplier.category}</p>
+                <h3 className="text-lg font-bold text-white mb-1">{supplier.name}</h3>
+                <p className="text-white/50 text-sm">{supplier.category}</p>
+              </motion.div>
+            ))}
+          </div>
+
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            className="text-center mt-10"
+          >
+            <Link
+              href="/register"
+              className="inline-flex items-center gap-2 text-white/70 hover:text-white transition-colors"
+            >
+              <span>לכל הספקים</span>
+              <ChevronLeft size={18} />
+            </Link>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Projects Gallery */}
+      <section className="py-20 px-6 bg-[#0f2620]">
+        <div className="max-w-6xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+              פרויקטים מובחרים
+            </h2>
+            <p className="text-white/60">
+              עבודות של חברי הקהילה שלנו
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {projects.map((project, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, scale: 0.95 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.05 }}
+                className="relative aspect-square rounded-2xl overflow-hidden group cursor-pointer"
+              >
+                <Image
+                  src={project.image}
+                  alt={project.title}
+                  fill
+                  className="object-cover group-hover:scale-110 transition-transform duration-500"
+                  sizes="(max-width: 768px) 50vw, 25vw"
+                />
+                {/* Bottom third green overlay with centered text */}
+                <div className="absolute inset-x-0 bottom-0 h-1/3 bg-[#0f2620]/90 backdrop-blur-sm flex items-center justify-center">
+                  <span className="text-white text-lg md:text-xl font-semibold tracking-wide">{project.title}</span>
+                </div>
               </motion.div>
             ))}
           </div>
@@ -276,16 +305,18 @@ export default function HomePage() {
       </section>
 
       {/* Testimonials Section */}
-      <section className="py-16 px-6 bg-gray-50">
+      <section className="py-20 px-6 bg-[#0a1f18]">
         <div className="max-w-6xl mx-auto">
-          <motion.h2
+          <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
-            className="text-3xl font-bold text-center text-gray-900 mb-12"
+            className="text-center mb-16"
           >
-            מה אומרים עלינו
-          </motion.h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+              מה אומרים עלינו
+            </h2>
+          </motion.div>
 
           <div className="grid md:grid-cols-2 gap-6">
             {testimonials.map((testimonial, index) => (
@@ -295,10 +326,10 @@ export default function HomePage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
-                className="bg-[#0a6847] rounded-2xl p-6 text-right"
+                className="bg-white/5 backdrop-blur border border-white/10 rounded-3xl p-8"
               >
-                <div className="flex items-center gap-4 mb-4 flex-row-reverse">
-                  <div className="relative w-14 h-14 rounded-full overflow-hidden">
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="relative w-14 h-14 rounded-full overflow-hidden border-2 border-white/20">
                     <Image
                       src={testimonial.avatar}
                       alt={testimonial.name}
@@ -308,77 +339,15 @@ export default function HomePage() {
                   </div>
                   <div>
                     <h4 className="text-white font-bold">{testimonial.name}</h4>
-                    <p className="text-white/70 text-sm">{testimonial.role}</p>
+                    <p className="text-white/50 text-sm">{testimonial.role}</p>
+                  </div>
+                  <div className="mr-auto flex gap-1">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} size={16} className="text-yellow-400 fill-yellow-400" />
+                    ))}
                   </div>
                 </div>
-                <p className="text-white/90 leading-relaxed">{testimonial.text}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Stats Section */}
-      <section className="py-12 px-6 bg-[#0a6847]">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-            {[
-              { value: '+100', label: 'אדריכלים' },
-              { value: '+50', label: 'ספקים' },
-              { value: '+250', label: 'פרויקטים' },
-              { value: '+5M', label: 'תגמולים שחולקו' },
-            ].map((stat, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-              >
-                <div className="text-4xl md:text-5xl font-bold text-white mb-2">
-                  {stat.value}
-                </div>
-                <div className="text-white/70 text-sm">{stat.label}</div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Featured Projects Section */}
-      <section className="py-16 px-6">
-        <div className="max-w-6xl mx-auto">
-          <motion.h2
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            className="text-3xl font-bold text-center text-gray-900 mb-12"
-          >
-            פרויקטים מובחרים
-          </motion.h2>
-
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-            {projects.map((project, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, scale: 0.95 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.05 }}
-                className="relative aspect-[4/3] rounded-xl overflow-hidden group"
-              >
-                <Image
-                  src={project.image}
-                  alt={project.title}
-                  fill
-                  className="object-cover group-hover:scale-105 transition-transform duration-300"
-                  sizes="(max-width: 768px) 50vw, 33vw"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
-                  <div className="absolute bottom-4 right-4">
-                    <span className="text-white font-semibold">{project.title}</span>
-                  </div>
-                </div>
+                <p className="text-white/80 leading-relaxed">{testimonial.text}</p>
               </motion.div>
             ))}
           </div>
@@ -386,24 +355,29 @@ export default function HomePage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 px-6 bg-[#0a6847]">
-        <div className="max-w-4xl mx-auto text-center">
+      <section className="py-24 px-6 bg-[#0f2620] relative overflow-hidden">
+        {/* Background decoration */}
+        <div className="absolute inset-0 opacity-30">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-white/5 rounded-full blur-3xl" />
+        </div>
+
+        <div className="max-w-4xl mx-auto text-center relative z-10">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+            <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">
               מוכנים להצטרף?
             </h2>
-            <p className="text-white/80 text-lg mb-8">
-              הירשמו כיום וקבלו גישה מיידית לקהילה שלנו
+            <p className="text-white/70 text-lg mb-10 max-w-xl mx-auto">
+              הירשמו היום וקבלו גישה מיידית לכל היתרונות של הקהילה
             </p>
             <Link
               href="/register"
-              className="inline-flex items-center gap-2 bg-white text-[#0a6847] px-10 py-4 rounded-lg font-semibold text-lg hover:bg-gray-100 transition-colors group"
+              className="inline-flex items-center gap-2 bg-white text-[#0f2620] px-10 py-5 rounded-2xl font-semibold text-lg hover:bg-white/90 transition-all group"
             >
-              <span>הירשמו עכשיו</span>
+              <span>הירשמו עכשיו - חינם</span>
               <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
             </Link>
           </motion.div>
@@ -411,31 +385,31 @@ export default function HomePage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-[#1a1a2e] py-12 px-6 text-white">
+      <footer className="bg-[#071510] py-12 px-6 border-t border-white/10">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
             {/* Logo & Description */}
             <div className="col-span-2 md:col-span-1">
-              <h3 className="text-xl font-bold mb-4">STANNEL</h3>
-              <p className="text-gray-400 text-sm">
-                קהילת ערך למעצבים ואדריכלים
+              <h3 className="text-xl font-bold text-white mb-4">STANNEL</h3>
+              <p className="text-white/50 text-sm">
+                קהילת הערך המובילה למעצבים ואדריכלים בישראל
               </p>
             </div>
 
             {/* Quick Links */}
             <div>
-              <h4 className="font-semibold mb-4">קישורים</h4>
-              <ul className="space-y-2 text-sm text-gray-400">
+              <h4 className="font-semibold text-white mb-4">קישורים</h4>
+              <ul className="space-y-2 text-sm text-white/50">
                 <li><Link href="/" className="hover:text-white transition-colors">עמוד בית</Link></li>
-                <li><Link href="/login" className="hover:text-white transition-colors">אודות</Link></li>
-                <li><Link href="/register" className="hover:text-white transition-colors">ספקים</Link></li>
+                <li><Link href="/login" className="hover:text-white transition-colors">התחברות</Link></li>
+                <li><Link href="/register" className="hover:text-white transition-colors">הרשמה</Link></li>
               </ul>
             </div>
 
             {/* Legal */}
             <div>
-              <h4 className="font-semibold mb-4">משפטי</h4>
-              <ul className="space-y-2 text-sm text-gray-400">
+              <h4 className="font-semibold text-white mb-4">משפטי</h4>
+              <ul className="space-y-2 text-sm text-white/50">
                 <li><Link href="/privacy" className="hover:text-white transition-colors">תנאי שימוש</Link></li>
                 <li><Link href="/privacy" className="hover:text-white transition-colors">מדיניות פרטיות</Link></li>
               </ul>
@@ -443,20 +417,19 @@ export default function HomePage() {
 
             {/* Contact */}
             <div>
-              <h4 className="font-semibold mb-4">יצירת קשר</h4>
-              <ul className="space-y-2 text-sm text-gray-400">
+              <h4 className="font-semibold text-white mb-4">יצירת קשר</h4>
+              <ul className="space-y-2 text-sm text-white/50">
                 <li>info@stannel.club</li>
                 <li>+972-1-234-5678</li>
               </ul>
             </div>
           </div>
 
-          <div className="border-t border-gray-800 pt-8 text-center text-gray-500 text-sm">
+          <div className="border-t border-white/10 pt-8 text-center text-white/40 text-sm">
             © STANNEL CLUB 2026. כל הזכויות שמורות.
           </div>
         </div>
       </footer>
     </div>
-    </>
   );
 }
