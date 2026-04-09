@@ -4,8 +4,6 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
-import GlassCard from '@/components/layout/GlassCard';
-import PageSlider, { sliderImages } from '@/components/layout/PageSlider';
 import { useAdminGuard, AuthGuardLoader } from '@/lib/useAuthGuard';
 import { adminApi } from '@stannel/api-client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -73,6 +71,8 @@ export default function AdminRewardsPage() {
         icon: 'success',
         timer: 2000,
         showConfirmButton: false,
+        background: '#0a1f18',
+        color: '#ffffff',
       });
     },
     onError: (error: any) => {
@@ -80,6 +80,9 @@ export default function AdminRewardsPage() {
         title: 'שגיאה',
         text: error.message,
         icon: 'error',
+        background: '#0a1f18',
+        color: '#ffffff',
+        confirmButtonColor: '#10b981',
       });
     },
   });
@@ -96,6 +99,8 @@ export default function AdminRewardsPage() {
         icon: 'success',
         timer: 2000,
         showConfirmButton: false,
+        background: '#0a1f18',
+        color: '#ffffff',
       });
     },
   });
@@ -111,6 +116,8 @@ export default function AdminRewardsPage() {
           icon: 'info',
           timer: 3000,
           showConfirmButton: false,
+          background: '#0a1f18',
+          color: '#ffffff',
         });
       } else {
         Swal.fire({
@@ -118,6 +125,8 @@ export default function AdminRewardsPage() {
           icon: 'success',
           timer: 2000,
           showConfirmButton: false,
+          background: '#0a1f18',
+          color: '#ffffff',
         });
       }
     },
@@ -126,6 +135,9 @@ export default function AdminRewardsPage() {
         title: 'שגיאה במחיקת המוצר',
         text: error.message,
         icon: 'error',
+        background: '#0a1f18',
+        color: '#ffffff',
+        confirmButtonColor: '#10b981',
       });
     },
   });
@@ -168,6 +180,8 @@ export default function AdminRewardsPage() {
       confirmButtonText: 'כן, מחק',
       cancelButtonText: 'ביטול',
       confirmButtonColor: '#dc2626',
+      background: '#0a1f18',
+      color: '#ffffff',
     });
 
     if (result.isConfirmed) {
@@ -197,6 +211,9 @@ export default function AdminRewardsPage() {
         title: 'שגיאה בהעלאת תמונה',
         text: error.message,
         icon: 'error',
+        background: '#0a1f18',
+        color: '#ffffff',
+        confirmButtonColor: '#10b981',
       });
     } finally {
       setUploading(false);
@@ -210,29 +227,42 @@ export default function AdminRewardsPage() {
   const products = productsData?.data || [];
 
   return (
-    <div className="relative min-h-screen bg-[#F8FAFC]">
-      <PageSlider images={sliderImages.rewards} />
-      <div className="p-6 max-w-6xl mx-auto relative z-10 pt-24">
+    <div className="min-h-screen bg-[#0f2620] -mt-16">
+      {/* Hero Section */}
+      <div className="relative h-80 overflow-hidden">
+        <Image
+          src="https://images.unsplash.com/photo-1513885535751-8b9238bd345a"
+          alt="Gifts"
+          fill
+          className="object-cover"
+          priority
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0f2620]/60 via-[#0f2620]/70 to-[#0f2620]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(16,185,129,0.15),transparent_60%)]" />
+        <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#0f2620] to-transparent" />
+      </div>
+
+      <div className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto -mt-40 relative z-10 pb-12">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
-          className="mb-8 bg-white/95 backdrop-blur-sm rounded-2xl p-6 shadow-lg"
+          className="mb-8"
         >
           <Link
             href="/admin"
-            className="inline-flex items-center gap-2 text-gray-500 hover:text-gray-700 mb-4 transition-colors"
+            className="inline-flex items-center gap-2 text-white/60 hover:text-white mb-4 transition-colors"
           >
             <ArrowRight size={16} />
             חזרה לניהול
           </Link>
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-display font-bold text-gray-900 flex items-center gap-3">
-                <Gift className="text-gold-400" />
+              <h1 className="text-3xl font-display font-bold text-white flex items-center gap-3">
+                <Gift className="text-emerald-400" />
                 ניהול מוצרים - חנות ההטבות
               </h1>
-              <p className="text-gray-600 mt-1">הוסף ונהל מוצרים לחנות ההטבות של האדריכלים</p>
+              <p className="text-white/60 mt-1">הוסף ונהל מוצרים לחנות ההטבות של האדריכלים</p>
             </div>
             <button
               onClick={() => {
@@ -240,7 +270,7 @@ export default function AdminRewardsPage() {
                 setEditingProduct(null);
                 setShowModal(true);
               }}
-              className="flex items-center gap-2 px-4 py-2 bg-[#0066CC] text-white rounded-lg hover:bg-[#0055AA] transition-colors"
+              className="flex items-center gap-2 px-4 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition-colors"
             >
               <Plus size={20} />
               הוסף מוצר
@@ -255,22 +285,22 @@ export default function AdminRewardsPage() {
           transition={{ delay: 0.1 }}
           className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8"
         >
-          <GlassCard hover={false}>
+          <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6">
             <div className="text-center">
-              <Package className="mx-auto text-[#0066CC] mb-2" size={24} />
-              <p className="text-2xl font-bold text-gray-900">{products.length}</p>
-              <p className="text-gray-600 text-sm">סה"כ מוצרים</p>
+              <Package className="mx-auto text-emerald-400 mb-2" size={24} />
+              <p className="text-2xl font-bold text-white">{products.length}</p>
+              <p className="text-white/60 text-sm">סה"כ מוצרים</p>
             </div>
-          </GlassCard>
-          <GlassCard hover={false}>
+          </div>
+          <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6">
             <div className="text-center">
-              <Gift className="mx-auto text-green-500 mb-2" size={24} />
-              <p className="text-2xl font-bold text-gray-900">
+              <Gift className="mx-auto text-green-400 mb-2" size={24} />
+              <p className="text-2xl font-bold text-white">
                 {products.filter((p: Product) => p.isActive && p.stock > 0).length}
               </p>
-              <p className="text-gray-600 text-sm">פעילים</p>
+              <p className="text-white/60 text-sm">פעילים</p>
             </div>
-          </GlassCard>
+          </div>
         </motion.div>
 
         {/* Products Grid */}
@@ -281,21 +311,21 @@ export default function AdminRewardsPage() {
         >
           {isLoading ? (
             <div className="text-center py-12">
-              <Loader2 className="w-8 h-8 mx-auto text-[#0066CC] animate-spin" />
+              <Loader2 className="w-8 h-8 mx-auto text-emerald-400 animate-spin" />
             </div>
           ) : products.length === 0 ? (
-            <GlassCard className="text-center py-12">
-              <Gift size={48} className="mx-auto text-gray-300 mb-4" />
-              <p className="text-gray-600">אין מוצרים עדיין</p>
-              <p className="text-gray-500 text-sm mt-1">לחץ על "הוסף מוצר" כדי להתחיל</p>
-            </GlassCard>
+            <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 text-center py-12">
+              <Gift size={48} className="mx-auto text-white/20 mb-4" />
+              <p className="text-white/60">אין מוצרים עדיין</p>
+              <p className="text-white/40 text-sm mt-1">לחץ על "הוסף מוצר" כדי להתחיל</p>
+            </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {products.map((product: Product) => (
-                <GlassCard key={product.id} className="overflow-hidden group">
+                <div key={product.id} className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 overflow-hidden group">
                   {/* Product Image - Click to view */}
                   <div
-                    className="relative h-48 -mx-6 -mt-6 mb-4 bg-gradient-to-br from-gray-100 to-gray-50 cursor-pointer"
+                    className="relative h-48 -mx-6 -mt-6 mb-4 bg-gradient-to-br from-white/5 to-white/10 cursor-pointer"
                     onClick={() => handleView(product)}
                   >
                     {product.imageUrl ? (
@@ -308,7 +338,7 @@ export default function AdminRewardsPage() {
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center">
-                        <Gift size={48} className="text-gray-300" />
+                        <Gift size={48} className="text-white/20" />
                       </div>
                     )}
                     {!product.isActive && (
@@ -323,22 +353,22 @@ export default function AdminRewardsPage() {
                   </div>
 
                   {/* Product Info */}
-                  <h3 className="text-gray-900 font-semibold text-lg mb-2">{product.name}</h3>
-                  <p className="text-gray-600 text-sm mb-4 line-clamp-2">{product.description}</p>
+                  <h3 className="text-white font-semibold text-lg mb-2">{product.name}</h3>
+                  <p className="text-white/60 text-sm mb-4 line-clamp-2">{product.description}</p>
 
                   <div className="flex items-center justify-between mb-4">
                     <div>
-                      <span className="text-amber-600 font-bold text-lg">
+                      <span className="text-emerald-400 font-bold text-lg">
                         {product.pointCost.toLocaleString()} נק׳
                       </span>
-                      <span className="text-gray-500 text-xs mr-2 block">
-                        ({product.pointsPerShekel || 100} נק׳ = ₪1)
+                      <span className="text-white/40 text-xs mr-2 block">
+                        ({product.pointsPerShekel || 100} נק׳ = 1 ש"ח)
                       </span>
                     </div>
                     <span className={`text-sm px-2 py-1 rounded ${
-                      product.stock > 5 ? 'bg-green-100 text-green-700' :
-                      product.stock > 0 ? 'bg-yellow-100 text-yellow-700' :
-                      'bg-red-100 text-red-700'
+                      product.stock > 5 ? 'bg-green-500/20 text-green-400' :
+                      product.stock > 0 ? 'bg-yellow-500/20 text-yellow-400' :
+                      'bg-red-500/20 text-red-400'
                     }`}>
                       מלאי: {product.stock}
                     </span>
@@ -348,13 +378,13 @@ export default function AdminRewardsPage() {
                   <div className="flex gap-2">
                     <button
                       onClick={() => handleView(product)}
-                      className="flex items-center justify-center gap-2 px-3 py-2 bg-gray-50 text-gray-600 rounded-lg hover:bg-gray-100 transition-colors"
+                      className="flex items-center justify-center gap-2 px-3 py-2 bg-white/5 text-white/60 rounded-lg hover:bg-white/10 transition-colors"
                     >
                       <Eye size={16} />
                     </button>
                     <button
                       onClick={() => handleEdit(product)}
-                      className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors"
+                      className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-emerald-500/20 text-emerald-400 rounded-lg hover:bg-emerald-500/30 transition-colors"
                     >
                       <Edit2 size={16} />
                       עריכה
@@ -362,12 +392,12 @@ export default function AdminRewardsPage() {
                     <button
                       onClick={() => handleDelete(product)}
                       disabled={deleteMutation.isPending}
-                      className="flex items-center justify-center gap-2 px-3 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors disabled:opacity-50"
+                      className="flex items-center justify-center gap-2 px-3 py-2 bg-red-500/20 text-red-400 rounded-lg hover:bg-red-500/30 transition-colors disabled:opacity-50"
                     >
                       {deleteMutation.isPending ? <Loader2 size={16} className="animate-spin" /> : <Trash2 size={16} />}
                     </button>
                   </div>
-                </GlassCard>
+                </div>
               ))}
             </div>
           )}
@@ -376,14 +406,14 @@ export default function AdminRewardsPage() {
 
       {/* Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-white rounded-2xl p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto"
+            className="bg-[#0a1f18] border border-white/10 rounded-2xl p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto"
           >
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold text-gray-900">
+              <h2 className="text-xl font-bold text-white">
                 {editingProduct ? 'עריכת מוצר' : 'הוספת מוצר חדש'}
               </h2>
               <button
@@ -391,7 +421,7 @@ export default function AdminRewardsPage() {
                   setShowModal(false);
                   setEditingProduct(null);
                 }}
-                className="text-gray-500 hover:text-gray-700"
+                className="text-white/60 hover:text-white"
               >
                 <X size={24} />
               </button>
@@ -400,7 +430,7 @@ export default function AdminRewardsPage() {
             <form onSubmit={handleSubmit} className="space-y-4">
               {/* Image */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">תמונה</label>
+                <label className="block text-sm font-medium text-white/60 mb-2">תמונה</label>
                 <div className="flex items-center gap-4">
                   {form.imageUrl ? (
                     <div className="relative w-24 h-24 rounded-lg overflow-hidden">
@@ -414,13 +444,13 @@ export default function AdminRewardsPage() {
                       </button>
                     </div>
                   ) : (
-                    <label className="w-24 h-24 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-[#0066CC] transition-colors">
+                    <label className="w-24 h-24 border-2 border-dashed border-white/20 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-emerald-400 transition-colors">
                       {uploading ? (
-                        <Loader2 size={24} className="animate-spin text-gray-400" />
+                        <Loader2 size={24} className="animate-spin text-white/40" />
                       ) : (
                         <>
-                          <Upload size={24} className="text-gray-400" />
-                          <span className="text-xs text-gray-500 mt-1">העלה</span>
+                          <Upload size={24} className="text-white/40" />
+                          <span className="text-xs text-white/40 mt-1">העלה</span>
                         </>
                       )}
                       <input
@@ -437,7 +467,7 @@ export default function AdminRewardsPage() {
                     type="url"
                     value={form.imageUrl}
                     onChange={(e) => setForm({ ...form, imageUrl: e.target.value })}
-                    className="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0066CC] focus:border-transparent"
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder:text-white/40"
                     placeholder="או הדבק קישור לתמונה..."
                   />
                 </div>
@@ -445,25 +475,25 @@ export default function AdminRewardsPage() {
 
               {/* Name */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">שם המוצר *</label>
+                <label className="block text-sm font-medium text-white/60 mb-2">שם המוצר *</label>
                 <input
                   type="text"
                   value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
                   required
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0066CC] focus:border-transparent"
+                  className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-white/40"
                   placeholder="למשל: שובר מתנה לאיקאה"
                 />
               </div>
 
               {/* Description */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">תיאור</label>
+                <label className="block text-sm font-medium text-white/60 mb-2">תיאור</label>
                 <textarea
                   value={form.description}
                   onChange={(e) => setForm({ ...form, description: e.target.value })}
                   rows={3}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0066CC] focus:border-transparent"
+                  className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-white/40"
                   placeholder="תיאור קצר של המוצר"
                 />
               </div>
@@ -471,39 +501,39 @@ export default function AdminRewardsPage() {
               {/* Point Cost */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">עלות בנקודות *</label>
+                  <label className="block text-sm font-medium text-white/60 mb-2">עלות בנקודות *</label>
                   <input
                     type="number"
                     value={form.pointCost}
                     onChange={(e) => setForm({ ...form, pointCost: parseInt(e.target.value) || 0 })}
                     required
                     min="0"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0066CC] focus:border-transparent"
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">נקודות לשקל</label>
+                  <label className="block text-sm font-medium text-white/60 mb-2">נקודות לשקל</label>
                   <input
                     type="number"
                     value={form.pointsPerShekel}
                     onChange={(e) => setForm({ ...form, pointsPerShekel: parseInt(e.target.value) || 100 })}
                     min="1"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0066CC] focus:border-transparent"
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white"
                   />
-                  <p className="text-xs text-gray-500 mt-1">כמה נקודות שוות ₪1 להשלמה</p>
+                  <p className="text-xs text-white/40 mt-1">כמה נקודות שוות 1 ש"ח להשלמה</p>
                 </div>
               </div>
 
               {/* Stock */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">כמות במלאי *</label>
+                <label className="block text-sm font-medium text-white/60 mb-2">כמות במלאי *</label>
                 <input
                   type="number"
                   value={form.stock}
                   onChange={(e) => setForm({ ...form, stock: parseInt(e.target.value) || 0 })}
                   required
                   min="0"
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0066CC] focus:border-transparent"
+                  className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white"
                 />
               </div>
 
@@ -515,14 +545,14 @@ export default function AdminRewardsPage() {
                     setShowModal(false);
                     setEditingProduct(null);
                   }}
-                  className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                  className="flex-1 px-4 py-3 bg-white/10 border border-white/10 text-white rounded-xl hover:bg-white/20 transition-colors"
                 >
                   ביטול
                 </button>
                 <button
                   type="submit"
                   disabled={createMutation.isPending || updateMutation.isPending}
-                  className="flex-1 px-4 py-2 bg-[#0066CC] text-white rounded-lg hover:bg-[#0055AA] transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                  className="flex-1 px-4 py-3 bg-emerald-500 text-white rounded-xl hover:bg-emerald-600 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
                 >
                   {(createMutation.isPending || updateMutation.isPending) && (
                     <Loader2 size={16} className="animate-spin" />
@@ -543,10 +573,10 @@ export default function AdminRewardsPage() {
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden shadow-2xl"
+              className="bg-[#0a1f18] border border-white/10 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden shadow-2xl"
             >
               {/* Image Header */}
-              <div className="relative h-64 bg-gradient-to-br from-gray-100 to-gray-50">
+              <div className="relative h-64 bg-gradient-to-br from-white/5 to-white/10">
                 {viewingProduct.imageUrl ? (
                   <Image
                     src={viewingProduct.imageUrl}
@@ -556,14 +586,14 @@ export default function AdminRewardsPage() {
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center">
-                    <Gift size={80} className="text-gray-300" />
+                    <Gift size={80} className="text-white/20" />
                   </div>
                 )}
                 <button
                   onClick={() => setShowDetailModal(false)}
-                  className="absolute top-4 left-4 p-2 bg-white/80 backdrop-blur rounded-full hover:bg-white transition-colors shadow-lg"
+                  className="absolute top-4 left-4 p-2 bg-white/10 backdrop-blur rounded-full hover:bg-white/20 transition-colors shadow-lg"
                 >
-                  <X size={20} />
+                  <X size={20} className="text-white" />
                 </button>
                 {!viewingProduct.isActive && (
                   <div className="absolute top-4 right-4 px-3 py-1 bg-red-500 text-white text-sm font-medium rounded-full">
@@ -574,50 +604,50 @@ export default function AdminRewardsPage() {
 
               {/* Content */}
               <div className="p-6">
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">{viewingProduct.name}</h2>
+                <h2 className="text-2xl font-bold text-white mb-2">{viewingProduct.name}</h2>
 
                 {viewingProduct.description && (
-                  <p className="text-gray-600 mb-6 leading-relaxed">{viewingProduct.description}</p>
+                  <p className="text-white/60 mb-6 leading-relaxed">{viewingProduct.description}</p>
                 )}
 
                 {/* Stats Grid */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                  <div className="bg-amber-50 rounded-xl p-4 text-center">
-                    <Coins className="mx-auto text-amber-600 mb-2" size={24} />
-                    <p className="text-2xl font-bold text-amber-600">{viewingProduct.pointCost.toLocaleString()}</p>
-                    <p className="text-amber-700 text-sm">נקודות</p>
+                  <div className="bg-amber-500/10 rounded-xl p-4 text-center">
+                    <Coins className="mx-auto text-amber-400 mb-2" size={24} />
+                    <p className="text-2xl font-bold text-amber-400">{viewingProduct.pointCost.toLocaleString()}</p>
+                    <p className="text-amber-400/70 text-sm">נקודות</p>
                   </div>
 
-                  <div className="bg-green-50 rounded-xl p-4 text-center">
-                    <Banknote className="mx-auto text-green-600 mb-2" size={24} />
-                    <p className="text-2xl font-bold text-green-600">{viewingProduct.pointsPerShekel || 100}</p>
-                    <p className="text-green-700 text-sm">נקודות = ₪1</p>
+                  <div className="bg-green-500/10 rounded-xl p-4 text-center">
+                    <Banknote className="mx-auto text-green-400 mb-2" size={24} />
+                    <p className="text-2xl font-bold text-green-400">{viewingProduct.pointsPerShekel || 100}</p>
+                    <p className="text-green-400/70 text-sm">נקודות = 1 ש"ח</p>
                   </div>
 
                   <div className={`rounded-xl p-4 text-center ${
-                    viewingProduct.stock > 5 ? 'bg-blue-50' :
-                    viewingProduct.stock > 0 ? 'bg-yellow-50' : 'bg-red-50'
+                    viewingProduct.stock > 5 ? 'bg-blue-500/10' :
+                    viewingProduct.stock > 0 ? 'bg-yellow-500/10' : 'bg-red-500/10'
                   }`}>
                     <BoxIcon className={`mx-auto mb-2 ${
-                      viewingProduct.stock > 5 ? 'text-blue-600' :
-                      viewingProduct.stock > 0 ? 'text-yellow-600' : 'text-red-600'
+                      viewingProduct.stock > 5 ? 'text-blue-400' :
+                      viewingProduct.stock > 0 ? 'text-yellow-400' : 'text-red-400'
                     }`} size={24} />
                     <p className={`text-2xl font-bold ${
-                      viewingProduct.stock > 5 ? 'text-blue-600' :
-                      viewingProduct.stock > 0 ? 'text-yellow-600' : 'text-red-600'
+                      viewingProduct.stock > 5 ? 'text-blue-400' :
+                      viewingProduct.stock > 0 ? 'text-yellow-400' : 'text-red-400'
                     }`}>{viewingProduct.stock}</p>
                     <p className={`text-sm ${
-                      viewingProduct.stock > 5 ? 'text-blue-700' :
-                      viewingProduct.stock > 0 ? 'text-yellow-700' : 'text-red-700'
+                      viewingProduct.stock > 5 ? 'text-blue-400/70' :
+                      viewingProduct.stock > 0 ? 'text-yellow-400/70' : 'text-red-400/70'
                     }`}>במלאי</p>
                   </div>
 
-                  <div className="bg-purple-50 rounded-xl p-4 text-center">
-                    <Calendar className="mx-auto text-purple-600 mb-2" size={24} />
-                    <p className="text-sm font-bold text-purple-600">
+                  <div className="bg-purple-500/10 rounded-xl p-4 text-center">
+                    <Calendar className="mx-auto text-purple-400 mb-2" size={24} />
+                    <p className="text-sm font-bold text-purple-400">
                       {new Date(viewingProduct.createdAt).toLocaleDateString('he-IL')}
                     </p>
-                    <p className="text-purple-700 text-sm">תאריך הוספה</p>
+                    <p className="text-purple-400/70 text-sm">תאריך הוספה</p>
                   </div>
                 </div>
 
@@ -628,7 +658,7 @@ export default function AdminRewardsPage() {
                       setShowDetailModal(false);
                       handleEdit(viewingProduct);
                     }}
-                    className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-[#0066CC] text-white rounded-xl hover:bg-[#0055AA] transition-colors font-medium"
+                    className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-emerald-500 text-white rounded-xl hover:bg-emerald-600 transition-colors font-medium"
                   >
                     <Edit2 size={18} />
                     עריכה
@@ -638,7 +668,7 @@ export default function AdminRewardsPage() {
                       setShowDetailModal(false);
                       handleDelete(viewingProduct);
                     }}
-                    className="flex items-center justify-center gap-2 px-4 py-3 bg-red-50 text-red-600 rounded-xl hover:bg-red-100 transition-colors font-medium"
+                    className="flex items-center justify-center gap-2 px-4 py-3 bg-red-500/20 text-red-400 rounded-xl hover:bg-red-500/30 transition-colors font-medium"
                   >
                     <Trash2 size={18} />
                     מחיקה
