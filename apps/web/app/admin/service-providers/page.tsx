@@ -5,201 +5,43 @@ import { motion } from 'framer-motion';
 import GlassCard from '@/components/layout/GlassCard';
 import PageSlider, { sliderImages } from '@/components/layout/PageSlider';
 import { useAdminGuard, AuthGuardLoader } from '@/lib/useAuthGuard';
-import {
-  useAdminServiceProviders,
-  useCreateServiceProvider,
-  useUpdateServiceProvider,
-  useDeleteServiceProvider,
-  useServiceProviderCategories,
-} from '@/lib/api-hooks';
+import { useSuppliers } from '@/lib/api-hooks';
 import {
   Users,
-  Plus,
-  Edit2,
-  Trash2,
-  CheckCircle,
-  XCircle,
+  Building2,
   Phone,
   Mail,
-  Globe,
   Loader2,
   ArrowRight,
   Search,
+  CheckCircle,
+  ExternalLink,
 } from 'lucide-react';
-import Swal from 'sweetalert2';
 import Link from 'next/link';
 
-interface ServiceProvider {
+interface Supplier {
   id: string;
-  name: string;
-  phone?: string;
+  companyName: string;
   email?: string;
-  category: string;
-  description?: string;
-  website?: string;
-  address?: string;
-  isActive: boolean;
-  isVerified: boolean;
-  createdAt: string;
+  phone?: string;
+  status?: string;
 }
 
-const CATEGORY_LABELS: Record<string, string> = {
-  CONTRACTOR: 'קבלן',
-  ELECTRICIAN: 'חשמלאי',
-  PLUMBER: 'אינסטלטור',
-  PAINTER: 'צבעי',
-  CARPENTER: 'נגר',
-  LANDSCAPER: 'גנן',
-  INTERIOR_DESIGNER: 'מעצב פנים',
-  OTHER: 'אחר',
-};
-
-export default function ManageServiceProvidersPage() {
+export default function ManageSuppliersPage() {
   const { isReady } = useAdminGuard();
-  const [showAddModal, setShowAddModal] = useState(false);
-  const [editingProvider, setEditingProvider] = useState<ServiceProvider | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
-  const [filterCategory, setFilterCategory] = useState<string>('');
 
-  const { data: providersData, isLoading } = useAdminServiceProviders();
-  const { data: categoriesData } = useServiceProviderCategories();
-  const createMutation = useCreateServiceProvider();
-  const updateMutation = useUpdateServiceProvider();
-  const deleteMutation = useDeleteServiceProvider();
+  const { data: suppliersData, isLoading } = useSuppliers();
 
-  const providers = (providersData?.data || []) as ServiceProvider[];
-  const categories = categoriesData?.categories || [];
+  const suppliers = (suppliersData?.data || []) as Supplier[];
 
-  // Filter providers
-  const filteredProviders = providers.filter(p => {
+  // Filter suppliers
+  const filteredSuppliers = suppliers.filter(s => {
     const matchesSearch = !searchTerm ||
-      p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (p.email && p.email.toLowerCase().includes(searchTerm.toLowerCase()));
-    const matchesCategory = !filterCategory || p.category === filterCategory;
-    return matchesSearch && matchesCategory;
+      s.companyName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (s.email && s.email.toLowerCase().includes(searchTerm.toLowerCase()));
+    return matchesSearch;
   });
-
-  const handleCreate = async (formData: FormData) => {
-    try {
-      await createMutation.mutateAsync({
-        name: formData.get('name') as string,
-        phone: formData.get('phone') as string || undefined,
-        email: formData.get('email') as string || undefined,
-        category: formData.get('category') as string,
-        description: formData.get('description') as string || undefined,
-        website: formData.get('website') as string || undefined,
-        address: formData.get('address') as string || undefined,
-      });
-      setShowAddModal(false);
-      Swal.fire({
-        title: 'נוצר בהצלחה!',
-        text: 'נותן השירות נוסף למערכת',
-        icon: 'success',
-        confirmButtonText: 'אישור',
-        background: '#1a1a2e',
-        color: '#fff',
-      });
-    } catch (error) {
-      Swal.fire({
-        title: 'שגיאה',
-        text: 'אירעה שגיאה ביצירת נותן השירות',
-        icon: 'error',
-        confirmButtonText: 'אישור',
-        background: '#1a1a2e',
-        color: '#fff',
-      });
-    }
-  };
-
-  const handleUpdate = async (id: string, formData: FormData) => {
-    try {
-      await updateMutation.mutateAsync({
-        id,
-        data: {
-          name: formData.get('name') as string,
-          phone: formData.get('phone') as string || undefined,
-          email: formData.get('email') as string || undefined,
-          category: formData.get('category') as string,
-          description: formData.get('description') as string || undefined,
-          website: formData.get('website') as string || undefined,
-          address: formData.get('address') as string || undefined,
-        },
-      });
-      setEditingProvider(null);
-      Swal.fire({
-        title: 'עודכן בהצלחה!',
-        text: 'פרטי נותן השירות עודכנו',
-        icon: 'success',
-        confirmButtonText: 'אישור',
-        background: '#1a1a2e',
-        color: '#fff',
-      });
-    } catch (error) {
-      Swal.fire({
-        title: 'שגיאה',
-        text: 'אירעה שגיאה בעדכון נותן השירות',
-        icon: 'error',
-        confirmButtonText: 'אישור',
-        background: '#1a1a2e',
-        color: '#fff',
-      });
-    }
-  };
-
-  const handleDelete = async (provider: ServiceProvider) => {
-    const result = await Swal.fire({
-      title: 'מחיקת נותן שירות',
-      text: `האם אתה בטוח שברצונך למחוק את "${provider.name}"?`,
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'כן, מחק',
-      cancelButtonText: 'ביטול',
-      confirmButtonColor: '#dc2626',
-      background: '#1a1a2e',
-      color: '#fff',
-    });
-
-    if (result.isConfirmed) {
-      try {
-        await deleteMutation.mutateAsync(provider.id);
-        Swal.fire({
-          title: 'נמחק!',
-          text: 'נותן השירות נמחק בהצלחה',
-          icon: 'success',
-          confirmButtonText: 'אישור',
-          background: '#1a1a2e',
-          color: '#fff',
-        });
-      } catch (error) {
-        Swal.fire({
-          title: 'שגיאה',
-          text: 'אירעה שגיאה במחיקת נותן השירות',
-          icon: 'error',
-          confirmButtonText: 'אישור',
-          background: '#1a1a2e',
-          color: '#fff',
-        });
-      }
-    }
-  };
-
-  const handleToggleStatus = async (provider: ServiceProvider, field: 'isActive' | 'isVerified') => {
-    try {
-      await updateMutation.mutateAsync({
-        id: provider.id,
-        data: { [field]: !provider[field] },
-      });
-    } catch (error) {
-      Swal.fire({
-        title: 'שגיאה',
-        text: 'אירעה שגיאה בעדכון הסטטוס',
-        icon: 'error',
-        confirmButtonText: 'אישור',
-        background: '#1a1a2e',
-        color: '#fff',
-      });
-    }
-  };
 
   if (!isReady) {
     return <AuthGuardLoader />;
@@ -207,7 +49,7 @@ export default function ManageServiceProvidersPage() {
 
   return (
     <div className="relative min-h-screen">
-      <PageSlider images={sliderImages.dashboard}  />
+      <PageSlider images={sliderImages.dashboard} />
       <div className="p-6 max-w-7xl mx-auto relative z-10">
         {/* Header */}
         <motion.div
@@ -225,22 +67,15 @@ export default function ManageServiceProvidersPage() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-3xl font-display font-bold text-gray-900 flex items-center gap-3">
-                <Users className="text-[#0066CC]" />
-                ניהול נותני שירות
+                <Building2 className="text-[#0066CC]" />
+                ניהול ספקים
               </h1>
-              <p className="text-gray-600 mt-1">הוספה, עריכה ומחיקה של נותני שירות</p>
+              <p className="text-gray-600 mt-1">צפייה בכל הספקים הרשומים במערכת</p>
             </div>
-            <button
-              onClick={() => setShowAddModal(true)}
-              className="btn-gold flex items-center gap-2"
-            >
-              <Plus size={18} />
-              הוסף נותן שירות
-            </button>
           </div>
         </motion.div>
 
-        {/* Filters */}
+        {/* Search */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -261,55 +96,37 @@ export default function ManageServiceProvidersPage() {
                   />
                 </div>
               </div>
-              <select
-                value={filterCategory}
-                onChange={(e) => setFilterCategory(e.target.value)}
-                className="bg-gray-100 border border-gray-200 rounded-lg px-4 py-2 text-gray-900"
-              >
-                <option value="">כל הקטגוריות</option>
-                {categories.map(cat => (
-                  <option key={cat.value} value={cat.value}>{cat.label}</option>
-                ))}
-              </select>
             </div>
           </GlassCard>
         </motion.div>
 
         {/* Stats */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
           <GlassCard hover={false}>
             <div className="text-center">
-              <p className="text-gray-500 text-sm">סה״כ נותני שירות</p>
-              <p className="text-3xl font-bold text-gray-900">{providers.length}</p>
+              <p className="text-gray-500 text-sm">סה״כ ספקים</p>
+              <p className="text-3xl font-bold text-gray-900">{suppliers.length}</p>
             </div>
           </GlassCard>
           <GlassCard hover={false} className="bg-green-500/10">
             <div className="text-center">
-              <p className="text-green-400/70 text-sm">פעילים</p>
-              <p className="text-3xl font-bold text-green-400">
-                {providers.filter(p => p.isActive).length}
+              <p className="text-green-600 text-sm">מאושרים</p>
+              <p className="text-3xl font-bold text-green-600">
+                {suppliers.length}
               </p>
             </div>
           </GlassCard>
           <GlassCard hover={false} className="bg-blue-500/10">
             <div className="text-center">
-              <p className="text-blue-400/70 text-sm">מאומתים</p>
-              <p className="text-3xl font-bold text-blue-400">
-                {providers.filter(p => p.isVerified).length}
-              </p>
-            </div>
-          </GlassCard>
-          <GlassCard hover={false} className="bg-purple-500/10">
-            <div className="text-center">
-              <p className="text-purple-400/70 text-sm">קטגוריות</p>
-              <p className="text-3xl font-bold text-purple-400">
-                {new Set(providers.map(p => p.category)).size}
+              <p className="text-blue-600 text-sm">תוצאות חיפוש</p>
+              <p className="text-3xl font-bold text-blue-600">
+                {filteredSuppliers.length}
               </p>
             </div>
           </GlassCard>
         </div>
 
-        {/* Providers List */}
+        {/* Suppliers List */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -318,114 +135,66 @@ export default function ManageServiceProvidersPage() {
           <GlassCard hover={false}>
             {isLoading ? (
               <div className="text-center py-12">
-                <Loader2 className="w-10 h-10 mx-auto text-gold-400 animate-spin" />
-                <p className="text-gray-600 mt-4">טוען נותני שירות...</p>
+                <Loader2 className="w-10 h-10 mx-auto text-blue-500 animate-spin" />
+                <p className="text-gray-600 mt-4">טוען ספקים...</p>
               </div>
-            ) : filteredProviders.length === 0 ? (
+            ) : filteredSuppliers.length === 0 ? (
               <div className="text-center py-12">
-                <Users className="w-16 h-16 mx-auto text-gray-300 mb-4" />
-                <p className="text-gray-600">אין נותני שירות להצגה</p>
+                <Building2 className="w-16 h-16 mx-auto text-gray-300 mb-4" />
+                <p className="text-gray-600">אין ספקים להצגה</p>
               </div>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
                     <tr className="border-b border-gray-200">
-                      <th className="py-3 px-4 text-right text-gray-600 font-medium">שם</th>
-                      <th className="py-3 px-4 text-right text-gray-600 font-medium">קטגוריה</th>
-                      <th className="py-3 px-4 text-right text-gray-600 font-medium">פרטי קשר</th>
+                      <th className="py-3 px-4 text-right text-gray-600 font-medium">ספק</th>
+                      <th className="py-3 px-4 text-right text-gray-600 font-medium">אימייל</th>
                       <th className="py-3 px-4 text-right text-gray-600 font-medium">סטטוס</th>
                       <th className="py-3 px-4 text-right text-gray-600 font-medium">פעולות</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {filteredProviders.map((provider) => (
-                      <tr
-                        key={provider.id}
-                        className="border-b border-gray-200 hover:bg-gray-50 transition-colors"
+                    {filteredSuppliers.map((supplier, index) => (
+                      <motion.tr
+                        key={supplier.id}
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: index * 0.03 }}
+                        className="border-b border-gray-100 hover:bg-blue-50/50 transition-colors"
                       >
                         <td className="py-4 px-4">
-                          <div>
-                            <p className="text-gray-900 font-medium">{provider.name}</p>
-                            {provider.description && (
-                              <p className="text-gray-500 text-sm truncate max-w-xs">{provider.description}</p>
-                            )}
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
+                              <Building2 size={18} className="text-blue-600" />
+                            </div>
+                            <span className="font-medium text-gray-900">{supplier.companyName || 'ספק'}</span>
                           </div>
                         </td>
                         <td className="py-4 px-4">
-                          <span className="px-3 py-1 rounded-full text-sm bg-gray-100 text-gray-700">
-                            {CATEGORY_LABELS[provider.category] || provider.category}
+                          {supplier.email && (
+                            <div className="flex items-center gap-2 text-gray-600">
+                              <Mail size={14} />
+                              {supplier.email}
+                            </div>
+                          )}
+                        </td>
+                        <td className="py-4 px-4">
+                          <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs bg-green-100 text-green-700">
+                            <CheckCircle size={12} />
+                            פעיל
                           </span>
                         </td>
                         <td className="py-4 px-4">
-                          <div className="space-y-1 text-sm">
-                            {provider.phone && (
-                              <p className="flex items-center gap-2 text-gray-600">
-                                <Phone size={14} /> {provider.phone}
-                              </p>
-                            )}
-                            {provider.email && (
-                              <p className="flex items-center gap-2 text-gray-600">
-                                <Mail size={14} /> {provider.email}
-                              </p>
-                            )}
-                            {provider.website && (
-                              <a
-                                href={provider.website}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex items-center gap-2 text-gold-400 hover:text-gold-300"
-                              >
-                                <Globe size={14} /> אתר
-                              </a>
-                            )}
-                          </div>
+                          <Link
+                            href={`/admin/users?search=${encodeURIComponent(supplier.email || '')}`}
+                            className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 text-sm"
+                          >
+                            <ExternalLink size={14} />
+                            צפה בפרטים
+                          </Link>
                         </td>
-                        <td className="py-4 px-4">
-                          <div className="flex flex-col gap-2">
-                            <button
-                              onClick={() => handleToggleStatus(provider, 'isActive')}
-                              className={`flex items-center gap-1 px-2 py-1 rounded text-xs ${
-                                provider.isActive
-                                  ? 'bg-green-500/20 text-green-400'
-                                  : 'bg-red-500/20 text-red-400'
-                              }`}
-                            >
-                              {provider.isActive ? <CheckCircle size={12} /> : <XCircle size={12} />}
-                              {provider.isActive ? 'פעיל' : 'לא פעיל'}
-                            </button>
-                            <button
-                              onClick={() => handleToggleStatus(provider, 'isVerified')}
-                              className={`flex items-center gap-1 px-2 py-1 rounded text-xs ${
-                                provider.isVerified
-                                  ? 'bg-blue-500/20 text-blue-400'
-                                  : 'bg-gray-100 text-gray-500'
-                              }`}
-                            >
-                              {provider.isVerified ? <CheckCircle size={12} /> : <XCircle size={12} />}
-                              {provider.isVerified ? 'מאומת' : 'לא מאומת'}
-                            </button>
-                          </div>
-                        </td>
-                        <td className="py-4 px-4">
-                          <div className="flex items-center gap-2">
-                            <button
-                              onClick={() => setEditingProvider(provider)}
-                              className="p-2 rounded-lg hover:bg-gray-100 text-gray-600 hover:text-gray-900 transition-colors"
-                              title="עריכה"
-                            >
-                              <Edit2 size={16} />
-                            </button>
-                            <button
-                              onClick={() => handleDelete(provider)}
-                              className="p-2 rounded-lg hover:bg-red-500/20 text-red-400 transition-colors"
-                              title="מחיקה"
-                            >
-                              <Trash2 size={16} />
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
+                      </motion.tr>
                     ))}
                   </tbody>
                 </table>
@@ -433,129 +202,6 @@ export default function ManageServiceProvidersPage() {
             )}
           </GlassCard>
         </motion.div>
-
-        {/* Add/Edit Modal */}
-        {(showAddModal || editingProvider) && (
-          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="w-full max-w-lg"
-            >
-              <GlassCard hover={false}>
-                <h2 className="text-xl font-semibold text-gray-900 mb-6">
-                  {editingProvider ? 'עריכת נותן שירות' : 'הוספת נותן שירות חדש'}
-                </h2>
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    const formData = new FormData(e.currentTarget);
-                    if (editingProvider) {
-                      handleUpdate(editingProvider.id, formData);
-                    } else {
-                      handleCreate(formData);
-                    }
-                  }}
-                  className="space-y-4"
-                >
-                  <div>
-                    <label className="block text-gray-600 text-sm mb-1">שם *</label>
-                    <input
-                      type="text"
-                      name="name"
-                      required
-                      defaultValue={editingProvider?.name || ''}
-                      className="w-full bg-gray-100 border border-gray-200 rounded-lg px-4 py-2 text-gray-900"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-gray-600 text-sm mb-1">קטגוריה *</label>
-                    <select
-                      name="category"
-                      required
-                      defaultValue={editingProvider?.category || ''}
-                      className="w-full bg-gray-100 border border-gray-200 rounded-lg px-4 py-2 text-gray-900"
-                    >
-                      <option value="">בחר קטגוריה</option>
-                      {categories.map(cat => (
-                        <option key={cat.value} value={cat.value}>{cat.label}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-gray-600 text-sm mb-1">טלפון</label>
-                      <input
-                        type="tel"
-                        name="phone"
-                        defaultValue={editingProvider?.phone || ''}
-                        className="w-full bg-gray-100 border border-gray-200 rounded-lg px-4 py-2 text-gray-900"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-gray-600 text-sm mb-1">אימייל</label>
-                      <input
-                        type="email"
-                        name="email"
-                        defaultValue={editingProvider?.email || ''}
-                        className="w-full bg-gray-100 border border-gray-200 rounded-lg px-4 py-2 text-gray-900"
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <label className="block text-gray-600 text-sm mb-1">אתר אינטרנט</label>
-                    <input
-                      type="url"
-                      name="website"
-                      defaultValue={editingProvider?.website || ''}
-                      className="w-full bg-gray-100 border border-gray-200 rounded-lg px-4 py-2 text-gray-900"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-gray-600 text-sm mb-1">כתובת</label>
-                    <input
-                      type="text"
-                      name="address"
-                      defaultValue={editingProvider?.address || ''}
-                      className="w-full bg-gray-100 border border-gray-200 rounded-lg px-4 py-2 text-gray-900"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-gray-600 text-sm mb-1">תיאור</label>
-                    <textarea
-                      name="description"
-                      rows={3}
-                      defaultValue={editingProvider?.description || ''}
-                      className="w-full bg-gray-100 border border-gray-200 rounded-lg px-4 py-2 text-gray-900 resize-none"
-                    />
-                  </div>
-                  <div className="flex gap-3 pt-4">
-                    <button
-                      type="submit"
-                      disabled={createMutation.isPending || updateMutation.isPending}
-                      className="flex-1 btn-gold flex items-center justify-center gap-2 disabled:opacity-50"
-                    >
-                      {(createMutation.isPending || updateMutation.isPending) && (
-                        <Loader2 size={18} className="animate-spin" />
-                      )}
-                      {editingProvider ? 'עדכון' : 'הוספה'}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setShowAddModal(false);
-                        setEditingProvider(null);
-                      }}
-                      className="flex-1 btn-secondary"
-                    >
-                      ביטול
-                    </button>
-                  </div>
-                </form>
-              </GlassCard>
-            </motion.div>
-          </div>
-        )}
       </div>
     </div>
   );
