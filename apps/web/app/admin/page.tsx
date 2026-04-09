@@ -884,7 +884,7 @@ Please analyze this error and provide a fix.
         </motion.div>
 
         {/* Tabs - Horizontal scroll on mobile */}
-        <div className="flex gap-2 mb-6 overflow-x-auto pb-2 -mx-2 px-2 scrollbar-hide" style={{ WebkitOverflowScrolling: 'touch' }}>
+        <div className="flex gap-2 mb-6 overflow-x-auto -mx-2 px-2 scrollbar-hide">
           <button
             onClick={() => setActiveTab('users')}
             className={`px-6 py-3 rounded-xl font-medium transition-all flex items-center gap-2 whitespace-nowrap flex-shrink-0 ${
