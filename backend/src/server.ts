@@ -147,6 +147,13 @@ server.get('/health', async () => {
   return { status: 'ok', timestamp: new Date().toISOString() };
 });
 
+// TEMPORARY: Test email endpoint (remove after testing)
+import { emailService } from './services/email.service.js';
+server.get('/test-email-temp-xyz123', async () => {
+  const sent = await emailService.sendTestEmail('orenshp77@gmail.com');
+  return { sent, timestamp: new Date().toISOString() };
+});
+
 // WebSocket endpoint - registered after plugins in start()
 function registerWebSocket() {
   server.get('/ws', { websocket: true }, (socket, req) => {
