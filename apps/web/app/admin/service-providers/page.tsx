@@ -187,7 +187,7 @@ export default function ManageSuppliersPage() {
                         </td>
                         <td className="py-4 px-4">
                           <Link
-                            href={`/admin/users?search=${encodeURIComponent(supplier.email || '')}`}
+                            href="/admin"
                             className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 text-sm"
                           >
                             <ExternalLink size={14} />
