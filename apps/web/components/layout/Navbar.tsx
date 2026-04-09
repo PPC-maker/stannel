@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter, usePathname } from 'next/navigation';
@@ -34,17 +34,30 @@ const supplierLinks = [
 
 export default function Navbar() {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const { user, logout } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
+
+  // Detect scroll to add blur effect
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   // All pages now use the dark green theme - make navbar transparent on all pages
   const isDarkPage = true;
 
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all ${
+    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
       isDarkPage
-        ? 'bg-transparent'
+        ? isScrolled
+          ? 'bg-black/40 backdrop-blur-xl border-b border-white/10 shadow-lg shadow-black/20'
+          : 'bg-transparent'
         : 'bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100'
     }`}>
       <div className={`w-full px-4 sm:px-6 lg:px-8 flex items-center justify-center relative ${isDarkPage ? 'h-20' : 'h-16'}`}>
