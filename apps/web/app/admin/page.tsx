@@ -249,7 +249,7 @@ export default function AdminPage() {
     if (isReady && activeTab === 'logs') {
       fetchLogs();
     }
-  }, [filter, isReady, activeTab]);
+  }, [filter, isReady]);
 
   // Auto-refresh users every 10 seconds for real-time updates
   useEffect(() => {
