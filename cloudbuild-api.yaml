@@ -35,7 +35,7 @@ steps:
           --platform=managed \
           --allow-unauthenticated \
           --add-cloudsql-instances=stannel-app:me-west1:stannel-db \
-          --set-secrets="DATABASE_URL=database-url:latest,FIREBASE_PRIVATE_KEY=firebase-private-key:latest,FIREBASE_CLIENT_EMAIL=firebase-client-email:latest,GEMINI_API_KEY=gemini-api-key:latest,SENDGRID_API_KEY=sendgrid-api-key:latest" \
+          --set-secrets="DATABASE_URL=database-url:latest,FIREBASE_PRIVATE_KEY=firebase-private-key:latest,FIREBASE_CLIENT_EMAIL=firebase-client-email:latest,GEMINI_API_KEY=gemini-api-key:latest,GMAIL_USER=gmail-user:latest,GMAIL_APP_PASSWORD=gmail-app-password:latest" \
           --set-env-vars="NODE_ENV=production,GOOGLE_CLOUD_PROJECT=stannel-app,FIREBASE_PROJECT_ID=stannel-app"
 
 timeout: '1800s'

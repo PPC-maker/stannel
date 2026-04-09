@@ -1,5 +1,7 @@
 // Email Service - STANNEL Platform
-// Uses SendGrid for email delivery
+// Uses Gmail SMTP for email delivery
+
+import nodemailer from 'nodemailer';
 
 interface EmailOptions {
   to: string | string[];
@@ -8,17 +10,34 @@ interface EmailOptions {
   text?: string;
 }
 
-interface SendGridConfig {
-  apiKey: string;
-  fromEmail: string;
+interface GmailConfig {
+  user: string;
+  appPassword: string;
   fromName: string;
 }
 
-const getConfig = (): SendGridConfig => ({
-  apiKey: process.env.SENDGRID_API_KEY || '',
-  fromEmail: process.env.EMAIL_FROM || 'orenshp77@gmail.com',
+const getConfig = (): GmailConfig => ({
+  user: process.env.GMAIL_USER || 'ppc@newpost.co.il',
+  appPassword: process.env.GMAIL_APP_PASSWORD || '',
   fromName: process.env.EMAIL_FROM_NAME || 'STANNEL',
 });
+
+// Create reusable transporter
+let transporter: nodemailer.Transporter | null = null;
+
+const getTransporter = () => {
+  if (!transporter) {
+    const config = getConfig();
+    transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: config.user,
+        pass: config.appPassword,
+      },
+    });
+  }
+  return transporter;
+};
 
 // Email destinations - exported for use in other services
 export const EMAIL_DESTINATIONS = {
@@ -32,8 +51,8 @@ export const emailService = {
   async send(options: EmailOptions): Promise<boolean> {
     const config = getConfig();
 
-    if (!config.apiKey) {
-      console.warn('[Email] SendGrid API key not configured. Email not sent.');
+    if (!config.appPassword) {
+      console.warn('[Email] Gmail App Password not configured. Email not sent.');
       console.log('[Email] Would send:', {
         to: options.to,
         subject: options.subject,
@@ -42,40 +61,19 @@ export const emailService = {
     }
 
     try {
-      const response = await fetch('https://api.sendgrid.com/v3/mail/send', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${config.apiKey}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          personalizations: [
-            {
-              to: Array.isArray(options.to)
-                ? options.to.map(email => ({ email }))
-                : [{ email: options.to }],
-            },
-          ],
-          from: {
-            email: config.fromEmail,
-            name: config.fromName,
-          },
-          subject: options.subject,
-          content: [
-            { type: 'text/plain', value: options.text || options.html.replace(/<[^>]*>/g, '') },
-            { type: 'text/html', value: options.html },
-          ],
-        }),
+      const transport = getTransporter();
+      const toAddresses = Array.isArray(options.to) ? options.to.join(', ') : options.to;
+
+      await transport.sendMail({
+        from: `"${config.fromName}" <${config.user}>`,
+        to: toAddresses,
+        subject: options.subject,
+        text: options.text || options.html.replace(/<[^>]*>/g, ''),
+        html: options.html,
       });
 
-      if (response.ok || response.status === 202) {
-        console.log('[Email] Sent successfully to:', options.to);
-        return true;
-      } else {
-        const error = await response.text();
-        console.error('[Email] SendGrid error:', error);
-        return false;
-      }
+      console.log('[Email] Sent successfully to:', options.to);
+      return true;
     } catch (error) {
       console.error('[Email] Send error:', error);
       return false;
