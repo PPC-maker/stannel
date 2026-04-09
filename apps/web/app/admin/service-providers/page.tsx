@@ -7,15 +7,12 @@ import PageSlider, { sliderImages } from '@/components/layout/PageSlider';
 import { useAdminGuard, AuthGuardLoader } from '@/lib/useAuthGuard';
 import { useSuppliers } from '@/lib/api-hooks';
 import {
-  Users,
   Building2,
-  Phone,
   Mail,
   Loader2,
   ArrowRight,
   Search,
   CheckCircle,
-  ExternalLink,
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -151,7 +148,6 @@ export default function ManageSuppliersPage() {
                       <th className="py-3 px-4 text-right text-gray-600 font-medium">ספק</th>
                       <th className="py-3 px-4 text-right text-gray-600 font-medium">אימייל</th>
                       <th className="py-3 px-4 text-right text-gray-600 font-medium">סטטוס</th>
-                      <th className="py-3 px-4 text-right text-gray-600 font-medium">פעולות</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -184,15 +180,6 @@ export default function ManageSuppliersPage() {
                             <CheckCircle size={12} />
                             פעיל
                           </span>
-                        </td>
-                        <td className="py-4 px-4">
-                          <Link
-                            href="/admin"
-                            className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 text-sm"
-                          >
-                            <ExternalLink size={14} />
-                            צפה בפרטים
-                          </Link>
                         </td>
                       </motion.tr>
                     ))}
