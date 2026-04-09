@@ -122,8 +122,8 @@ export default function WalletPage() {
   // Suppliers data - fetch based on role
   const isAdmin = user?.role === 'ADMIN';
   const isArchitect = user?.role === 'ARCHITECT';
-  const { data: allSuppliers, isLoading: suppliersLoading } = useSuppliers(activeCategory === 'suppliers' && isAdmin);
-  const { data: mySuppliers, isLoading: mySuppliersLoading } = useArchitectSuppliers(activeCategory === 'suppliers' && isArchitect);
+  // Show all suppliers for both admin and architects
+  const { data: allSuppliers, isLoading: suppliersLoading } = useSuppliers(activeCategory === 'suppliers' && (isAdmin || isArchitect));
 
 
   const currentRank = (card?.rank as keyof typeof rankConfig) || 'BRONZE';
@@ -430,10 +430,10 @@ export default function WalletPage() {
                   {activeCategory === 'suppliers' ? (
                     <div>
                       <h3 className="text-lg font-semibold text-[#1E293B] mb-4">
-                        {isAdmin ? 'כל הספקים במערכת' : 'הספקים שלי'}
+                        כל הספקים במערכת
                       </h3>
 
-                      {(suppliersLoading || mySuppliersLoading) ? (
+                      {suppliersLoading ? (
                         <div className="space-y-3">
                           {[...Array(3)].map((_, i) => (
                             <div key={i} className="flex items-center gap-4 p-4 bg-gray-50 rounded-xl animate-pulse">
@@ -452,16 +452,10 @@ export default function WalletPage() {
                               <tr className="border-b border-gray-200">
                                 <th className="text-right py-3 px-4 text-sm font-semibold text-[#64748B]">ספק</th>
                                 <th className="text-right py-3 px-4 text-sm font-semibold text-[#64748B]">אימייל</th>
-                                {isArchitect && (
-                                  <>
-                                    <th className="text-right py-3 px-4 text-sm font-semibold text-[#64748B]">חשבוניות</th>
-                                    <th className="text-right py-3 px-4 text-sm font-semibold text-[#64748B]">סה״כ</th>
-                                  </>
-                                )}
                               </tr>
                             </thead>
                             <tbody>
-                              {isAdmin && allSuppliers?.data && allSuppliers.data.length > 0 ? (
+                              {allSuppliers?.data && allSuppliers.data.length > 0 ? (
                                 allSuppliers.data.map((supplier, index) => (
                                   <motion.tr
                                     key={supplier.id}
@@ -481,52 +475,16 @@ export default function WalletPage() {
                                     <td className="py-3 px-4 text-[#64748B] text-sm">{supplier.email || '-'}</td>
                                   </motion.tr>
                                 ))
-                              ) : isArchitect && mySuppliers?.data && mySuppliers.data.length > 0 ? (
-                                mySuppliers.data.map((supplier, index) => (
-                                  <motion.tr
-                                    key={supplier.id}
-                                    initial={{ opacity: 0, x: -10 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: index * 0.03 }}
-                                    className="border-b border-gray-100 hover:bg-blue-50/50 transition-colors"
-                                  >
-                                    <td className="py-3 px-4">
-                                      <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
-                                          <Building2 size={18} className="text-blue-600" />
-                                        </div>
-                                        <span className="font-medium text-[#1E293B]">{supplier.companyName}</span>
-                                      </div>
-                                    </td>
-                                    <td className="py-3 px-4 text-[#64748B] text-sm">{supplier.email || '-'}</td>
-                                    <td className="py-3 px-4 text-center">
-                                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                                        {supplier.invoiceCount}
-                                      </span>
-                                    </td>
-                                    <td className="py-3 px-4 text-[#1E293B] font-medium">
-                                      ₪{supplier.totalAmount.toLocaleString()}
-                                    </td>
-                                  </motion.tr>
-                                ))
                               ) : (
                                 <tr>
-                                  <td colSpan={isArchitect ? 4 : 2} className="py-12 text-center">
+                                  <td colSpan={2} className="py-12 text-center">
                                     <div className="flex flex-col items-center gap-3">
                                       <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center">
                                         <Building2 size={32} className="text-gray-400" />
                                       </div>
                                       <p className="text-[#64748B]">
-                                        {isArchitect ? 'עדיין אין לך ספקים מחוברים. העלה חשבונית כדי להתחיל!' : 'אין ספקים במערכת'}
+                                        אין ספקים במערכת
                                       </p>
-                                      {isArchitect && (
-                                        <Link
-                                          href="/invoices/upload"
-                                          className="mt-2 px-4 py-2 bg-blue-500 text-white rounded-lg text-sm font-medium hover:bg-blue-600 transition-colors"
-                                        >
-                                          העלאת חשבונית
-                                        </Link>
-                                      )}
                                     </div>
                                   </td>
                                 </tr>
