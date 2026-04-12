@@ -30,6 +30,7 @@ import {
   TrendingUp,
   ArrowUpRight,
   Sparkles,
+  Eye,
 } from 'lucide-react';
 
 interface Invoice {
@@ -216,7 +217,7 @@ export default function SupplierDashboardPage() {
 
             <p className="text-white/60 text-lg mb-8">{user?.email}</p>
 
-            <div className="flex items-center justify-center gap-5">
+            <div className="flex items-center justify-center gap-3 flex-wrap">
               <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
@@ -236,6 +237,22 @@ export default function SupplierDashboardPage() {
                 <span className="text-white text-sm">דירוג 5.0</span>
               </motion.div>
             </div>
+
+            {/* View Profile Button */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6 }}
+              className="mt-5"
+            >
+              <Link
+                href={`/suppliers/${user?.id}`}
+                className="inline-flex items-center gap-2 px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-full transition-colors"
+              >
+                <Eye size={18} />
+                צפה בפרופיל הציבורי
+              </Link>
+            </motion.div>
           </motion.div>
         </div>
       </div>
