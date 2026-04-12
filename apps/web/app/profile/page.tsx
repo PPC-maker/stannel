@@ -470,6 +470,18 @@ export default function ProfilePage() {
                   </div>
                   <ChevronLeft size={16} className="text-white/40" />
                 </button>
+                {user?.role === 'SUPPLIER' && (
+                  <button
+                    onClick={() => router.push('/supplier/profile')}
+                    className="w-full flex items-center justify-between gap-3 p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors text-white/70 hover:text-white border border-white/5"
+                  >
+                    <div className="flex items-center gap-3">
+                      <Building2 size={18} className="text-emerald-400" />
+                      <span>עריכת פרופיל ספק</span>
+                    </div>
+                    <ChevronLeft size={16} className="text-white/40" />
+                  </button>
+                )}
               </div>
             </div>
           </motion.div>
