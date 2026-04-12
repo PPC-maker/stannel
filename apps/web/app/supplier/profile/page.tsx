@@ -213,7 +213,30 @@ export default function SupplierProfilePage() {
     });
 
     if (result.isConfirmed) {
-      setImages(prev => prev.filter(img => img !== imageUrl));
+      try {
+        // Delete from server
+        await supplierApi.deleteBusinessImage(imageUrl);
+        // Update local state
+        setImages(prev => prev.filter(img => img !== imageUrl));
+        Swal.fire({
+          title: 'התמונה נמחקה',
+          icon: 'success',
+          timer: 1500,
+          showConfirmButton: false,
+          background: '#0a1f18',
+          color: '#ffffff',
+        });
+      } catch (error) {
+        console.error('Failed to delete image:', error);
+        Swal.fire({
+          title: 'שגיאה',
+          text: 'לא ניתן למחוק את התמונה',
+          icon: 'error',
+          confirmButtonColor: '#10b981',
+          background: '#0a1f18',
+          color: '#ffffff',
+        });
+      }
     }
   };
 
