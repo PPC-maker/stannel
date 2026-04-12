@@ -31,8 +31,10 @@ const defaultSettings: AccessibilitySettings = {
 export default function AccessibilityWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [settings, setSettings] = useState<AccessibilitySettings>(defaultSettings);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     const saved = localStorage.getItem('accessibility-settings');
     if (saved) {
       const parsed = JSON.parse(saved);
@@ -95,6 +97,10 @@ export default function AccessibilityWidget() {
   const toggleSetting = (key: keyof Omit<AccessibilitySettings, 'fontSize'>) => {
     updateSetting(key, !settings[key]);
   };
+
+  if (!mounted) {
+    return null;
+  }
 
   return (
     <>

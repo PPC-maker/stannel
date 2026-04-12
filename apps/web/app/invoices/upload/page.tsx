@@ -380,7 +380,7 @@ export default function InvoiceUploadPage() {
                 </div>
 
                 <p className="text-white/40 text-sm text-center">
-                  החשבונית תיבדק על ידי מערכת AI ולאחר מכן תאושר על ידי מנהל
+                  החשבונית תאושר על ידי מנהל המערכת
                 </p>
               </div>
             </motion.div>

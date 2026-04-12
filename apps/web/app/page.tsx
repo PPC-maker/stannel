@@ -6,22 +6,28 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { CheckCircle, ArrowLeft, Users, Gift, Building2, Star, ChevronLeft } from 'lucide-react';
 
-// Why choose us features
+// Why choose us features - with unique colors
 const whyChooseUs = [
   {
     icon: Building2,
     title: 'ספקים מובחרים',
-    description: 'רק הספקים הטובים ביותר בתעשייה',
+    color: 'bg-emerald-500/20',
+    iconColor: 'text-emerald-400',
+    borderColor: 'border-emerald-500/30',
   },
   {
     icon: Gift,
     title: 'תגמולים ובונוסים',
-    description: 'הרוויחו מכל עסקה שתבצעו',
+    color: 'bg-amber-500/20',
+    iconColor: 'text-amber-400',
+    borderColor: 'border-amber-500/30',
   },
   {
     icon: Users,
     title: 'קהילה חזקה',
-    description: 'התחברו עם מעצבים ואדריכלים',
+    color: 'bg-purple-500/20',
+    iconColor: 'text-purple-400',
+    borderColor: 'border-purple-500/30',
   },
 ];
 
@@ -163,12 +169,9 @@ export default function HomePage() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-white">
               למה לבחור ב-STANNEL?
             </h2>
-            <p className="text-white/60 max-w-2xl mx-auto">
-              אנחנו מציעים את הפלטפורמה המתקדמת ביותר לאדריכלים ומעצבים
-            </p>
           </motion.div>
 
           <div className="grid md:grid-cols-3 gap-6">
@@ -179,13 +182,12 @@ export default function HomePage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
-                className="bg-white/5 backdrop-blur border border-white/10 rounded-3xl p-8 text-center hover:bg-white/10 transition-all group"
+                className={`${item.color} backdrop-blur border ${item.borderColor} rounded-3xl p-8 text-center hover:scale-105 transition-all group`}
               >
-                <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-colors">
-                  <item.icon size={32} className="text-white/80" />
+                <div className={`w-16 h-16 mx-auto mb-6 rounded-2xl ${item.color} flex items-center justify-center`}>
+                  <item.icon size={32} className={item.iconColor} />
                 </div>
-                <h3 className="text-xl font-bold text-white mb-3">{item.title}</h3>
-                <p className="text-white/60">{item.description}</p>
+                <h3 className="text-xl font-bold text-white">{item.title}</h3>
               </motion.div>
             ))}
           </div>
@@ -202,10 +204,10 @@ export default function HomePage() {
             className="text-center mb-16"
           >
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-              הספקים שלנו
+              ספקים מובחרים
             </h2>
             <p className="text-white/60">
-              שותפויות עם המותגים המובילים בתעשייה
+              חיבור לספקים האיכותיים ביותר בתעשייה
             </p>
           </motion.div>
 
@@ -336,36 +338,6 @@ export default function HomePage() {
               </motion.div>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-24 px-6 bg-[#0f2620] relative overflow-hidden">
-        {/* Background decoration */}
-        <div className="absolute inset-0 opacity-30">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-white/5 rounded-full blur-3xl" />
-        </div>
-
-        <div className="max-w-4xl mx-auto text-center relative z-10">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-          >
-            <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">
-              מוכנים להצטרף?
-            </h2>
-            <p className="text-white/70 text-lg mb-10 max-w-xl mx-auto">
-              הירשמו היום וקבלו גישה מיידית לכל היתרונות של הקהילה
-            </p>
-            <Link
-              href="/register"
-              className="inline-flex items-center gap-2 bg-white text-[#0f2620] px-10 py-5 rounded-2xl font-semibold text-lg hover:bg-white/90 transition-all group"
-            >
-              <span>הירשמו עכשיו - חינם</span>
-              <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
-            </Link>
-          </motion.div>
         </div>
       </section>
 

@@ -3,11 +3,45 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Mail, Lock, User, Phone, Building2, ArrowLeft, Check, AlertCircle, Camera, X } from 'lucide-react';
+import { Mail, Lock, User, Phone, Building2, ArrowLeft, Check, AlertCircle, Camera, X, Palette, ChevronDown } from 'lucide-react';
 import Image from 'next/image';
 import { useAuth } from '@/lib/auth-context';
 
 type UserRole = 'ARCHITECT' | 'SUPPLIER';
+
+// Sub-specializations for each role
+const architectSpecializations = [
+  { value: 'architecture', label: 'אדריכלות' },
+  { value: 'interior', label: 'עיצוב פנים' },
+  { value: 'landscape', label: 'אדריכלות נוף' },
+  { value: 'urban', label: 'תכנון עירוני' },
+  { value: 'preservation', label: 'שימור מבנים' },
+  { value: 'other', label: 'אחר' },
+];
+
+const designerSpecializations = [
+  { value: 'interior', label: 'עיצוב פנים' },
+  { value: 'furniture', label: 'עיצוב רהיטים' },
+  { value: 'lighting', label: 'עיצוב תאורה' },
+  { value: 'garden', label: 'עיצוב גינות' },
+  { value: 'kitchen', label: 'עיצוב מטבחים' },
+  { value: 'other', label: 'אחר' },
+];
+
+const supplierSpecializations = [
+  { value: 'lighting', label: 'תאורה' },
+  { value: 'furniture', label: 'ריהוט' },
+  { value: 'flooring', label: 'ריצוף' },
+  { value: 'sanitary', label: 'סניטריה' },
+  { value: 'kitchen', label: 'מטבחים' },
+  { value: 'windows', label: 'חלונות ודלתות' },
+  { value: 'building', label: 'חומרי בניין' },
+  { value: 'electrical', label: 'חשמל' },
+  { value: 'hvac', label: 'מיזוג אוויר' },
+  { value: 'other', label: 'אחר' },
+];
+
+type RoleCategory = 'ARCHITECT' | 'DESIGNER' | 'SUPPLIER';
 
 export default function RegisterPage() {
   const { register, loading: authLoading, logout } = useAuth();
@@ -20,6 +54,8 @@ export default function RegisterPage() {
 
   const [step, setStep] = useState(1);
   const [role, setRole] = useState<UserRole | null>(null);
+  const [roleCategory, setRoleCategory] = useState<RoleCategory | null>(null);
+  const [specialization, setSpecialization] = useState('');
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -27,10 +63,33 @@ export default function RegisterPage() {
     password: '',
     companyName: '',
   });
+  const [passwordErrors, setPasswordErrors] = useState<string[]>([]);
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Password validation function
+  const validatePassword = (password: string): string[] => {
+    const errors: string[] = [];
+    if (password.length < 8) errors.push('לפחות 8 תווים');
+    if (!/[A-Z]/.test(password)) errors.push('אות גדולה באנגלית');
+    if (!/[a-z]/.test(password)) errors.push('אות קטנה באנגלית');
+    if (!/[0-9]/.test(password)) errors.push('מספר');
+    return errors;
+  };
+
+  const handlePasswordChange = (password: string) => {
+    setFormData({ ...formData, password });
+    setPasswordErrors(validatePassword(password));
+  };
+
+  const getSpecializationOptions = () => {
+    if (roleCategory === 'ARCHITECT') return architectSpecializations;
+    if (roleCategory === 'DESIGNER') return designerSpecializations;
+    if (roleCategory === 'SUPPLIER') return supplierSpecializations;
+    return [];
+  };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -57,6 +116,13 @@ export default function RegisterPage() {
     e.preventDefault();
     if (!role) return;
 
+    // Validate password
+    const errors = validatePassword(formData.password);
+    if (errors.length > 0) {
+      setError('הסיסמה לא עומדת בדרישות');
+      return;
+    }
+
     setIsLoading(true);
     setError(null);
 
@@ -68,6 +134,7 @@ export default function RegisterPage() {
         phone: formData.phone || undefined,
         role: role,
         companyName: role === 'SUPPLIER' ? formData.companyName : undefined,
+        // Note: specialization and roleCategory can be stored in profile later
       });
       setStep(3); // Success step
     } catch (err: unknown) {
@@ -121,22 +188,23 @@ export default function RegisterPage() {
                   <p className="text-white/60">בחרו את סוג החשבון שלכם</p>
                 </div>
 
-                <div className="grid gap-4">
+                <div className="grid gap-3">
                   <button
                     onClick={() => {
                       setRole('ARCHITECT');
+                      setRoleCategory('ARCHITECT');
                       setStep(2);
                     }}
-                    className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 text-right hover:border-emerald-500/50 hover:bg-white/10 transition-all group"
+                    className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-5 text-right hover:border-emerald-500/50 hover:bg-white/10 transition-all group"
                   >
                     <div className="flex items-start gap-4">
-                      <div className="w-12 h-12 rounded-xl bg-emerald-500/20 flex items-center justify-center group-hover:bg-emerald-500/30 transition-all">
-                        <User size={24} className="text-emerald-400" />
+                      <div className="w-11 h-11 rounded-xl bg-emerald-500/20 flex items-center justify-center group-hover:bg-emerald-500/30 transition-all">
+                        <User size={22} className="text-emerald-400" />
                       </div>
                       <div className="flex-1">
-                        <h3 className="text-lg font-semibold text-white mb-1">אדריכל / מעצב</h3>
+                        <h3 className="text-lg font-semibold text-white mb-1">אדריכל</h3>
                         <p className="text-white/60 text-sm">
-                          צברו נקודות על רכישות, ממשו הטבות ונהנו מאירועים בלעדיים
+                          אדריכלות, תכנון עירוני, אדריכלות נוף
                         </p>
                       </div>
                       <ArrowLeft className="text-white/40 group-hover:text-emerald-400 transition-colors" />
@@ -145,22 +213,45 @@ export default function RegisterPage() {
 
                   <button
                     onClick={() => {
-                      setRole('SUPPLIER');
+                      setRole('ARCHITECT');
+                      setRoleCategory('DESIGNER');
                       setStep(2);
                     }}
-                    className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 text-right hover:border-emerald-500/50 hover:bg-white/10 transition-all group"
+                    className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-5 text-right hover:border-emerald-500/50 hover:bg-white/10 transition-all group"
                   >
                     <div className="flex items-start gap-4">
-                      <div className="w-12 h-12 rounded-xl bg-emerald-500/20 flex items-center justify-center group-hover:bg-emerald-500/30 transition-all">
-                        <Building2 size={24} className="text-emerald-400" />
+                      <div className="w-11 h-11 rounded-xl bg-purple-500/20 flex items-center justify-center group-hover:bg-purple-500/30 transition-all">
+                        <Palette size={22} className="text-purple-400" />
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="text-lg font-semibold text-white mb-1">מעצב</h3>
+                        <p className="text-white/60 text-sm">
+                          עיצוב פנים, עיצוב רהיטים, עיצוב תאורה
+                        </p>
+                      </div>
+                      <ArrowLeft className="text-white/40 group-hover:text-purple-400 transition-colors" />
+                    </div>
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setRole('SUPPLIER');
+                      setRoleCategory('SUPPLIER');
+                      setStep(2);
+                    }}
+                    className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-5 text-right hover:border-emerald-500/50 hover:bg-white/10 transition-all group"
+                  >
+                    <div className="flex items-start gap-4">
+                      <div className="w-11 h-11 rounded-xl bg-amber-500/20 flex items-center justify-center group-hover:bg-amber-500/30 transition-all">
+                        <Building2 size={22} className="text-amber-400" />
                       </div>
                       <div className="flex-1">
                         <h3 className="text-lg font-semibold text-white mb-1">ספק / יצרן</h3>
                         <p className="text-white/60 text-sm">
-                          הגדילו מכירות, נהלו יעדים והתחברו לאדריכלים מובילים
+                          תאורה, ריהוט, חומרי בניין ועוד
                         </p>
                       </div>
-                      <ArrowLeft className="text-white/40 group-hover:text-emerald-400 transition-colors" />
+                      <ArrowLeft className="text-white/40 group-hover:text-amber-400 transition-colors" />
                     </div>
                   </button>
                 </div>
@@ -182,7 +273,7 @@ export default function RegisterPage() {
               >
                 <div className="text-center mb-6">
                   <h1 className="text-2xl font-bold text-white mb-2">
-                    {role === 'ARCHITECT' ? 'הרשמה כאדריכל' : 'הרשמה כספק'}
+                    {roleCategory === 'ARCHITECT' ? 'הרשמה כאדריכל' : roleCategory === 'DESIGNER' ? 'הרשמה כמעצב' : 'הרשמה כספק'}
                   </h1>
                   <p className="text-white/60">מלאו את הפרטים שלכם</p>
                 </div>
@@ -275,6 +366,28 @@ export default function RegisterPage() {
                     </div>
                   )}
 
+                  {/* Specialization dropdown */}
+                  <div>
+                    <label className="block text-white/60 text-sm mb-2">תחום התמחות</label>
+                    <div className="relative">
+                      <ChevronDown className="absolute left-4 top-1/2 -translate-y-1/2 text-white/40 pointer-events-none" size={20} />
+                      <select
+                        value={specialization}
+                        onChange={(e) => setSpecialization(e.target.value)}
+                        className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white focus:border-emerald-500 focus:bg-white/15 transition-all appearance-none cursor-pointer"
+                        required
+                        disabled={isLoading}
+                      >
+                        <option value="" className="bg-[#1a4a3a] text-white">בחרו תחום התמחות</option>
+                        {getSpecializationOptions().map((option) => (
+                          <option key={option.value} value={option.value} className="bg-[#1a4a3a] text-white">
+                            {option.label}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+
                   <div>
                     <label className="block text-white/60 text-sm mb-2">אימייל</label>
                     <div className="relative">
@@ -315,16 +428,44 @@ export default function RegisterPage() {
                       <input
                         type="password"
                         value={formData.password}
-                        onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                        className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 pr-12 text-white placeholder-white/40 focus:border-emerald-500 focus:bg-white/15 transition-all"
+                        onChange={(e) => handlePasswordChange(e.target.value)}
+                        className={`w-full bg-white/10 border rounded-xl px-4 py-3 pr-12 text-white placeholder-white/40 focus:bg-white/15 transition-all ${
+                          formData.password && passwordErrors.length > 0
+                            ? 'border-red-500/50 focus:border-red-500'
+                            : formData.password && passwordErrors.length === 0
+                            ? 'border-emerald-500/50 focus:border-emerald-500'
+                            : 'border-white/20 focus:border-emerald-500'
+                        }`}
                         placeholder="••••••••"
                         required
-                        minLength={8}
                         dir="ltr"
                         disabled={isLoading}
                       />
                     </div>
-                    <p className="text-white/40 text-xs mt-1">לפחות 8 תווים</p>
+                    <div className="mt-2 space-y-1">
+                      <p className="text-white/40 text-xs">הסיסמה חייבת לכלול:</p>
+                      <div className="flex flex-wrap gap-2">
+                        {[
+                          { check: formData.password.length >= 8, label: '8+ תווים' },
+                          { check: /[A-Z]/.test(formData.password), label: 'אות גדולה' },
+                          { check: /[a-z]/.test(formData.password), label: 'אות קטנה' },
+                          { check: /[0-9]/.test(formData.password), label: 'מספר' },
+                        ].map((rule, idx) => (
+                          <span
+                            key={idx}
+                            className={`text-xs px-2 py-0.5 rounded-full transition-colors ${
+                              !formData.password
+                                ? 'bg-white/10 text-white/40'
+                                : rule.check
+                                ? 'bg-emerald-500/20 text-emerald-400'
+                                : 'bg-red-500/20 text-red-400'
+                            }`}
+                          >
+                            {rule.check && formData.password ? '✓ ' : ''}{rule.label}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
                   </div>
 
                   <div className="flex gap-3 pt-4">

@@ -1,9 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-import { Gift, Star, ShoppingCart, Loader2, Coins, Banknote } from 'lucide-react';
+import { Gift, Star, ShoppingCart, Loader2, Coins, Banknote, Plane, Smartphone, GraduationCap, Briefcase } from 'lucide-react';
 import { useWalletBalance, useRewardProducts, useRedeemReward, useWalletCard } from '@/lib/api-hooks';
 import { useAuth } from '@/lib/auth-context';
 import { useAuthGuard, AuthGuardLoader } from '@/lib/useAuthGuard';
@@ -15,6 +15,35 @@ const rankEmojis: Record<string, string> = {
   GOLD: '🥇',
   PLATINUM: '💎',
 };
+
+// Category definitions
+const CATEGORIES = [
+  { id: 'all', label: 'הכל', icon: Gift, color: 'emerald' },
+  { id: 'vacations', label: 'חופשות יוקרתיות', icon: Plane, color: 'blue' },
+  { id: 'gadgets', label: 'סלולר וגאדג\'טים', icon: Smartphone, color: 'purple' },
+  { id: 'academy', label: 'אקדמיה והעשרה', icon: GraduationCap, color: 'amber' },
+  { id: 'business', label: 'לעסק שלך', icon: Briefcase, color: 'teal' },
+];
+
+// Keywords to categorize products
+const categoryKeywords: Record<string, string[]> = {
+  vacations: ['חופשה', 'טיסה', 'מלון', 'נופש', 'ספא', 'צימר', 'vacation', 'hotel', 'flight', 'resort', 'לילה', 'סופ"ש'],
+  gadgets: ['טלפון', 'אוזניות', 'שעון', 'מחשב', 'טאבלט', 'מסך', 'סלולר', 'גאדג\'ט', 'phone', 'watch', 'headphones', 'laptop', 'iphone', 'samsung', 'apple'],
+  academy: ['קורס', 'לימודים', 'הדרכה', 'סדנה', 'course', 'workshop', 'training', 'כנס', 'השתלמות'],
+  business: ['עסקי', 'משרד', 'ציוד', 'תוכנה', 'שירות', 'business', 'office', 'software'],
+};
+
+function getCategoryForProduct(product: any): string {
+  const searchText = `${product.name} ${product.description}`.toLowerCase();
+
+  for (const [category, keywords] of Object.entries(categoryKeywords)) {
+    if (keywords.some(keyword => searchText.includes(keyword.toLowerCase()))) {
+      return category;
+    }
+  }
+
+  return 'business'; // Default category
+}
 
 function calculateCashCompletion(userPoints: number, productPointCost: number, pointsPerShekel: number) {
   if (userPoints >= productPointCost) {
@@ -37,6 +66,7 @@ export default function RewardsPage() {
   const { user } = useAuth();
   const [selectedProduct, setSelectedProduct] = useState<string | null>(null);
   const [redeemingId, setRedeemingId] = useState<string | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState('all');
 
   const { data: balance } = useWalletBalance();
   const { data: card } = useWalletCard();
@@ -49,7 +79,36 @@ export default function RewardsPage() {
 
   const points = balance?.points || 0;
   const rank = card?.rank || user?.rank || 'BRONZE';
-  const products = (productsResponse as any)?.data || productsResponse || [];
+  const allProducts = (productsResponse as any)?.data || productsResponse || [];
+
+  // Categorize and sort products - vacations first
+  const categorizedProducts = useMemo(() => {
+    const withCategory = allProducts.map((product: any) => ({
+      ...product,
+      category: getCategoryForProduct(product),
+    }));
+
+    // Sort: vacations first, then others
+    return withCategory.sort((a: any, b: any) => {
+      if (a.category === 'vacations' && b.category !== 'vacations') return -1;
+      if (b.category === 'vacations' && a.category !== 'vacations') return 1;
+      return 0;
+    });
+  }, [allProducts]);
+
+  // Filter by selected category
+  const products = selectedCategory === 'all'
+    ? categorizedProducts
+    : categorizedProducts.filter((p: any) => p.category === selectedCategory);
+
+  // Count products per category
+  const categoryCounts = useMemo(() => {
+    const counts: Record<string, number> = { all: categorizedProducts.length };
+    categorizedProducts.forEach((p: any) => {
+      counts[p.category] = (counts[p.category] || 0) + 1;
+    });
+    return counts;
+  }, [categorizedProducts]);
 
   const canAfford = (product: any) => points >= product.pointCost;
 
@@ -158,10 +217,74 @@ export default function RewardsPage() {
         </motion.div>
 
         {/* Header */}
-        <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 mb-8">
+        <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 mb-6">
           <h1 className="text-3xl font-bold text-white">חנות ההטבות</h1>
           <p className="text-white/60 mt-1">ממשו את הנקודות שצברתם להטבות מגוונות</p>
         </div>
+
+        {/* Category Tabs */}
+        <div className="mb-8 overflow-x-auto pb-2">
+          <div className="flex gap-3 min-w-max">
+            {CATEGORIES.map((category) => {
+              const Icon = category.icon;
+              const count = categoryCounts[category.id] || 0;
+              const isSelected = selectedCategory === category.id;
+
+              const colorClasses: Record<string, { bg: string; border: string; text: string; activeBg: string }> = {
+                emerald: { bg: 'bg-emerald-500/10', border: 'border-emerald-500/30', text: 'text-emerald-400', activeBg: 'bg-emerald-500/20' },
+                blue: { bg: 'bg-blue-500/10', border: 'border-blue-500/30', text: 'text-blue-400', activeBg: 'bg-blue-500/20' },
+                purple: { bg: 'bg-purple-500/10', border: 'border-purple-500/30', text: 'text-purple-400', activeBg: 'bg-purple-500/20' },
+                amber: { bg: 'bg-amber-500/10', border: 'border-amber-500/30', text: 'text-amber-400', activeBg: 'bg-amber-500/20' },
+                teal: { bg: 'bg-teal-500/10', border: 'border-teal-500/30', text: 'text-teal-400', activeBg: 'bg-teal-500/20' },
+              };
+
+              const colors = colorClasses[category.color];
+
+              return (
+                <motion.button
+                  key={category.id}
+                  onClick={() => setSelectedCategory(category.id)}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className={`flex items-center gap-2 px-5 py-3 rounded-xl border transition-all ${
+                    isSelected
+                      ? `${colors.activeBg} ${colors.border} ${colors.text}`
+                      : 'bg-white/5 border-white/10 text-white/70 hover:bg-white/10 hover:text-white'
+                  }`}
+                >
+                  <Icon size={20} className={isSelected ? colors.text : ''} />
+                  <span className="font-medium whitespace-nowrap">{category.label}</span>
+                  {count > 0 && (
+                    <span className={`px-2 py-0.5 rounded-full text-xs ${
+                      isSelected ? `${colors.bg} ${colors.text}` : 'bg-white/10 text-white/50'
+                    }`}>
+                      {count}
+                    </span>
+                  )}
+                </motion.button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Selected Category Title */}
+        {selectedCategory !== 'all' && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-6"
+          >
+            <h2 className="text-xl font-semibold text-white flex items-center gap-2">
+              {(() => {
+                const cat = CATEGORIES.find(c => c.id === selectedCategory);
+                if (!cat) return null;
+                const Icon = cat.icon;
+                return <Icon size={24} className={`text-${cat.color}-400`} />;
+              })()}
+              {CATEGORIES.find(c => c.id === selectedCategory)?.label}
+            </h2>
+          </motion.div>
+        )}
 
         {/* Products Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -209,6 +332,17 @@ export default function RewardsPage() {
                     ) : (
                       <div className="w-full h-full bg-white/5 flex items-center justify-center">
                         <Gift size={48} className="text-white/30" />
+                      </div>
+                    )}
+                    {/* Category Badge */}
+                    {selectedCategory === 'all' && (
+                      <div className={`absolute top-3 right-3 px-2 py-1 rounded-full text-xs font-medium backdrop-blur-sm ${
+                        product.category === 'vacations' ? 'bg-blue-500/80 text-white' :
+                        product.category === 'gadgets' ? 'bg-purple-500/80 text-white' :
+                        product.category === 'academy' ? 'bg-amber-500/80 text-white' :
+                        'bg-teal-500/80 text-white'
+                      }`}>
+                        {CATEGORIES.find(c => c.id === product.category)?.label}
                       </div>
                     )}
                     {product.stock <= 3 && product.stock > 0 && (

@@ -122,21 +122,29 @@ interface ScanReport {
   createdAt: string;
 }
 
-const severityConfig = {
+const severityConfig: Record<string, { icon: React.ComponentType<{ size?: number; className?: string }>; color: string; bg: string; label: string }> = {
   INFO: { icon: Info, color: 'text-blue-400', bg: 'bg-blue-500/20', label: 'מידע' },
   WARNING: { icon: AlertTriangle, color: 'text-yellow-400', bg: 'bg-yellow-500/20', label: 'אזהרה' },
   ERROR: { icon: AlertCircle, color: 'text-orange-400', bg: 'bg-orange-500/20', label: 'שגיאה' },
   CRITICAL: { icon: XCircle, color: 'text-red-400', bg: 'bg-red-500/20', label: 'קריטי' },
 };
 
-const categoryConfig = {
+const defaultSeverity = { icon: Info, color: 'text-gray-400', bg: 'bg-gray-500/20', label: 'לא ידוע' };
+
+const categoryConfig: Record<string, { icon: React.ComponentType<{ size?: number; className?: string }>; label: string }> = {
   HEALTH_CHECK: { icon: Activity, label: 'בדיקת בריאות' },
   SECURITY: { icon: Shield, label: 'אבטחה' },
   API_TEST: { icon: Server, label: 'בדיקת API' },
   DATABASE: { icon: Database, label: 'מסד נתונים' },
   PERFORMANCE: { icon: Clock, label: 'ביצועים' },
   SCHEDULER: { icon: RefreshCw, label: 'משימות מתוזמנות' },
+  SYSTEM: { icon: Server, label: 'מערכת' },
+  BACKUP: { icon: Database, label: 'גיבוי' },
+  AUTH: { icon: Shield, label: 'הזדהות' },
+  INVOICE: { icon: FileText, label: 'חשבוניות' },
 };
+
+const defaultCategory = { icon: Activity, label: 'כללי' };
 
 const roleLabels: Record<string, string> = {
   ARCHITECT: 'אדריכל',
@@ -1915,8 +1923,8 @@ Please analyze this error and provide a fix.
                     </div>
                   ) : (
                     logs.map((log) => {
-                      const severity = severityConfig[log.severity];
-                      const category = categoryConfig[log.category];
+                      const severity = severityConfig[log.severity] || defaultSeverity;
+                      const category = categoryConfig[log.category] || defaultCategory;
                       const SeverityIcon = severity.icon;
                       const CategoryIcon = category.icon;
 
@@ -1980,13 +1988,13 @@ Please analyze this error and provide a fix.
                         <div className="flex items-center gap-2 mb-2">
                           <span
                             className={`px-3 py-1 rounded-full text-sm ${
-                              severityConfig[selectedLog.severity].bg
-                            } ${severityConfig[selectedLog.severity].color}`}
+                              (severityConfig[selectedLog.severity] || defaultSeverity).bg
+                            } ${(severityConfig[selectedLog.severity] || defaultSeverity).color}`}
                           >
-                            {severityConfig[selectedLog.severity].label}
+                            {(severityConfig[selectedLog.severity] || defaultSeverity).label}
                           </span>
                           <span className="text-white/50 text-sm">
-                            {categoryConfig[selectedLog.category].label}
+                            {(categoryConfig[selectedLog.category] || defaultCategory).label}
                           </span>
                         </div>
                         <h3 className="text-xl font-bold text-white">{selectedLog.title}</h3>

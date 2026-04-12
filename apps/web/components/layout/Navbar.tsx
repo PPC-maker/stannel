@@ -61,16 +61,19 @@ export default function Navbar() {
         : 'bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100'
     }`}>
       <div className={`w-full px-4 sm:px-6 lg:px-8 flex items-center justify-center relative ${isDarkPage ? 'h-20' : 'h-16'}`}>
-        {/* Centered Logo */}
-        <Link href="/" className="flex items-center">
+        {/* Centered Logo with Club text */}
+        <Link href="/" className="flex items-center gap-2">
           <Image
             src="/logo_black.png"
             alt="Stannel"
-            width={isDarkPage ? 220 : 160}
-            height={isDarkPage ? 66 : 48}
-            className={isDarkPage ? "h-14 w-auto brightness-0 invert" : "h-10 w-auto"}
+            width={isDarkPage ? 180 : 140}
+            height={isDarkPage ? 54 : 42}
+            className={isDarkPage ? "h-12 w-auto brightness-0 invert" : "h-9 w-auto"}
             priority
           />
+          <span className={`font-light tracking-wider ${isDarkPage ? 'text-white/90' : 'text-gray-600'} text-lg`}>
+            club
+          </span>
         </Link>
 
         {/* Menu Icon - Fixed position on the right (RTL) */}
