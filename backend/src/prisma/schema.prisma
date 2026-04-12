@@ -139,6 +139,7 @@ model SupplierProfile {
 
   // New relations from BASE44 migration
   supplierPayments SupplierPayment[]
+  projects        SupplierProject[]
 }
 
 model Invoice {
@@ -588,4 +589,33 @@ model BonusTransaction {
   createdAt       DateTime      @default(now())
 
   @@index([architectId])
+}
+
+// ============================================
+// Supplier Projects - Portfolio showcase
+// ============================================
+
+model SupplierProject {
+  id              String          @id @default(cuid())
+  supplierId      String
+  supplier        SupplierProfile @relation(fields: [supplierId], references: [id], onDelete: Cascade)
+
+  title           String
+  description     String          @db.Text
+  location        String?
+  year            Int?
+  area            String?         // e.g., "350 מ"ר"
+  duration        String?         // e.g., "8 חודשים"
+
+  // Images - first image is the cover
+  images          String[]        @default([])
+
+  isActive        Boolean         @default(true)
+  order           Int             @default(0) // For ordering projects
+
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  @@index([supplierId, isActive])
+  @@index([createdAt])
 }

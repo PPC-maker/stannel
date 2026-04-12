@@ -653,3 +653,34 @@ export function useSupplierDetail(id: string, enabled = true) {
     enabled: !!id && enabled,
   });
 }
+
+// Supplier Projects hooks
+export function useSupplierProjects(supplierId: string, enabled = true) {
+  return useQuery({
+    queryKey: ['supplier-projects', supplierId],
+    queryFn: async () => {
+      const { config, getHeaders } = await import('@stannel/api-client');
+      const response = await fetch(`${config.baseUrl}/projects/supplier/${supplierId}`, {
+        headers: getHeaders(),
+      });
+      if (!response.ok) throw new Error('Failed to fetch projects');
+      return response.json();
+    },
+    enabled: !!supplierId && enabled,
+  });
+}
+
+export function useSupplierProject(projectId: string, enabled = true) {
+  return useQuery({
+    queryKey: ['supplier-project', projectId],
+    queryFn: async () => {
+      const { config, getHeaders } = await import('@stannel/api-client');
+      const response = await fetch(`${config.baseUrl}/projects/${projectId}`, {
+        headers: getHeaders(),
+      });
+      if (!response.ok) throw new Error('Failed to fetch project');
+      return response.json();
+    },
+    enabled: !!projectId && enabled,
+  });
+}

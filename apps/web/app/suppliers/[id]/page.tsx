@@ -17,7 +17,7 @@ import {
   Building2,
   Share2,
 } from 'lucide-react';
-import { useSupplierDetail } from '@/lib/api-hooks';
+import { useSupplierDetail, useSupplierProjects } from '@/lib/api-hooks';
 import { useAuthGuard, AuthGuardLoader } from '@/lib/useAuthGuard';
 import Swal from 'sweetalert2';
 
@@ -27,6 +27,7 @@ export default function SupplierDetailPage() {
   const supplierId = params.id as string;
 
   const { data: supplier, isLoading, error } = useSupplierDetail(supplierId, isReady);
+  const { data: projectsData } = useSupplierProjects(supplierId, isReady);
   const [activeSection, setActiveSection] = useState<'info' | 'projects'>('info');
 
   if (!isReady) {
@@ -53,23 +54,23 @@ export default function SupplierDetailPage() {
     );
   }
 
-  const heroImage = supplier.businessImages?.[0] || 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=1200&q=80';
-  const projectImages = supplier.businessImages || [];
+  const heroImage = supplier.businessImages?.[0] || supplier.profileImage || 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=1200&q=80';
 
-  // Sample projects data - in real app this would come from API
-  const projects = projectImages.length > 0
-    ? projectImages.map((img: string, i: number) => ({
-        id: i,
-        title: i === 0 ? 'פנטהאוז מודרני' : i === 1 ? 'וילה יוקרתית' : i === 2 ? 'דירת יוקרה' : `פרויקט ${i + 1}`,
-        location: i === 0 ? 'תל אביב' : i === 1 ? 'הרצליה' : i === 2 ? 'רמת השרון' : 'ישראל',
-        year: 2024 - i,
-        image: img,
+  // Use real projects from API, fallback to sample data if none exist
+  const apiProjects = projectsData?.data || [];
+  const projects = apiProjects.length > 0
+    ? apiProjects.map((p: any) => ({
+        id: p.id,
+        title: p.title,
+        location: p.location,
+        year: p.year,
+        image: p.images?.[0] || 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80',
       }))
     : [
-        { id: 1, title: 'פנטהאוז מודרני', location: 'תל אביב', year: 2024, image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80' },
-        { id: 2, title: 'וילה יוקרתית', location: 'הרצליה', year: 2023, image: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80' },
-        { id: 3, title: 'דירת יוקרה', location: 'רמת השרון', year: 2023, image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80' },
-        { id: 4, title: 'בית פרטי', location: 'כפר שמריהו', year: 2022, image: 'https://images.unsplash.com/photo-1600573472550-8090b5e0745e?w=800&q=80' },
+        { id: '0', title: 'פנטהאוז מודרני', location: 'תל אביב', year: 2024, image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80' },
+        { id: '1', title: 'וילה יוקרתית', location: 'הרצליה', year: 2023, image: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80' },
+        { id: '2', title: 'דירת יוקרה', location: 'רמת השרון', year: 2023, image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80' },
+        { id: '3', title: 'בית פרטי', location: 'כפר שמריהו', year: 2022, image: 'https://images.unsplash.com/photo-1600573472550-8090b5e0745e?w=800&q=80' },
       ];
 
   const handleShare = () => {
@@ -317,9 +318,17 @@ export default function SupplierDetailPage() {
         transition={{ delay: 0.2 }}
         className="mx-4 mb-6"
       >
+        <h3 className="text-white font-semibold mb-3 flex items-center gap-2">
+          פרויקטים
+          <span className="text-white/40 text-xs">{projects.length} פרויקטים</span>
+        </h3>
         <div className="grid grid-cols-2 gap-3">
-          {projects.slice(0, 4).map((project) => (
-            <div key={project.id} className="group relative rounded-2xl overflow-hidden">
+          {projects.slice(0, 4).map((project: { id: string; title: string; location?: string; year?: number; image: string }) => (
+            <Link
+              key={project.id}
+              href={`/suppliers/${supplierId}/projects/${project.id}`}
+              className="group relative rounded-2xl overflow-hidden cursor-pointer"
+            >
               <div className="relative aspect-[4/3]">
                 <Image
                   src={project.image}
@@ -333,7 +342,7 @@ export default function SupplierDetailPage() {
                 <h4 className="text-white font-medium text-sm">{project.title}</h4>
                 <p className="text-white/50 text-xs">{project.location}, {project.year}</p>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </motion.div>
