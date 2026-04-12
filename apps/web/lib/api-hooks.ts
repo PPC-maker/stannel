@@ -1,7 +1,7 @@
 // React Query hooks for API calls (Web)
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { walletApi, invoicesApi, rewardsApi, eventsApi, aiApi, notificationsApi, goalsApi, serviceProvidersApi, analyticsApi, adminApi, supplierApi } from '@stannel/api-client';
+import { walletApi, invoicesApi, rewardsApi, eventsApi, aiApi, notificationsApi, goalsApi, serviceProvidersApi, analyticsApi, adminApi, supplierApi, suppliersDirectoryApi } from '@stannel/api-client';
 import type { ChatMessage } from '@stannel/types';
 
 // Wallet hooks
@@ -634,5 +634,22 @@ export function useSupplierPaymentHistory() {
   return useQuery({
     queryKey: ['supplier', 'payment-history'],
     queryFn: () => supplierApi.getPaymentHistory(),
+  });
+}
+
+// Suppliers Directory hooks (for architects to browse suppliers)
+export function useSuppliersDirectory(params?: { page?: number; pageSize?: number; search?: string }, enabled = true) {
+  return useQuery({
+    queryKey: ['suppliers-directory', params],
+    queryFn: () => suppliersDirectoryApi.getAll(params),
+    enabled,
+  });
+}
+
+export function useSupplierDetail(id: string, enabled = true) {
+  return useQuery({
+    queryKey: ['suppliers-directory', id],
+    queryFn: () => suppliersDirectoryApi.getById(id),
+    enabled: !!id && enabled,
   });
 }

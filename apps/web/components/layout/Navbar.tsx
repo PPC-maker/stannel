@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter, usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, User, LogOut, Settings, Wallet, FileText, Gift, Calendar, Home, LogIn, Bot, Shield, Bell, Target, Wrench, X } from 'lucide-react';
+import { Menu, User, LogOut, Settings, Wallet, FileText, Gift, Calendar, Home, LogIn, Bot, Shield, Bell, Target, Wrench, X, Building2 } from 'lucide-react';
 import { useAuth } from '@/lib/auth-context';
 import Swal from 'sweetalert2';
 
@@ -23,6 +23,7 @@ const architectLinks = [
   { href: '/notifications', label: 'התראות', icon: Bell },
   { href: '/tools', label: 'כלים', icon: Wrench },
   { href: '/ai-agent', label: 'הסוכן שלך', icon: Bot },
+  { href: '/suppliers', label: 'ספקים', icon: Building2 },
 ];
 
 // Links for SUPPLIER users - view only, no wallet
@@ -61,19 +62,16 @@ export default function Navbar() {
         : 'bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100'
     }`}>
       <div className={`w-full px-4 sm:px-6 lg:px-8 flex items-center justify-center relative ${isDarkPage ? 'h-20' : 'h-16'}`}>
-        {/* Centered Logo with Club text */}
-        <Link href="/" className="flex items-center gap-2">
+        {/* Centered Logo */}
+        <Link href="/" className="flex items-center">
           <Image
-            src="/logo_black.png"
+            src="/logo1.png"
             alt="Stannel"
-            width={isDarkPage ? 180 : 140}
-            height={isDarkPage ? 54 : 42}
-            className={isDarkPage ? "h-12 w-auto brightness-0 invert" : "h-9 w-auto"}
+            width={isDarkPage ? 281 : 218}
+            height={isDarkPage ? 84 : 66}
+            className={isDarkPage ? "h-20 w-auto" : "h-14 w-auto"}
             priority
           />
-          <span className={`font-light tracking-wider ${isDarkPage ? 'text-white/90' : 'text-gray-600'} text-lg`}>
-            club
-          </span>
         </Link>
 
         {/* Menu Icon - Fixed position on the right (RTL) */}

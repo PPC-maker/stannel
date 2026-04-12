@@ -10,6 +10,7 @@ import {
   Award,
   ArrowUpRight,
   ArrowDownRight,
+  ArrowLeft,
   Clock,
   Gift,
   Building2,
@@ -25,7 +26,7 @@ import {
   CheckCircle,
   Sparkles,
 } from 'lucide-react';
-import { useWalletBalance, useWalletCard, useWalletTransactions, useSuppliers } from '@/lib/api-hooks';
+import { useWalletBalance, useWalletCard, useWalletTransactions, useSuppliersDirectory } from '@/lib/api-hooks';
 import { useAuth } from '@/lib/auth-context';
 import { useAuthGuard, AuthGuardLoader } from '@/lib/useAuthGuard';
 import Link from 'next/link';
@@ -83,9 +84,9 @@ const quickActionCategories = [
     bgColor: 'bg-blue-500',
     iconColor: 'text-blue-400',
     items: [
-      { label: 'כל הספקים', href: '/supplier', icon: Building2 },
-      { label: 'ספקים מומלצים', href: '/supplier?filter=recommended', icon: Award },
-      { label: 'הספקים שלי', href: '/supplier?filter=my', icon: Users },
+      { label: 'כל הספקים', href: '/suppliers', icon: Building2 },
+      { label: 'ספקים מומלצים', href: '/suppliers?filter=recommended', icon: Award },
+      { label: 'הספקים שלי', href: '/suppliers?filter=my', icon: Users },
     ],
   },
   {
@@ -113,7 +114,7 @@ export default function WalletPage() {
   // Suppliers data - fetch based on role
   const isAdmin = user?.role === 'ADMIN';
   const isArchitect = user?.role === 'ARCHITECT';
-  const { data: allSuppliers, isLoading: suppliersLoading } = useSuppliers(activeCategory === 'suppliers' && (isAdmin || isArchitect));
+  const { data: allSuppliers, isLoading: suppliersLoading } = useSuppliersDirectory({}, activeCategory === 'suppliers' && (isAdmin || isArchitect));
 
   const currentRank = (card?.rank as keyof typeof rankConfig) || 'BRONZE';
   const rank = rankConfig[currentRank];
@@ -408,61 +409,73 @@ export default function WalletPage() {
                       </h3>
 
                       {suppliersLoading ? (
-                        <div className="space-y-3">
-                          {[...Array(3)].map((_, i) => (
-                            <div key={i} className="flex items-center gap-4 p-4 bg-white/5 rounded-xl animate-pulse">
-                              <div className="w-12 h-12 bg-white/10 rounded-full" />
-                              <div className="flex-1">
-                                <div className="h-4 w-32 bg-white/10 rounded mb-2" />
-                                <div className="h-3 w-24 bg-white/5 rounded" />
+                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                          {[...Array(4)].map((_, i) => (
+                            <div key={i} className="bg-white/5 rounded-2xl overflow-hidden animate-pulse">
+                              <div className="aspect-[4/3] bg-white/10" />
+                              <div className="p-3">
+                                <div className="h-4 w-24 bg-white/10 rounded mb-2" />
+                                <div className="h-3 w-16 bg-white/5 rounded" />
                               </div>
                             </div>
                           ))}
                         </div>
+                      ) : allSuppliers?.data && allSuppliers.data.length > 0 ? (
+                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                          {allSuppliers.data.map((supplier, index) => {
+                            const coverImage = supplier.businessImages?.[0] || supplier.profileImage || 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&q=80';
+                            return (
+                            <motion.div
+                              key={supplier.id}
+                              initial={{ opacity: 0, y: 10 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              transition={{ delay: index * 0.05 }}
+                            >
+                              <Link
+                                href={`/suppliers/${supplier.id}`}
+                                className="block bg-[#242424] rounded-2xl overflow-hidden border border-white/5 hover:border-emerald-500/30 transition-all group"
+                              >
+                                {/* Supplier Image */}
+                                <div className="relative aspect-[4/3] bg-gradient-to-br from-emerald-900/30 to-blue-900/30">
+                                  <Image
+                                    src={coverImage}
+                                    alt={supplier.companyName || ''}
+                                    fill
+                                    className="object-cover group-hover:scale-105 transition-transform duration-500"
+                                  />
+                                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+
+                                  {/* Company Name on Image */}
+                                  <div className="absolute bottom-0 left-0 right-0 p-3">
+                                    <h3 className="text-white font-bold text-sm tracking-wide uppercase">
+                                      {supplier.companyName}
+                                    </h3>
+                                  </div>
+                                </div>
+
+                                {/* Supplier Info */}
+                                <div className="p-3">
+                                  <p className="text-white/50 text-xs line-clamp-2">
+                                    {supplier.description || 'לחץ לצפייה בפרופיל'}
+                                  </p>
+                                  <div className="mt-2 flex items-center justify-between">
+                                    <span className="text-emerald-400 text-xs font-medium">צפה בפרופיל</span>
+                                    <ArrowLeft size={14} className="text-emerald-400" />
+                                  </div>
+                                </div>
+                              </Link>
+                            </motion.div>
+                          );
+                          })}
+                        </div>
                       ) : (
-                        <div className="overflow-x-auto">
-                          <table className="w-full">
-                            <thead>
-                              <tr className="border-b border-white/10">
-                                <th className="text-right py-3 px-4 text-sm font-semibold text-white/60">ספק</th>
-                                <th className="text-right py-3 px-4 text-sm font-semibold text-white/60">אימייל</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {allSuppliers?.data && allSuppliers.data.length > 0 ? (
-                                allSuppliers.data.map((supplier, index) => (
-                                  <motion.tr
-                                    key={supplier.id}
-                                    initial={{ opacity: 0, x: -10 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    transition={{ delay: index * 0.03 }}
-                                    className="border-b border-white/5 hover:bg-white/5 transition-colors"
-                                  >
-                                    <td className="py-3 px-4">
-                                      <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center">
-                                          <Building2 size={18} className="text-blue-400" />
-                                        </div>
-                                        <span className="font-medium text-white">{supplier.companyName}</span>
-                                      </div>
-                                    </td>
-                                    <td className="py-3 px-4 text-white/60 text-sm">{supplier.email || '-'}</td>
-                                  </motion.tr>
-                                ))
-                              ) : (
-                                <tr>
-                                  <td colSpan={2} className="py-12 text-center">
-                                    <div className="flex flex-col items-center gap-3">
-                                      <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center">
-                                        <Building2 size={32} className="text-white/30" />
-                                      </div>
-                                      <p className="text-white/50">אין ספקים במערכת</p>
-                                    </div>
-                                  </td>
-                                </tr>
-                              )}
-                            </tbody>
-                          </table>
+                        <div className="py-12 text-center">
+                          <div className="flex flex-col items-center gap-3">
+                            <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center">
+                              <Building2 size={32} className="text-white/30" />
+                            </div>
+                            <p className="text-white/50">אין ספקים במערכת</p>
+                          </div>
                         </div>
                       )}
                     </div>

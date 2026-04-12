@@ -13,6 +13,7 @@ export { goalsApi } from './goals';
 export { serviceProvidersApi } from './service-providers';
 export { analyticsApi } from './analytics';
 export { supplierApi } from './supplier';
+export { suppliersDirectoryApi } from './suppliers-directory';
 
 // API Error class for better error handling
 export class ApiError extends Error {

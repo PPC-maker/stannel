@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
-import { CheckCircle, ArrowLeft, Users, Gift, Building2, Star, ChevronLeft } from 'lucide-react';
+import { CheckCircle, ArrowLeft, Users, Gift, Building2, Star, ChevronLeft, Instagram, Facebook, Globe } from 'lucide-react';
 
 // Why choose us features - with unique colors
 const whyChooseUs = [
@@ -379,6 +379,33 @@ export default function HomePage() {
                 <li>info@stannel.club</li>
                 <li>+972-1-234-5678</li>
               </ul>
+              {/* Social Links */}
+              <div className="flex gap-4 mt-4">
+                <a
+                  href="https://www.instagram.com/stannel_magazine"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors"
+                >
+                  <Instagram size={20} className="text-white" />
+                </a>
+                <a
+                  href="https://www.facebook.com/share/18WhmXsTgu/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors"
+                >
+                  <Facebook size={20} className="text-white" />
+                </a>
+                <a
+                  href="https://stannelmarketplace.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors"
+                >
+                  <Globe size={20} className="text-white" />
+                </a>
+              </div>
             </div>
           </div>
 
