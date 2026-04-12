@@ -78,10 +78,11 @@ const projectsApi = {
     const formData = new FormData();
     formData.append('file', file);
 
+    const headers = getHeaders() as Record<string, string>;
     const response = await fetch(`${config.baseUrl}/supplier/upload-business-image`, {
       method: 'POST',
       headers: {
-        Authorization: getHeaders()['Authorization'],
+        Authorization: headers['Authorization'] || '',
       },
       body: formData,
     });
