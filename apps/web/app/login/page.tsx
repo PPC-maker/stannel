@@ -136,7 +136,7 @@ export default function LoginPage() {
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Email Input */}
             <div className="relative">
-              <Mail className="absolute right-5 top-1/2 -translate-y-1/2 text-white/50" size={22} />
+              <Mail className="absolute right-5 top-1/2 -translate-y-1/2 text-white/70 z-10" size={22} />
               <input
                 type="email"
                 placeholder="אימייל / טלפון"
@@ -144,14 +144,13 @@ export default function LoginPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 disabled={isLoading}
-                className="w-full bg-white/10 backdrop-blur border border-white/20 rounded-2xl px-5 py-4 pr-14 text-white placeholder:text-white/50 focus:border-white/40 focus:outline-none focus:ring-2 focus:ring-white/20 transition-all text-base"
-                dir="ltr"
+                className="w-full bg-white/10 backdrop-blur border border-white/20 rounded-2xl px-5 py-4 pr-14 text-white placeholder:text-white/50 focus:border-white/40 focus:outline-none focus:ring-2 focus:ring-white/20 transition-all text-base text-right"
               />
             </div>
 
             {/* Password Input */}
             <div className="relative">
-              <Lock className="absolute right-5 top-1/2 -translate-y-1/2 text-white/50" size={22} />
+              <Lock className="absolute right-5 top-1/2 -translate-y-1/2 text-white/70 z-10" size={22} />
               <input
                 type={showPassword ? 'text' : 'password'}
                 placeholder="סיסמה"
@@ -159,8 +158,7 @@ export default function LoginPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 disabled={isLoading}
-                className="w-full bg-white/10 backdrop-blur border border-white/20 rounded-2xl px-5 py-4 pr-14 pl-14 text-white placeholder:text-white/50 focus:border-white/40 focus:outline-none focus:ring-2 focus:ring-white/20 transition-all text-base"
-                dir="ltr"
+                className="w-full bg-white/10 backdrop-blur border border-white/20 rounded-2xl px-5 py-4 pr-14 pl-14 text-white placeholder:text-white/50 focus:border-white/40 focus:outline-none focus:ring-2 focus:ring-white/20 transition-all text-base text-right"
               />
               <button
                 type="button"
