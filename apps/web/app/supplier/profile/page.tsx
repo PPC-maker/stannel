@@ -22,8 +22,6 @@ import {
   ExternalLink,
   Trash2,
   Camera,
-  FileText,
-  Upload,
 } from 'lucide-react';
 import Swal from 'sweetalert2';
 
@@ -48,9 +46,6 @@ export default function SupplierProfilePage() {
   });
 
   const [images, setImages] = useState<string[]>([]);
-  const [catalogFiles, setCatalogFiles] = useState<{ name: string; url: string }[]>([]);
-  const [uploadingCatalog, setUploadingCatalog] = useState(false);
-  const catalogInputRef = useRef<HTMLInputElement>(null);
 
   // Load profile data on mount
   useEffect(() => {
@@ -172,44 +167,6 @@ export default function SupplierProfilePage() {
     if (result.isConfirmed) {
       setImages(prev => prev.filter(img => img !== imageUrl));
     }
-  };
-
-  // Catalog handlers
-  const handleCatalogUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    setUploadingCatalog(true);
-    try {
-      const result = await supplierApi.uploadBusinessImage(file);
-      setCatalogFiles(prev => [...prev, { name: file.name, url: result.url }]);
-      Swal.fire({
-        title: 'הקטלוג הועלה!',
-        icon: 'success',
-        timer: 1500,
-        showConfirmButton: false,
-        background: '#0a1f18',
-        color: '#ffffff',
-      });
-    } catch (error: any) {
-      Swal.fire({
-        title: 'שגיאה',
-        text: error.message || 'לא ניתן להעלות את הקטלוג',
-        icon: 'error',
-        confirmButtonColor: '#10b981',
-        background: '#0a1f18',
-        color: '#ffffff',
-      });
-    } finally {
-      setUploadingCatalog(false);
-      if (catalogInputRef.current) {
-        catalogInputRef.current.value = '';
-      }
-    }
-  };
-
-  const handleRemoveCatalog = (url: string) => {
-    setCatalogFiles(prev => prev.filter(cat => cat.url !== url));
   };
 
   if (!isReady) {
@@ -482,66 +439,6 @@ export default function SupplierProfilePage() {
                     onChange={handleImageUpload}
                     className="hidden"
                     disabled={uploadingImage}
-                  />
-                </label>
-              </div>
-            </motion.div>
-
-            {/* Product Catalog */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6"
-            >
-              <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-                <FileText size={20} className="text-emerald-400" />
-                קטלוג מוצרים
-              </h2>
-              <p className="text-white/50 text-sm mb-6">
-                העלה קטלוגים, מחירונים או מצגות של המוצרים שלך
-              </p>
-
-              <div className="space-y-3">
-                {catalogFiles.map((catalog, index) => (
-                  <div key={index} className="flex items-center justify-between p-4 bg-white/5 border border-white/10 rounded-xl group hover:bg-white/10 transition-colors">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-emerald-500/20 rounded-lg flex items-center justify-center">
-                        <FileText size={20} className="text-emerald-400" />
-                      </div>
-                      <div>
-                        <p className="text-white font-medium">{catalog.name}</p>
-                        <a href={catalog.url} target="_blank" rel="noopener noreferrer" className="text-emerald-400 text-sm hover:underline flex items-center gap-1">
-                          צפה בקובץ <ExternalLink size={12} />
-                        </a>
-                      </div>
-                    </div>
-                    <button
-                      onClick={() => handleRemoveCatalog(catalog.url)}
-                      className="p-2 text-white/40 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
-                    >
-                      <Trash2 size={18} />
-                    </button>
-                  </div>
-                ))}
-
-                {/* Upload Catalog Button */}
-                <label className="flex items-center justify-center gap-3 p-6 border-2 border-dashed border-white/20 rounded-xl cursor-pointer hover:border-emerald-500/50 hover:bg-white/5 transition-colors">
-                  {uploadingCatalog ? (
-                    <Loader2 size={24} className="text-emerald-400 animate-spin" />
-                  ) : (
-                    <>
-                      <Upload size={24} className="text-white/40" />
-                      <span className="text-white/60">העלה קטלוג (PDF, תמונה או מסמך)</span>
-                    </>
-                  )}
-                  <input
-                    ref={catalogInputRef}
-                    type="file"
-                    accept=".pdf,.png,.jpg,.jpeg,.doc,.docx,.ppt,.pptx"
-                    onChange={handleCatalogUpload}
-                    className="hidden"
-                    disabled={uploadingCatalog}
                   />
                 </label>
               </div>
