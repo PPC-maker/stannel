@@ -110,6 +110,7 @@ function SupplierCard({ supplier, index }: { supplier: any; index: number }) {
               alt={supplier.companyName}
               fill
               className="object-cover group-hover:scale-105 transition-transform duration-500"
+              unoptimized={coverImage.includes('localhost')}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
@@ -157,22 +158,6 @@ function SupplierCard({ supplier, index }: { supplier: any; index: number }) {
                 </div>
               )}
             </div>
-
-            {/* Gallery Preview */}
-            {supplier.businessImages && supplier.businessImages.length > 1 && (
-              <div className="flex gap-2 mb-4">
-                {supplier.businessImages.slice(1, 4).map((img: string, i: number) => (
-                  <div key={i} className="w-16 h-16 rounded-lg overflow-hidden relative">
-                    <Image src={img} alt="" fill className="object-cover" />
-                  </div>
-                ))}
-                {supplier.businessImages.length > 4 && (
-                  <div className="w-16 h-16 rounded-lg bg-white/10 flex items-center justify-center">
-                    <span className="text-white/60 text-sm">+{supplier.businessImages.length - 4}</span>
-                  </div>
-                )}
-              </div>
-            )}
 
             {/* View More */}
             <div className="flex items-center justify-between pt-3 border-t border-white/10">

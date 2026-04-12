@@ -23,9 +23,6 @@ import {
   Trash2,
   Camera,
   FileText,
-  Briefcase,
-  Plus,
-  X,
   Upload,
 } from 'lucide-react';
 import Swal from 'sweetalert2';
@@ -52,14 +49,8 @@ export default function SupplierProfilePage() {
 
   const [images, setImages] = useState<string[]>([]);
   const [catalogFiles, setCatalogFiles] = useState<{ name: string; url: string }[]>([]);
-  const [projects, setProjects] = useState<{ title: string; description: string; images: string[] }[]>([]);
   const [uploadingCatalog, setUploadingCatalog] = useState(false);
-  const [newProject, setNewProject] = useState({ title: '', description: '' });
-  const [showProjectForm, setShowProjectForm] = useState(false);
-  const [projectImages, setProjectImages] = useState<string[]>([]);
-  const [uploadingProjectImage, setUploadingProjectImage] = useState(false);
   const catalogInputRef = useRef<HTMLInputElement>(null);
-  const projectImageInputRef = useRef<HTMLInputElement>(null);
 
   // Load profile data on mount
   useEffect(() => {
@@ -219,58 +210,6 @@ export default function SupplierProfilePage() {
 
   const handleRemoveCatalog = (url: string) => {
     setCatalogFiles(prev => prev.filter(cat => cat.url !== url));
-  };
-
-  // Project handlers
-  const handleProjectImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    setUploadingProjectImage(true);
-    try {
-      const result = await supplierApi.uploadBusinessImage(file);
-      setProjectImages(prev => [...prev, result.url]);
-    } catch (error: any) {
-      Swal.fire({
-        title: 'שגיאה',
-        text: error.message || 'לא ניתן להעלות את התמונה',
-        icon: 'error',
-        confirmButtonColor: '#10b981',
-        background: '#0a1f18',
-        color: '#ffffff',
-      });
-    } finally {
-      setUploadingProjectImage(false);
-      if (projectImageInputRef.current) {
-        projectImageInputRef.current.value = '';
-      }
-    }
-  };
-
-  const handleAddProject = () => {
-    if (!newProject.title.trim()) return;
-
-    setProjects(prev => [...prev, {
-      title: newProject.title,
-      description: newProject.description,
-      images: projectImages
-    }]);
-    setNewProject({ title: '', description: '' });
-    setProjectImages([]);
-    setShowProjectForm(false);
-
-    Swal.fire({
-      title: 'הפרויקט נוסף!',
-      icon: 'success',
-      timer: 1500,
-      showConfirmButton: false,
-      background: '#0a1f18',
-      color: '#ffffff',
-    });
-  };
-
-  const handleRemoveProject = (index: number) => {
-    setProjects(prev => prev.filter((_, i) => i !== index));
   };
 
   if (!isReady) {
@@ -515,6 +454,7 @@ export default function SupplierProfilePage() {
                       alt={`Business image ${index + 1}`}
                       fill
                       className="object-cover"
+                      unoptimized={img.includes('localhost')}
                     />
                     <button
                       onClick={() => handleRemoveImage(img)}
@@ -604,164 +544,6 @@ export default function SupplierProfilePage() {
                     disabled={uploadingCatalog}
                   />
                 </label>
-              </div>
-            </motion.div>
-
-            {/* Projects Portfolio */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.35 }}
-              className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6"
-            >
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-semibold text-white flex items-center gap-2">
-                  <Briefcase size={20} className="text-emerald-400" />
-                  פרויקטים
-                </h2>
-                {!showProjectForm && (
-                  <button
-                    onClick={() => setShowProjectForm(true)}
-                    className="flex items-center gap-2 px-4 py-2 bg-emerald-500/20 border border-emerald-500/30 rounded-xl text-emerald-400 hover:bg-emerald-500/30 transition-colors"
-                  >
-                    <Plus size={18} />
-                    הוסף פרויקט
-                  </button>
-                )}
-              </div>
-              <p className="text-white/50 text-sm mb-6">
-                הצג את הפרויקטים המרשימים שלך לאדריכלים
-              </p>
-
-              {/* Add Project Form */}
-              {showProjectForm && (
-                <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: 'auto' }}
-                  className="mb-6 p-4 bg-white/5 border border-emerald-500/30 rounded-xl"
-                >
-                  <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-white font-medium">פרויקט חדש</h3>
-                    <button
-                      onClick={() => {
-                        setShowProjectForm(false);
-                        setNewProject({ title: '', description: '' });
-                        setProjectImages([]);
-                      }}
-                      className="p-1 text-white/40 hover:text-white transition-colors"
-                    >
-                      <X size={20} />
-                    </button>
-                  </div>
-
-                  <div className="space-y-4">
-                    <div>
-                      <label className="block text-white/60 text-sm mb-2">שם הפרויקט *</label>
-                      <input
-                        type="text"
-                        value={newProject.title}
-                        onChange={(e) => setNewProject(prev => ({ ...prev, title: e.target.value }))}
-                        className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/40 focus:outline-none focus:border-emerald-500 transition-colors"
-                        placeholder="שם הפרויקט..."
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-white/60 text-sm mb-2">תיאור הפרויקט</label>
-                      <textarea
-                        value={newProject.description}
-                        onChange={(e) => setNewProject(prev => ({ ...prev, description: e.target.value }))}
-                        rows={3}
-                        className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/40 focus:outline-none focus:border-emerald-500 transition-colors resize-none"
-                        placeholder="ספר על הפרויקט..."
-                      />
-                    </div>
-
-                    {/* Project Images */}
-                    <div>
-                      <label className="block text-white/60 text-sm mb-2">תמונות הפרויקט</label>
-                      <div className="grid grid-cols-4 gap-3">
-                        {projectImages.map((img, index) => (
-                          <div key={index} className="relative aspect-square rounded-lg overflow-hidden group">
-                            <Image src={img} alt={`Project ${index + 1}`} fill className="object-cover" />
-                            <button
-                              onClick={() => setProjectImages(prev => prev.filter((_, i) => i !== index))}
-                              className="absolute top-1 left-1 p-1 bg-red-500/80 rounded opacity-0 group-hover:opacity-100 transition-opacity"
-                            >
-                              <Trash2 size={12} className="text-white" />
-                            </button>
-                          </div>
-                        ))}
-                        <label className="aspect-square rounded-lg border-2 border-dashed border-white/20 flex items-center justify-center cursor-pointer hover:border-emerald-500/50 transition-colors">
-                          {uploadingProjectImage ? (
-                            <Loader2 size={20} className="text-emerald-400 animate-spin" />
-                          ) : (
-                            <Camera size={20} className="text-white/40" />
-                          )}
-                          <input
-                            ref={projectImageInputRef}
-                            type="file"
-                            accept="image/*"
-                            onChange={handleProjectImageUpload}
-                            className="hidden"
-                            disabled={uploadingProjectImage}
-                          />
-                        </label>
-                      </div>
-                    </div>
-
-                    <button
-                      onClick={handleAddProject}
-                      disabled={!newProject.title.trim()}
-                      className="w-full py-3 bg-emerald-500/20 border border-emerald-500/30 rounded-xl text-emerald-400 font-medium hover:bg-emerald-500/30 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      הוסף פרויקט
-                    </button>
-                  </div>
-                </motion.div>
-              )}
-
-              {/* Projects List */}
-              <div className="space-y-4">
-                {projects.length === 0 && !showProjectForm ? (
-                  <div className="text-center py-8">
-                    <Briefcase size={48} className="mx-auto text-white/20 mb-3" />
-                    <p className="text-white/40">טרם נוספו פרויקטים</p>
-                    <p className="text-white/30 text-sm">הוסף את הפרויקטים המרשימים שלך</p>
-                  </div>
-                ) : (
-                  projects.map((project, index) => (
-                    <motion.div
-                      key={index}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="p-4 bg-white/5 border border-white/10 rounded-xl group hover:bg-white/10 transition-colors"
-                    >
-                      <div className="flex items-start justify-between mb-3">
-                        <div>
-                          <h3 className="text-white font-medium">{project.title}</h3>
-                          {project.description && (
-                            <p className="text-white/50 text-sm mt-1">{project.description}</p>
-                          )}
-                        </div>
-                        <button
-                          onClick={() => handleRemoveProject(index)}
-                          className="p-2 text-white/40 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
-                        >
-                          <Trash2 size={18} />
-                        </button>
-                      </div>
-                      {project.images.length > 0 && (
-                        <div className="grid grid-cols-4 gap-2">
-                          {project.images.map((img, imgIndex) => (
-                            <div key={imgIndex} className="relative aspect-square rounded-lg overflow-hidden">
-                              <Image src={img} alt={`${project.title} ${imgIndex + 1}`} fill className="object-cover" />
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                    </motion.div>
-                  ))
-                )}
               </div>
             </motion.div>
 

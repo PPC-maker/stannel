@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
+import { AnimatePresence } from 'framer-motion';
 import {
   ArrowRight,
   MapPin,
@@ -16,8 +17,12 @@ import {
   Loader2,
   Building2,
   Share2,
+  X,
+  ChevronLeft,
+  ChevronRight,
+  ZoomIn,
 } from 'lucide-react';
-import { useSupplierDetail, useSupplierProjects } from '@/lib/api-hooks';
+import { useSupplierDetail } from '@/lib/api-hooks';
 import { useAuthGuard, AuthGuardLoader } from '@/lib/useAuthGuard';
 import Swal from 'sweetalert2';
 
@@ -27,8 +32,8 @@ export default function SupplierDetailPage() {
   const supplierId = params.id as string;
 
   const { data: supplier, isLoading, error } = useSupplierDetail(supplierId, isReady);
-  const { data: projectsData } = useSupplierProjects(supplierId, isReady);
-  const [activeSection, setActiveSection] = useState<'info' | 'projects'>('info');
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   if (!isReady) {
     return <AuthGuardLoader />;
@@ -55,23 +60,26 @@ export default function SupplierDetailPage() {
   }
 
   const heroImage = supplier.businessImages?.[0] || supplier.profileImage || 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=1200&q=80';
+  const galleryImages = supplier.businessImages || [];
 
-  // Use real projects from API, fallback to sample data if none exist
-  const apiProjects = projectsData?.data || [];
-  const projects = apiProjects.length > 0
-    ? apiProjects.map((p: any) => ({
-        id: p.id,
-        title: p.title,
-        location: p.location,
-        year: p.year,
-        image: p.images?.[0] || 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80',
-      }))
-    : [
-        { id: '0', title: 'פנטהאוז מודרני', location: 'תל אביב', year: 2024, image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80' },
-        { id: '1', title: 'וילה יוקרתית', location: 'הרצליה', year: 2023, image: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80' },
-        { id: '2', title: 'דירת יוקרה', location: 'רמת השרון', year: 2023, image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80' },
-        { id: '3', title: 'בית פרטי', location: 'כפר שמריהו', year: 2022, image: 'https://images.unsplash.com/photo-1600573472550-8090b5e0745e?w=800&q=80' },
-      ];
+  const openLightbox = (index: number) => {
+    setCurrentImageIndex(index);
+    setLightboxOpen(true);
+  };
+
+  const closeLightbox = () => setLightboxOpen(false);
+
+  const nextImage = () => {
+    if (galleryImages.length > 0) {
+      setCurrentImageIndex((prev) => (prev + 1) % galleryImages.length);
+    }
+  };
+
+  const prevImage = () => {
+    if (galleryImages.length > 0) {
+      setCurrentImageIndex((prev) => (prev - 1 + galleryImages.length) % galleryImages.length);
+    }
+  };
 
   const handleShare = () => {
     const shareUrl = typeof window !== 'undefined' ? window.location.href : '';
@@ -215,6 +223,7 @@ export default function SupplierDetailPage() {
           fill
           className="object-cover"
           priority
+          unoptimized={heroImage.includes('localhost')}
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-[#1a1a1a]" />
 
@@ -311,41 +320,43 @@ export default function SupplierDetailPage() {
         </motion.div>
       </div>
 
-      {/* Projects Section - Below Card */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2 }}
-        className="mx-4 mb-6"
-      >
-        <h3 className="text-white font-semibold mb-3 flex items-center gap-2">
-          פרויקטים
-          <span className="text-white/40 text-xs">{projects.length} פרויקטים</span>
-        </h3>
-        <div className="grid grid-cols-2 gap-3">
-          {projects.slice(0, 4).map((project: { id: string; title: string; location?: string; year?: number; image: string }) => (
-            <Link
-              key={project.id}
-              href={`/suppliers/${supplierId}/projects/${project.id}`}
-              className="group relative rounded-2xl overflow-hidden cursor-pointer"
-            >
-              <div className="relative aspect-[4/3]">
+      {/* Gallery Section */}
+      {galleryImages.length > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="mx-4 mb-6"
+        >
+          <h3 className="text-white font-semibold mb-3 flex items-center gap-2">
+            גלריה
+            <span className="text-white/40 text-xs">{galleryImages.length} תמונות</span>
+          </h3>
+          <div className="grid grid-cols-2 gap-3">
+            {galleryImages.map((img: string, index: number) => (
+              <motion.button
+                key={index}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.25 + index * 0.05 }}
+                onClick={() => openLightbox(index)}
+                className="relative aspect-[4/3] rounded-2xl overflow-hidden group"
+              >
                 <Image
-                  src={project.image}
-                  alt={project.title}
+                  src={img}
+                  alt={`תמונה ${index + 1}`}
                   fill
                   className="object-cover group-hover:scale-105 transition-transform duration-500"
+                  unoptimized={img.includes('localhost')}
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-              </div>
-              <div className="absolute bottom-0 left-0 right-0 p-3">
-                <h4 className="text-white font-medium text-sm">{project.title}</h4>
-                <p className="text-white/50 text-xs">{project.location}, {project.year}</p>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </motion.div>
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center">
+                  <ZoomIn size={24} className="text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+                </div>
+              </motion.button>
+            ))}
+          </div>
+        </motion.div>
+      )}
 
       {/* Products Section (if available) */}
       {supplier.products && supplier.products.length > 0 && (
@@ -409,6 +420,72 @@ export default function SupplierDetailPage() {
 
       {/* Bottom Spacing for Fixed Button */}
       <div className="h-24" />
+
+      {/* Lightbox */}
+      <AnimatePresence>
+        {lightboxOpen && galleryImages.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center"
+            onClick={closeLightbox}
+          >
+            {/* Close Button */}
+            <button
+              onClick={closeLightbox}
+              className="absolute top-4 right-4 w-10 h-10 bg-white/10 rounded-full flex items-center justify-center z-10"
+            >
+              <X size={24} className="text-white" />
+            </button>
+
+            {/* Navigation */}
+            {galleryImages.length > 1 && (
+              <>
+                <button
+                  onClick={(e) => { e.stopPropagation(); prevImage(); }}
+                  className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/10 rounded-full flex items-center justify-center z-10 hover:bg-white/20 transition-colors"
+                >
+                  <ChevronRight size={28} className="text-white" />
+                </button>
+                <button
+                  onClick={(e) => { e.stopPropagation(); nextImage(); }}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 bg-white/10 rounded-full flex items-center justify-center z-10 hover:bg-white/20 transition-colors"
+                >
+                  <ChevronLeft size={28} className="text-white" />
+                </button>
+              </>
+            )}
+
+            {/* Image */}
+            <motion.div
+              key={currentImageIndex}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              className="relative w-full h-full max-w-5xl max-h-[80vh] m-4"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <Image
+                src={galleryImages[currentImageIndex]}
+                alt={`תמונה ${currentImageIndex + 1}`}
+                fill
+                className="object-contain"
+                unoptimized={galleryImages[currentImageIndex]?.includes('localhost')}
+              />
+            </motion.div>
+
+            {/* Counter */}
+            {galleryImages.length > 1 && (
+              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-white/10 px-4 py-2 rounded-full">
+                <span className="text-white text-sm">
+                  {currentImageIndex + 1} / {galleryImages.length}
+                </span>
+              </div>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
