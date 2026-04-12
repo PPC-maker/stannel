@@ -59,7 +59,8 @@ export default function SupplierDetailPage() {
     );
   }
 
-  const heroImage = supplier.businessImages?.[0] || supplier.profileImage || 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=1200&q=80';
+  // Profile image (logo) always takes priority when it exists
+  const heroImage = supplier.profileImage || supplier.businessImages?.[0] || 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=1200&q=80';
   const galleryImages = supplier.businessImages || [];
 
   const openLightbox = (index: number) => {
