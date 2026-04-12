@@ -118,35 +118,83 @@ export default function SupplierProfilePage() {
   };
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    // Limit to 10 images
+    const maxImages = 10;
+    const remainingSlots = maxImages - images.length;
+
+    if (remainingSlots <= 0) {
+      Swal.fire({
+        title: 'מגבלת תמונות',
+        text: 'ניתן להעלות עד 10 תמונות בסך הכל',
+        icon: 'warning',
+        confirmButtonColor: '#10b981',
+        background: '#0a1f18',
+        color: '#ffffff',
+      });
+      return;
+    }
+
+    const filesToUpload = Array.from(files).slice(0, remainingSlots);
+
+    if (files.length > remainingSlots) {
+      Swal.fire({
+        title: 'שים לב',
+        text: `ניתן להעלות עוד ${remainingSlots} תמונות בלבד. ${remainingSlots} תמונות ייעלו.`,
+        icon: 'info',
+        confirmButtonColor: '#10b981',
+        background: '#0a1f18',
+        color: '#ffffff',
+        timer: 2000,
+        showConfirmButton: false,
+      });
+    }
 
     setUploadingImage(true);
-    try {
-      const result = await supplierApi.uploadBusinessImage(file);
-      setImages(prev => [...prev, result.url]);
+
+    let successCount = 0;
+    let failCount = 0;
+    const newImages: string[] = [];
+
+    for (const file of filesToUpload) {
+      try {
+        const result = await supplierApi.uploadBusinessImage(file);
+        newImages.push(result.url);
+        successCount++;
+      } catch (error) {
+        console.error('Failed to upload image:', error);
+        failCount++;
+      }
+    }
+
+    setImages(prev => [...prev, ...newImages]);
+
+    if (successCount > 0) {
       Swal.fire({
-        title: 'התמונה הועלתה!',
-        icon: 'success',
-        timer: 1500,
+        title: successCount === 1 ? 'התמונה הועלתה!' : `${successCount} תמונות הועלו!`,
+        text: failCount > 0 ? `${failCount} תמונות נכשלו בהעלאה` : undefined,
+        icon: failCount > 0 ? 'warning' : 'success',
+        timer: 2000,
         showConfirmButton: false,
         background: '#0a1f18',
         color: '#ffffff',
       });
-    } catch (error: any) {
+    } else {
       Swal.fire({
         title: 'שגיאה',
-        text: error.message || 'לא ניתן להעלות את התמונה',
+        text: 'לא ניתן להעלות את התמונות',
         icon: 'error',
         confirmButtonColor: '#10b981',
         background: '#0a1f18',
         color: '#ffffff',
       });
-    } finally {
-      setUploadingImage(false);
-      if (fileInputRef.current) {
-        fileInputRef.current.value = '';
-      }
+    }
+
+    setUploadingImage(false);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
     }
   };
 
@@ -429,13 +477,14 @@ export default function SupplierProfilePage() {
                   ) : (
                     <>
                       <Camera size={24} className="text-white/40 mb-2" />
-                      <span className="text-white/40 text-xs">הוסף תמונה</span>
+                      <span className="text-white/40 text-xs text-center">הוסף תמונות<br/>(עד 10)</span>
                     </>
                   )}
                   <input
                     ref={fileInputRef}
                     type="file"
                     accept="image/*"
+                    multiple
                     onChange={handleImageUpload}
                     className="hidden"
                     disabled={uploadingImage}
