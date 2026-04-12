@@ -28,6 +28,7 @@ import {
   ChevronDown,
   ChevronUp,
   ChevronRight,
+  type LucideIcon,
   Search,
   UserCheck,
   Mail,
@@ -122,7 +123,7 @@ interface ScanReport {
   createdAt: string;
 }
 
-const severityConfig: Record<string, { icon: React.ComponentType<{ size?: number; className?: string }>; color: string; bg: string; label: string }> = {
+const severityConfig: Record<string, { icon: LucideIcon; color: string; bg: string; label: string }> = {
   INFO: { icon: Info, color: 'text-blue-400', bg: 'bg-blue-500/20', label: 'מידע' },
   WARNING: { icon: AlertTriangle, color: 'text-yellow-400', bg: 'bg-yellow-500/20', label: 'אזהרה' },
   ERROR: { icon: AlertCircle, color: 'text-orange-400', bg: 'bg-orange-500/20', label: 'שגיאה' },
@@ -131,7 +132,7 @@ const severityConfig: Record<string, { icon: React.ComponentType<{ size?: number
 
 const defaultSeverity = { icon: Info, color: 'text-gray-400', bg: 'bg-gray-500/20', label: 'לא ידוע' };
 
-const categoryConfig: Record<string, { icon: React.ComponentType<{ size?: number; className?: string }>; label: string }> = {
+const categoryConfig: Record<string, { icon: LucideIcon; label: string }> = {
   HEALTH_CHECK: { icon: Activity, label: 'בדיקת בריאות' },
   SECURITY: { icon: Shield, label: 'אבטחה' },
   API_TEST: { icon: Server, label: 'בדיקת API' },
