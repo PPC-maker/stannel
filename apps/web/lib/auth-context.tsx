@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, useContext, useEffect, useState, useRef, ReactNode } from 'react';
-import { User, onAuthStateChanged } from 'firebase/auth';
+import { User, onAuthStateChanged, onIdTokenChanged } from 'firebase/auth';
 import { getFirebaseAuth, logout as firebaseLogout } from './firebase';
 import { authApi, setAuthToken } from '@stannel/api-client';
 import type { AuthUser } from '@stannel/types';
@@ -116,6 +116,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
 
       setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  // Auto-refresh token when Firebase refreshes it (every ~55 min)
+  useEffect(() => {
+    const auth = getFirebaseAuth();
+    if (!auth) return;
+
+    const unsubscribe = onIdTokenChanged(auth, async (fbUser) => {
+      if (fbUser) {
+        const token = await fbUser.getIdToken();
+        setAuthToken(token);
+      }
     });
 
     return () => unsubscribe();

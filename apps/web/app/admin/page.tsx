@@ -303,24 +303,77 @@ export default function AdminPage() {
     }
   }, [filter, isReady]);
 
+  // WebSocket listener for real-time updates
+  useEffect(() => {
+    if (!isReady) return;
+
+    const wsUrl = (process.env.NEXT_PUBLIC_API_URL?.replace('http', 'ws') || 'ws://localhost:7070') + '/ws';
+    let ws: WebSocket | null = null;
+    let reconnectTimeout: NodeJS.Timeout | null = null;
+    let pingInterval: NodeJS.Timeout | null = null;
+
+    const connectWs = () => {
+      try {
+        ws = new WebSocket(wsUrl);
+
+        ws.onopen = () => {
+          console.log('[Admin WS] Connected');
+          pingInterval = setInterval(() => {
+            if (ws?.readyState === WebSocket.OPEN) {
+              ws.send(JSON.stringify({ type: 'ping' }));
+            }
+          }, 30000);
+        };
+
+        ws.onmessage = (event) => {
+          try {
+            const msg = JSON.parse(event.data);
+            if (msg.type?.startsWith('invoice:')) {
+              fetchInvoices();
+              fetchDeletedInvoices();
+            }
+            if (msg.type === 'user:activated') {
+              fetchAllUsers();
+            }
+          } catch {}
+        };
+
+        ws.onclose = () => {
+          if (pingInterval) clearInterval(pingInterval);
+          reconnectTimeout = setTimeout(connectWs, 5000);
+        };
+
+        ws.onerror = () => {};
+      } catch {}
+    };
+
+    connectWs();
+
+    return () => {
+      if (reconnectTimeout) clearTimeout(reconnectTimeout);
+      if (pingInterval) clearInterval(pingInterval);
+      if (ws) ws.close();
+    };
+  }, [isReady]);
+
   // Auto-refresh users every 10 seconds for real-time updates
   useEffect(() => {
     if (!isReady || activeTab !== 'users') return;
 
     const interval = setInterval(() => {
       fetchAllUsers();
-    }, 10000); // 10 seconds
+    }, 10000);
 
     return () => clearInterval(interval);
   }, [isReady, activeTab]);
 
-  // Auto-refresh invoices every 5 seconds
+  // Auto-refresh invoices every 15 seconds as fallback
   useEffect(() => {
     if (!isReady || activeTab !== 'invoices') return;
 
     const interval = setInterval(() => {
       fetchInvoices();
-    }, 5000); // 5 seconds
+    }, 15000);
 
     return () => clearInterval(interval);
   }, [isReady, activeTab]);
