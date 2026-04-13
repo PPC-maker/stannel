@@ -633,6 +633,82 @@ export async function adminRoutes(server: FastifyInstance) {
     return { success: true, deletedCount: result.count };
   });
 
+  // Delete supplier image (admin)
+  server.post('/users/:id/delete-image', async (request: FastifyRequest, reply: FastifyReply) => {
+    const { id } = request.params as { id: string };
+    const { imageUrl } = request.body as { imageUrl: string };
+
+    const user = await prisma.user.findUnique({
+      where: { id },
+      include: { supplierProfile: true },
+    });
+
+    if (!user?.supplierProfile) {
+      return reply.code(404).send({ error: 'Supplier profile not found' });
+    }
+
+    const currentImages = user.supplierProfile.businessImages || [];
+    const updatedImages = (currentImages as string[]).filter((img: string) => img !== imageUrl);
+
+    await prisma.supplierProfile.update({
+      where: { id: user.supplierProfile.id },
+      data: { businessImages: updatedImages },
+    });
+
+    await prisma.auditLog.create({
+      data: {
+        userId: request.user!.id,
+        action: 'SUPPLIER_IMAGE_DELETED',
+        entityId: id,
+        metadata: { deletedImage: imageUrl },
+      },
+    });
+
+    return { success: true, remainingImages: updatedImages.length };
+  });
+
+  // Update user profile image (admin)
+  server.post('/users/:id/update-profile-image', async (request: FastifyRequest, reply: FastifyReply) => {
+    const { id } = request.params as { id: string };
+    const data = await request.file();
+    if (!data) {
+      return reply.code(400).send({ error: 'No file uploaded' });
+    }
+
+    const buffer = await data.toBuffer();
+    const { storageService } = await import('../services/storage.service.js');
+    const imageUrl = await storageService.uploadProfileImage(buffer, data.filename);
+
+    // Update user profile image
+    await prisma.user.update({
+      where: { id },
+      data: { profileImage: imageUrl },
+    });
+
+    // Also update supplier profile image if exists
+    const user = await prisma.user.findUnique({
+      where: { id },
+      include: { supplierProfile: true },
+    });
+    if (user?.supplierProfile) {
+      await prisma.supplierProfile.update({
+        where: { id: user.supplierProfile.id },
+        data: { profileImage: imageUrl },
+      });
+    }
+
+    await prisma.auditLog.create({
+      data: {
+        userId: request.user!.id,
+        action: 'USER_PROFILE_IMAGE_UPDATED',
+        entityId: id,
+        metadata: { newImage: imageUrl },
+      },
+    });
+
+    return { success: true, imageUrl };
+  });
+
   // Update invoice amount (admin correction)
   server.patch('/invoices/:id/update-amount', async (request: FastifyRequest, reply: FastifyReply) => {
     const { id } = request.params as { id: string };

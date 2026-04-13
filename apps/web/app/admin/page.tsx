@@ -828,6 +828,46 @@ export default function AdminPage() {
     }
   };
 
+  const handleDeleteUserImage = async (userId: string, imageUrl: string) => {
+    const result = await Swal.fire({
+      title: 'מחיקת תמונה',
+      text: 'האם למחוק את התמונה?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'מחק',
+      cancelButtonText: 'ביטול',
+      confirmButtonColor: '#ef4444',
+      background: '#0f2620',
+      color: '#fff',
+    });
+    if (!result.isConfirmed) return;
+
+    try {
+      const user = allUsers.find(u => u.id === userId);
+      if (!user?.supplierProfile) return;
+
+      const currentImages = user.supplierProfile.businessImages || [];
+      const updatedImages = currentImages.filter(img => img !== imageUrl);
+
+      // Delete image via admin API
+      const { getAuthToken: getToken } = await import('@stannel/api-client');
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:7070'}/api/v1/admin/users/${userId}/delete-image`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${getToken()}`,
+        },
+        body: JSON.stringify({ imageUrl }),
+      });
+
+      await fetchAllUsers();
+      Swal.fire({ title: 'נמחק!', icon: 'success', timer: 1500, showConfirmButton: false, background: '#0f2620', color: '#fff' });
+    } catch (err) {
+      console.error('Error deleting image:', err);
+      Swal.fire({ title: 'שגיאה', text: 'לא ניתן למחוק את התמונה', icon: 'error', background: '#0f2620', color: '#fff' });
+    }
+  };
+
   const handleVerifyInvoice = async (invoiceId: string, status: 'APPROVED' | 'REJECTED', note?: string) => {
     setProcessingInvoice(invoiceId);
     try {
@@ -1301,6 +1341,41 @@ Please analyze this error and provide a fix.
                                         <button onClick={() => startEditUser(user)} className="px-4 py-2 bg-white/10 border border-white/20 text-white/70 rounded-lg text-sm flex items-center gap-2"><Edit3 size={16} />עריכה</button>
                                       ))}
                                     </div>
+                                    {/* Profile Image Change */}
+                                    <div className="flex items-center gap-4 pb-4 border-b border-white/10">
+                                      <div className="relative group">
+                                        <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-white/20">
+                                          {(user.profileImage || sp?.profileImage) ? (
+                                            <Image src={user.profileImage || sp?.profileImage || ''} alt={user.name} fill className="object-cover" unoptimized />
+                                          ) : (
+                                            <div className="w-full h-full bg-gradient-to-br from-emerald-500 to-emerald-700 flex items-center justify-center text-white text-xl font-bold">{user.name.charAt(0)}</div>
+                                          )}
+                                        </div>
+                                        <label className="absolute inset-0 rounded-full cursor-pointer flex items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity">
+                                          <Camera size={18} className="text-white" />
+                                          <input type="file" accept="image/*" className="hidden" onChange={async (e) => {
+                                            const file = e.target.files?.[0];
+                                            if (!file) return;
+                                            try {
+                                              const { getAuthToken: gt } = await import('@stannel/api-client');
+                                              const formData = new FormData();
+                                              formData.append('file', file);
+                                              await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:7070'}/api/v1/admin/users/${user.id}/update-profile-image`, {
+                                                method: 'POST',
+                                                headers: { Authorization: `Bearer ${gt()}` },
+                                                body: formData,
+                                              });
+                                              await fetchAllUsers();
+                                              Swal.fire({ title: 'עודכן!', icon: 'success', timer: 1500, showConfirmButton: false, background: '#0f2620', color: '#fff' });
+                                            } catch { Swal.fire({ title: 'שגיאה', icon: 'error', background: '#0f2620', color: '#fff' }); }
+                                          }} />
+                                        </label>
+                                      </div>
+                                      <div>
+                                        <p className="text-white font-semibold">{user.name}</p>
+                                        <p className="text-white/40 text-xs">העבר עכבר על התמונה להחלפה</p>
+                                      </div>
+                                    </div>
                                     <div className="grid grid-cols-3 gap-6">
                                       <div className="space-y-4">
                                         <h4 className="text-white font-semibold flex items-center gap-2"><Users size={16} className="text-emerald-400" />פרטי משתמש</h4>
@@ -1377,7 +1452,12 @@ Please analyze this error and provide a fix.
                                     {allImages.length > 0 && (
                                       <div className="space-y-3">
                                         <h4 className="text-white font-semibold flex items-center gap-2"><ImageIcon size={16} className="text-emerald-400" />תמונות ({allImages.length})</h4>
-                                        <div className="grid grid-cols-6 gap-3">{allImages.map((img, idx) => <a key={idx} href={img} target="_blank" rel="noopener noreferrer" className="relative aspect-square rounded-lg overflow-hidden border border-white/10 hover:border-emerald-500/50 transition-colors group"><Image src={img} alt={`תמונה ${idx + 1}`} fill className="object-cover group-hover:scale-105 transition-transform" unoptimized /></a>)}</div>
+                                        <div className="grid grid-cols-6 gap-3">{allImages.map((img, idx) => (
+                                          <div key={idx} className="relative aspect-square rounded-lg overflow-hidden border border-white/10 hover:border-emerald-500/50 transition-colors group">
+                                            <a href={img} target="_blank" rel="noopener noreferrer"><Image src={img} alt={`תמונה ${idx + 1}`} fill className="object-cover group-hover:scale-105 transition-transform" unoptimized /></a>
+                                            <button onClick={() => handleDeleteUserImage(user.id, img)} className="absolute top-1 left-1 p-1 bg-red-500/80 rounded-md opacity-0 group-hover:opacity-100 transition-opacity" title="מחק תמונה"><Trash2 size={12} className="text-white" /></button>
+                                          </div>
+                                        ))}</div>
                                       </div>
                                     )}
                                     <div className="flex flex-wrap items-center gap-3 pt-2 border-t border-white/10">
@@ -1692,21 +1772,12 @@ Please analyze this error and provide a fix.
                                   </h4>
                                   <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
                                     {allImages.map((img, idx) => (
-                                      <a
-                                        key={idx}
-                                        href={img}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="relative aspect-square rounded-lg overflow-hidden border border-white/10 hover:border-emerald-500/50 transition-colors"
-                                      >
-                                        <Image
-                                          src={img}
-                                          alt={`תמונה ${idx + 1}`}
-                                          fill
-                                          className="object-cover"
-                                          unoptimized
-                                        />
-                                      </a>
+                                      <div key={idx} className="relative aspect-square rounded-lg overflow-hidden border border-white/10 hover:border-emerald-500/50 transition-colors group">
+                                        <a href={img} target="_blank" rel="noopener noreferrer">
+                                          <Image src={img} alt={`תמונה ${idx + 1}`} fill className="object-cover" unoptimized />
+                                        </a>
+                                        <button onClick={() => handleDeleteUserImage(user.id, img)} className="absolute top-1 left-1 p-1.5 bg-red-500/80 rounded-md opacity-0 group-hover:opacity-100 transition-opacity" title="מחק תמונה"><Trash2 size={14} className="text-white" /></button>
+                                      </div>
                                     ))}
                                   </div>
                                 </div>

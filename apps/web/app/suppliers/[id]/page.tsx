@@ -192,9 +192,11 @@ export default function SupplierDetailPage() {
     Swal.fire({
       title: 'תיאום פגישה',
       html: `
-        <p style="margin-bottom: 16px; color: #9ca3af; font-size: 14px;">נציג מ-${supplier.companyName} יצור איתך קשר בהקדם</p>
-        <input id="swal-phone" class="swal2-input" placeholder="מספר טלפון" dir="ltr" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; border-radius: 12px;">
-        <textarea id="swal-message" class="swal2-textarea" placeholder="הודעה (אופציונלי)" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; border-radius: 12px; min-height: 80px;"></textarea>
+        <p style="margin-bottom: 16px; color: #9ca3af; font-size: 14px; text-align: center;">נציג מ-${supplier.companyName} יצור איתך קשר בהקדם</p>
+        <div style="display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 320px; margin: 0 auto;">
+          <input id="swal-phone" type="tel" inputmode="numeric" pattern="[0-9]*" placeholder="מספר טלפון" dir="rtl" style="width: 100%; padding: 14px 16px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); color: white; border-radius: 12px; font-size: 16px; text-align: right; outline: none; box-sizing: border-box;">
+          <textarea id="swal-message" placeholder="הודעה (אופציונלי)" dir="rtl" style="width: 100%; padding: 14px 16px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); color: white; border-radius: 12px; min-height: 90px; font-size: 14px; text-align: right; outline: none; resize: none; box-sizing: border-box;"></textarea>
+        </div>
       `,
       showCancelButton: true,
       confirmButtonText: 'שלח בקשה',
@@ -205,13 +207,30 @@ export default function SupplierDetailPage() {
       customClass: {
         popup: 'rounded-3xl',
       },
-      preConfirm: () => {
+      preConfirm: async () => {
         const phone = (document.getElementById('swal-phone') as HTMLInputElement).value;
         if (!phone) {
           Swal.showValidationMessage('נא להזין מספר טלפון');
           return;
         }
-        return { phone, message: (document.getElementById('swal-message') as HTMLTextAreaElement).value };
+        const message = (document.getElementById('swal-message') as HTMLTextAreaElement).value;
+
+        // Send meeting request to backend
+        try {
+          const { getAuthToken } = await import('@stannel/api-client');
+          await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:7070'}/api/v1/supplier/${supplierId}/meeting-request`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${getAuthToken()}`,
+            },
+            body: JSON.stringify({ phone, message, supplierName: supplier.companyName }),
+          });
+        } catch (err) {
+          console.error('Meeting request error:', err);
+        }
+
+        return { phone, message };
       },
     }).then((result) => {
       if (result.isConfirmed) {
