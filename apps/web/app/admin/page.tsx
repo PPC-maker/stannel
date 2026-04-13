@@ -247,7 +247,15 @@ export default function AdminPage() {
     try {
       const response = await adminApi.getLatestScanReport();
       if (response && 'id' in response) {
-        setLatestScan(response as ScanReport);
+        const scan = response as ScanReport;
+        // results might come as JSON string from DB
+        if (scan.results && typeof scan.results === 'string') {
+          try { scan.results = JSON.parse(scan.results); } catch { scan.results = []; }
+        }
+        if (!Array.isArray(scan.results)) {
+          scan.results = [];
+        }
+        setLatestScan(scan);
       }
     } catch (error) {
       console.error('Error fetching scan:', error);
@@ -652,6 +660,49 @@ export default function AdminPage() {
       });
     } finally {
       setDeletingUser(null);
+    }
+  };
+
+  const [deactivatingUser, setDeactivatingUser] = useState<string | null>(null);
+
+  const handleDeactivateUser = async (userId: string, userName: string) => {
+    const result = await Swal.fire({
+      title: 'ניתוק משתמש',
+      text: `האם לנתק את המשתמש "${userName}"? המשתמש לא יוכל להתחבר עד לאישור מחדש.`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'כן, נתק',
+      cancelButtonText: 'ביטול',
+      confirmButtonColor: '#f59e0b',
+      background: '#0f2620',
+      color: '#fff',
+    });
+    if (!result.isConfirmed) return;
+
+    setDeactivatingUser(userId);
+    try {
+      await adminApi.deactivateUser(userId);
+      await fetchAllUsers();
+      Swal.fire({
+        title: 'נותק!',
+        text: 'המשתמש נותק בהצלחה',
+        icon: 'success',
+        timer: 1500,
+        showConfirmButton: false,
+        background: '#0f2620',
+        color: '#fff',
+      });
+    } catch (error) {
+      console.error('Error deactivating user:', error);
+      Swal.fire({
+        title: 'שגיאה',
+        text: 'לא ניתן לנתק את המשתמש',
+        icon: 'error',
+        background: '#0f2620',
+        color: '#fff',
+      });
+    } finally {
+      setDeactivatingUser(null);
     }
   };
 
@@ -1111,18 +1162,15 @@ Please analyze this error and provide a fix.
                   <p className="text-white text-xl font-medium">אין משתמשים במערכת</p>
                 </div>
               ) : (
-                <div className="overflow-x-auto">
+                <>
+                {/* Desktop Table */}
+                <div className="hidden md:block overflow-x-auto">
                   <table className="w-full">
                     <thead>
                       <tr className="border-b border-white/10">
                         <th className="py-3 px-4 text-right">
                           {pendingUsers.length > 0 && (
-                            <input
-                              type="checkbox"
-                              checked={selectedUsers.size === pendingUsers.length && pendingUsers.length > 0}
-                              onChange={selectAllPendingUsers}
-                              className="w-4 h-4 rounded bg-white/10 border-white/20 text-emerald-500"
-                            />
+                            <input type="checkbox" checked={selectedUsers.size === pendingUsers.length && pendingUsers.length > 0} onChange={selectAllPendingUsers} className="w-4 h-4 rounded bg-white/10 border-white/20 text-emerald-500" />
                           )}
                         </th>
                         <th className="py-3 px-4 text-right text-white/60 font-medium">שם</th>
@@ -1139,50 +1187,19 @@ Please analyze this error and provide a fix.
                         const isExpanded = expandedUserId === user.id;
                         const sp = user.supplierProfile;
                         const ap = user.architectProfile;
-                        const allImages = [
-                          ...(user.profileImage ? [user.profileImage] : []),
-                          ...(sp?.profileImage ? [sp.profileImage] : []),
-                          ...(sp?.businessImages || []),
-                        ];
-
+                        const allImages = [...(user.profileImage ? [user.profileImage] : []), ...(sp?.profileImage ? [sp.profileImage] : []), ...(sp?.businessImages || [])];
                         return (
                           <React.Fragment key={user.id}>
-                            <tr
-                              className={`border-b border-white/5 hover:bg-white/5 transition-colors cursor-pointer ${
-                                user.isActive ? '' : 'bg-yellow-500/5'
-                              } ${isExpanded ? 'bg-white/5' : ''}`}
-                              onClick={() => setExpandedUserId(isExpanded ? null : user.id)}
-                            >
+                            <tr className={`border-b border-white/5 hover:bg-white/5 transition-colors cursor-pointer ${!user.isActive ? 'bg-yellow-500/5' : ''} ${isExpanded ? 'bg-white/5' : ''}`} onClick={() => setExpandedUserId(isExpanded ? null : user.id)}>
                               <td className="py-4 px-4" onClick={(e) => e.stopPropagation()}>
-                                {!user.isActive && (
-                                  <input
-                                    type="checkbox"
-                                    checked={selectedUsers.has(user.id)}
-                                    onChange={() => toggleUserSelection(user.id)}
-                                    className="w-4 h-4 rounded bg-white/10 border-white/20 text-emerald-500"
-                                  />
-                                )}
+                                {!user.isActive && <input type="checkbox" checked={selectedUsers.has(user.id)} onChange={() => toggleUserSelection(user.id)} className="w-4 h-4 rounded bg-white/10 border-white/20 text-emerald-500" />}
                               </td>
                               <td className="py-4 px-4">
                                 <div className="flex items-center gap-3">
                                   {user.profileImage || sp?.profileImage ? (
-                                    <div className="w-10 h-10 rounded-full overflow-hidden relative flex-shrink-0">
-                                      <Image
-                                        src={user.profileImage || sp?.profileImage || ''}
-                                        alt={user.name}
-                                        fill
-                                        className="object-cover"
-                                        unoptimized={(user.profileImage || sp?.profileImage || '').includes('localhost')}
-                                      />
-                                    </div>
+                                    <div className="w-10 h-10 rounded-full overflow-hidden relative flex-shrink-0"><Image src={user.profileImage || sp?.profileImage || ''} alt={user.name} fill className="object-cover" unoptimized /></div>
                                   ) : (
-                                    <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold flex-shrink-0 ${
-                                      user.isActive
-                                        ? 'bg-gradient-to-br from-emerald-400 to-emerald-600 text-white'
-                                        : 'bg-gradient-to-br from-yellow-400 to-yellow-600 text-black'
-                                    }`}>
-                                      {user.name.charAt(0)}
-                                    </div>
+                                    <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold flex-shrink-0 ${user.isActive ? 'bg-gradient-to-br from-emerald-400 to-emerald-600 text-white' : 'bg-gradient-to-br from-yellow-400 to-yellow-600 text-black'}`}>{user.name.charAt(0)}</div>
                                   )}
                                   <div className="flex items-center gap-2">
                                     <span className="text-white font-medium">{user.name}</span>
@@ -1190,430 +1207,135 @@ Please analyze this error and provide a fix.
                                   </div>
                                 </div>
                               </td>
+                              <td className="py-4 px-4"><span className="text-white/70 flex items-center gap-2"><Mail size={14} className="text-white/50" />{user.email}</span></td>
+                              <td className="py-4 px-4"><span className="text-white/70 flex items-center gap-2"><Phone size={14} className="text-white/50" />{user.phone || '-'}</span></td>
+                              <td className="py-4 px-4"><span className={`px-3 py-1 rounded-full text-sm ${user.role === 'ARCHITECT' ? 'bg-blue-500/20 text-blue-400' : user.role === 'ADMIN' ? 'bg-red-500/20 text-red-400' : 'bg-purple-500/20 text-purple-400'}`}>{roleLabels[user.role] || user.role}</span></td>
                               <td className="py-4 px-4">
-                                <span className="text-white/70 flex items-center gap-2">
-                                  <Mail size={14} className="text-white/50" />
-                                  {user.email}
-                                </span>
+                                {user.isActive ? <span className="px-3 py-1 rounded-full text-sm bg-green-500/20 text-green-400 flex items-center gap-1 w-fit"><CheckCircle size={14} />מאושר</span> : <span className="px-3 py-1 rounded-full text-sm bg-yellow-500/20 text-yellow-400 flex items-center gap-1 w-fit"><Clock size={14} />ממתין</span>}
                               </td>
-                              <td className="py-4 px-4">
-                                <span className="text-white/70 flex items-center gap-2">
-                                  <Phone size={14} className="text-white/50" />
-                                  {user.phone || '-'}
-                                </span>
-                              </td>
-                              <td className="py-4 px-4">
-                                <span
-                                  className={`px-3 py-1 rounded-full text-sm ${
-                                    user.role === 'ARCHITECT'
-                                      ? 'bg-blue-500/20 text-blue-400'
-                                      : user.role === 'ADMIN'
-                                      ? 'bg-red-500/20 text-red-400'
-                                      : 'bg-purple-500/20 text-purple-400'
-                                  }`}
-                                >
-                                  {roleLabels[user.role] || user.role}
-                                </span>
-                              </td>
-                              <td className="py-4 px-4">
-                                {user.isActive ? (
-                                  <span className="px-3 py-1 rounded-full text-sm bg-green-500/20 text-green-400 flex items-center gap-1 w-fit">
-                                    <CheckCircle size={14} />
-                                    מאושר
-                                  </span>
-                                ) : (
-                                  <span className="px-3 py-1 rounded-full text-sm bg-yellow-500/20 text-yellow-400 flex items-center gap-1 w-fit">
-                                    <Clock size={14} />
-                                    ממתין
-                                  </span>
-                                )}
-                              </td>
-                              <td className="py-4 px-4">
-                                <span className="text-white/60 flex items-center gap-2">
-                                  <Calendar size={14} className="text-white/50" />
-                                  {new Date(user.createdAt).toLocaleDateString('he-IL')}
-                                </span>
-                              </td>
+                              <td className="py-4 px-4"><span className="text-white/60 flex items-center gap-2"><Calendar size={14} className="text-white/50" />{new Date(user.createdAt).toLocaleDateString('he-IL')}</span></td>
                               <td className="py-4 px-4" onClick={(e) => e.stopPropagation()}>
                                 <div className="flex items-center gap-2">
                                   {user.isActive && user.role !== 'ADMIN' ? (
-                                    <button
-                                      onClick={() => handleLoginAsUser(user.id)}
-                                      disabled={loggingInAs === user.id}
-                                      className="px-3 py-1.5 bg-white/10 border border-white/20 text-white/80 rounded-lg hover:bg-white/20 transition-colors text-sm flex items-center gap-2 disabled:opacity-50"
-                                    >
-                                      {loggingInAs === user.id ? (
-                                        <Loader2 size={16} className="animate-spin" />
-                                      ) : (
-                                        <ExternalLink size={16} />
-                                      )}
-                                      צפה בחשבון
+                                    <button onClick={() => handleLoginAsUser(user.id)} disabled={loggingInAs === user.id} className="px-3 py-1.5 bg-white/10 border border-white/20 text-white/80 rounded-lg hover:bg-white/20 transition-colors text-sm flex items-center gap-2 disabled:opacity-50">
+                                      {loggingInAs === user.id ? <Loader2 size={16} className="animate-spin" /> : <ExternalLink size={16} />}צפה בחשבון
                                     </button>
                                   ) : !user.isActive ? (
-                                    <button
-                                      onClick={() => handleApproveUser(user.id)}
-                                      disabled={approvingUser === user.id}
-                                      className="px-3 py-1.5 bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 rounded-lg hover:bg-emerald-500/30 transition-colors text-sm flex items-center gap-2 disabled:opacity-50"
-                                    >
-                                      {approvingUser === user.id ? (
-                                        <Loader2 size={16} className="animate-spin" />
-                                      ) : (
-                                        <UserCheck size={16} />
-                                      )}
-                                      אשר
+                                    <button onClick={() => handleApproveUser(user.id)} disabled={approvingUser === user.id} className="px-3 py-1.5 bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 rounded-lg hover:bg-emerald-500/30 transition-colors text-sm flex items-center gap-2 disabled:opacity-50">
+                                      {approvingUser === user.id ? <Loader2 size={16} className="animate-spin" /> : <UserCheck size={16} />}אשר
                                     </button>
                                   ) : null}
                                   {user.role !== 'ADMIN' && (
-                                    <button
-                                      onClick={() => handleDeleteUser(user.id, user.name)}
-                                      disabled={deletingUser === user.id}
-                                      className="p-2 rounded-lg hover:bg-red-500/20 text-red-400 transition-colors disabled:opacity-50"
-                                      title="מחק משתמש"
-                                    >
-                                      {deletingUser === user.id ? (
-                                        <Loader2 size={16} className="animate-spin" />
-                                      ) : (
-                                        <Trash2 size={16} />
-                                      )}
+                                    <button onClick={() => handleDeleteUser(user.id, user.name)} disabled={deletingUser === user.id} className="p-2 rounded-lg hover:bg-red-500/20 text-red-400 transition-colors disabled:opacity-50" title="מחק משתמש">
+                                      {deletingUser === user.id ? <Loader2 size={16} className="animate-spin" /> : <Trash2 size={16} />}
                                     </button>
                                   )}
                                 </div>
                               </td>
                             </tr>
-
-                            {/* Expanded User Details */}
                             {isExpanded && (
-                              <tr>
-                                <td colSpan={8} className="p-0">
-                                  <motion.div
-                                    initial={{ opacity: 0, height: 0 }}
-                                    animate={{ opacity: 1, height: 'auto' }}
-                                    exit={{ opacity: 0, height: 0 }}
-                                    className="bg-white/[0.03] border-b border-white/10"
-                                  >
-                                    <div className="p-6 space-y-6">
-                                      {/* Edit toggle */}
-                                      <div className="flex items-center justify-between">
-                                        <h3 className="text-white font-semibold text-lg">
-                                          פרטי {user.name}
-                                        </h3>
-                                        {user.role !== 'ADMIN' && (
-                                          editingUserId === user.id ? (
-                                            <div className="flex items-center gap-2">
-                                              <button
-                                                onClick={() => handleSaveUser(user.id)}
-                                                disabled={savingUser}
-                                                className="px-4 py-2 bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 rounded-lg hover:bg-emerald-500/30 transition-colors text-sm flex items-center gap-2 disabled:opacity-50"
-                                              >
-                                                {savingUser ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
-                                                שמור
-                                              </button>
-                                              <button
-                                                onClick={() => setEditingUserId(null)}
-                                                className="px-4 py-2 bg-white/10 border border-white/20 text-white/70 rounded-lg hover:bg-white/20 transition-colors text-sm flex items-center gap-2"
-                                              >
-                                                <X size={16} />
-                                                ביטול
-                                              </button>
-                                            </div>
-                                          ) : (
-                                            <button
-                                              onClick={() => startEditUser(user)}
-                                              className="px-4 py-2 bg-white/10 border border-white/20 text-white/70 rounded-lg hover:bg-white/20 transition-colors text-sm flex items-center gap-2"
-                                            >
-                                              <Edit3 size={16} />
-                                              עריכה
-                                            </button>
-                                          )
-                                        )}
-                                      </div>
-
-                                      {/* User Basic Info */}
-                                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                        <div className="space-y-4">
-                                          <h4 className="text-white font-semibold flex items-center gap-2">
-                                            <Users size={16} className="text-emerald-400" />
-                                            פרטי משתמש
-                                          </h4>
-                                          {editingUserId === user.id ? (
-                                            <div className="space-y-3">
-                                              <div>
-                                                <label className="text-white/40 text-xs mb-1 block">שם</label>
-                                                <input value={editForm.name || ''} onChange={(e) => setEditForm(f => ({ ...f, name: e.target.value }))} className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white text-sm focus:outline-none focus:border-emerald-500" />
-                                              </div>
-                                              <div>
-                                                <label className="text-white/40 text-xs mb-1 block">טלפון</label>
-                                                <input value={editForm.phone || ''} onChange={(e) => setEditForm(f => ({ ...f, phone: e.target.value }))} className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white text-sm focus:outline-none focus:border-emerald-500" dir="ltr" />
-                                              </div>
-                                              <div>
-                                                <label className="text-white/40 text-xs mb-1 block">כתובת</label>
-                                                <input value={editForm.address || ''} onChange={(e) => setEditForm(f => ({ ...f, address: e.target.value }))} className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white text-sm focus:outline-none focus:border-emerald-500" />
-                                              </div>
-                                              <div>
-                                                <label className="text-white/40 text-xs mb-1 block">חברה</label>
-                                                <input value={editForm.company || ''} onChange={(e) => setEditForm(f => ({ ...f, company: e.target.value }))} className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white text-sm focus:outline-none focus:border-emerald-500" />
-                                              </div>
-                                            </div>
-                                          ) : (
-                                            <div className="space-y-2 text-sm">
-                                              <div className="flex items-center gap-2 text-white/70">
-                                                <span className="text-white/40 min-w-[60px]">שם:</span>
-                                                <span className="text-white">{user.name}</span>
-                                              </div>
-                                              <div className="flex items-center gap-2 text-white/70">
-                                                <span className="text-white/40 min-w-[60px]">אימייל:</span>
-                                                <span className="text-white" dir="ltr">{user.email}</span>
-                                              </div>
-                                              <div className="flex items-center gap-2 text-white/70">
-                                                <span className="text-white/40 min-w-[60px]">טלפון:</span>
-                                                <span className="text-white" dir="ltr">{user.phone || 'לא צוין'}</span>
-                                              </div>
-                                              <div className="flex items-center gap-2 text-white/70">
-                                                <span className="text-white/40 min-w-[60px]">כתובת:</span>
-                                                <span className="text-white">{user.address || 'לא צוינה'}</span>
-                                              </div>
-                                              <div className="flex items-center gap-2 text-white/70">
-                                                <span className="text-white/40 min-w-[60px]">חברה:</span>
-                                                <span className="text-white">{user.company || sp?.companyName || 'לא צוינה'}</span>
-                                              </div>
-                                            </div>
-                                          )}
+                              <tr><td colSpan={8} className="p-0">
+                                <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="bg-white/[0.03] border-b border-white/10">
+                                  <div className="p-6 space-y-6">
+                                    <div className="flex items-center justify-between">
+                                      <h3 className="text-white font-semibold text-lg">פרטי {user.name}</h3>
+                                      {user.role !== 'ADMIN' && (editingUserId === user.id ? (
+                                        <div className="flex items-center gap-2">
+                                          <button onClick={() => handleSaveUser(user.id)} disabled={savingUser} className="px-4 py-2 bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 rounded-lg text-sm flex items-center gap-2 disabled:opacity-50">{savingUser ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}שמור</button>
+                                          <button onClick={() => setEditingUserId(null)} className="px-4 py-2 bg-white/10 border border-white/20 text-white/70 rounded-lg text-sm flex items-center gap-2"><X size={16} />ביטול</button>
                                         </div>
-
-                                        <div className="space-y-4">
-                                          <h4 className="text-white font-semibold flex items-center gap-2">
-                                            <Calendar size={16} className="text-emerald-400" />
-                                            תאריכים וסטטוס
-                                          </h4>
+                                      ) : (
+                                        <button onClick={() => startEditUser(user)} className="px-4 py-2 bg-white/10 border border-white/20 text-white/70 rounded-lg text-sm flex items-center gap-2"><Edit3 size={16} />עריכה</button>
+                                      ))}
+                                    </div>
+                                    <div className="grid grid-cols-3 gap-6">
+                                      <div className="space-y-4">
+                                        <h4 className="text-white font-semibold flex items-center gap-2"><Users size={16} className="text-emerald-400" />פרטי משתמש</h4>
+                                        {editingUserId === user.id ? (
+                                          <div className="space-y-3">
+                                            <div><label className="text-white/40 text-xs mb-1 block">שם</label><input value={editForm.name || ''} onChange={(e) => setEditForm(f => ({ ...f, name: e.target.value }))} className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white text-sm focus:outline-none focus:border-emerald-500" /></div>
+                                            <div><label className="text-white/40 text-xs mb-1 block">טלפון</label><input value={editForm.phone || ''} onChange={(e) => setEditForm(f => ({ ...f, phone: e.target.value }))} className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white text-sm focus:outline-none focus:border-emerald-500" dir="ltr" /></div>
+                                            <div><label className="text-white/40 text-xs mb-1 block">כתובת</label><input value={editForm.address || ''} onChange={(e) => setEditForm(f => ({ ...f, address: e.target.value }))} className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white text-sm focus:outline-none focus:border-emerald-500" /></div>
+                                            <div><label className="text-white/40 text-xs mb-1 block">חברה</label><input value={editForm.company || ''} onChange={(e) => setEditForm(f => ({ ...f, company: e.target.value }))} className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white text-sm focus:outline-none focus:border-emerald-500" /></div>
+                                          </div>
+                                        ) : (
                                           <div className="space-y-2 text-sm">
-                                            <div className="flex items-center gap-2 text-white/70">
-                                              <span className="text-white/40 min-w-[80px]">נרשם:</span>
-                                              <span className="text-white">{new Date(user.createdAt).toLocaleString('he-IL')}</span>
-                                            </div>
-                                            {user.activatedAt && (
-                                              <div className="flex items-center gap-2 text-white/70">
-                                                <span className="text-white/40 min-w-[80px]">אושר:</span>
-                                                <span className="text-white">{new Date(user.activatedAt).toLocaleString('he-IL')}</span>
-                                              </div>
-                                            )}
-                                            {user.updatedAt && (
-                                              <div className="flex items-center gap-2 text-white/70">
-                                                <span className="text-white/40 min-w-[80px]">עודכן:</span>
-                                                <span className="text-white">{new Date(user.updatedAt).toLocaleString('he-IL')}</span>
-                                              </div>
-                                            )}
-                                            <div className="flex items-center gap-2 text-white/70">
-                                              <span className="text-white/40 min-w-[80px]">תפקיד:</span>
-                                              <span className={`px-2 py-0.5 rounded-full text-xs ${
-                                                user.role === 'ARCHITECT' ? 'bg-blue-500/20 text-blue-400'
-                                                : user.role === 'ADMIN' ? 'bg-red-500/20 text-red-400'
-                                                : 'bg-purple-500/20 text-purple-400'
-                                              }`}>{roleLabels[user.role] || user.role}</span>
-                                            </div>
-                                            <div className="flex items-center gap-2 text-white/70">
-                                              <span className="text-white/40 min-w-[80px]">מזהה:</span>
-                                              <span className="text-white/50 text-xs font-mono" dir="ltr">{user.id}</span>
-                                            </div>
+                                            <div className="flex items-center gap-2 text-white/70"><span className="text-white/40 min-w-[60px]">שם:</span><span className="text-white">{user.name}</span></div>
+                                            <div className="flex items-center gap-2 text-white/70"><span className="text-white/40 min-w-[60px]">אימייל:</span><span className="text-white" dir="ltr">{user.email}</span></div>
+                                            <div className="flex items-center gap-2 text-white/70"><span className="text-white/40 min-w-[60px]">טלפון:</span><span className="text-white" dir="ltr">{user.phone || 'לא צוין'}</span></div>
+                                            <div className="flex items-center gap-2 text-white/70"><span className="text-white/40 min-w-[60px]">כתובת:</span><span className="text-white">{user.address || 'לא צוינה'}</span></div>
+                                            <div className="flex items-center gap-2 text-white/70"><span className="text-white/40 min-w-[60px]">חברה:</span><span className="text-white">{user.company || sp?.companyName || 'לא צוינה'}</span></div>
                                           </div>
-                                        </div>
-
-                                        {/* Profile-specific details */}
-                                        <div className="space-y-4">
-                                          {user.role === 'SUPPLIER' && sp && (
-                                            <>
-                                              <h4 className="text-white font-semibold flex items-center gap-2">
-                                                <Building2 size={16} className="text-purple-400" />
-                                                פרופיל ספק
-                                              </h4>
-                                              {editingUserId === user.id ? (
-                                                <div className="space-y-3">
-                                                  <div>
-                                                    <label className="text-white/40 text-xs mb-1 block">שם חברה</label>
-                                                    <input value={editForm.sp_companyName || ''} onChange={(e) => setEditForm(f => ({ ...f, sp_companyName: e.target.value }))} className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white text-sm focus:outline-none focus:border-emerald-500" />
-                                                  </div>
-                                                  <div>
-                                                    <label className="text-white/40 text-xs mb-1 block">תיאור</label>
-                                                    <textarea value={editForm.sp_description || ''} onChange={(e) => setEditForm(f => ({ ...f, sp_description: e.target.value }))} rows={2} className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white text-sm focus:outline-none focus:border-emerald-500 resize-none" />
-                                                  </div>
-                                                  <div>
-                                                    <label className="text-white/40 text-xs mb-1 block">טלפון ספק</label>
-                                                    <input value={editForm.sp_phone || ''} onChange={(e) => setEditForm(f => ({ ...f, sp_phone: e.target.value }))} className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white text-sm focus:outline-none focus:border-emerald-500" dir="ltr" />
-                                                  </div>
-                                                  <div>
-                                                    <label className="text-white/40 text-xs mb-1 block">כתובת ספק</label>
-                                                    <input value={editForm.sp_address || ''} onChange={(e) => setEditForm(f => ({ ...f, sp_address: e.target.value }))} className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white text-sm focus:outline-none focus:border-emerald-500" />
-                                                  </div>
-                                                  <div>
-                                                    <label className="text-white/40 text-xs mb-1 block">אתר</label>
-                                                    <input value={editForm.sp_website || ''} onChange={(e) => setEditForm(f => ({ ...f, sp_website: e.target.value }))} className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white text-sm focus:outline-none focus:border-emerald-500" dir="ltr" />
-                                                  </div>
-                                                  <div>
-                                                    <label className="text-white/40 text-xs mb-1 block">פייסבוק</label>
-                                                    <input value={editForm.sp_facebook || ''} onChange={(e) => setEditForm(f => ({ ...f, sp_facebook: e.target.value }))} className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white text-sm focus:outline-none focus:border-emerald-500" dir="ltr" />
-                                                  </div>
-                                                  <div>
-                                                    <label className="text-white/40 text-xs mb-1 block">אינסטגרם</label>
-                                                    <input value={editForm.sp_instagram || ''} onChange={(e) => setEditForm(f => ({ ...f, sp_instagram: e.target.value }))} className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white text-sm focus:outline-none focus:border-emerald-500" dir="ltr" />
-                                                  </div>
-                                                  <div>
-                                                    <label className="text-white/40 text-xs mb-1 block">לינקדאין</label>
-                                                    <input value={editForm.sp_linkedin || ''} onChange={(e) => setEditForm(f => ({ ...f, sp_linkedin: e.target.value }))} className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white text-sm focus:outline-none focus:border-emerald-500" dir="ltr" />
-                                                  </div>
-                                                </div>
-                                              ) : (
-                                                <div className="space-y-2 text-sm">
-                                                  {sp.companyName && (
-                                                    <div className="flex items-center gap-2 text-white/70">
-                                                      <span className="text-white/40 min-w-[60px]">חברה:</span>
-                                                      <span className="text-white">{sp.companyName}</span>
-                                                    </div>
-                                                  )}
-                                                  {sp.phone && (
-                                                    <div className="flex items-center gap-2 text-white/70">
-                                                      <Phone size={12} className="text-white/40" />
-                                                      <span className="text-white" dir="ltr">{sp.phone}</span>
-                                                    </div>
-                                                  )}
-                                                  {sp.address && (
-                                                    <div className="flex items-center gap-2 text-white/70">
-                                                      <MapPin size={12} className="text-white/40" />
-                                                      <span className="text-white">{sp.address}</span>
-                                                    </div>
-                                                  )}
-                                                  {sp.website && (
-                                                    <div className="flex items-center gap-2 text-white/70">
-                                                      <Globe size={12} className="text-white/40" />
-                                                      <a href={sp.website} target="_blank" rel="noopener noreferrer" className="text-emerald-400 hover:underline" dir="ltr">{sp.website}</a>
-                                                    </div>
-                                                  )}
-                                                  {sp.description && (
-                                                    <div className="mt-2">
-                                                      <span className="text-white/40 text-xs">תיאור:</span>
-                                                      <p className="text-white/70 mt-1">{sp.description}</p>
-                                                    </div>
-                                                  )}
-                                                  <div className="flex items-center gap-3 mt-2">
-                                                    {sp.facebook && (
-                                                      <a href={sp.facebook} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300">
-                                                        <Facebook size={16} />
-                                                      </a>
-                                                    )}
-                                                    {sp.instagram && (
-                                                      <a href={sp.instagram} target="_blank" rel="noopener noreferrer" className="text-pink-400 hover:text-pink-300">
-                                                        <Instagram size={16} />
-                                                      </a>
-                                                    )}
-                                                    {sp.linkedin && (
-                                                      <a href={sp.linkedin} target="_blank" rel="noopener noreferrer" className="text-blue-300 hover:text-blue-200">
-                                                        <Linkedin size={16} />
-                                                      </a>
-                                                    )}
-                                                  </div>
-                                                </div>
-                                              )}
-                                            </>
-                                          )}
-                                          {user.role === 'ARCHITECT' && ap && (
-                                            <>
-                                              <h4 className="text-white font-semibold flex items-center gap-2">
-                                                <Building2 size={16} className="text-blue-400" />
-                                                פרופיל אדריכל
-                                              </h4>
-                                              <div className="space-y-2 text-sm">
-                                                {ap.licenseNumber && (
-                                                  <div className="flex items-center gap-2 text-white/70">
-                                                    <span className="text-white/40">מס׳ רישיון:</span>
-                                                    <span className="text-white">{ap.licenseNumber}</span>
-                                                  </div>
-                                                )}
-                                                {ap.experience && (
-                                                  <div className="flex items-center gap-2 text-white/70">
-                                                    <span className="text-white/40">ניסיון:</span>
-                                                    <span className="text-white">{ap.experience} שנים</span>
-                                                  </div>
-                                                )}
-                                                {ap.specialties && ap.specialties.length > 0 && (
-                                                  <div>
-                                                    <span className="text-white/40 text-xs">התמחויות:</span>
-                                                    <div className="flex flex-wrap gap-1 mt-1">
-                                                      {ap.specialties.map((s, i) => (
-                                                        <span key={i} className="px-2 py-0.5 bg-blue-500/10 text-blue-400 rounded-full text-xs">{s}</span>
-                                                      ))}
-                                                    </div>
-                                                  </div>
-                                                )}
-                                              </div>
-                                            </>
-                                          )}
+                                        )}
+                                      </div>
+                                      <div className="space-y-4">
+                                        <h4 className="text-white font-semibold flex items-center gap-2"><Calendar size={16} className="text-emerald-400" />תאריכים וסטטוס</h4>
+                                        <div className="space-y-2 text-sm">
+                                          <div className="flex items-center gap-2 text-white/70"><span className="text-white/40 min-w-[80px]">נרשם:</span><span className="text-white">{new Date(user.createdAt).toLocaleString('he-IL')}</span></div>
+                                          {user.activatedAt && <div className="flex items-center gap-2 text-white/70"><span className="text-white/40 min-w-[80px]">אושר:</span><span className="text-white">{new Date(user.activatedAt).toLocaleString('he-IL')}</span></div>}
+                                          {user.updatedAt && <div className="flex items-center gap-2 text-white/70"><span className="text-white/40 min-w-[80px]">עודכן:</span><span className="text-white">{new Date(user.updatedAt).toLocaleString('he-IL')}</span></div>}
+                                          <div className="flex items-center gap-2 text-white/70"><span className="text-white/40 min-w-[80px]">תפקיד:</span><span className={`px-2 py-0.5 rounded-full text-xs ${user.role === 'ARCHITECT' ? 'bg-blue-500/20 text-blue-400' : user.role === 'ADMIN' ? 'bg-red-500/20 text-red-400' : 'bg-purple-500/20 text-purple-400'}`}>{roleLabels[user.role] || user.role}</span></div>
+                                          <div className="flex items-center gap-2 text-white/70"><span className="text-white/40 min-w-[80px]">מזהה:</span><span className="text-white/50 text-xs font-mono" dir="ltr">{user.id}</span></div>
                                         </div>
                                       </div>
-
-                                      {/* Images Gallery */}
-                                      {allImages.length > 0 && (
-                                        <div className="space-y-3">
-                                          <h4 className="text-white font-semibold flex items-center gap-2">
-                                            <ImageIcon size={16} className="text-emerald-400" />
-                                            תמונות ({allImages.length})
-                                          </h4>
-                                          <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-3">
-                                            {allImages.map((img, idx) => (
-                                              <a
-                                                key={idx}
-                                                href={img}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="relative aspect-square rounded-lg overflow-hidden border border-white/10 hover:border-emerald-500/50 transition-colors group"
-                                              >
-                                                <Image
-                                                  src={img}
-                                                  alt={`תמונה ${idx + 1}`}
-                                                  fill
-                                                  className="object-cover group-hover:scale-105 transition-transform"
-                                                  unoptimized={img.includes('localhost')}
-                                                />
-                                              </a>
-                                            ))}
-                                          </div>
-                                        </div>
-                                      )}
-
-                                      {/* Quick Actions */}
-                                      <div className="flex items-center gap-3 pt-2 border-t border-white/10">
-                                        {user.isActive && user.role !== 'ADMIN' && (
-                                          <button
-                                            onClick={() => handleLoginAsUser(user.id)}
-                                            disabled={loggingInAs === user.id}
-                                            className="px-4 py-2 bg-white/10 border border-white/20 text-white/80 rounded-lg hover:bg-white/20 transition-colors text-sm flex items-center gap-2 disabled:opacity-50"
-                                          >
-                                            {loggingInAs === user.id ? <Loader2 size={16} className="animate-spin" /> : <ExternalLink size={16} />}
-                                            כניסה לחשבון
-                                          </button>
+                                      <div className="space-y-4">
+                                        {user.role === 'SUPPLIER' && sp && (
+                                          <>
+                                            <h4 className="text-white font-semibold flex items-center gap-2"><Building2 size={16} className="text-purple-400" />פרופיל ספק</h4>
+                                            {editingUserId === user.id ? (
+                                              <div className="space-y-3">
+                                                <div><label className="text-white/40 text-xs mb-1 block">שם חברה</label><input value={editForm.sp_companyName || ''} onChange={(e) => setEditForm(f => ({ ...f, sp_companyName: e.target.value }))} className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white text-sm focus:outline-none focus:border-emerald-500" /></div>
+                                                <div><label className="text-white/40 text-xs mb-1 block">תיאור</label><textarea value={editForm.sp_description || ''} onChange={(e) => setEditForm(f => ({ ...f, sp_description: e.target.value }))} rows={2} className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white text-sm focus:outline-none focus:border-emerald-500 resize-none" /></div>
+                                                <div><label className="text-white/40 text-xs mb-1 block">טלפון</label><input value={editForm.sp_phone || ''} onChange={(e) => setEditForm(f => ({ ...f, sp_phone: e.target.value }))} className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white text-sm focus:outline-none focus:border-emerald-500" dir="ltr" /></div>
+                                                <div><label className="text-white/40 text-xs mb-1 block">כתובת</label><input value={editForm.sp_address || ''} onChange={(e) => setEditForm(f => ({ ...f, sp_address: e.target.value }))} className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white text-sm focus:outline-none focus:border-emerald-500" /></div>
+                                                <div><label className="text-white/40 text-xs mb-1 block">אתר</label><input value={editForm.sp_website || ''} onChange={(e) => setEditForm(f => ({ ...f, sp_website: e.target.value }))} className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white text-sm focus:outline-none focus:border-emerald-500" dir="ltr" /></div>
+                                                <div><label className="text-white/40 text-xs mb-1 block">פייסבוק</label><input value={editForm.sp_facebook || ''} onChange={(e) => setEditForm(f => ({ ...f, sp_facebook: e.target.value }))} className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white text-sm focus:outline-none focus:border-emerald-500" dir="ltr" /></div>
+                                                <div><label className="text-white/40 text-xs mb-1 block">אינסטגרם</label><input value={editForm.sp_instagram || ''} onChange={(e) => setEditForm(f => ({ ...f, sp_instagram: e.target.value }))} className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white text-sm focus:outline-none focus:border-emerald-500" dir="ltr" /></div>
+                                                <div><label className="text-white/40 text-xs mb-1 block">לינקדאין</label><input value={editForm.sp_linkedin || ''} onChange={(e) => setEditForm(f => ({ ...f, sp_linkedin: e.target.value }))} className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white text-sm focus:outline-none focus:border-emerald-500" dir="ltr" /></div>
+                                              </div>
+                                            ) : (
+                                              <div className="space-y-2 text-sm">
+                                                {sp.companyName && <div className="flex items-center gap-2 text-white/70"><span className="text-white/40">חברה:</span><span className="text-white">{sp.companyName}</span></div>}
+                                                {sp.phone && <div className="flex items-center gap-2 text-white/70"><Phone size={12} className="text-white/40" /><span className="text-white" dir="ltr">{sp.phone}</span></div>}
+                                                {sp.address && <div className="flex items-center gap-2 text-white/70"><MapPin size={12} className="text-white/40" /><span className="text-white">{sp.address}</span></div>}
+                                                {sp.website && <div className="flex items-center gap-2 text-white/70"><Globe size={12} className="text-white/40" /><a href={sp.website} target="_blank" rel="noopener noreferrer" className="text-emerald-400 hover:underline" dir="ltr">{sp.website}</a></div>}
+                                                {sp.description && <div className="mt-2"><span className="text-white/40 text-xs">תיאור:</span><p className="text-white/70 mt-1">{sp.description}</p></div>}
+                                                <div className="flex items-center gap-3 mt-2">
+                                                  {sp.facebook && <a href={sp.facebook} target="_blank" rel="noopener noreferrer" className="text-blue-400"><Facebook size={16} /></a>}
+                                                  {sp.instagram && <a href={sp.instagram} target="_blank" rel="noopener noreferrer" className="text-pink-400"><Instagram size={16} /></a>}
+                                                  {sp.linkedin && <a href={sp.linkedin} target="_blank" rel="noopener noreferrer" className="text-blue-300"><Linkedin size={16} /></a>}
+                                                </div>
+                                              </div>
+                                            )}
+                                          </>
                                         )}
-                                        {!user.isActive && (
-                                          <button
-                                            onClick={() => handleApproveUser(user.id)}
-                                            disabled={approvingUser === user.id}
-                                            className="px-4 py-2 bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 rounded-lg hover:bg-emerald-500/30 transition-colors text-sm flex items-center gap-2 disabled:opacity-50"
-                                          >
-                                            {approvingUser === user.id ? <Loader2 size={16} className="animate-spin" /> : <UserCheck size={16} />}
-                                            אשר משתמש
-                                          </button>
-                                        )}
-                                        {user.role !== 'ADMIN' && (
-                                          <button
-                                            onClick={() => handleDeleteUser(user.id, user.name)}
-                                            disabled={deletingUser === user.id}
-                                            className="px-4 py-2 bg-red-500/10 border border-red-500/20 text-red-400 rounded-lg hover:bg-red-500/20 transition-colors text-sm flex items-center gap-2 disabled:opacity-50"
-                                          >
-                                            {deletingUser === user.id ? <Loader2 size={16} className="animate-spin" /> : <Trash2 size={16} />}
-                                            מחק משתמש
-                                          </button>
+                                        {user.role === 'ARCHITECT' && ap && (
+                                          <>
+                                            <h4 className="text-white font-semibold flex items-center gap-2"><Building2 size={16} className="text-blue-400" />פרופיל אדריכל</h4>
+                                            <div className="space-y-2 text-sm">
+                                              {ap.licenseNumber && <div className="flex items-center gap-2 text-white/70"><span className="text-white/40">מס׳ רישיון:</span><span className="text-white">{ap.licenseNumber}</span></div>}
+                                              {ap.experience && <div className="flex items-center gap-2 text-white/70"><span className="text-white/40">ניסיון:</span><span className="text-white">{ap.experience} שנים</span></div>}
+                                              {ap.specialties && ap.specialties.length > 0 && <div><span className="text-white/40 text-xs">התמחויות:</span><div className="flex flex-wrap gap-1 mt-1">{ap.specialties.map((s, i) => <span key={i} className="px-2 py-0.5 bg-blue-500/10 text-blue-400 rounded-full text-xs">{s}</span>)}</div></div>}
+                                            </div>
+                                          </>
                                         )}
                                       </div>
                                     </div>
-                                  </motion.div>
-                                </td>
-                              </tr>
+                                    {allImages.length > 0 && (
+                                      <div className="space-y-3">
+                                        <h4 className="text-white font-semibold flex items-center gap-2"><ImageIcon size={16} className="text-emerald-400" />תמונות ({allImages.length})</h4>
+                                        <div className="grid grid-cols-6 gap-3">{allImages.map((img, idx) => <a key={idx} href={img} target="_blank" rel="noopener noreferrer" className="relative aspect-square rounded-lg overflow-hidden border border-white/10 hover:border-emerald-500/50 transition-colors group"><Image src={img} alt={`תמונה ${idx + 1}`} fill className="object-cover group-hover:scale-105 transition-transform" unoptimized /></a>)}</div>
+                                      </div>
+                                    )}
+                                    <div className="flex flex-wrap items-center gap-3 pt-2 border-t border-white/10">
+                                      {user.isActive && user.role !== 'ADMIN' && <button onClick={() => handleLoginAsUser(user.id)} disabled={loggingInAs === user.id} className="px-4 py-2 bg-white/10 border border-white/20 text-white/80 rounded-lg hover:bg-white/20 transition-colors text-sm flex items-center gap-2 disabled:opacity-50">{loggingInAs === user.id ? <Loader2 size={16} className="animate-spin" /> : <ExternalLink size={16} />}כניסה לחשבון</button>}
+                                      {!user.isActive && <button onClick={() => handleApproveUser(user.id)} disabled={approvingUser === user.id} className="px-4 py-2 bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 rounded-lg hover:bg-emerald-500/30 transition-colors text-sm flex items-center gap-2 disabled:opacity-50">{approvingUser === user.id ? <Loader2 size={16} className="animate-spin" /> : <UserCheck size={16} />}אשר משתמש</button>}
+                                      {user.isActive && user.role !== 'ADMIN' && <button onClick={() => handleDeactivateUser(user.id, user.name)} disabled={deactivatingUser === user.id} className="px-4 py-2 bg-yellow-500/10 border border-yellow-500/20 text-yellow-400 rounded-lg hover:bg-yellow-500/20 transition-colors text-sm flex items-center gap-2 disabled:opacity-50">{deactivatingUser === user.id ? <Loader2 size={16} className="animate-spin" /> : <Ban size={16} />}נתק משתמש</button>}
+                                      {user.role !== 'ADMIN' && <button onClick={() => handleDeleteUser(user.id, user.name)} disabled={deletingUser === user.id} className="px-4 py-2 bg-red-500/10 border border-red-500/20 text-red-400 rounded-lg hover:bg-red-500/20 transition-colors text-sm flex items-center gap-2 disabled:opacity-50">{deletingUser === user.id ? <Loader2 size={16} className="animate-spin" /> : <Trash2 size={16} />}מחק משתמש</button>}
+                                    </div>
+                                  </div>
+                                </motion.div>
+                              </td></tr>
                             )}
                           </React.Fragment>
                         );
@@ -1621,6 +1343,373 @@ Please analyze this error and provide a fix.
                     </tbody>
                   </table>
                 </div>
+
+                {/* Mobile Cards */}
+                <div className="md:hidden space-y-3">
+                  {allUsers.map((user) => {
+                    const isExpanded = expandedUserId === user.id;
+                    const sp = user.supplierProfile;
+                    const ap = user.architectProfile;
+                    const allImages = [
+                      ...(user.profileImage ? [user.profileImage] : []),
+                      ...(sp?.profileImage ? [sp.profileImage] : []),
+                      ...(sp?.businessImages || []),
+                    ];
+
+                    return (
+                      <div key={user.id} className={`rounded-xl border transition-colors ${
+                        isExpanded ? 'border-emerald-500/30 bg-white/5' : 'border-white/10 bg-white/[0.02]'
+                      } ${!user.isActive ? 'border-yellow-500/20' : ''}`}>
+                        {/* User Card Header */}
+                        <div
+                          className="flex items-center gap-3 p-4 cursor-pointer"
+                          onClick={() => setExpandedUserId(isExpanded ? null : user.id)}
+                        >
+                          {/* Avatar */}
+                          {user.profileImage || sp?.profileImage ? (
+                            <div className="w-12 h-12 rounded-full overflow-hidden relative flex-shrink-0">
+                              <Image
+                                src={user.profileImage || sp?.profileImage || ''}
+                                alt={user.name}
+                                fill
+                                className="object-cover"
+                                unoptimized
+                              />
+                            </div>
+                          ) : (
+                            <div className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg flex-shrink-0 ${
+                              user.isActive
+                                ? 'bg-gradient-to-br from-emerald-400 to-emerald-600 text-white'
+                                : 'bg-gradient-to-br from-yellow-400 to-yellow-600 text-black'
+                            }`}>
+                              {user.name.charAt(0)}
+                            </div>
+                          )}
+
+                          {/* Name + Info */}
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <span className="text-white font-semibold">{user.name}</span>
+                              <span className={`px-2 py-0.5 rounded-full text-xs ${
+                                user.role === 'ARCHITECT' ? 'bg-blue-500/20 text-blue-400'
+                                : user.role === 'ADMIN' ? 'bg-red-500/20 text-red-400'
+                                : 'bg-purple-500/20 text-purple-400'
+                              }`}>{roleLabels[user.role] || user.role}</span>
+                              {user.isActive ? (
+                                <span className="px-2 py-0.5 rounded-full text-xs bg-green-500/20 text-green-400 flex items-center gap-1">
+                                  <CheckCircle size={10} />
+                                  מאושר
+                                </span>
+                              ) : (
+                                <span className="px-2 py-0.5 rounded-full text-xs bg-yellow-500/20 text-yellow-400 flex items-center gap-1">
+                                  <Clock size={10} />
+                                  ממתין
+                                </span>
+                              )}
+                            </div>
+                            <p className="text-white/50 text-sm truncate mt-0.5" dir="ltr">{user.email}</p>
+                          </div>
+
+                          {/* Expand Arrow */}
+                          <div className="flex-shrink-0">
+                            {isExpanded ? <ChevronUp size={20} className="text-emerald-400" /> : <ChevronDown size={20} className="text-white/40" />}
+                          </div>
+                        </div>
+
+                        {/* Expanded Content */}
+                        {isExpanded && (
+                          <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            className="border-t border-white/10"
+                          >
+                            <div className="p-4 space-y-5">
+                              {/* Edit toggle */}
+                              <div className="flex items-center justify-between">
+                                <h3 className="text-white font-semibold">פרטי {user.name}</h3>
+                                {user.role !== 'ADMIN' && (
+                                  editingUserId === user.id ? (
+                                    <div className="flex items-center gap-2">
+                                      <button
+                                        onClick={() => handleSaveUser(user.id)}
+                                        disabled={savingUser}
+                                        className="px-3 py-1.5 bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 rounded-lg text-sm flex items-center gap-1.5 disabled:opacity-50"
+                                      >
+                                        {savingUser ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}
+                                        שמור
+                                      </button>
+                                      <button
+                                        onClick={() => setEditingUserId(null)}
+                                        className="px-3 py-1.5 bg-white/10 border border-white/20 text-white/70 rounded-lg text-sm flex items-center gap-1.5"
+                                      >
+                                        <X size={14} />
+                                        ביטול
+                                      </button>
+                                    </div>
+                                  ) : (
+                                    <button
+                                      onClick={() => startEditUser(user)}
+                                      className="px-3 py-1.5 bg-white/10 border border-white/20 text-white/70 rounded-lg text-sm flex items-center gap-1.5"
+                                    >
+                                      <Edit3 size={14} />
+                                      עריכה
+                                    </button>
+                                  )
+                                )}
+                              </div>
+
+                              {/* User Basic Info */}
+                              <div className="space-y-4">
+                                <h4 className="text-white font-medium flex items-center gap-2 text-sm">
+                                  <Users size={14} className="text-emerald-400" />
+                                  פרטי משתמש
+                                </h4>
+                                {editingUserId === user.id ? (
+                                  <div className="space-y-3">
+                                    <div>
+                                      <label className="text-white/40 text-xs mb-1 block">שם</label>
+                                      <input value={editForm.name || ''} onChange={(e) => setEditForm(f => ({ ...f, name: e.target.value }))} className="w-full px-3 py-2.5 bg-white/10 border border-white/20 rounded-lg text-white text-sm focus:outline-none focus:border-emerald-500" />
+                                    </div>
+                                    <div>
+                                      <label className="text-white/40 text-xs mb-1 block">טלפון</label>
+                                      <input value={editForm.phone || ''} onChange={(e) => setEditForm(f => ({ ...f, phone: e.target.value }))} className="w-full px-3 py-2.5 bg-white/10 border border-white/20 rounded-lg text-white text-sm focus:outline-none focus:border-emerald-500" dir="ltr" />
+                                    </div>
+                                    <div>
+                                      <label className="text-white/40 text-xs mb-1 block">כתובת</label>
+                                      <input value={editForm.address || ''} onChange={(e) => setEditForm(f => ({ ...f, address: e.target.value }))} className="w-full px-3 py-2.5 bg-white/10 border border-white/20 rounded-lg text-white text-sm focus:outline-none focus:border-emerald-500" />
+                                    </div>
+                                    <div>
+                                      <label className="text-white/40 text-xs mb-1 block">חברה</label>
+                                      <input value={editForm.company || ''} onChange={(e) => setEditForm(f => ({ ...f, company: e.target.value }))} className="w-full px-3 py-2.5 bg-white/10 border border-white/20 rounded-lg text-white text-sm focus:outline-none focus:border-emerald-500" />
+                                    </div>
+                                  </div>
+                                ) : (
+                                  <div className="space-y-2 text-sm">
+                                    <div className="flex justify-between">
+                                      <span className="text-white/40">שם:</span>
+                                      <span className="text-white">{user.name}</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                      <span className="text-white/40">אימייל:</span>
+                                      <span className="text-white text-xs" dir="ltr">{user.email}</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                      <span className="text-white/40">טלפון:</span>
+                                      <span className="text-white" dir="ltr">{user.phone || 'לא צוין'}</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                      <span className="text-white/40">כתובת:</span>
+                                      <span className="text-white">{user.address || 'לא צוינה'}</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                      <span className="text-white/40">חברה:</span>
+                                      <span className="text-white">{user.company || sp?.companyName || 'לא צוינה'}</span>
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
+
+                              {/* Dates */}
+                              <div className="space-y-2">
+                                <h4 className="text-white font-medium flex items-center gap-2 text-sm">
+                                  <Calendar size={14} className="text-emerald-400" />
+                                  תאריכים וסטטוס
+                                </h4>
+                                <div className="space-y-1.5 text-sm">
+                                  <div className="flex justify-between">
+                                    <span className="text-white/40">נרשם:</span>
+                                    <span className="text-white text-xs">{new Date(user.createdAt).toLocaleString('he-IL')}</span>
+                                  </div>
+                                  {user.activatedAt && (
+                                    <div className="flex justify-between">
+                                      <span className="text-white/40">אושר:</span>
+                                      <span className="text-white text-xs">{new Date(user.activatedAt).toLocaleString('he-IL')}</span>
+                                    </div>
+                                  )}
+                                  {user.updatedAt && (
+                                    <div className="flex justify-between">
+                                      <span className="text-white/40">עודכן:</span>
+                                      <span className="text-white text-xs">{new Date(user.updatedAt).toLocaleString('he-IL')}</span>
+                                    </div>
+                                  )}
+                                  <div className="flex justify-between items-center">
+                                    <span className="text-white/40">תפקיד:</span>
+                                    <span className={`px-2 py-0.5 rounded-full text-xs ${
+                                      user.role === 'ARCHITECT' ? 'bg-blue-500/20 text-blue-400'
+                                      : user.role === 'ADMIN' ? 'bg-red-500/20 text-red-400'
+                                      : 'bg-purple-500/20 text-purple-400'
+                                    }`}>{roleLabels[user.role] || user.role}</span>
+                                  </div>
+                                  <div className="flex justify-between">
+                                    <span className="text-white/40">מזהה:</span>
+                                    <span className="text-white/40 text-[10px] font-mono break-all" dir="ltr">{user.id}</span>
+                                  </div>
+                                </div>
+                              </div>
+
+                              {/* Supplier Profile */}
+                              {user.role === 'SUPPLIER' && sp && (
+                                <div className="space-y-3">
+                                  <h4 className="text-white font-medium flex items-center gap-2 text-sm">
+                                    <Building2 size={14} className="text-purple-400" />
+                                    פרופיל ספק
+                                  </h4>
+                                  {editingUserId === user.id ? (
+                                    <div className="space-y-3">
+                                      <div>
+                                        <label className="text-white/40 text-xs mb-1 block">שם חברה</label>
+                                        <input value={editForm.sp_companyName || ''} onChange={(e) => setEditForm(f => ({ ...f, sp_companyName: e.target.value }))} className="w-full px-3 py-2.5 bg-white/10 border border-white/20 rounded-lg text-white text-sm focus:outline-none focus:border-emerald-500" />
+                                      </div>
+                                      <div>
+                                        <label className="text-white/40 text-xs mb-1 block">תיאור</label>
+                                        <textarea value={editForm.sp_description || ''} onChange={(e) => setEditForm(f => ({ ...f, sp_description: e.target.value }))} rows={2} className="w-full px-3 py-2.5 bg-white/10 border border-white/20 rounded-lg text-white text-sm focus:outline-none focus:border-emerald-500 resize-none" />
+                                      </div>
+                                      <div>
+                                        <label className="text-white/40 text-xs mb-1 block">טלפון ספק</label>
+                                        <input value={editForm.sp_phone || ''} onChange={(e) => setEditForm(f => ({ ...f, sp_phone: e.target.value }))} className="w-full px-3 py-2.5 bg-white/10 border border-white/20 rounded-lg text-white text-sm focus:outline-none focus:border-emerald-500" dir="ltr" />
+                                      </div>
+                                      <div>
+                                        <label className="text-white/40 text-xs mb-1 block">כתובת ספק</label>
+                                        <input value={editForm.sp_address || ''} onChange={(e) => setEditForm(f => ({ ...f, sp_address: e.target.value }))} className="w-full px-3 py-2.5 bg-white/10 border border-white/20 rounded-lg text-white text-sm focus:outline-none focus:border-emerald-500" />
+                                      </div>
+                                      <div>
+                                        <label className="text-white/40 text-xs mb-1 block">אתר</label>
+                                        <input value={editForm.sp_website || ''} onChange={(e) => setEditForm(f => ({ ...f, sp_website: e.target.value }))} className="w-full px-3 py-2.5 bg-white/10 border border-white/20 rounded-lg text-white text-sm focus:outline-none focus:border-emerald-500" dir="ltr" />
+                                      </div>
+                                      <div>
+                                        <label className="text-white/40 text-xs mb-1 block">פייסבוק</label>
+                                        <input value={editForm.sp_facebook || ''} onChange={(e) => setEditForm(f => ({ ...f, sp_facebook: e.target.value }))} className="w-full px-3 py-2.5 bg-white/10 border border-white/20 rounded-lg text-white text-sm focus:outline-none focus:border-emerald-500" dir="ltr" />
+                                      </div>
+                                      <div>
+                                        <label className="text-white/40 text-xs mb-1 block">אינסטגרם</label>
+                                        <input value={editForm.sp_instagram || ''} onChange={(e) => setEditForm(f => ({ ...f, sp_instagram: e.target.value }))} className="w-full px-3 py-2.5 bg-white/10 border border-white/20 rounded-lg text-white text-sm focus:outline-none focus:border-emerald-500" dir="ltr" />
+                                      </div>
+                                      <div>
+                                        <label className="text-white/40 text-xs mb-1 block">לינקדאין</label>
+                                        <input value={editForm.sp_linkedin || ''} onChange={(e) => setEditForm(f => ({ ...f, sp_linkedin: e.target.value }))} className="w-full px-3 py-2.5 bg-white/10 border border-white/20 rounded-lg text-white text-sm focus:outline-none focus:border-emerald-500" dir="ltr" />
+                                      </div>
+                                    </div>
+                                  ) : (
+                                    <div className="space-y-1.5 text-sm">
+                                      {sp.companyName && <div className="flex justify-between"><span className="text-white/40">חברה:</span><span className="text-white">{sp.companyName}</span></div>}
+                                      {sp.phone && <div className="flex justify-between"><span className="text-white/40">טלפון:</span><span className="text-white" dir="ltr">{sp.phone}</span></div>}
+                                      {sp.address && <div className="flex justify-between"><span className="text-white/40">כתובת:</span><span className="text-white">{sp.address}</span></div>}
+                                      {sp.website && <div className="flex justify-between"><span className="text-white/40">אתר:</span><a href={sp.website} target="_blank" rel="noopener noreferrer" className="text-emerald-400 hover:underline text-xs" dir="ltr">{sp.website}</a></div>}
+                                      {sp.description && <div className="mt-2"><span className="text-white/40 text-xs">תיאור:</span><p className="text-white/70 mt-1 text-xs">{sp.description}</p></div>}
+                                      <div className="flex items-center gap-3 mt-2">
+                                        {sp.facebook && <a href={sp.facebook} target="_blank" rel="noopener noreferrer" className="text-blue-400"><Facebook size={16} /></a>}
+                                        {sp.instagram && <a href={sp.instagram} target="_blank" rel="noopener noreferrer" className="text-pink-400"><Instagram size={16} /></a>}
+                                        {sp.linkedin && <a href={sp.linkedin} target="_blank" rel="noopener noreferrer" className="text-blue-300"><Linkedin size={16} /></a>}
+                                      </div>
+                                    </div>
+                                  )}
+                                </div>
+                              )}
+
+                              {/* Architect Profile */}
+                              {user.role === 'ARCHITECT' && ap && (
+                                <div className="space-y-2">
+                                  <h4 className="text-white font-medium flex items-center gap-2 text-sm">
+                                    <Building2 size={14} className="text-blue-400" />
+                                    פרופיל אדריכל
+                                  </h4>
+                                  <div className="space-y-1.5 text-sm">
+                                    {ap.licenseNumber && <div className="flex justify-between"><span className="text-white/40">מס׳ רישיון:</span><span className="text-white">{ap.licenseNumber}</span></div>}
+                                    {ap.experience && <div className="flex justify-between"><span className="text-white/40">ניסיון:</span><span className="text-white">{ap.experience} שנים</span></div>}
+                                    {ap.specialties && ap.specialties.length > 0 && (
+                                      <div>
+                                        <span className="text-white/40 text-xs">התמחויות:</span>
+                                        <div className="flex flex-wrap gap-1 mt-1">
+                                          {ap.specialties.map((s, i) => (
+                                            <span key={i} className="px-2 py-0.5 bg-blue-500/10 text-blue-400 rounded-full text-xs">{s}</span>
+                                          ))}
+                                        </div>
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
+                              )}
+
+                              {/* Images Gallery */}
+                              {allImages.length > 0 && (
+                                <div className="space-y-2">
+                                  <h4 className="text-white font-medium flex items-center gap-2 text-sm">
+                                    <ImageIcon size={14} className="text-emerald-400" />
+                                    תמונות ({allImages.length})
+                                  </h4>
+                                  <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+                                    {allImages.map((img, idx) => (
+                                      <a
+                                        key={idx}
+                                        href={img}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="relative aspect-square rounded-lg overflow-hidden border border-white/10 hover:border-emerald-500/50 transition-colors"
+                                      >
+                                        <Image
+                                          src={img}
+                                          alt={`תמונה ${idx + 1}`}
+                                          fill
+                                          className="object-cover"
+                                          unoptimized
+                                        />
+                                      </a>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+
+                              {/* Quick Actions */}
+                              <div className="flex flex-wrap gap-2 pt-3 border-t border-white/10">
+                                {user.isActive && user.role !== 'ADMIN' && (
+                                  <button
+                                    onClick={() => handleLoginAsUser(user.id)}
+                                    disabled={loggingInAs === user.id}
+                                    className="flex-1 min-w-[120px] py-2.5 bg-white/10 border border-white/20 text-white/80 rounded-lg text-sm flex items-center justify-center gap-2 disabled:opacity-50"
+                                  >
+                                    {loggingInAs === user.id ? <Loader2 size={14} className="animate-spin" /> : <ExternalLink size={14} />}
+                                    כניסה לחשבון
+                                  </button>
+                                )}
+                                {!user.isActive && (
+                                  <button
+                                    onClick={() => handleApproveUser(user.id)}
+                                    disabled={approvingUser === user.id}
+                                    className="flex-1 min-w-[120px] py-2.5 bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 rounded-lg text-sm flex items-center justify-center gap-2 disabled:opacity-50"
+                                  >
+                                    {approvingUser === user.id ? <Loader2 size={14} className="animate-spin" /> : <UserCheck size={14} />}
+                                    אשר משתמש
+                                  </button>
+                                )}
+                                {user.isActive && user.role !== 'ADMIN' && (
+                                  <button
+                                    onClick={() => handleDeactivateUser(user.id, user.name)}
+                                    disabled={deactivatingUser === user.id}
+                                    className="flex-1 min-w-[120px] py-2.5 bg-yellow-500/10 border border-yellow-500/20 text-yellow-400 rounded-lg text-sm flex items-center justify-center gap-2 disabled:opacity-50"
+                                  >
+                                    {deactivatingUser === user.id ? <Loader2 size={14} className="animate-spin" /> : <Ban size={14} />}
+                                    נתק משתמש
+                                  </button>
+                                )}
+                                {user.role !== 'ADMIN' && (
+                                  <button
+                                    onClick={() => handleDeleteUser(user.id, user.name)}
+                                    disabled={deletingUser === user.id}
+                                    className="flex-1 min-w-[120px] py-2.5 bg-red-500/10 border border-red-500/20 text-red-400 rounded-lg text-sm flex items-center justify-center gap-2 disabled:opacity-50"
+                                  >
+                                    {deletingUser === user.id ? <Loader2 size={14} className="animate-spin" /> : <Trash2 size={14} />}
+                                    מחק משתמש
+                                  </button>
+                                )}
+                              </div>
+                            </div>
+                          </motion.div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+                </>
               )}
             </div>
           </motion.div>
@@ -2220,7 +2309,7 @@ Please analyze this error and provide a fix.
                 <div className="bg-white/5 backdrop-blur border border-white/10 rounded-2xl p-6">
                   <h3 className="text-lg font-semibold text-white mb-4">תוצאות הסריקה</h3>
                   <div className="space-y-2">
-                    {latestScan.results.map((result, i) => {
+                    {(Array.isArray(latestScan.results) ? latestScan.results : []).map((result, i) => {
                       const statusConfig = {
                         ok: { bg: 'bg-green-500/20', border: 'border-green-500/30', icon: '✅' },
                         warning: { bg: 'bg-yellow-500/20', border: 'border-yellow-500/30', icon: '⚠️' },
