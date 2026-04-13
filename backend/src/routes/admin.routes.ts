@@ -633,6 +633,32 @@ export async function adminRoutes(server: FastifyInstance) {
     return { success: true, deletedCount: result.count };
   });
 
+  // Update invoice amount (admin correction)
+  server.patch('/invoices/:id/update-amount', async (request: FastifyRequest, reply: FastifyReply) => {
+    const { id } = request.params as { id: string };
+    const { amount } = request.body as { amount: number };
+
+    if (!amount || amount <= 0) {
+      return reply.code(400).send({ error: 'Invalid amount' });
+    }
+
+    const invoice = await prisma.invoice.update({
+      where: { id },
+      data: { amount },
+    });
+
+    await prisma.auditLog.create({
+      data: {
+        userId: request.user!.id,
+        action: 'INVOICE_AMOUNT_CORRECTED',
+        entityId: id,
+        metadata: { newAmount: amount },
+      },
+    });
+
+    return invoice;
+  });
+
   // Verify invoice
   server.patch('/invoices/:id/verify', async (request: FastifyRequest, reply: FastifyReply) => {
     const { id } = request.params as { id: string };

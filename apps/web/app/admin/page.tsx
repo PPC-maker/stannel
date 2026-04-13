@@ -1996,6 +1996,48 @@ Please analyze this error and provide a fix.
                       </div>
                     </div>
 
+                    {/* AI Mismatch Warning */}
+                    {selectedInvoice.aiExtractedAmount && selectedInvoice.aiExtractedAmount > 0 && selectedInvoice.aiStatus !== 'MATCH' && Math.abs(selectedInvoice.amount - selectedInvoice.aiExtractedAmount) > 1 && (
+                      <div className="p-3 rounded-lg bg-red-500/15 border border-red-500/30">
+                        <div className="flex items-start gap-2 mb-2">
+                          <AlertTriangle size={18} className="text-red-400 flex-shrink-0 mt-0.5" />
+                          <div>
+                            <p className="text-red-400 font-medium text-sm">שים לב! זוהה סכום אחר בחשבונית</p>
+                            <p className="text-white/60 text-xs mt-1">
+                              הסכום שהוזן: ₪{selectedInvoice.amount.toLocaleString()} | סכום שזוהה: ₪{selectedInvoice.aiExtractedAmount.toLocaleString()}
+                            </p>
+                          </div>
+                        </div>
+                        <button
+                          onClick={async () => {
+                            try {
+                              // Update amount first
+                              const { getHeaders: getH } = await import('@stannel/api-client');
+                              await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:7070'}/api/v1/admin/invoices/${selectedInvoice.id}/update-amount`, {
+                                method: 'PATCH',
+                                headers: getH() as Record<string, string>,
+                                body: JSON.stringify({ amount: selectedInvoice.aiExtractedAmount }),
+                              });
+                              // Then approve
+                              await adminApi.verifyInvoice(selectedInvoice.id, {
+                                status: 'APPROVED',
+                                note: `סכום תוקן מ-₪${selectedInvoice.amount} ל-₪${selectedInvoice.aiExtractedAmount} לפי זיהוי AI`,
+                              });
+                              await fetchInvoices();
+                              setSelectedInvoice(null);
+                              Swal.fire({ title: 'תוקן!', text: `הסכום עודכן ל-₪${selectedInvoice.aiExtractedAmount?.toLocaleString()} והחשבונית אושרה`, icon: 'success', background: '#0f2620', color: '#fff', timer: 2000, showConfirmButton: false });
+                            } catch (err) {
+                              console.error(err);
+                            }
+                          }}
+                          className="w-full py-2 bg-red-500/20 border border-red-500/30 text-red-300 rounded-lg text-sm hover:bg-red-500/30 transition-colors flex items-center justify-center gap-2"
+                        >
+                          <AlertTriangle size={14} />
+                          תקן לסכום שזוהה (₪{selectedInvoice.aiExtractedAmount.toLocaleString()}) ואשר
+                        </button>
+                      </div>
+                    )}
+
                     <div className="grid grid-cols-2 gap-4 pt-4 border-t border-white/10">
                       <div>
                         <label className="text-white/60 text-sm">אדריכל</label>
@@ -2010,22 +2052,41 @@ Please analyze this error and provide a fix.
                     </div>
 
                     {/* AI Analysis */}
-                    {selectedInvoice.aiExtractedAmount !== null && selectedInvoice.aiExtractedAmount !== undefined && (
-                      <div className={`p-3 rounded-lg ${
-                        selectedInvoice.aiStatus === 'MATCH' ? 'bg-green-500/20 border border-green-500/30' :
-                        'bg-yellow-500/20 border border-yellow-500/30'
-                      }`}>
-                        <p className="text-sm text-white/60 mb-1">ניתוח AI</p>
+                    <div className={`p-3 rounded-lg ${
+                      selectedInvoice.aiStatus === 'MATCH' ? 'bg-green-500/20 border border-green-500/30' :
+                      selectedInvoice.aiStatus === 'MISMATCH' ? 'bg-red-500/20 border border-red-500/30' :
+                      'bg-yellow-500/20 border border-yellow-500/30'
+                    }`}>
+                      <p className="text-sm text-white/60 mb-2">ניתוח AI</p>
+                      <div className="space-y-1.5">
                         <div className="flex items-center justify-between">
-                          <span className={selectedInvoice.aiStatus === 'MATCH' ? 'text-green-400' : 'text-yellow-400'}>
-                            סכום שזוהה: ₪{selectedInvoice.aiExtractedAmount.toLocaleString()}
-                          </span>
-                          <span className="text-white/60 text-sm">
-                            ביטחון: {Math.round((selectedInvoice.aiConfidence || 0) * 100)}%
+                          <span className="text-white/60 text-sm">סכום שהוצהר:</span>
+                          <span className="text-white font-semibold">₪{selectedInvoice.amount.toLocaleString()}</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-white/60 text-sm">סכום שזוהה:</span>
+                          <span className={selectedInvoice.aiStatus === 'MATCH' ? 'text-green-400 font-semibold' : selectedInvoice.aiStatus === 'MISMATCH' ? 'text-red-400 font-semibold' : 'text-yellow-400 font-semibold'}>
+                            {selectedInvoice.aiExtractedAmount ? `₪${selectedInvoice.aiExtractedAmount.toLocaleString()}` : 'לא זוהה'}
                           </span>
                         </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-white/60 text-sm">ביטחון:</span>
+                          <span className="text-white/70 text-sm">{Math.round((selectedInvoice.aiConfidence || 0) * 100)}%</span>
+                        </div>
+                        {selectedInvoice.aiStatus && (
+                          <div className="flex items-center justify-between pt-1 border-t border-white/10">
+                            <span className="text-white/60 text-sm">סטטוס:</span>
+                            <span className={`px-2 py-0.5 rounded-full text-xs ${
+                              selectedInvoice.aiStatus === 'MATCH' ? 'bg-green-500/30 text-green-400' :
+                              selectedInvoice.aiStatus === 'MISMATCH' ? 'bg-red-500/30 text-red-400' :
+                              'bg-yellow-500/30 text-yellow-400'
+                            }`}>
+                              {selectedInvoice.aiStatus === 'MATCH' ? 'תואם' : selectedInvoice.aiStatus === 'MISMATCH' ? 'לא תואם' : 'לא ברור'}
+                            </span>
+                          </div>
+                        )}
                       </div>
-                    )}
+                    </div>
 
                     <div className="pt-4 border-t border-white/10">
                       <label className="text-white/60 text-sm">תאריך העלאה</label>
