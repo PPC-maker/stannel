@@ -59,6 +59,7 @@ import {
   Edit3,
   Save,
   X,
+  Camera,
 } from 'lucide-react';
 import Swal from 'sweetalert2';
 import Link from 'next/link';
