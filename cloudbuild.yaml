@@ -57,7 +57,7 @@ steps:
       - '--set-env-vars'
       - 'NODE_ENV=production,GOOGLE_CLOUD_PROJECT=stannel-app,FIREBASE_PROJECT_ID=stannel-app'
       - '--set-secrets'
-      - 'DATABASE_URL=database-url:latest,FIREBASE_PRIVATE_KEY=firebase-private-key:latest,FIREBASE_CLIENT_EMAIL=firebase-client-email:latest'
+      - 'DATABASE_URL=database-url:latest,FIREBASE_PRIVATE_KEY=firebase-private-key:latest,FIREBASE_CLIENT_EMAIL=firebase-client-email:latest,GEMINI_API_KEY=gemini-api-key:latest'
     waitFor: ['push-backend']
 
   # ============ WEB ============
