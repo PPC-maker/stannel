@@ -25,5 +25,5 @@ EXPOSE 8080
 ENV PORT=8080
 ENV NODE_ENV=production
 
-# Start
-CMD ["node", "dist/server.js"]
+# Push schema changes on startup, then start server
+CMD npx prisma db push --schema=src/prisma/schema.prisma --accept-data-loss --skip-generate && node dist/server.js
