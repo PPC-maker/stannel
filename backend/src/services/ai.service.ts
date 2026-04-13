@@ -90,20 +90,23 @@ export const aiService = {
 
       // Fetch image
       const response = await fetch(imageUrl);
-      const rawBuffer = Buffer.from(await response.arrayBuffer()) as Buffer;
+      const arrayBuf = await response.arrayBuffer();
+      const rawBuffer = Buffer.alloc(arrayBuf.byteLength);
+      const view = new Uint8Array(arrayBuf);
+      for (let i = 0; i < rawBuffer.length; i++) rawBuffer[i] = view[i];
 
       // Enhance image for better AI recognition
-      let processedBuffer: Buffer = rawBuffer;
+      let finalBuffer = rawBuffer;
       try {
         const { imageProcessorService } = await import('./image-processor.service.js');
-        processedBuffer = await imageProcessorService.prepareForAI(rawBuffer);
+        finalBuffer = await imageProcessorService.prepareForAI(rawBuffer);
         console.log('[AI] Using enhanced image for validation');
       } catch (enhanceError) {
         console.warn('[AI] Image enhancement skipped:', enhanceError);
       }
 
-      const base64 = processedBuffer.toString('base64');
-      const mimeType = 'image/jpeg';
+      const base64 = finalBuffer.toString('base64');
+      const mimeType = response.headers.get('content-type') || 'image/jpeg';
 
       const prompt = `
         You are an invoice validation AI for a construction/architecture platform in Israel.
