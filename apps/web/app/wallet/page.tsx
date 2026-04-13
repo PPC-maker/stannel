@@ -169,11 +169,15 @@ export default function WalletPage() {
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-10"
         >
-          <h1 className="text-4xl font-bold text-white flex items-center justify-center gap-3 mb-2">
-            <Wallet className="text-emerald-400" />
-            הארנק שלי
+          <h1 className={`text-4xl font-bold flex items-center justify-center gap-3 mb-2 ${
+            isAdmin
+              ? 'text-red-400 drop-shadow-[0_0_10px_rgba(239,68,68,0.5)]'
+              : 'text-white'
+          }`} style={isAdmin ? { WebkitTextStroke: '1px rgba(239,68,68,0.8)' } : undefined}>
+            <Wallet className={isAdmin ? 'text-red-400' : 'text-emerald-400'} />
+            {isAdmin ? 'ארנק מנהל' : 'הארנק שלי'}
           </h1>
-          <p className="text-white/60">ניהול נקודות, יתרות והטבות</p>
+          <p className="text-white/60">{isAdmin ? 'סיכום עמלות, הכנסות ונתוני מערכת' : 'ניהול נקודות, יתרות והטבות'}</p>
         </motion.div>
 
         {/* Main Grid */}
