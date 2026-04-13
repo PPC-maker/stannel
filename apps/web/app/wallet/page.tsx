@@ -28,6 +28,7 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { useWalletBalance, useWalletCard, useWalletTransactions, useSuppliersDirectory } from '@/lib/api-hooks';
+import { useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '@/lib/auth-context';
 import { useAuthGuard, AuthGuardLoader } from '@/lib/useAuthGuard';
 import Link from 'next/link';
@@ -107,6 +108,7 @@ const quickActionCategories = [
 export default function WalletPage() {
   const { isReady } = useAuthGuard();
   const { user } = useAuth();
+  const queryClient = useQueryClient();
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const { data: balance, isLoading: balanceLoading } = useWalletBalance();
   const { data: card, isLoading: cardLoading } = useWalletCard();
@@ -118,18 +120,49 @@ export default function WalletPage() {
   const [adminStats, setAdminStats] = useState<any>(null);
 
   // Fetch admin commission stats
+  const fetchAdminStats = () => {
+    if (!isAdmin) return;
+    import('@stannel/api-client').then(({ getAuthToken }) => {
+      fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:7070'}/api/v1/admin/commission-stats`, {
+        headers: { Authorization: `Bearer ${getAuthToken()}` },
+      })
+        .then(res => res.json())
+        .then(data => setAdminStats(data))
+        .catch(console.error);
+    });
+  };
+
   useEffect(() => {
-    if (isAdmin) {
-      import('@stannel/api-client').then(({ getAuthToken }) => {
-        fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:7070'}/api/v1/admin/commission-stats`, {
-          headers: { Authorization: `Bearer ${getAuthToken()}` },
-        })
-          .then(res => res.json())
-          .then(data => setAdminStats(data))
-          .catch(console.error);
-      });
-    }
+    fetchAdminStats();
   }, [isAdmin]);
+
+  // WebSocket for real-time wallet updates
+  useEffect(() => {
+    const wsUrl = (process.env.NEXT_PUBLIC_API_URL?.replace('http', 'ws') || 'ws://localhost:7070') + '/ws';
+    let ws: WebSocket | null = null;
+    let reconnectTimeout: NodeJS.Timeout | null = null;
+
+    const connect = () => {
+      try {
+        ws = new WebSocket(wsUrl);
+        ws.onmessage = () => {
+          // Refresh all wallet data on any event
+          queryClient.invalidateQueries({ queryKey: ['wallet'] });
+          queryClient.invalidateQueries({ queryKey: ['invoices'] });
+          queryClient.invalidateQueries({ queryKey: ['supplier'] });
+          fetchAdminStats();
+        };
+        ws.onclose = () => { reconnectTimeout = setTimeout(connect, 5000); };
+        ws.onerror = () => {};
+      } catch {}
+    };
+
+    connect();
+    return () => {
+      if (reconnectTimeout) clearTimeout(reconnectTimeout);
+      if (ws) ws.close();
+    };
+  }, []);
   const { data: allSuppliers, isLoading: suppliersLoading } = useSuppliersDirectory({}, activeCategory === 'suppliers' && (isAdmin || isArchitect));
 
   const currentRank = (card?.rank as keyof typeof rankConfig) || 'BRONZE';
