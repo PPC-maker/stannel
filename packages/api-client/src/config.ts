@@ -38,12 +38,40 @@ export async function fetchWithRetry(
 }
 
 let authToken: string | null = null;
+let tokenRefreshCallback: (() => Promise<string | null>) | null = null;
 
 export const setAuthToken = (token: string | null) => {
   authToken = token;
 };
 
 export const getAuthToken = () => authToken;
+
+// Register a callback to refresh the token on 401
+export const setTokenRefreshCallback = (cb: () => Promise<string | null>) => {
+  tokenRefreshCallback = cb;
+};
+
+// Try to refresh token and retry request on 401
+export async function fetchWithAuth(url: string, options: RequestInit): Promise<Response> {
+  let response = await fetchWithRetry(url, options);
+
+  if (response.status === 401 && tokenRefreshCallback) {
+    try {
+      const newToken = await tokenRefreshCallback();
+      if (newToken) {
+        authToken = newToken;
+        // Update Authorization header and retry
+        const newHeaders = { ...(options.headers as Record<string, string>) };
+        newHeaders['Authorization'] = `Bearer ${newToken}`;
+        response = await fetchWithRetry(url, { ...options, headers: newHeaders });
+      }
+    } catch {
+      // Refresh failed, return original 401
+    }
+  }
+
+  return response;
+}
 
 export const getHeaders = (): HeadersInit => {
   const headers: HeadersInit = {

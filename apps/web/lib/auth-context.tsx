@@ -3,7 +3,7 @@
 import { createContext, useContext, useEffect, useState, useRef, ReactNode } from 'react';
 import { User, onAuthStateChanged, onIdTokenChanged } from 'firebase/auth';
 import { getFirebaseAuth, logout as firebaseLogout } from './firebase';
-import { authApi, setAuthToken } from '@stannel/api-client';
+import { authApi, setAuthToken, setTokenRefreshCallback } from '@stannel/api-client';
 import type { AuthUser } from '@stannel/types';
 import { UserRole } from '@stannel/types';
 import Swal from 'sweetalert2';
@@ -121,7 +121,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => unsubscribe();
   }, []);
 
-  // Auto-refresh token when Firebase refreshes it (every ~55 min)
+  // Auto-refresh token when Firebase refreshes it
   useEffect(() => {
     const auth = getFirebaseAuth();
     if (!auth) return;
@@ -135,6 +135,34 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     return () => unsubscribe();
   }, []);
+
+  // Proactively refresh token every 45 minutes (Firebase tokens expire after 60 min)
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      if (firebaseUser) {
+        try {
+          const token = await firebaseUser.getIdToken(true); // force refresh
+          setAuthToken(token);
+        } catch (err) {
+          console.error('Token refresh failed:', err);
+        }
+      }
+    }, 45 * 60 * 1000); // 45 minutes
+
+    return () => clearInterval(interval);
+  }, [firebaseUser]);
+
+  // Register token refresh callback for 401 auto-retry
+  useEffect(() => {
+    setTokenRefreshCallback(async () => {
+      if (firebaseUser) {
+        const token = await firebaseUser.getIdToken(true);
+        setAuthToken(token);
+        return token;
+      }
+      return null;
+    });
+  }, [firebaseUser]);
 
   const login = async (email: string, password: string): Promise<AuthUser | null> => {
     setError(null);

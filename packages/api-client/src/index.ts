@@ -1,6 +1,6 @@
 // STANNEL API Client - Main Export
 
-export { config, setAuthToken, getAuthToken, getHeaders, getMultipartHeaders } from './config';
+export { config, setAuthToken, getAuthToken, getHeaders, getMultipartHeaders, setTokenRefreshCallback, fetchWithAuth } from './config';
 export { authApi } from './auth';
 export { invoicesApi } from './invoices';
 export { walletApi } from './wallet';
