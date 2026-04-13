@@ -15,9 +15,13 @@ export const walletApi = {
       headers: getHeaders(),
     });
 
+    if (response.status === 401) {
+      throw new Error('פג תוקף החיבור. אנא התחבר/י מחדש למערכת.');
+    }
+
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.message || 'Failed to get balance');
+      throw new Error(error.message || 'שגיאה בטעינת היתרה. נסה לרענן את הדף.');
     }
 
     return response.json();
@@ -38,9 +42,13 @@ export const walletApi = {
       headers: getHeaders(),
     });
 
+    if (response.status === 401) {
+      throw new Error('פג תוקף החיבור. אנא התחבר/י מחדש למערכת.');
+    }
+
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.message || 'Failed to get transactions');
+      throw new Error(error.message || 'שגיאה בטעינת העסקאות. נסה לרענן את הדף.');
     }
 
     return response.json();
@@ -52,9 +60,13 @@ export const walletApi = {
       headers: getHeaders(),
     });
 
+    if (response.status === 401) {
+      throw new Error('פג תוקף החיבור. אנא התחבר/י מחדש למערכת.');
+    }
+
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.message || 'Failed to get card');
+      throw new Error(error.message || 'שגיאה בטעינת פרטי הכרטיס. נסה לרענן את הדף.');
     }
 
     return response.json();

@@ -16,9 +16,13 @@ export const invoicesApi = {
       headers: getHeaders(),
     });
 
+    if (response.status === 401) {
+      throw new Error('פג תוקף החיבור. אנא התחבר/י מחדש למערכת.');
+    }
+
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.message || 'Failed to get suppliers');
+      throw new Error(error.message || 'שגיאה בטעינת הספקים. נסה לרענן את הדף.');
     }
 
     return response.json();
@@ -30,9 +34,13 @@ export const invoicesApi = {
       headers: getHeaders(),
     });
 
+    if (response.status === 401) {
+      throw new Error('פג תוקף החיבור. אנא התחבר/י מחדש למערכת.');
+    }
+
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.message || 'Failed to get my suppliers');
+      throw new Error(error.message || 'שגיאה בטעינת הספקים שלך. נסה לרענן את הדף.');
     }
 
     return response.json();
@@ -51,7 +59,7 @@ export const invoicesApi = {
 
     if (!response.ok) {
       const errorData = await response.json();
-      throw new Error(errorData.error || errorData.message || 'Failed to upload invoice');
+      throw new Error(errorData.error || errorData.message || 'שגיאה בהעלאת החשבונית. נסה שוב.');
     }
 
     return response.json();
@@ -72,9 +80,13 @@ export const invoicesApi = {
       headers: getHeaders(),
     });
 
+    if (response.status === 401) {
+      throw new Error('פג תוקף החיבור. אנא התחבר/י מחדש למערכת.');
+    }
+
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.message || 'Failed to get invoices');
+      throw new Error(error.message || 'שגיאה בטעינת החשבוניות. נסה לרענן את הדף.');
     }
 
     return response.json();
@@ -86,9 +98,13 @@ export const invoicesApi = {
       headers: getHeaders(),
     });
 
+    if (response.status === 401) {
+      throw new Error('פג תוקף החיבור. אנא התחבר/י מחדש למערכת.');
+    }
+
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.message || 'Failed to get invoice');
+      throw new Error(error.message || 'שגיאה בטעינת החשבונית. נסה לרענן את הדף.');
     }
 
     return response.json();
@@ -100,9 +116,13 @@ export const invoicesApi = {
       headers: getHeaders(),
     });
 
+    if (response.status === 401) {
+      throw new Error('פג תוקף החיבור. אנא התחבר/י מחדש למערכת.');
+    }
+
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.message || 'Failed to get stats');
+      throw new Error(error.message || 'שגיאה בטעינת הנתונים. נסה לרענן את הדף.');
     }
 
     return response.json();
@@ -121,7 +141,7 @@ export const invoicesApi = {
 
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.message || 'Failed to verify invoice');
+      throw new Error(error.message || 'שגיאה באימות החשבונית. נסה שוב.');
     }
 
     return response.json();
@@ -135,9 +155,13 @@ export const invoicesApi = {
       body: JSON.stringify({ reference }),
     });
 
+    if (response.status === 401) {
+      throw new Error('פג תוקף החיבור. אנא התחבר/י מחדש למערכת.');
+    }
+
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.message || 'Failed to confirm payment');
+      throw new Error(error.message || 'שגיאה באישור התשלום. נסה שוב.');
     }
 
     return response.json();

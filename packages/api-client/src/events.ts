@@ -25,9 +25,13 @@ export const eventsApi = {
       headers: getHeaders(),
     });
 
+    if (response.status === 401) {
+      throw new Error('פג תוקף החיבור. אנא התחבר/י מחדש למערכת.');
+    }
+
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.message || 'Failed to get events');
+      throw new Error(error.message || 'שגיאה בטעינת האירועים. נסה לרענן את הדף.');
     }
 
     return response.json();
@@ -39,9 +43,13 @@ export const eventsApi = {
       headers: getHeaders(),
     });
 
+    if (response.status === 401) {
+      throw new Error('פג תוקף החיבור. אנא התחבר/י מחדש למערכת.');
+    }
+
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.message || 'Failed to get event');
+      throw new Error(error.message || 'שגיאה בטעינת האירוע. נסה לרענן את הדף.');
     }
 
     return response.json();
@@ -54,9 +62,13 @@ export const eventsApi = {
       body: JSON.stringify({ eventId }),
     });
 
+    if (response.status === 401) {
+      throw new Error('פג תוקף החיבור. אנא התחבר/י מחדש למערכת.');
+    }
+
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.message || 'Failed to register for event');
+      throw new Error(error.message || 'שגיאה בהרשמה לאירוע. נסה שוב.');
     }
 
     return response.json();
@@ -68,9 +80,13 @@ export const eventsApi = {
       headers: getHeaders(),
     });
 
+    if (response.status === 401) {
+      throw new Error('פג תוקף החיבור. אנא התחבר/י מחדש למערכת.');
+    }
+
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.message || 'Failed to cancel registration');
+      throw new Error(error.message || 'שגיאה בביטול ההרשמה. נסה שוב.');
     }
 
     return response.json();
@@ -82,9 +98,13 @@ export const eventsApi = {
       headers: getHeaders(),
     });
 
+    if (response.status === 401) {
+      throw new Error('פג תוקף החיבור. אנא התחבר/י מחדש למערכת.');
+    }
+
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.message || 'Failed to get my events');
+      throw new Error(error.message || 'שגיאה בטעינת האירועים שלך. נסה לרענן את הדף.');
     }
 
     return response.json();
@@ -101,7 +121,7 @@ export const eventsApi = {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || 'Failed to get events');
+        throw new Error(error.message || 'שגיאה בטעינת האירועים. נסה לרענן את הדף.');
       }
 
       const data = await response.json();
@@ -125,7 +145,7 @@ export const eventsApi = {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || 'Failed to create event');
+        throw new Error(error.message || 'שגיאה ביצירת האירוע. נסה שוב.');
       }
 
       return response.json();
@@ -149,7 +169,7 @@ export const eventsApi = {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || 'Failed to update event');
+        throw new Error(error.message || 'שגיאה בעדכון האירוע. נסה שוב.');
       }
 
       return response.json();
@@ -163,7 +183,7 @@ export const eventsApi = {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || 'Failed to delete event');
+        throw new Error(error.message || 'שגיאה במחיקת האירוע. נסה שוב.');
       }
 
       return response.json();

@@ -67,9 +67,13 @@ export const analyticsApi = {
       headers: getHeaders(),
     });
 
+    if (response.status === 401) {
+      throw new Error('פג תוקף החיבור. אנא התחבר/י מחדש למערכת.');
+    }
+
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.message || 'Failed to get trends');
+      throw new Error(error.message || 'שגיאה בטעינת הנתונים. נסה לרענן את הדף.');
     }
 
     return response.json();
@@ -81,9 +85,13 @@ export const analyticsApi = {
       headers: getHeaders(),
     });
 
+    if (response.status === 401) {
+      throw new Error('פג תוקף החיבור. אנא התחבר/י מחדש למערכת.');
+    }
+
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.message || 'Failed to get SLA report');
+      throw new Error(error.message || 'שגיאה בטעינת דוח SLA. נסה לרענן את הדף.');
     }
 
     return response.json();
@@ -95,9 +103,13 @@ export const analyticsApi = {
       headers: getHeaders(),
     });
 
+    if (response.status === 401) {
+      throw new Error('פג תוקף החיבור. אנא התחבר/י מחדש למערכת.');
+    }
+
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.message || 'Failed to get top architects');
+      throw new Error(error.message || 'שגיאה בטעינת הנתונים. נסה לרענן את הדף.');
     }
 
     return response.json();
@@ -109,9 +121,13 @@ export const analyticsApi = {
       headers: getHeaders(),
     });
 
+    if (response.status === 401) {
+      throw new Error('פג תוקף החיבור. אנא התחבר/י מחדש למערכת.');
+    }
+
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.message || 'Failed to get supplier performance');
+      throw new Error(error.message || 'שגיאה בטעינת הנתונים. נסה לרענן את הדף.');
     }
 
     return response.json();

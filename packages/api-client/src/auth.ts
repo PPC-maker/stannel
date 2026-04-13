@@ -13,7 +13,7 @@ export const authApi = {
 
     if (!response.ok) {
       const errorData = await response.json();
-      throw new Error(errorData.error || errorData.message || 'Registration failed');
+      throw new Error(errorData.error || errorData.message || 'שגיאה בהרשמה. נסה שוב או פנה למנהל.');
     }
 
     const result = await response.json();
@@ -30,7 +30,7 @@ export const authApi = {
 
     if (!response.ok) {
       const errorData = await response.json();
-      throw new Error(errorData.error || errorData.message || 'Login failed');
+      throw new Error(errorData.error || errorData.message || 'שגיאה בהתחברות. בדוק את הפרטים ונסה שוב.');
     }
 
     const result = await response.json();
@@ -47,7 +47,7 @@ export const authApi = {
 
     if (!response.ok) {
       const errorData = await response.json();
-      throw new Error(errorData.error || errorData.message || 'Token verification failed');
+      throw new Error(errorData.error || errorData.message || 'פג תוקף החיבור. אנא התחבר/י מחדש למערכת.');
     }
 
     const result = await response.json();
@@ -64,7 +64,7 @@ export const authApi = {
 
     if (!response.ok) {
       const errorData = await response.json();
-      throw new Error(errorData.error || errorData.message || 'Google authentication failed');
+      throw new Error(errorData.error || errorData.message || 'שגיאה בהתחברות עם Google. נסה שוב.');
     }
 
     const result = await response.json();
@@ -78,9 +78,13 @@ export const authApi = {
       headers: getHeaders(),
     });
 
+    if (response.status === 401) {
+      throw new Error('פג תוקף החיבור. אנא התחבר/י מחדש למערכת.');
+    }
+
     if (!response.ok) {
       const errorData = await response.json();
-      throw new Error(errorData.error || errorData.message || 'Failed to get user');
+      throw new Error(errorData.error || errorData.message || 'שגיאה בטעינת פרטי המשתמש. נסה לרענן את הדף.');
     }
 
     return response.json();
@@ -93,9 +97,13 @@ export const authApi = {
       body: JSON.stringify(data),
     });
 
+    if (response.status === 401) {
+      throw new Error('פג תוקף החיבור. אנא התחבר/י מחדש למערכת.');
+    }
+
     if (!response.ok) {
       const errorData = await response.json();
-      throw new Error(errorData.error || errorData.message || 'Failed to update profile');
+      throw new Error(errorData.error || errorData.message || 'שגיאה בעדכון הפרופיל. נסה שוב.');
     }
 
     return response.json();
@@ -115,9 +123,13 @@ export const authApi = {
       body: formData,
     });
 
+    if (response.status === 401) {
+      throw new Error('פג תוקף החיבור. אנא התחבר/י מחדש למערכת.');
+    }
+
     if (!response.ok) {
       const errorData = await response.json();
-      throw new Error(errorData.error || errorData.message || 'Failed to upload profile image');
+      throw new Error(errorData.error || errorData.message || 'שגיאה בהעלאת תמונת הפרופיל. נסה שוב.');
     }
 
     return response.json();

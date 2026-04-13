@@ -36,9 +36,13 @@ export const serviceProvidersApi = {
       headers: getHeaders(),
     });
 
+    if (response.status === 401) {
+      throw new Error('פג תוקף החיבור. אנא התחבר/י מחדש למערכת.');
+    }
+
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.message || 'Failed to get service providers');
+      throw new Error(error.message || 'שגיאה בטעינת נותני השירות. נסה לרענן את הדף.');
     }
 
     return response.json();
@@ -50,9 +54,13 @@ export const serviceProvidersApi = {
       headers: getHeaders(),
     });
 
+    if (response.status === 401) {
+      throw new Error('פג תוקף החיבור. אנא התחבר/י מחדש למערכת.');
+    }
+
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.message || 'Failed to get service provider');
+      throw new Error(error.message || 'שגיאה בטעינת נותן השירות. נסה לרענן את הדף.');
     }
 
     return response.json();
@@ -64,9 +72,13 @@ export const serviceProvidersApi = {
       headers: getHeaders(),
     });
 
+    if (response.status === 401) {
+      throw new Error('פג תוקף החיבור. אנא התחבר/י מחדש למערכת.');
+    }
+
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.message || 'Failed to get categories');
+      throw new Error(error.message || 'שגיאה בטעינת הקטגוריות. נסה לרענן את הדף.');
     }
 
     return response.json();
@@ -91,7 +103,7 @@ export const serviceProvidersApi = {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || 'Failed to create service provider');
+        throw new Error(error.message || 'שגיאה ביצירת נותן שירות. נסה שוב.');
       }
 
       return response.json();
@@ -116,7 +128,7 @@ export const serviceProvidersApi = {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || 'Failed to update service provider');
+        throw new Error(error.message || 'שגיאה בעדכון נותן השירות. נסה שוב.');
       }
 
       return response.json();
@@ -130,7 +142,7 @@ export const serviceProvidersApi = {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || 'Failed to delete service provider');
+        throw new Error(error.message || 'שגיאה במחיקת נותן השירות. נסה שוב.');
       }
 
       return response.json();
@@ -157,7 +169,7 @@ export const serviceProvidersApi = {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.message || 'Failed to get all service providers');
+        throw new Error(error.message || 'שגיאה בטעינת נותני השירות. נסה לרענן את הדף.');
       }
 
       return response.json();

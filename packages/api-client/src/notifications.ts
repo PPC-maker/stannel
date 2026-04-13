@@ -40,9 +40,13 @@ export const notificationsApi = {
       headers: getHeaders(),
     });
 
+    if (response.status === 401) {
+      throw new Error('פג תוקף החיבור. אנא התחבר/י מחדש למערכת.');
+    }
+
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.message || 'Failed to get notifications');
+      throw new Error(error.message || 'שגיאה בטעינת ההתראות. נסה לרענן את הדף.');
     }
 
     return response.json();
@@ -54,9 +58,13 @@ export const notificationsApi = {
       headers: getHeaders(),
     });
 
+    if (response.status === 401) {
+      throw new Error('פג תוקף החיבור. אנא התחבר/י מחדש למערכת.');
+    }
+
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.message || 'Failed to get unread count');
+      throw new Error(error.message || 'שגיאה בטעינת ההתראות. נסה לרענן את הדף.');
     }
 
     return response.json();
@@ -68,9 +76,13 @@ export const notificationsApi = {
       headers: getHeaders(),
     });
 
+    if (response.status === 401) {
+      throw new Error('פג תוקף החיבור. אנא התחבר/י מחדש למערכת.');
+    }
+
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.message || 'Failed to mark as read');
+      throw new Error(error.message || 'שגיאה בסימון ההתראה. נסה שוב.');
     }
 
     return response.json();
@@ -82,9 +94,13 @@ export const notificationsApi = {
       headers: getHeaders(),
     });
 
+    if (response.status === 401) {
+      throw new Error('פג תוקף החיבור. אנא התחבר/י מחדש למערכת.');
+    }
+
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.message || 'Failed to mark all as read');
+      throw new Error(error.message || 'שגיאה בסימון ההתראות. נסה שוב.');
     }
 
     return response.json();
@@ -96,9 +112,13 @@ export const notificationsApi = {
       headers: getHeaders(),
     });
 
+    if (response.status === 401) {
+      throw new Error('פג תוקף החיבור. אנא התחבר/י מחדש למערכת.');
+    }
+
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.message || 'Failed to delete notification');
+      throw new Error(error.message || 'שגיאה במחיקת ההתראה. נסה שוב.');
     }
 
     return response.json();

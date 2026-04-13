@@ -25,9 +25,13 @@ export const rewardsApi = {
       headers: getHeaders(),
     });
 
+    if (response.status === 401) {
+      throw new Error('פג תוקף החיבור. אנא התחבר/י מחדש למערכת.');
+    }
+
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.message || 'Failed to get products');
+      throw new Error(error.message || 'שגיאה בטעינת המוצרים. נסה לרענן את הדף.');
     }
 
     return response.json();
@@ -39,9 +43,13 @@ export const rewardsApi = {
       headers: getHeaders(),
     });
 
+    if (response.status === 401) {
+      throw new Error('פג תוקף החיבור. אנא התחבר/י מחדש למערכת.');
+    }
+
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.message || 'Failed to get product');
+      throw new Error(error.message || 'שגיאה בטעינת המוצר. נסה לרענן את הדף.');
     }
 
     return response.json();
@@ -54,9 +62,13 @@ export const rewardsApi = {
       body: JSON.stringify(data),
     });
 
+    if (response.status === 401) {
+      throw new Error('פג תוקף החיבור. אנא התחבר/י מחדש למערכת.');
+    }
+
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.message || 'Failed to redeem product');
+      throw new Error(error.message || 'שגיאה במימוש המוצר. נסה שוב.');
     }
 
     return response.json();
@@ -75,9 +87,13 @@ export const rewardsApi = {
       headers: getHeaders(),
     });
 
+    if (response.status === 401) {
+      throw new Error('פג תוקף החיבור. אנא התחבר/י מחדש למערכת.');
+    }
+
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.message || 'Failed to get redemptions');
+      throw new Error(error.message || 'שגיאה בטעינת המימושים. נסה לרענן את הדף.');
     }
 
     return response.json();

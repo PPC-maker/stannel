@@ -14,9 +14,13 @@ export const aiApi = {
       body: JSON.stringify({ message, conversationHistory }),
     });
 
+    if (response.status === 401) {
+      throw new Error('פג תוקף החיבור. אנא התחבר/י מחדש למערכת.');
+    }
+
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.message || 'Failed to send chat message');
+      throw new Error(error.message || 'שגיאה בשליחת ההודעה. נסה שוב.');
     }
 
     return response.json();
@@ -28,9 +32,13 @@ export const aiApi = {
       headers: getHeaders(),
     });
 
+    if (response.status === 401) {
+      throw new Error('פג תוקף החיבור. אנא התחבר/י מחדש למערכת.');
+    }
+
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.message || 'Failed to get prompts');
+      throw new Error(error.message || 'שגיאה בטעינת ההצעות. נסה לרענן את הדף.');
     }
 
     return response.json();

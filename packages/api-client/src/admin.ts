@@ -39,8 +39,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'Failed to get health report' }));
-      throw new Error(error.message || 'Failed to get health report');
+      const error = await res.json().catch(() => ({ message: 'שגיאה בטעינת דוח הבריאות. נסה לרענן את הדף.' }));
+      throw new Error(error.message || 'שגיאה בטעינת דוח הבריאות. נסה לרענן את הדף.');
     }
 
     return res.json();
@@ -52,8 +52,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'Failed to get health reports' }));
-      throw new Error(error.message || 'Failed to get health reports');
+      const error = await res.json().catch(() => ({ message: 'שגיאה בטעינת דוחות הבריאות. נסה לרענן את הדף.' }));
+      throw new Error(error.message || 'שגיאה בטעינת דוחות הבריאות. נסה לרענן את הדף.');
     }
 
     return res.json();
@@ -66,8 +66,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'Failed to send health report' }));
-      throw new Error(error.message || 'Failed to send health report');
+      const error = await res.json().catch(() => ({ message: 'שגיאה בשליחת דוח הבריאות. נסה שוב.' }));
+      throw new Error(error.message || 'שגיאה בשליחת דוח הבריאות. נסה שוב.');
     }
 
     return res.json();
@@ -80,8 +80,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'Failed to get scheduled tasks' }));
-      throw new Error(error.message || 'Failed to get scheduled tasks');
+      const error = await res.json().catch(() => ({ message: 'שגיאה בטעינת המשימות. נסה לרענן את הדף.' }));
+      throw new Error(error.message || 'שגיאה בטעינת המשימות. נסה לרענן את הדף.');
     }
 
     return res.json();
@@ -94,8 +94,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'Failed to run task' }));
-      throw new Error(error.message || 'Failed to run task');
+      const error = await res.json().catch(() => ({ message: 'שגיאה בהפעלת המשימה. נסה שוב.' }));
+      throw new Error(error.message || 'שגיאה בהפעלת המשימה. נסה שוב.');
     }
 
     return res.json();
@@ -109,8 +109,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'Failed to update task' }));
-      throw new Error(error.message || 'Failed to update task');
+      const error = await res.json().catch(() => ({ message: 'שגיאה בעדכון המשימה. נסה שוב.' }));
+      throw new Error(error.message || 'שגיאה בעדכון המשימה. נסה שוב.');
     }
 
     return res.json();
@@ -135,8 +135,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'Failed to get users' }));
-      throw new Error(error.message || 'Failed to get users');
+      const error = await res.json().catch(() => ({ message: 'שגיאה בטעינת המשתמשים. נסה לרענן את הדף.' }));
+      throw new Error(error.message || 'שגיאה בטעינת המשתמשים. נסה לרענן את הדף.');
     }
 
     return res.json();
@@ -158,8 +158,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'Failed to get pending users' }));
-      throw new Error(error.message || 'Failed to get pending users');
+      const error = await res.json().catch(() => ({ message: 'שגיאה בטעינת המשתמשים הממתינים. נסה לרענן את הדף.' }));
+      throw new Error(error.message || 'שגיאה בטעינת המשתמשים הממתינים. נסה לרענן את הדף.');
     }
 
     return res.json();
@@ -173,8 +173,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'Failed to activate user' }));
-      throw new Error(error.message || 'Failed to activate user');
+      const error = await res.json().catch(() => ({ message: 'שגיאה בהפעלת המשתמש. נסה שוב.' }));
+      throw new Error(error.message || 'שגיאה בהפעלת המשתמש. נסה שוב.');
     }
 
     return res.json();
@@ -193,8 +193,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'Failed to bulk activate users' }));
-      throw new Error(error.message || 'Failed to bulk activate users');
+      const error = await res.json().catch(() => ({ message: 'שגיאה בהפעלת המשתמשים. נסה שוב.' }));
+      throw new Error(error.message || 'שגיאה בהפעלת המשתמשים. נסה שוב.');
     }
 
     return res.json();
@@ -207,8 +207,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'Failed to deactivate user' }));
-      throw new Error(error.message || 'Failed to deactivate user');
+      const error = await res.json().catch(() => ({ message: 'שגיאה בהשבתת המשתמש. נסה שוב.' }));
+      throw new Error(error.message || 'שגיאה בהשבתת המשתמש. נסה שוב.');
     }
 
     return res.json();
@@ -222,8 +222,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'Failed to login as user' }));
-      throw new Error(error.message || 'Failed to login as user');
+      const error = await res.json().catch(() => ({ message: 'שגיאה בהתחברות כמשתמש. נסה שוב.' }));
+      throw new Error(error.message || 'שגיאה בהתחברות כמשתמש. נסה שוב.');
     }
 
     return res.json();
@@ -236,8 +236,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'Failed to delete user' }));
-      throw new Error(error.message || 'Failed to delete user');
+      const error = await res.json().catch(() => ({ message: 'שגיאה במחיקת המשתמש. נסה שוב.' }));
+      throw new Error(error.message || 'שגיאה במחיקת המשתמש. נסה שוב.');
     }
 
     return res.json();
@@ -266,8 +266,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'Failed to update user' }));
-      throw new Error(error.message || 'Failed to update user');
+      const error = await res.json().catch(() => ({ message: 'שגיאה בעדכון המשתמש. נסה שוב.' }));
+      throw new Error(error.message || 'שגיאה בעדכון המשתמש. נסה שוב.');
     }
 
     return res.json();
@@ -292,8 +292,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'Failed to get invoices' }));
-      throw new Error(error.message || 'Failed to get invoices');
+      const error = await res.json().catch(() => ({ message: 'שגיאה בטעינת החשבוניות. נסה לרענן את הדף.' }));
+      throw new Error(error.message || 'שגיאה בטעינת החשבוניות. נסה לרענן את הדף.');
     }
 
     return res.json();
@@ -316,8 +316,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'Failed to get deleted invoices' }));
-      throw new Error(error.message || 'Failed to get deleted invoices');
+      const error = await res.json().catch(() => ({ message: 'שגיאה בטעינת החשבוניות שנמחקו. נסה לרענן את הדף.' }));
+      throw new Error(error.message || 'שגיאה בטעינת החשבוניות שנמחקו. נסה לרענן את הדף.');
     }
 
     return res.json();
@@ -331,8 +331,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'Failed to delete invoice' }));
-      throw new Error(error.message || 'Failed to delete invoice');
+      const error = await res.json().catch(() => ({ message: 'שגיאה במחיקת החשבונית. נסה שוב.' }));
+      throw new Error(error.message || 'שגיאה במחיקת החשבונית. נסה שוב.');
     }
 
     return res.json();
@@ -346,8 +346,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'Failed to delete invoices' }));
-      throw new Error(error.message || 'Failed to delete invoices');
+      const error = await res.json().catch(() => ({ message: 'שגיאה במחיקת החשבוניות. נסה שוב.' }));
+      throw new Error(error.message || 'שגיאה במחיקת החשבוניות. נסה שוב.');
     }
 
     return res.json();
@@ -361,8 +361,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'Failed to restore invoice' }));
-      throw new Error(error.message || 'Failed to restore invoice');
+      const error = await res.json().catch(() => ({ message: 'שגיאה בשחזור החשבונית. נסה שוב.' }));
+      throw new Error(error.message || 'שגיאה בשחזור החשבונית. נסה שוב.');
     }
 
     return res.json();
@@ -376,8 +376,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'Failed to permanently delete invoice' }));
-      throw new Error(error.message || 'Failed to permanently delete invoice');
+      const error = await res.json().catch(() => ({ message: 'שגיאה במחיקת החשבונית לצמיתות. נסה שוב.' }));
+      throw new Error(error.message || 'שגיאה במחיקת החשבונית לצמיתות. נסה שוב.');
     }
 
     return res.json();
@@ -391,8 +391,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'Failed to cleanup recycle bin' }));
-      throw new Error(error.message || 'Failed to cleanup recycle bin');
+      const error = await res.json().catch(() => ({ message: 'שגיאה בניקוי סל המיחזור. נסה שוב.' }));
+      throw new Error(error.message || 'שגיאה בניקוי סל המיחזור. נסה שוב.');
     }
 
     return res.json();
@@ -406,8 +406,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'Failed to verify invoice' }));
-      throw new Error(error.message || 'Failed to verify invoice');
+      const error = await res.json().catch(() => ({ message: 'שגיאה באימות החשבונית. נסה שוב.' }));
+      throw new Error(error.message || 'שגיאה באימות החשבונית. נסה שוב.');
     }
 
     return res.json();
@@ -430,8 +430,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'Failed to get audit logs' }));
-      throw new Error(error.message || 'Failed to get audit logs');
+      const error = await res.json().catch(() => ({ message: 'שגיאה בטעינת יומן הביקורת. נסה לרענן את הדף.' }));
+      throw new Error(error.message || 'שגיאה בטעינת יומן הביקורת. נסה לרענן את הדף.');
     }
 
     return res.json();
@@ -457,8 +457,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'Failed to get system logs' }));
-      throw new Error(error.message || 'Failed to get system logs');
+      const error = await res.json().catch(() => ({ message: 'שגיאה בטעינת יומני המערכת. נסה לרענן את הדף.' }));
+      throw new Error(error.message || 'שגיאה בטעינת יומני המערכת. נסה לרענן את הדף.');
     }
 
     return res.json();
@@ -470,8 +470,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'Failed to get system log' }));
-      throw new Error(error.message || 'Failed to get system log');
+      const error = await res.json().catch(() => ({ message: 'שגיאה בטעינת יומן המערכת. נסה לרענן את הדף.' }));
+      throw new Error(error.message || 'שגיאה בטעינת יומן המערכת. נסה לרענן את הדף.');
     }
 
     return res.json();
@@ -483,8 +483,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'Failed to get log stats' }));
-      throw new Error(error.message || 'Failed to get log stats');
+      const error = await res.json().catch(() => ({ message: 'שגיאה בטעינת נתוני היומנים. נסה לרענן את הדף.' }));
+      throw new Error(error.message || 'שגיאה בטעינת נתוני היומנים. נסה לרענן את הדף.');
     }
 
     return res.json();
@@ -497,8 +497,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'Failed to resolve log' }));
-      throw new Error(error.message || 'Failed to resolve log');
+      const error = await res.json().catch(() => ({ message: 'שגיאה בפתרון היומן. נסה שוב.' }));
+      throw new Error(error.message || 'שגיאה בפתרון היומן. נסה שוב.');
     }
 
     return res.json();
@@ -516,8 +516,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'Failed to run system scan' }));
-      throw new Error(error.message || 'Failed to run system scan');
+      const error = await res.json().catch(() => ({ message: 'שגיאה בהפעלת סריקת המערכת. נסה שוב.' }));
+      throw new Error(error.message || 'שגיאה בהפעלת סריקת המערכת. נסה שוב.');
     }
 
     return res.json();
@@ -546,7 +546,7 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      return { error: 'No scan reports found' };
+      return { error: 'לא נמצאו דוחות סריקה' };
     }
 
     return res.json();
@@ -558,8 +558,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'Failed to get scan history' }));
-      throw new Error(error.message || 'Failed to get scan history');
+      const error = await res.json().catch(() => ({ message: 'שגיאה בטעינת היסטוריית הסריקות. נסה לרענן את הדף.' }));
+      throw new Error(error.message || 'שגיאה בטעינת היסטוריית הסריקות. נסה לרענן את הדף.');
     }
 
     return res.json();
@@ -572,8 +572,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'Failed to get contracts' }));
-      throw new Error(error.message || 'Failed to get contracts');
+      const error = await res.json().catch(() => ({ message: 'שגיאה בטעינת החוזים. נסה לרענן את הדף.' }));
+      throw new Error(error.message || 'שגיאה בטעינת החוזים. נסה לרענן את הדף.');
     }
 
     return res.json();
@@ -593,8 +593,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'Failed to create contract' }));
-      throw new Error(error.message || 'Failed to create contract');
+      const error = await res.json().catch(() => ({ message: 'שגיאה ביצירת החוזה. נסה שוב.' }));
+      throw new Error(error.message || 'שגיאה ביצירת החוזה. נסה שוב.');
     }
 
     return res.json();
@@ -612,8 +612,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'Failed to upload image' }));
-      throw new Error(error.message || 'Failed to upload image');
+      const error = await res.json().catch(() => ({ message: 'שגיאה בהעלאת התמונה. נסה שוב.' }));
+      throw new Error(error.message || 'שגיאה בהעלאת התמונה. נסה שוב.');
     }
 
     return res.json();
@@ -626,8 +626,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'Failed to get products' }));
-      throw new Error(error.message || 'Failed to get products');
+      const error = await res.json().catch(() => ({ message: 'שגיאה בטעינת המוצרים. נסה לרענן את הדף.' }));
+      throw new Error(error.message || 'שגיאה בטעינת המוצרים. נסה לרענן את הדף.');
     }
 
     return res.json();
@@ -648,8 +648,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'Failed to create product' }));
-      throw new Error(error.message || 'Failed to create product');
+      const error = await res.json().catch(() => ({ message: 'שגיאה ביצירת המוצר. נסה שוב.' }));
+      throw new Error(error.message || 'שגיאה ביצירת המוצר. נסה שוב.');
     }
 
     return res.json();
@@ -671,8 +671,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'Failed to update product' }));
-      throw new Error(error.message || 'Failed to update product');
+      const error = await res.json().catch(() => ({ message: 'שגיאה בעדכון המוצר. נסה שוב.' }));
+      throw new Error(error.message || 'שגיאה בעדכון המוצר. נסה שוב.');
     }
 
     return res.json();
@@ -685,8 +685,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'Failed to delete product' }));
-      throw new Error(error.message || 'Failed to delete product');
+      const error = await res.json().catch(() => ({ message: 'שגיאה במחיקת המוצר. נסה שוב.' }));
+      throw new Error(error.message || 'שגיאה במחיקת המוצר. נסה שוב.');
     }
 
     return res.json();
@@ -716,8 +716,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'Failed to get system status' }));
-      throw new Error(error.message || 'Failed to get system status');
+      const error = await res.json().catch(() => ({ message: 'שגיאה בטעינת סטטוס המערכת. נסה לרענן את הדף.' }));
+      throw new Error(error.message || 'שגיאה בטעינת סטטוס המערכת. נסה לרענן את הדף.');
     }
 
     return res.json();
@@ -731,8 +731,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'Failed to send system alert' }));
-      throw new Error(error.message || 'Failed to send system alert');
+      const error = await res.json().catch(() => ({ message: 'שגיאה בשליחת התראת המערכת. נסה שוב.' }));
+      throw new Error(error.message || 'שגיאה בשליחת התראת המערכת. נסה שוב.');
     }
 
     return res.json();
@@ -748,8 +748,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'Failed to get status history' }));
-      throw new Error(error.message || 'Failed to get status history');
+      const error = await res.json().catch(() => ({ message: 'שגיאה בטעינת היסטוריית הסטטוס. נסה לרענן את הדף.' }));
+      throw new Error(error.message || 'שגיאה בטעינת היסטוריית הסטטוס. נסה לרענן את הדף.');
     }
 
     return res.json();
@@ -762,8 +762,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'Failed to send test email' }));
-      throw new Error(error.message || 'Failed to send test email');
+      const error = await res.json().catch(() => ({ message: 'שגיאה בשליחת מייל בדיקה. נסה שוב.' }));
+      throw new Error(error.message || 'שגיאה בשליחת מייל בדיקה. נסה שוב.');
     }
 
     return res.json();
