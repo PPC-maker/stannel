@@ -677,25 +677,13 @@ export async function adminRoutes(server: FastifyInstance) {
 
     const buffer = await data.toBuffer();
     const { storageService } = await import('../services/storage.service.js');
-    const imageUrl = await storageService.uploadProfileImage(buffer, data.filename);
+    const imageUrl = await storageService.uploadProfileImage(buffer, id, data.filename);
 
     // Update user profile image
     await prisma.user.update({
       where: { id },
       data: { profileImage: imageUrl },
     });
-
-    // Also update supplier profile image if exists
-    const user = await prisma.user.findUnique({
-      where: { id },
-      include: { supplierProfile: true },
-    });
-    if (user?.supplierProfile) {
-      await prisma.supplierProfile.update({
-        where: { id: user.supplierProfile.id },
-        data: { profileImage: imageUrl },
-      });
-    }
 
     await prisma.auditLog.create({
       data: {
