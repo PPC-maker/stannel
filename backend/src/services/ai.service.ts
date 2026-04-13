@@ -96,7 +96,7 @@ export const aiService = {
       for (let i = 0; i < rawBuffer.length; i++) rawBuffer[i] = view[i];
 
       // Enhance image for better AI recognition
-      let finalBuffer = rawBuffer;
+      let finalBuffer: any = rawBuffer;
       try {
         const { imageProcessorService } = await import('./image-processor.service.js');
         finalBuffer = await imageProcessorService.prepareForAI(rawBuffer);
@@ -105,7 +105,7 @@ export const aiService = {
         console.warn('[AI] Image enhancement skipped:', enhanceError);
       }
 
-      const base64 = finalBuffer.toString('base64');
+      const base64 = Buffer.from(finalBuffer).toString('base64');
       const mimeType = response.headers.get('content-type') || 'image/jpeg';
 
       const prompt = `
