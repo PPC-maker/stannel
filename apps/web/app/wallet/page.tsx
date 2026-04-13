@@ -272,9 +272,12 @@ export default function WalletPage() {
                         </p>
                       </div>
                       <div className="text-left">
-                        <p className="text-white/50 text-xs">נקודות</p>
+                        <p className="text-white/50 text-xs">{isAdmin ? 'עמלה' : 'נקודות'}</p>
                         <p className="text-white text-2xl font-bold">
-                          {isLoading ? '...' : (balance?.points || 0).toLocaleString()}
+                          {isAdmin
+                            ? (adminStats ? `₪${adminStats.adminCommission.toLocaleString()}` : '...')
+                            : (isLoading ? '...' : (balance?.points || 0).toLocaleString())
+                          }
                         </p>
                       </div>
                     </div>
