@@ -1281,7 +1281,7 @@ Please analyze this error and provide a fix.
                         const isExpanded = expandedUserId === user.id;
                         const sp = user.supplierProfile;
                         const ap = user.architectProfile;
-                        const allImages = [...(user.profileImage ? [user.profileImage] : []), ...(sp?.profileImage ? [sp.profileImage] : []), ...(sp?.businessImages || [])];
+                        const allImages = [...(user.profileImage ? [user.profileImage] : []), ...(sp?.businessImages || [])];
                         return (
                           <React.Fragment key={user.id}>
                             <tr className={`border-b border-white/5 hover:bg-white/5 transition-colors cursor-pointer ${!user.isActive ? 'bg-yellow-500/5' : ''} ${isExpanded ? 'bg-white/5' : ''}`} onClick={() => setExpandedUserId(isExpanded ? null : user.id)}>
