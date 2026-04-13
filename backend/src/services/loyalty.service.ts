@@ -3,8 +3,13 @@
 import prisma from '../lib/prisma.js';
 import { notificationService } from './notification.service.js';
 
+// Commission rate constants
+const COMMISSION_RATE = 0.02;    // 2% for each side (4% total)
+const POINTS_PER_SHEKEL = 40;    // 1₪ = 40 points
+
 export const loyaltyService = {
   // Credit points for paid invoice
+  // 4% total commission: 2% to architect (as points), 2% to admin (as ₪)
   async creditInvoicePoints(invoiceId: string): Promise<void> {
     const invoice = await prisma.invoice.findUnique({
       where: { id: invoiceId },
@@ -14,16 +19,18 @@ export const loyaltyService = {
       throw new Error('Invoice not found');
     }
 
-    // Calculate points - 2% of invoice amount for both architect and supplier
-    const pointsToCredit = invoice.amount * 0.02;
+    // Calculate commissions
+    const architectCommission = invoice.amount * 0.02;  // 2% in ₪
+    const adminCommission = invoice.amount * 0.02;      // 2% in ₪
+    const architectPoints = architectCommission * 40;    // Convert to points (1₪ = 40 pts)
 
     await prisma.$transaction([
-      // Update architect balance
+      // Update architect points balance
       prisma.architectProfile.update({
         where: { id: invoice.architectId },
         data: {
-          pointsBalance: { increment: pointsToCredit },
-          totalEarned: { increment: pointsToCredit },
+          pointsBalance: { increment: architectPoints },
+          totalEarned: { increment: architectPoints },
           monthlyProgress: { increment: invoice.amount },
         },
       }),
@@ -32,27 +39,18 @@ export const loyaltyService = {
         data: {
           architectId: invoice.architectId,
           type: 'CREDIT',
-          amount: pointsToCredit,
-          description: `זיכוי נקודות מחשבונית #${invoiceId.slice(-6)}`,
+          amount: architectPoints,
+          description: `זיכוי ${architectPoints.toLocaleString()} נקודות (₪${architectCommission.toLocaleString()}) מחשבונית #${invoiceId.slice(-6)}`,
           invoiceId,
         },
       }),
-      // Update supplier balance
-      prisma.supplierProfile.update({
-        where: { id: invoice.supplierId },
+      // Track commission on invoice
+      prisma.invoice.update({
+        where: { id: invoiceId },
         data: {
-          pointsBalance: { increment: pointsToCredit },
-          totalEarned: { increment: pointsToCredit },
-        },
-      }),
-      // Create transaction record for supplier
-      prisma.supplierCardTransaction.create({
-        data: {
-          supplierId: invoice.supplierId,
-          type: 'CREDIT',
-          amount: pointsToCredit,
-          description: `זיכוי נקודות מחשבונית #${invoiceId.slice(-6)}`,
-          invoiceId,
+          adminCommission,
+          architectPoints,
+          architectCommission,
         },
       }),
     ]);

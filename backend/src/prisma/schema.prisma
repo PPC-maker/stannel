@@ -169,6 +169,11 @@ model Invoice {
   aiConfidence      Float?
   aiStatus          String?
 
+  // Commission tracking (4% total: 2% architect points + 2% admin)
+  adminCommission     Float?          // 2% admin commission in ₪
+  architectPoints     Float?          // Points credited to architect (2% × 40)
+  architectCommission Float?          // 2% architect commission in ₪ (before points conversion)
+
   statusHistory     InvoiceStatusHistory[]
 
   @@index([deletedAt])

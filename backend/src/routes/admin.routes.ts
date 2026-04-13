@@ -1355,6 +1355,36 @@ Please analyze this error and provide a fix.
     lastUpdated: string;
   }
 
+  // Get commission stats for admin
+  server.get('/commission-stats', async (request: FastifyRequest) => {
+    const paidInvoices = await prisma.invoice.findMany({
+      where: { status: 'PAID', deletedAt: null },
+      select: {
+        amount: true,
+        adminCommission: true,
+        architectCommission: true,
+        architectPoints: true,
+        paidAt: true,
+      },
+    });
+
+    const totalRevenue = paidInvoices.reduce((sum, inv) => sum + inv.amount, 0);
+    const totalAdminCommission = paidInvoices.reduce((sum, inv) => sum + (inv.adminCommission || inv.amount * 0.02), 0);
+    const totalArchitectCommission = paidInvoices.reduce((sum, inv) => sum + (inv.architectCommission || inv.amount * 0.02), 0);
+    const totalArchitectPoints = paidInvoices.reduce((sum, inv) => sum + (inv.architectPoints || inv.amount * 0.02 * 40), 0);
+
+    return {
+      totalPaidInvoices: paidInvoices.length,
+      totalRevenue,
+      totalCommission: totalAdminCommission + totalArchitectCommission,
+      adminCommission: totalAdminCommission,
+      architectCommission: totalArchitectCommission,
+      architectPoints: totalArchitectPoints,
+      commissionRate: '4% (2% אדריכל + 2% מנהל)',
+      pointsPerShekel: 40,
+    };
+  });
+
   // Get comprehensive system status
   server.get('/system-status', async (request: FastifyRequest) => {
     const services: ServiceStatus[] = [];
