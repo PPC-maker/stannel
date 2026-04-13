@@ -243,6 +243,81 @@ export async function adminRoutes(server: FastifyInstance) {
     return user;
   });
 
+  // Update user (admin edit)
+  server.patch('/users/:id', async (request: FastifyRequest, reply: FastifyReply) => {
+    const { id } = request.params as { id: string };
+    const body = request.body as {
+      name?: string;
+      phone?: string;
+      address?: string;
+      company?: string;
+      supplierProfile?: {
+        companyName?: string;
+        description?: string;
+        phone?: string;
+        address?: string;
+        website?: string;
+        facebook?: string;
+        instagram?: string;
+        linkedin?: string;
+      };
+    };
+
+    const user = await prisma.user.findUnique({
+      where: { id },
+      include: { supplierProfile: true, architectProfile: true },
+    });
+    if (!user) {
+      return reply.code(404).send({ error: 'User not found' });
+    }
+
+    // Update user basic fields
+    const updatedUser = await prisma.user.update({
+      where: { id },
+      data: {
+        ...(body.name !== undefined && { name: body.name }),
+        ...(body.phone !== undefined && { phone: body.phone }),
+        ...(body.address !== undefined && { address: body.address }),
+        ...(body.company !== undefined && { company: body.company }),
+      },
+      include: { architectProfile: true, supplierProfile: true },
+    });
+
+    // Update supplier profile if provided
+    if (body.supplierProfile && user.supplierProfile) {
+      await prisma.supplierProfile.update({
+        where: { id: user.supplierProfile.id },
+        data: {
+          ...(body.supplierProfile.companyName !== undefined && { companyName: body.supplierProfile.companyName }),
+          ...(body.supplierProfile.description !== undefined && { description: body.supplierProfile.description }),
+          ...(body.supplierProfile.phone !== undefined && { phone: body.supplierProfile.phone }),
+          ...(body.supplierProfile.address !== undefined && { address: body.supplierProfile.address }),
+          ...(body.supplierProfile.website !== undefined && { website: body.supplierProfile.website }),
+          ...(body.supplierProfile.facebook !== undefined && { facebook: body.supplierProfile.facebook }),
+          ...(body.supplierProfile.instagram !== undefined && { instagram: body.supplierProfile.instagram }),
+          ...(body.supplierProfile.linkedin !== undefined && { linkedin: body.supplierProfile.linkedin }),
+        },
+      });
+    }
+
+    await prisma.auditLog.create({
+      data: {
+        userId: request.user!.id,
+        action: 'USER_UPDATED',
+        entityId: id,
+        metadata: { updatedFields: Object.keys(body) },
+      },
+    });
+
+    // Return updated user with profiles
+    const result = await prisma.user.findUnique({
+      where: { id },
+      include: { architectProfile: true, supplierProfile: true },
+    });
+
+    return result;
+  });
+
   // Delete user
   server.delete('/users/:id', async (request: FastifyRequest, reply: FastifyReply) => {
     const { id } = request.params as { id: string };
