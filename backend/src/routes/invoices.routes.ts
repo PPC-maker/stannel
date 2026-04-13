@@ -135,10 +135,23 @@ export async function invoiceRoutes(server: FastifyInstance) {
       return reply.code(400).send({ error: 'User does not have an architect profile' });
     }
 
-    // Upload to GCS
+    // Upload to GCS (with image enhancement for photos)
     let imageUrl: string;
     try {
-      const buffer = await data.toBuffer();
+      let buffer = await data.toBuffer();
+
+      // Enhance invoice image if it's a photo (not PDF)
+      const isPdf = data.filename?.toLowerCase().endsWith('.pdf');
+      if (!isPdf && buffer.length > 0) {
+        try {
+          const { imageProcessorService } = await import('../services/image-processor.service.js');
+          buffer = await imageProcessorService.enhanceInvoiceImage(buffer);
+          console.log('[Invoice Upload] Image enhanced successfully');
+        } catch (enhanceError) {
+          console.warn('[Invoice Upload] Image enhancement skipped:', enhanceError);
+        }
+      }
+
       imageUrl = await storageService.uploadInvoice(buffer, data.filename);
     } catch (uploadError) {
       console.error('[Invoice Upload] Storage upload failed:', uploadError);
