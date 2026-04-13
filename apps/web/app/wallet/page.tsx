@@ -2,7 +2,8 @@
 
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { DollarSign } from 'lucide-react';
 import {
   Wallet,
   CreditCard,
@@ -114,6 +115,21 @@ export default function WalletPage() {
   // Suppliers data - fetch based on role
   const isAdmin = user?.role === 'ADMIN';
   const isArchitect = user?.role === 'ARCHITECT';
+  const [adminStats, setAdminStats] = useState<any>(null);
+
+  // Fetch admin commission stats
+  useEffect(() => {
+    if (isAdmin) {
+      import('@stannel/api-client').then(({ getAuthToken }) => {
+        fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:7070'}/api/v1/admin/commission-stats`, {
+          headers: { Authorization: `Bearer ${getAuthToken()}` },
+        })
+          .then(res => res.json())
+          .then(data => setAdminStats(data))
+          .catch(console.error);
+      });
+    }
+  }, [isAdmin]);
   const { data: allSuppliers, isLoading: suppliersLoading } = useSuppliersDirectory({}, activeCategory === 'suppliers' && (isAdmin || isArchitect));
 
   const currentRank = (card?.rank as keyof typeof rankConfig) || 'BRONZE';
@@ -266,7 +282,47 @@ export default function WalletPage() {
 
           {/* Stats Cards */}
           <div className="lg:col-span-2 grid grid-cols-2 gap-4">
-            {[
+            {(isAdmin ? [
+              {
+                icon: DollarSign,
+                label: 'עמלת מנהל (2%)',
+                value: adminStats ? adminStats.adminCommission.toLocaleString() : '...',
+                color: 'text-emerald-400',
+                bgColor: 'bg-emerald-500/20',
+                borderColor: 'border-emerald-500/30',
+                prefix: '₪',
+                show: true,
+              },
+              {
+                icon: TrendingUp,
+                label: 'סה"כ מחזור חשבוניות',
+                value: adminStats ? adminStats.totalRevenue.toLocaleString() : '...',
+                color: 'text-green-400',
+                bgColor: 'bg-green-500/20',
+                borderColor: 'border-green-500/30',
+                prefix: '₪',
+                show: true,
+              },
+              {
+                icon: Award,
+                label: 'נקודות אדריכלים',
+                value: adminStats ? adminStats.architectPoints.toLocaleString() : '...',
+                color: 'text-purple-400',
+                bgColor: 'bg-purple-500/20',
+                borderColor: 'border-purple-500/30',
+                suffix: 'נק׳',
+                show: true,
+              },
+              {
+                icon: FileText,
+                label: 'חשבוניות ששולמו',
+                value: adminStats ? adminStats.totalPaidInvoices.toString() : '...',
+                color: 'text-amber-400',
+                bgColor: 'bg-amber-500/20',
+                borderColor: 'border-amber-500/30',
+                show: true,
+              },
+            ] : [
               {
                 icon: Award,
                 label: 'נקודות זמינות',
@@ -307,7 +363,7 @@ export default function WalletPage() {
                 suffix: 'נק׳',
                 show: true,
               },
-            ].filter(stat => stat.show).map((stat, index) => (
+            ]).filter(stat => stat.show).map((stat, index) => (
               <motion.div
                 key={stat.label}
                 initial={{ opacity: 0, y: 20 }}
