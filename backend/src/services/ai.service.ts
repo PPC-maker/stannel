@@ -90,10 +90,10 @@ export const aiService = {
 
       // Fetch image
       const response = await fetch(imageUrl);
-      const rawBuffer = Buffer.from(await response.arrayBuffer());
+      const rawBuffer = Buffer.from(await response.arrayBuffer()) as Buffer;
 
       // Enhance image for better AI recognition
-      let processedBuffer = rawBuffer;
+      let processedBuffer: Buffer = rawBuffer;
       try {
         const { imageProcessorService } = await import('./image-processor.service.js');
         processedBuffer = await imageProcessorService.prepareForAI(rawBuffer);
