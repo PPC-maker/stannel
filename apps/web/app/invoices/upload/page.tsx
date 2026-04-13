@@ -89,7 +89,11 @@ export default function InvoiceUploadPage() {
       setSuccess(true);
     } catch (err: any) {
       console.error('Upload error:', err);
-      setError(err.message || 'אירעה שגיאה בהעלאת החשבונית');
+      if (err.message?.includes('Unauthorized') || err.message?.includes('401') || err.message?.includes('Invalid token')) {
+        setError('פג תוקף החיבור. אנא התחבר/י מחדש למערכת.');
+      } else {
+        setError(err.message || 'אירעה שגיאה בהעלאת החשבונית');
+      }
     }
   };
 
@@ -217,6 +221,14 @@ export default function InvoiceUploadPage() {
               <AlertTriangle size={20} />
               <p>{error}</p>
             </div>
+            {error.includes('התחבר') && (
+              <button
+                onClick={() => window.location.href = '/login'}
+                className="mt-3 w-full py-2 bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 rounded-lg text-sm hover:bg-emerald-500/30 transition-colors"
+              >
+                התחבר מחדש
+              </button>
+            )}
           </motion.div>
         )}
 

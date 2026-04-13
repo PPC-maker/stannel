@@ -45,9 +45,12 @@ export const invoicesApi = {
       body: formData,
     });
 
+    if (response.status === 401) {
+      throw new Error('פג תוקף החיבור. אנא התחבר/י מחדש למערכת.');
+    }
+
     if (!response.ok) {
       const errorData = await response.json();
-      // Server returns { error: 'message' }
       throw new Error(errorData.error || errorData.message || 'Failed to upload invoice');
     }
 
