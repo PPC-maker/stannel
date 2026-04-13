@@ -53,8 +53,10 @@ export function useWebSocket() {
               // Invalidate all invoice-related queries
               queryClient.invalidateQueries({ queryKey: ['invoices'] });
               queryClient.invalidateQueries({ queryKey: ['invoice'] });
+              queryClient.invalidateQueries({ queryKey: ['supplier'] });
               queryClient.invalidateQueries({ queryKey: ['dashboard'] });
               queryClient.invalidateQueries({ queryKey: ['wallet'] });
+              queryClient.invalidateQueries({ queryKey: ['architect'] });
               break;
 
             case 'user:activated':
