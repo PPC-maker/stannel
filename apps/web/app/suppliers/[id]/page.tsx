@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -25,36 +25,6 @@ import {
 import { useSupplierDetail } from '@/lib/api-hooks';
 import { useAuthGuard, AuthGuardLoader } from '@/lib/useAuthGuard';
 import Swal from 'sweetalert2';
-
-function GalleryImage({ img, index, onClick }: { img: string; index: number; onClick: () => void }) {
-  const [loaded, setLoaded] = useState(false);
-  return (
-    <motion.button
-      initial={{ opacity: 0, scale: 0.9 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ delay: 0.25 + index * 0.05 }}
-      onClick={onClick}
-      className="relative aspect-square rounded-xl overflow-hidden group"
-    >
-      {!loaded && (
-        <div className="absolute inset-0 bg-white/5 animate-pulse flex items-center justify-center">
-          <Loader2 size={20} className="text-white/30 animate-spin" />
-        </div>
-      )}
-      <Image
-        src={img}
-        alt={`תמונה ${index + 1}`}
-        fill
-        className={`object-cover group-hover:scale-105 transition-all duration-500 ${loaded ? 'opacity-100' : 'opacity-0'}`}
-        unoptimized={img.includes('localhost')}
-        onLoad={() => setLoaded(true)}
-      />
-      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center">
-        <ZoomIn size={20} className="text-white opacity-0 group-hover:opacity-100 transition-opacity" />
-      </div>
-    </motion.button>
-  );
-}
 
 export default function SupplierDetailPage() {
   const { isReady } = useAuthGuard();
@@ -373,7 +343,25 @@ export default function SupplierDetailPage() {
           </h3>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
             {galleryImages.map((img: string, index: number) => (
-              <GalleryImage key={index} img={img} index={index} onClick={() => openLightbox(index)} />
+              <motion.button
+                key={index}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.1 + index * 0.05 }}
+                onClick={() => openLightbox(index)}
+                className="relative aspect-square rounded-xl overflow-hidden group bg-white/5"
+              >
+                <Image
+                  src={img}
+                  alt={`תמונה ${index + 1}`}
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-500"
+                  unoptimized
+                />
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center">
+                  <ZoomIn size={20} className="text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+                </div>
+              </motion.button>
             ))}
           </div>
         </motion.div>
