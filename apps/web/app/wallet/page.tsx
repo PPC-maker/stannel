@@ -108,13 +108,14 @@ export default function WalletPage() {
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
-  const { data: balance, isLoading: balanceLoading } = useWalletBalance();
-  const { data: card, isLoading: cardLoading } = useWalletCard();
-  const { data: transactions, isLoading: transactionsLoading } = useWalletTransactions();
-
   const isAdmin = user?.role === 'ADMIN';
   const isArchitect = user?.role === 'ARCHITECT';
   const isSupplier = user?.role === 'SUPPLIER';
+  const hasWallet = !isAdmin && !!user;
+
+  const { data: balance, isLoading: balanceLoading } = useWalletBalance(hasWallet);
+  const { data: card, isLoading: cardLoading } = useWalletCard(hasWallet);
+  const { data: transactions, isLoading: transactionsLoading } = useWalletTransactions(hasWallet);
   const [adminStats, setAdminStats] = useState<any>(null);
 
   // Suppliers data for expanded view
@@ -283,6 +284,45 @@ export default function WalletPage() {
           </div>
         </motion.div>
 
+        {/* Action Tiles - 2x2 Grid */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.15 }}
+          className="grid grid-cols-2 gap-3 mb-4"
+        >
+          {[
+            { id: 'events', label: 'אירועים', href: '/events', image: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&q=80' },
+            { id: 'rewards', label: 'חנות מתנות', href: '/rewards', image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80' },
+            { id: 'tools', label: 'כלי עיצוב', href: '/invoices', image: 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=800&q=80' },
+            { id: 'suppliers', label: 'פגישה עם ספק', href: '/suppliers', image: 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=800&q=80' },
+          ].map((tile, index) => (
+            <motion.div
+              key={tile.id}
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2 + index * 0.05 }}
+            >
+              <Link
+                href={tile.href}
+                className="block relative rounded-2xl overflow-hidden shadow-md group"
+                style={{ aspectRatio: '1.4/1' }}
+              >
+                <ImageWithLoader
+                  src={tile.image}
+                  alt={tile.label}
+                  fill
+                  sizes="(max-width: 768px) 50vw, 300px"
+                  className="object-cover group-hover:scale-110 transition-transform duration-700"
+                />
+                <div className="absolute bottom-0 left-0 right-0 bg-[#2d5a3d]/85 backdrop-blur-sm py-2.5 px-3 rounded-b-2xl">
+                  <p className="text-white font-bold text-sm tracking-wide text-center">{tile.label}</p>
+                </div>
+              </Link>
+            </motion.div>
+          ))}
+        </motion.div>
+
         {/* Admin Stats Row */}
         {isAdmin && adminStats && (
           <motion.div
@@ -362,7 +402,7 @@ export default function WalletPage() {
 
             {/* Circular Category Icons */}
             <div
-              className="flex gap-4 md:gap-6 py-2 px-2 overflow-x-auto md:overflow-visible md:justify-center"
+              className="flex gap-4 md:gap-3 py-2 px-2 overflow-x-auto md:overflow-visible md:justify-center"
               style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', WebkitOverflowScrolling: 'touch' }}
             >
               {quickActionCategories.map((category) => {
@@ -374,11 +414,11 @@ export default function WalletPage() {
                     key={category.id}
                     onClick={() => setActiveCategory(isActive ? null : category.id)}
                     whileTap={{ scale: 0.95 }}
-                    className="flex flex-col items-center gap-3 min-w-[80px] flex-shrink-0"
+                    className="flex flex-col items-center gap-3 min-w-[72px] md:min-w-[76px] flex-shrink-0"
                   >
                     <div
                       className={`
-                        w-20 h-20 md:w-24 md:h-24 rounded-full flex items-center justify-center
+                        w-20 h-20 md:w-20 md:h-20 rounded-full flex items-center justify-center
                         transition-all duration-300 border-2
                         ${isActive
                           ? `${category.color} border-white/30 shadow-lg scale-110`
@@ -509,48 +549,6 @@ export default function WalletPage() {
             </AnimatePresence>
           </div>
         </motion.div>
-
-        {/* Action Tiles - 2x2 Grid */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.35 }}
-          className="grid grid-cols-2 gap-3 mb-5"
-        >
-          {[
-            { id: 'events', label: 'אירועים', href: '/events', image: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&q=80' },
-            { id: 'rewards', label: 'חנות מתנות', href: '/rewards', image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80' },
-            { id: 'tools', label: 'כלי עיצוב', href: '/invoices', image: 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=800&q=80' },
-            { id: 'suppliers', label: 'פגישה עם ספק', href: '/suppliers', image: 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=800&q=80' },
-          ].map((tile, index) => (
-            <motion.div
-              key={tile.id}
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.4 + index * 0.05 }}
-            >
-              <Link
-                href={tile.href}
-                className="block relative rounded-2xl overflow-hidden shadow-md group"
-                style={{ aspectRatio: '1.4/1' }}
-              >
-                <ImageWithLoader
-                  src={tile.image}
-                  alt={tile.label}
-                  fill
-                  sizes="(max-width: 768px) 50vw, 300px"
-                  className="object-cover group-hover:scale-110 transition-transform duration-700"
-                />
-                <div className="absolute bottom-0 left-0 right-0 bg-[#2d5a3d]/85 backdrop-blur-sm py-2.5 px-3 rounded-b-2xl">
-                  <p className="text-white font-bold text-sm tracking-wide text-center">{tile.label}</p>
-                </div>
-              </Link>
-            </motion.div>
-          ))}
-        </motion.div>
-
-        {/* More for you */}
-        <p className="text-center text-[#8a8a8a] text-sm font-medium mb-4">עוד בשבילך</p>
 
         {/* Recent Transactions */}
         <motion.div

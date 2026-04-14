@@ -20,9 +20,10 @@ export default function DashboardPage() {
   const router = useRouter();
   const { user, loading } = useAuth();
 
-  const { data: stats } = useDashboardStats();
-  const { data: transactions, isLoading: txLoading } = useWalletTransactions();
-  const { data: card } = useWalletCard();
+  const hasWallet = !!user && user.role !== 'ADMIN';
+  const { data: stats } = useDashboardStats(hasWallet);
+  const { data: transactions, isLoading: txLoading } = useWalletTransactions(hasWallet);
+  const { data: card } = useWalletCard(hasWallet);
 
   useEffect(() => {
     if (!loading && !user) {

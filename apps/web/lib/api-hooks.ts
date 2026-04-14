@@ -8,29 +8,30 @@ import type { ChatMessage } from '@stannel/types';
 const isAuthenticated = () => !!getAuthToken();
 
 // Wallet hooks
-export function useWalletBalance() {
+export function useWalletBalance(enabled: boolean = true) {
   return useQuery({
     queryKey: ['wallet', 'balance'],
     queryFn: () => walletApi.getBalance(),
-    enabled: isAuthenticated(),
+    enabled: enabled && isAuthenticated(),
   });
 }
 
-export function useWalletCard() {
+export function useWalletCard(enabled: boolean = true) {
   return useQuery({
     queryKey: ['wallet', 'card'],
     queryFn: () => walletApi.getCard(),
-    enabled: isAuthenticated(),
+    enabled: enabled && isAuthenticated(),
   });
 }
 
-export function useWalletTransactions() {
+export function useWalletTransactions(enabled: boolean = true) {
   return useQuery({
     queryKey: ['wallet', 'transactions'],
     queryFn: async () => {
       const response = await walletApi.getTransactions();
       return response.data;
     },
+    enabled,
   });
 }
 
@@ -156,9 +157,10 @@ export function useRegisterForEvent() {
 }
 
 // Dashboard stats hook
-export function useDashboardStats() {
+export function useDashboardStats(enabled: boolean = true) {
   return useQuery({
     queryKey: ['dashboard', 'stats'],
+    enabled,
     queryFn: async () => {
       const [balance, card, invoicesResponse] = await Promise.all([
         walletApi.getBalance(),
