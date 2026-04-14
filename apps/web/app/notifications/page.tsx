@@ -81,9 +81,40 @@ export default function NotificationsPage() {
   const markAsRead = useMarkNotificationRead();
   const markAllRead = useMarkAllNotificationsRead();
   const [localStatuses, setLocalStatuses] = useState<Record<string, NotifStatus>>({});
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
   const notifications = notificationsData?.data || [];
   const unreadCount = notifications.filter((n: any) => !n.isRead).length;
+
+  const toggleSelect = (e: React.MouseEvent, id: string) => {
+    e.stopPropagation();
+    setSelectedIds(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    });
+  };
+
+  const handleDeleteSelected = async () => {
+    if (selectedIds.size === 0) return;
+    const result = await Swal.fire({
+      title: `מחיקת ${selectedIds.size} הודעות`,
+      text: 'האם למחוק את ההודעות המסומנות?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'מחק',
+      cancelButtonText: 'ביטול',
+      confirmButtonColor: '#ef4444',
+      background: '#0f2620',
+      color: '#fff',
+    });
+    if (!result.isConfirmed) return;
+    try {
+      await Promise.all(Array.from(selectedIds).map(id => notificationsApi.deleteNotification(id)));
+      setSelectedIds(new Set());
+      queryClient.invalidateQueries({ queryKey: ['notifications'] });
+    } catch {}
+  };
 
   // Load stored statuses
   useEffect(() => {
@@ -280,6 +311,15 @@ export default function NotificationsPage() {
                 {unreadCount > 0 ? `${unreadCount} התראות שלא נקראו` : 'אין התראות חדשות'}
               </p>
             </div>
+            {selectedIds.size > 0 && (
+              <button
+                onClick={handleDeleteSelected}
+                className="px-3 py-2 bg-red-500/20 border border-red-500/30 text-red-400 rounded-lg text-sm flex items-center gap-1.5 hover:bg-red-500/30 transition-colors"
+              >
+                <Trash2 size={14} />
+                מחק ({selectedIds.size})
+              </button>
+            )}
           </div>
         </motion.div>
 
@@ -316,8 +356,14 @@ export default function NotificationsPage() {
                     className={`p-3 sm:p-4 flex items-start gap-3 cursor-pointer transition-all border-r-4 rounded-xl ${config.bg}`}
                     style={{ borderRightColor: status === 'new' ? '#ef4444' : status === 'pending' ? '#eab308' : '#10b981' }}
                   >
-                    {/* Status dot */}
-                    <div className={`w-3 h-3 rounded-full mt-1.5 flex-shrink-0 ${config.dot} ${status === 'new' ? 'animate-pulse' : ''}`} />
+                    {/* Checkbox */}
+                    <input
+                      type="checkbox"
+                      checked={selectedIds.has(notif.id)}
+                      onClick={(e) => toggleSelect(e, notif.id)}
+                      onChange={() => {}}
+                      className="w-4 h-4 rounded bg-white/10 border-white/30 text-emerald-500 mt-1 flex-shrink-0 cursor-pointer"
+                    />
 
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-0.5">
