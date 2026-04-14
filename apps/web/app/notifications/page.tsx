@@ -335,14 +335,8 @@ export default function NotificationsPage() {
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-1 flex-shrink-0">
-                      <button
-                        onClick={(e) => handleDelete(e, notif.id)}
-                        className="p-1 rounded hover:bg-red-500/20 text-white/30 hover:text-red-400 transition-colors"
-                      >
-                        <Trash2 size={14} />
-                      </button>
-                    </div>
+                    {/* Status indicator only */}
+                    <div className={`w-3 h-3 rounded-full flex-shrink-0 ${config.dot} ${status === 'new' ? 'animate-pulse' : ''}`} />
                   </motion.div>
                 );
               })}
