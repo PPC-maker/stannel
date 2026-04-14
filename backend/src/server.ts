@@ -1,6 +1,6 @@
 // STANNEL Backend Server - Fastify
 
-import Fastify from 'fastify';
+import Fastify, { FastifyRequest, FastifyReply } from 'fastify';
 import cors from '@fastify/cors';
 import multipart from '@fastify/multipart';
 import rateLimit from '@fastify/rate-limit';
@@ -170,6 +170,29 @@ function registerWebSocket() {
     });
   });
 }
+
+// Client error reporting (public - no auth required)
+server.post('/api/v1/report-error', async (request: FastifyRequest, reply: FastifyReply) => {
+  try {
+    const body = request.body as { page?: string; error?: string; userAgent?: string };
+    const { emailService } = await import('./services/email.service.js');
+    await emailService.sendErrorAlert(
+      ['orenshp77@gmail.com'],
+      {
+        title: `שגיאת ממשק: ${body.page || 'לא ידוע'}`,
+        message: body.error || 'שגיאה לא מזוהה',
+        category: 'CLIENT_ERROR',
+        endpoint: body.page,
+        details: `User-Agent: ${body.userAgent || request.headers['user-agent'] || 'N/A'}`,
+        timestamp: new Date(),
+      }
+    );
+    return { ok: true };
+  } catch (e) {
+    console.error('[ReportError] Failed to send error alert:', e);
+    return reply.status(500).send({ ok: false });
+  }
+});
 
 // Root endpoint
 server.get('/', async () => {

@@ -153,7 +153,7 @@ export default function AdminAnalyticsPage() {
             <motion.div key={i} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
               <div className={`bg-white/5 backdrop-blur border ${stat.border} rounded-xl p-3 sm:p-4 text-center`}>
                 <p className="text-white/50 text-[10px] sm:text-xs mb-1">{stat.label}</p>
-                <p className={`text-lg sm:text-xl font-bold ${stat.color}`}>{trendsLoading ? <Loader2 className="w-5 h-5 mx-auto animate-spin" /> : stat.value}</p>
+                <p className={`text-lg sm:text-xl font-bold ${stat.color}`}>{trendsLoading ? <Loader2 className="w-5 h-5 mx-auto animate-spin" /> : String(stat.value)}</p>
               </div>
             </motion.div>
           ))}
@@ -267,10 +267,10 @@ export default function AdminAnalyticsPage() {
                     <p className="text-white/70 whitespace-pre-wrap text-sm">{trendsData.aiInsights}</p>
                   ) : (
                     <div className="grid sm:grid-cols-2 gap-4">
-                      {(trendsData.aiInsights as any).summary && <div><h3 className="text-purple-400 font-medium text-sm mb-1">סיכום</h3><p className="text-white/70 text-sm">{(trendsData.aiInsights as any).summary}</p></div>}
-                      {(trendsData.aiInsights as any).trends?.length > 0 && <div><h3 className="text-purple-400 font-medium text-sm mb-1">מגמות</h3><ul className="text-white/70 text-sm space-y-1">{(trendsData.aiInsights as any).trends.map((t: string, i: number) => <li key={i}>• {t}</li>)}</ul></div>}
-                      {(trendsData.aiInsights as any).recommendations?.length > 0 && <div><h3 className="text-emerald-400 font-medium text-sm mb-1">המלצות</h3><ul className="text-white/70 text-sm space-y-1">{(trendsData.aiInsights as any).recommendations.map((r: string, i: number) => <li key={i}>• {r}</li>)}</ul></div>}
-                      {(trendsData.aiInsights as any).alerts?.length > 0 && <div><h3 className="text-red-400 font-medium text-sm mb-1">התראות</h3><ul className="text-red-400/80 text-sm space-y-1">{(trendsData.aiInsights as any).alerts.map((a: string, i: number) => <li key={i}>• {a}</li>)}</ul></div>}
+                      {(trendsData.aiInsights as any).summary && <div><h3 className="text-purple-400 font-medium text-sm mb-1">סיכום</h3><p className="text-white/70 text-sm">{String((trendsData.aiInsights as any).summary)}</p></div>}
+                      {(trendsData.aiInsights as any).trends?.length > 0 && <div><h3 className="text-purple-400 font-medium text-sm mb-1">מגמות</h3><ul className="text-white/70 text-sm space-y-1">{(trendsData.aiInsights as any).trends.map((t: any, i: number) => <li key={i}>• {typeof t === 'object' ? (t.title ? `${t.title}: ${t.insight || t.action || ''}` : JSON.stringify(t)) : String(t)}</li>)}</ul></div>}
+                      {(trendsData.aiInsights as any).recommendations?.length > 0 && <div><h3 className="text-emerald-400 font-medium text-sm mb-1">המלצות</h3><ul className="text-white/70 text-sm space-y-1">{(trendsData.aiInsights as any).recommendations.map((r: any, i: number) => <li key={i}>• {typeof r === 'object' ? (r.message || r.text || JSON.stringify(r)) : String(r)}</li>)}</ul></div>}
+                      {(trendsData.aiInsights as any).alerts?.length > 0 && <div><h3 className="text-red-400 font-medium text-sm mb-1">התראות</h3><ul className="text-red-400/80 text-sm space-y-1">{(trendsData.aiInsights as any).alerts.map((a: any, i: number) => <li key={i}>• {typeof a === 'object' ? (a.message || a.text || JSON.stringify(a)) : String(a)}</li>)}</ul></div>}
                     </div>
                   )}
                 </div>

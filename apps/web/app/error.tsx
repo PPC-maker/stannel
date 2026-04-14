@@ -13,8 +13,21 @@ export default function Error({
   const [dots, setDots] = useState('');
 
   useEffect(() => {
-    // Log the error to console
     console.error('Application error:', error);
+
+    // Report error via email
+    try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || '';
+      fetch(`${apiUrl}/report-error`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          page: typeof window !== 'undefined' ? window.location.pathname : 'unknown',
+          error: error.message || 'Unknown error',
+          userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : '',
+        }),
+      }).catch(() => {});
+    } catch {}
 
     const interval = setInterval(() => {
       setDots(prev => prev.length >= 3 ? '' : prev + '.');
