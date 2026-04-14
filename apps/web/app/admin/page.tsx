@@ -219,6 +219,8 @@ export default function AdminPage() {
   const [deletingInvoice, setDeletingInvoice] = useState<string | null>(null);
   const [restoringInvoice, setRestoringInvoice] = useState<string | null>(null);
   const [deactivatingUser, setDeactivatingUser] = useState<string | null>(null);
+  const [invoiceSearch, setInvoiceSearch] = useState('');
+  const [invoiceStatusFilter, setInvoiceStatusFilter] = useState<string>('');
 
   const fetchAllUsers = async () => {
     try {
@@ -405,9 +407,21 @@ export default function AdminPage() {
     return <AuthGuardLoader />;
   }
 
+  // Filter invoices by search and status
+  const filteredInvoices = invoices.filter(inv => {
+    const matchesSearch = !invoiceSearch ||
+      inv.architect.user.name.toLowerCase().includes(invoiceSearch.toLowerCase()) ||
+      inv.architect.user.email.toLowerCase().includes(invoiceSearch.toLowerCase()) ||
+      inv.supplier.companyName?.toLowerCase().includes(invoiceSearch.toLowerCase()) ||
+      inv.supplier.user.name.toLowerCase().includes(invoiceSearch.toLowerCase()) ||
+      inv.amount.toString().includes(invoiceSearch);
+    const matchesStatus = !invoiceStatusFilter || inv.status === invoiceStatusFilter;
+    return matchesSearch && matchesStatus;
+  });
+
   // Group invoices by architect
   const groupedInvoices: ArchitectGroup[] = Object.values(
-    invoices.reduce((acc: Record<string, ArchitectGroup>, invoice) => {
+    filteredInvoices.reduce((acc: Record<string, ArchitectGroup>, invoice) => {
       const architectId = invoice.architect.id;
       if (!acc[architectId]) {
         acc[architectId] = {
@@ -1842,6 +1856,41 @@ Please analyze this error and provide a fix.
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
           >
+            {/* Search & Filter Bar */}
+            <div className="bg-white/5 backdrop-blur border border-white/10 rounded-2xl p-4 mb-6">
+              <div className="flex flex-col sm:flex-row gap-3">
+                <div className="flex-1 relative">
+                  <Search size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40" />
+                  <input
+                    type="text"
+                    value={invoiceSearch}
+                    onChange={(e) => setInvoiceSearch(e.target.value)}
+                    placeholder="חיפוש לפי שם, אימייל, ספק או סכום..."
+                    className="w-full pr-10 pl-4 py-2.5 bg-white/10 border border-white/20 rounded-xl text-white text-sm placeholder-white/40 focus:outline-none focus:border-emerald-500"
+                  />
+                </div>
+                <select
+                  value={invoiceStatusFilter}
+                  onChange={(e) => setInvoiceStatusFilter(e.target.value)}
+                  className="px-4 py-2.5 bg-white/10 border border-white/20 rounded-xl text-white text-sm focus:outline-none focus:border-emerald-500 appearance-none cursor-pointer"
+                >
+                  <option value="" className="bg-[#0f2620]">כל הסטטוסים</option>
+                  <option value="PENDING_ADMIN" className="bg-[#0f2620]">ממתין לאישור</option>
+                  <option value="APPROVED" className="bg-[#0f2620]">מאושר</option>
+                  <option value="PENDING_SUPPLIER_PAY" className="bg-[#0f2620]">ממתין לתשלום</option>
+                  <option value="PAID" className="bg-[#0f2620]">שולם</option>
+                  <option value="REJECTED" className="bg-[#0f2620]">נדחה</option>
+                  <option value="OVERDUE" className="bg-[#0f2620]">באיחור</option>
+                </select>
+              </div>
+              <div className="flex items-center gap-4 mt-3 text-xs text-white/50">
+                <span>סה"כ: {invoices.length} חשבוניות</span>
+                {invoiceSearch || invoiceStatusFilter ? <span>מוצגות: {filteredInvoices.length}</span> : null}
+                <span>ממתינות: {invoices.filter(inv => inv.status === 'PENDING_ADMIN').length}</span>
+                <span>סה"כ מחזור: ₪{invoices.reduce((s, i) => s + i.amount, 0).toLocaleString()}</span>
+              </div>
+            </div>
+
             <div className="grid lg:grid-cols-2 gap-6">
               {/* Architects Folders */}
               <div className="bg-white/5 backdrop-blur border border-white/10 rounded-2xl p-6">
@@ -1849,9 +1898,9 @@ Please analyze this error and provide a fix.
                   <h2 className="text-xl font-semibold text-white flex items-center gap-2">
                     <FolderOpen className="text-emerald-400" />
                     חשבוניות לפי אדריכל ({groupedInvoices.length} אדריכלים)
-                    {invoices.filter(inv => inv.status === 'PENDING_ADMIN').length > 0 && (
+                    {filteredInvoices.filter(inv => inv.status === 'PENDING_ADMIN').length > 0 && (
                       <span className="bg-yellow-500/20 text-yellow-400 text-sm px-2 py-0.5 rounded-full mr-2">
-                        {invoices.filter(inv => inv.status === 'PENDING_ADMIN').length} ממתינות
+                        {filteredInvoices.filter(inv => inv.status === 'PENDING_ADMIN').length} ממתינות
                       </span>
                     )}
                   </h2>
