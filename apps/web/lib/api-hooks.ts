@@ -1,14 +1,18 @@
 // React Query hooks for API calls (Web)
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { walletApi, invoicesApi, rewardsApi, eventsApi, aiApi, notificationsApi, goalsApi, serviceProvidersApi, analyticsApi, adminApi, supplierApi, suppliersDirectoryApi } from '@stannel/api-client';
+import { walletApi, invoicesApi, rewardsApi, eventsApi, aiApi, notificationsApi, goalsApi, serviceProvidersApi, analyticsApi, adminApi, supplierApi, suppliersDirectoryApi, getAuthToken } from '@stannel/api-client';
 import type { ChatMessage } from '@stannel/types';
+
+// Check if user is authenticated
+const isAuthenticated = () => !!getAuthToken();
 
 // Wallet hooks
 export function useWalletBalance() {
   return useQuery({
     queryKey: ['wallet', 'balance'],
     queryFn: () => walletApi.getBalance(),
+    enabled: isAuthenticated(),
   });
 }
 
@@ -16,6 +20,7 @@ export function useWalletCard() {
   return useQuery({
     queryKey: ['wallet', 'card'],
     queryFn: () => walletApi.getCard(),
+    enabled: isAuthenticated(),
   });
 }
 
@@ -309,6 +314,7 @@ export function useArchitectGoals() {
   return useQuery({
     queryKey: ['goals'],
     queryFn: () => goalsApi.getAll(),
+    enabled: isAuthenticated(),
   });
 }
 
@@ -316,6 +322,7 @@ export function useActiveGoal() {
   return useQuery({
     queryKey: ['goals', 'active'],
     queryFn: () => goalsApi.getActive(),
+    enabled: isAuthenticated(),
   });
 }
 
@@ -323,6 +330,7 @@ export function useGoalStats() {
   return useQuery({
     queryKey: ['goals', 'stats'],
     queryFn: () => goalsApi.getStats(),
+    enabled: isAuthenticated(),
   });
 }
 
@@ -330,6 +338,7 @@ export function useBonusTransactions() {
   return useQuery({
     queryKey: ['goals', 'bonuses'],
     queryFn: () => goalsApi.getBonuses(),
+    enabled: isAuthenticated(),
   });
 }
 
