@@ -305,7 +305,6 @@ export default function NotificationsPage() {
                     </div>
 
                     <div className="flex items-center gap-1 flex-shrink-0">
-                      {notif.type === 'MEETING_REQUEST' && <Phone size={14} className="text-emerald-400" />}
                       <button
                         onClick={(e) => { e.stopPropagation(); handleDelete(notif.id); }}
                         className="p-1 rounded hover:bg-red-500/20 text-white/30 hover:text-red-400 transition-colors"
