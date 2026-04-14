@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
+import ImageWithLoader from '@/components/ui/ImageWithLoader';
 import Link from 'next/link';
 import { Search, Building2, MapPin, Phone, Globe, ChevronLeft, Star, Loader2 } from 'lucide-react';
 import { useSuppliersDirectory } from '@/lib/api-hooks';
@@ -105,10 +106,11 @@ function SupplierCard({ supplier, index }: { supplier: any; index: number }) {
         <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl sm:rounded-3xl overflow-hidden hover:border-emerald-500/30 hover:bg-white/10 transition-all group cursor-pointer">
           {/* Cover Image */}
           <div className="relative h-40 sm:h-48">
-            <Image
+            <ImageWithLoader
               src={coverImage}
               alt={supplier.companyName}
               fill
+              sizes="(max-width: 768px) 100vw, 50vw"
               className="object-cover group-hover:scale-105 transition-transform duration-500"
               unoptimized={coverImage.includes('localhost')}
             />

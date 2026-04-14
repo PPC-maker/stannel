@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
+import { ImgWithLoader } from '@/components/ui/ImageWithLoader';
 import { Calendar, MapPin, Users, Clock, CheckCircle, Loader2 } from 'lucide-react';
 
 function isValidImageUrl(url: string | undefined): boolean {
@@ -169,24 +170,13 @@ export default function EventsPage() {
                   {/* Event Image */}
                   <div className="relative h-48 overflow-hidden bg-white/5">
                     {event.imageUrl && isValidImageUrl(event.imageUrl) ? (
-                      <>
-                        <div className="absolute inset-0 bg-white/5 animate-pulse" />
-                        <img
-                          src={event.imageUrl}
-                          alt={event.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 relative z-[1]"
-                          onError={(e) => {
-                            (e.target as HTMLImageElement).style.display = 'none';
-                            (e.target as HTMLImageElement).parentElement?.querySelector('.animate-pulse')?.classList.add('hidden');
-                            (e.target as HTMLImageElement).parentElement?.querySelector('[data-fallback]')?.classList.remove('hidden');
-                          }}
-                          onLoad={(e) => {
-                            (e.target as HTMLImageElement).parentElement?.querySelector('.animate-pulse')?.classList.add('hidden');
-                          }}
-                        />
-                      </>
+                      <ImgWithLoader
+                        src={event.imageUrl}
+                        alt={event.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 relative z-[2]"
+                      />
                     ) : null}
-                    <div data-fallback className={`w-full h-full bg-white/5 flex items-center justify-center absolute inset-0 ${event.imageUrl && isValidImageUrl(event.imageUrl) ? 'hidden' : ''}`}>
+                    <div className={`w-full h-full bg-white/5 flex items-center justify-center absolute inset-0 ${event.imageUrl && isValidImageUrl(event.imageUrl) ? 'hidden' : ''}`}>
                       <Calendar size={48} className="text-white/30" />
                     </div>
                     {event.isVip && (

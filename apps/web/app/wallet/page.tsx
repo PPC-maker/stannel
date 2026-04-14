@@ -2,6 +2,7 @@
 
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
+import ImageWithLoader from '@/components/ui/ImageWithLoader';
 import { useState, useEffect } from 'react';
 import {
   Wallet,
@@ -533,8 +534,7 @@ export default function WalletPage() {
                 className="block relative rounded-2xl overflow-hidden shadow-md group"
                 style={{ aspectRatio: '1.4/1' }}
               >
-                <div className="absolute inset-0 bg-white/5 animate-pulse" />
-                <Image
+                <ImageWithLoader
                   src={tile.image}
                   alt={tile.label}
                   fill
