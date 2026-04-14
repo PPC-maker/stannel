@@ -320,8 +320,16 @@ export default function AdminPage() {
       try {
         ws = new WebSocket(wsUrl);
 
-        ws.onopen = () => {
+        ws.onopen = async () => {
           console.log('[Admin WS] Connected');
+          // Authenticate WebSocket
+          try {
+            const { getIdToken } = await import('@/lib/firebase');
+            const token = await getIdToken();
+            if (token && ws?.readyState === WebSocket.OPEN) {
+              ws.send(JSON.stringify({ type: 'auth', token }));
+            }
+          } catch {}
           pingInterval = setInterval(() => {
             if (ws?.readyState === WebSocket.OPEN) {
               ws.send(JSON.stringify({ type: 'ping' }));

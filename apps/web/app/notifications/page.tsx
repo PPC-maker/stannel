@@ -130,6 +130,15 @@ export default function NotificationsPage() {
     const connect = () => {
       try {
         ws = new WebSocket(wsUrl);
+        ws.onopen = async () => {
+          try {
+            const { getIdToken } = await import('@/lib/firebase');
+            const token = await getIdToken();
+            if (token && ws?.readyState === WebSocket.OPEN) {
+              ws.send(JSON.stringify({ type: 'auth', token }));
+            }
+          } catch {}
+        };
         ws.onmessage = (event) => {
           try {
             const msg = JSON.parse(event.data);

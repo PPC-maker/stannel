@@ -4,7 +4,7 @@ import { useEffect, useRef, useCallback } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 
 type WebSocketMessage = {
-  type: 'invoice:created' | 'invoice:updated' | 'invoice:approved' | 'invoice:rejected' | 'invoice:deleted' | 'invoice:restored' | 'user:activated' | 'pong';
+  type: 'invoice:created' | 'invoice:updated' | 'invoice:approved' | 'invoice:rejected' | 'invoice:deleted' | 'invoice:restored' | 'user:activated' | 'notification:new' | 'auth:ok' | 'auth:error' | 'pong';
   data?: any;
   timestamp: string;
 };
@@ -27,8 +27,15 @@ export function useWebSocket() {
       const ws = new WebSocket(`${WS_URL}/ws`);
       wsRef.current = ws;
 
-      ws.onopen = () => {
-        // Connected silently
+      ws.onopen = async () => {
+        // Authenticate WebSocket connection
+        try {
+          const { getIdToken } = await import('@/lib/firebase');
+          const token = await getIdToken();
+          if (token && ws.readyState === WebSocket.OPEN) {
+            ws.send(JSON.stringify({ type: 'auth', token }));
+          }
+        } catch {}
 
         // Start ping interval to keep connection alive
         pingIntervalRef.current = setInterval(() => {
@@ -65,8 +72,18 @@ export function useWebSocket() {
               queryClient.invalidateQueries({ queryKey: ['admin'] });
               break;
 
+            case 'notification:new':
+              // Invalidate notification queries for real-time updates
+              queryClient.invalidateQueries({ queryKey: ['notifications'] });
+              queryClient.invalidateQueries({ queryKey: ['unreadNotificationsCount'] });
+              // Trigger navbar badge refresh
+              window.dispatchEvent(new Event('notification-read'));
+              break;
+
             case 'pong':
-              // Heartbeat response, no action needed
+            case 'auth:ok':
+            case 'auth:error':
+              // No action needed
               break;
           }
         } catch {

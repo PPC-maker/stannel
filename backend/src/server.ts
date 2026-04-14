@@ -158,11 +158,27 @@ function registerWebSocket() {
     console.log('[WebSocket] New connection');
     wsService.addClient(socket);
 
-    socket.on('message', (message) => {
+    socket.on('message', async (message) => {
       try {
         const data = JSON.parse(message.toString());
         if (data.type === 'ping') {
           socket.send(JSON.stringify({ type: 'pong', timestamp: new Date().toISOString() }));
+        }
+        // Client sends auth message with Firebase token to identify themselves
+        if (data.type === 'auth' && data.token) {
+          try {
+            const { getAuth } = await import('firebase-admin/auth');
+            const decoded = await getAuth().verifyIdToken(data.token);
+            const { default: prisma } = await import('./lib/prisma.js');
+            const user = await prisma.user.findUnique({ where: { firebaseUid: decoded.uid }, select: { id: true, role: true } });
+            if (user) {
+              wsService.addClient(socket, user.id, user.role);
+              socket.send(JSON.stringify({ type: 'auth:ok', userId: user.id }));
+              console.log(`[WebSocket] Authenticated user: ${user.id} (${user.role})`);
+            }
+          } catch (authErr) {
+            socket.send(JSON.stringify({ type: 'auth:error' }));
+          }
         }
       } catch (e) {
         // Ignore invalid JSON
