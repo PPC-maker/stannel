@@ -218,6 +218,7 @@ export default function AdminPage() {
   const [savingUser, setSavingUser] = useState(false);
   const [deletingInvoice, setDeletingInvoice] = useState<string | null>(null);
   const [restoringInvoice, setRestoringInvoice] = useState<string | null>(null);
+  const [deactivatingUser, setDeactivatingUser] = useState<string | null>(null);
 
   const fetchAllUsers = async () => {
     try {
@@ -717,8 +718,6 @@ export default function AdminPage() {
     }
   };
 
-  const [deactivatingUser, setDeactivatingUser] = useState<string | null>(null);
-
   const handleDeactivateUser = async (userId: string, userName: string) => {
     const result = await Swal.fire({
       title: 'ניתוק משתמש',
@@ -851,13 +850,10 @@ export default function AdminPage() {
       const updatedImages = currentImages.filter(img => img !== imageUrl);
 
       // Delete image via admin API
-      const { getAuthToken: getToken } = await import('@stannel/api-client');
-      await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:7070'}/api/v1/admin/users/${userId}/delete-image`, {
+      const { fetchWithAuth: fetchAuth, config: apiConfig, getHeaders: getH2 } = await import('@stannel/api-client');
+      await fetchAuth(`${apiConfig.baseUrl}/admin/users/${userId}/delete-image`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${getToken()}`,
-        },
+        headers: getH2() as Record<string, string>,
         body: JSON.stringify({ imageUrl }),
       });
 
@@ -1358,12 +1354,12 @@ Please analyze this error and provide a fix.
                                             const file = e.target.files?.[0];
                                             if (!file) return;
                                             try {
-                                              const { getAuthToken: gt } = await import('@stannel/api-client');
+                                              const { fetchWithAuth: fetchAuth, getMultipartHeaders: getMH, config: apiConfig } = await import('@stannel/api-client');
                                               const formData = new FormData();
                                               formData.append('file', file);
-                                              await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:7070'}/api/v1/admin/users/${user.id}/update-profile-image`, {
+                                              await fetchAuth(`${apiConfig.baseUrl}/admin/users/${user.id}/update-profile-image`, {
                                                 method: 'POST',
-                                                headers: { Authorization: `Bearer ${gt()}` },
+                                                headers: getMH() as Record<string, string>,
                                                 body: formData,
                                               });
                                               await fetchAllUsers();
@@ -2084,8 +2080,8 @@ Please analyze this error and provide a fix.
                           onClick={async () => {
                             try {
                               // Update amount first
-                              const { getHeaders: getH } = await import('@stannel/api-client');
-                              await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:7070'}/api/v1/admin/invoices/${selectedInvoice.id}/update-amount`, {
+                              const { getHeaders: getH, fetchWithAuth: fetchAuth, config: apiConfig } = await import('@stannel/api-client');
+                              await fetchAuth(`${apiConfig.baseUrl}/admin/invoices/${selectedInvoice.id}/update-amount`, {
                                 method: 'PATCH',
                                 headers: getH() as Record<string, string>,
                                 body: JSON.stringify({ amount: selectedInvoice.aiExtractedAmount }),
