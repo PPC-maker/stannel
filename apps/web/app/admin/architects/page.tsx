@@ -171,29 +171,29 @@ export default function AdminArchitectsPage() {
         </motion.div>
 
         {/* Stats */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-          <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
+          <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-4 sm:p-6">
             <div className="text-center">
-              <p className="text-white/40 text-sm">סה״כ אדריכלים</p>
-              <p className="text-3xl font-bold text-white">{stats.total}</p>
+              <p className="text-white/40 text-xs sm:text-sm">סה״כ אדריכלים</p>
+              <p className="text-2xl sm:text-3xl font-bold text-white">{stats.total}</p>
             </div>
           </div>
-          <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 bg-green-500/10">
+          <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-4 sm:p-6 bg-green-500/10">
             <div className="text-center">
-              <p className="text-green-400/70 text-sm">פעילים</p>
-              <p className="text-3xl font-bold text-green-400">{stats.active}</p>
+              <p className="text-green-400/70 text-xs sm:text-sm">פעילים</p>
+              <p className="text-2xl sm:text-3xl font-bold text-green-400">{stats.active}</p>
             </div>
           </div>
-          <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 bg-emerald-500/10">
-            <div className="text-center">
-              <p className="text-emerald-400/70 text-sm">סה״כ נקודות</p>
-              <p className="text-3xl font-bold text-emerald-400">{stats.totalPoints.toLocaleString()}</p>
+          <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-4 sm:p-6 bg-emerald-500/10">
+            <div className="text-center overflow-hidden">
+              <p className="text-emerald-400/70 text-xs sm:text-sm">סה״כ נקודות</p>
+              <p className={`font-bold text-emerald-400 ${String(stats.totalPoints).length > 6 ? 'text-lg sm:text-2xl' : 'text-2xl sm:text-3xl'}`}>{stats.totalPoints.toLocaleString()}</p>
             </div>
           </div>
-          <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 bg-blue-500/10">
-            <div className="text-center">
-              <p className="text-blue-400/70 text-sm">סה״כ הרוויחו</p>
-              <p className="text-3xl font-bold text-blue-400">₪{stats.totalEarned.toLocaleString()}</p>
+          <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-4 sm:p-6 bg-blue-500/10">
+            <div className="text-center overflow-hidden">
+              <p className="text-blue-400/70 text-xs sm:text-sm">סה״כ הרוויחו</p>
+              <p className={`font-bold text-blue-400 ${String(stats.totalEarned).length > 6 ? 'text-lg sm:text-2xl' : 'text-2xl sm:text-3xl'}`}>₪{stats.totalEarned.toLocaleString()}</p>
             </div>
           </div>
         </div>
