@@ -1,6 +1,6 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import {
@@ -9,12 +9,22 @@ import {
   Award,
   ArrowUpRight,
   ArrowDownRight,
+  ArrowLeft,
   Clock,
   FileUp,
+  Calendar,
+  Wrench,
+  Building2,
+  Gift,
+  Users,
+  ShoppingBag,
+  FileText,
   History,
+  CheckCircle,
+  Sparkles,
   ChevronLeft,
 } from 'lucide-react';
-import { useWalletBalance, useWalletCard, useWalletTransactions } from '@/lib/api-hooks';
+import { useWalletBalance, useWalletCard, useWalletTransactions, useSuppliersDirectory } from '@/lib/api-hooks';
 import { useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '@/lib/auth-context';
 import { useAuthGuard, AuthGuardLoader } from '@/lib/useAuthGuard';
@@ -27,35 +37,68 @@ const rankConfig = {
   PLATINUM: { label: 'PLATINUM', color: 'text-cyan-500', bg: 'bg-cyan-100', emoji: '💎', badge: '0', minPoints: 50000, maxPoints: 100000 },
 };
 
-// Action tiles with images
-const actionTiles = [
+// Quick action categories with sub-items
+const quickActionCategories = [
+  {
+    id: 'invoices',
+    label: 'חשבוניות',
+    icon: FileUp,
+    color: 'bg-emerald-500',
+    iconColor: 'text-emerald-500',
+    items: [
+      { label: 'העלאת חשבונית', href: '/invoices/upload', icon: FileUp },
+      { label: 'החשבוניות שלי', href: '/invoices', icon: FileText },
+      { label: 'היסטוריה', href: '/invoices?filter=history', icon: History },
+      { label: 'ממתינות לאישור', href: '/invoices?filter=pending', icon: Clock },
+      { label: 'אושרו', href: '/invoices?filter=approved', icon: CheckCircle },
+    ],
+  },
   {
     id: 'events',
     label: 'אירועים',
-    labelEn: 'Events',
-    href: '/events',
-    image: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&q=80',
-  },
-  {
-    id: 'rewards',
-    label: 'חנות מתנות',
-    labelEn: 'Gift Shop',
-    href: '/rewards',
-    image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80',
+    icon: Calendar,
+    color: 'bg-purple-500',
+    iconColor: 'text-purple-500',
+    items: [
+      { label: 'אירועים קרובים', href: '/events', icon: Calendar },
+      { label: 'האירועים שלי', href: '/events?filter=registered', icon: CheckCircle },
+      { label: 'היסטוריית אירועים', href: '/events?filter=past', icon: History },
+    ],
   },
   {
     id: 'tools',
-    label: 'כלי עיצוב',
-    labelEn: 'Design Tools',
-    href: '/invoices',
-    image: 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=800&q=80',
+    label: 'כלי עבודה',
+    icon: Wrench,
+    color: 'bg-orange-500',
+    iconColor: 'text-orange-500',
+    items: [
+      { label: 'דוחות חשבוניות', href: '/invoices', icon: FileText },
+      { label: 'הגדרות', href: '/settings', icon: Wrench },
+    ],
   },
   {
     id: 'suppliers',
-    label: 'פגישה עם ספק',
-    labelEn: 'Meet with Supplier',
-    href: '/suppliers',
-    image: 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=800&q=80',
+    label: 'ספקים',
+    icon: Building2,
+    color: 'bg-blue-500',
+    iconColor: 'text-blue-500',
+    items: [
+      { label: 'כל הספקים', href: '/suppliers', icon: Building2 },
+      { label: 'ספקים מומלצים', href: '/suppliers?filter=recommended', icon: Award },
+      { label: 'הספקים שלי', href: '/suppliers?filter=my', icon: Users },
+    ],
+  },
+  {
+    id: 'rewards',
+    label: 'מתנות והטבות',
+    icon: Gift,
+    color: 'bg-pink-500',
+    iconColor: 'text-pink-500',
+    items: [
+      { label: 'קטלוג הטבות', href: '/rewards', icon: ShoppingBag },
+      { label: 'ההטבות שלי', href: '/rewards?filter=my', icon: Gift },
+      { label: 'היסטוריית מימושים', href: '/rewards?filter=history', icon: History },
+    ],
   },
 ];
 
@@ -63,13 +106,18 @@ export default function WalletPage() {
   const { isReady } = useAuthGuard();
   const { user } = useAuth();
   const queryClient = useQueryClient();
+  const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const { data: balance, isLoading: balanceLoading } = useWalletBalance();
   const { data: card, isLoading: cardLoading } = useWalletCard();
   const { data: transactions, isLoading: transactionsLoading } = useWalletTransactions();
 
   const isAdmin = user?.role === 'ADMIN';
+  const isArchitect = user?.role === 'ARCHITECT';
   const isSupplier = user?.role === 'SUPPLIER';
   const [adminStats, setAdminStats] = useState<any>(null);
+
+  // Suppliers data for expanded view
+  const { data: allSuppliers, isLoading: suppliersLoading } = useSuppliersDirectory({}, activeCategory === 'suppliers' && (isAdmin || isArchitect));
 
   // Fetch admin commission stats
   const fetchAdminStats = () => {
@@ -298,24 +346,192 @@ export default function WalletPage() {
           </motion.div>
         )}
 
-        {/* Action Tiles - 2x2 Grid */}
+        {/* Quick Actions */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.25 }}
+          className="mb-5"
+        >
+          <div className="bg-white/70 backdrop-blur rounded-3xl p-5 border border-white/50 shadow-sm">
+            <h2 className="text-lg font-bold text-[#2d2d2d] mb-5 flex items-center justify-center gap-2">
+              <Sparkles size={18} className="text-[#2d5a3d]" />
+              פעולות מהירות
+            </h2>
+
+            {/* Circular Category Icons */}
+            <div
+              className="flex gap-4 md:gap-6 py-2 px-2 overflow-x-auto md:overflow-visible md:justify-center"
+              style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', WebkitOverflowScrolling: 'touch' }}
+            >
+              {quickActionCategories.map((category) => {
+                const IconComponent = category.icon;
+                const isActive = activeCategory === category.id;
+
+                return (
+                  <motion.button
+                    key={category.id}
+                    onClick={() => setActiveCategory(isActive ? null : category.id)}
+                    whileTap={{ scale: 0.95 }}
+                    className="flex flex-col items-center gap-3 min-w-[80px] flex-shrink-0"
+                  >
+                    <div
+                      className={`
+                        w-20 h-20 md:w-24 md:h-24 rounded-full flex items-center justify-center
+                        transition-all duration-300 border-2
+                        ${isActive
+                          ? `${category.color} border-white/30 shadow-lg scale-110`
+                          : 'bg-[#e5ddd5]/50 border-[#d5cdc5] hover:bg-[#e5ddd5]'
+                        }
+                      `}
+                    >
+                      <IconComponent
+                        size={32}
+                        className={`transition-colors duration-200 ${isActive ? 'text-white' : category.iconColor}`}
+                      />
+                    </div>
+                    <span className={`text-xs font-medium text-center transition-colors duration-200 ${isActive ? 'text-[#2d2d2d]' : 'text-[#8a8a8a]'}`}>
+                      {category.label}
+                    </span>
+                  </motion.button>
+                );
+              })}
+            </div>
+
+            {/* Expanded Sub-Items */}
+            <AnimatePresence>
+              {activeCategory && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="mt-5 pt-5 border-t border-[#e5ddd5] overflow-hidden"
+                >
+                  {/* Suppliers Grid */}
+                  {activeCategory === 'suppliers' ? (
+                    <div>
+                      <h3 className="text-base font-semibold text-[#2d2d2d] mb-3">כל הספקים במערכת</h3>
+                      {suppliersLoading ? (
+                        <div className="grid grid-cols-2 gap-3">
+                          {[...Array(4)].map((_, i) => (
+                            <div key={i} className="bg-[#e5ddd5]/40 rounded-2xl overflow-hidden animate-pulse">
+                              <div className="aspect-[4/3] bg-[#d5cdc5]/50" />
+                              <div className="p-2.5">
+                                <div className="h-3.5 w-20 bg-[#d5cdc5]/50 rounded mb-1.5" />
+                                <div className="h-3 w-14 bg-[#d5cdc5]/30 rounded" />
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      ) : allSuppliers?.data && allSuppliers.data.length > 0 ? (
+                        <div className="grid grid-cols-2 gap-3">
+                          {allSuppliers.data.map((supplier: any, index: number) => {
+                            const coverImage = supplier.businessImages?.[0] || supplier.profileImage || 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&q=80';
+                            return (
+                              <motion.div
+                                key={supplier.id}
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: index * 0.05 }}
+                              >
+                                <Link
+                                  href={`/suppliers/${supplier.id}`}
+                                  className="block bg-[#e5ddd5]/40 rounded-2xl overflow-hidden border border-[#d5cdc5]/50 hover:border-[#2d5a3d]/30 transition-all group"
+                                >
+                                  <div className="relative aspect-[4/3]">
+                                    <Image
+                                      src={coverImage}
+                                      alt={supplier.companyName || ''}
+                                      fill
+                                      className="object-cover group-hover:scale-105 transition-transform duration-500"
+                                      unoptimized={coverImage.includes('localhost')}
+                                    />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                                    <div className="absolute bottom-0 left-0 right-0 p-2.5">
+                                      <h3 className="text-white font-bold text-xs tracking-wide uppercase">{supplier.companyName}</h3>
+                                    </div>
+                                  </div>
+                                  <div className="p-2.5">
+                                    <p className="text-[#8a8a8a] text-[10px] line-clamp-2">{supplier.description || 'לחץ לצפייה בפרופיל'}</p>
+                                    <div className="mt-1.5 flex items-center justify-between">
+                                      <span className="text-[#2d5a3d] text-[10px] font-medium">צפה בפרופיל</span>
+                                      <ArrowLeft size={12} className="text-[#2d5a3d]" />
+                                    </div>
+                                  </div>
+                                </Link>
+                              </motion.div>
+                            );
+                          })}
+                        </div>
+                      ) : (
+                        <div className="py-8 text-center">
+                          <Building2 size={32} className="mx-auto text-[#8a8a8a] mb-2" />
+                          <p className="text-[#8a8a8a] text-sm">אין ספקים במערכת</p>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    /* Other Category Items */
+                    quickActionCategories
+                      .filter(cat => cat.id === activeCategory)
+                      .map(category => (
+                        <div key={category.id} className="grid grid-cols-2 gap-3">
+                          {category.items.map((item, index) => {
+                            const ItemIcon = item.icon;
+                            return (
+                              <motion.div
+                                key={item.href}
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: index * 0.05 }}
+                              >
+                                <Link
+                                  href={item.href}
+                                  className="flex flex-col items-center gap-2 p-4 rounded-xl bg-[#e5ddd5]/40 border border-[#d5cdc5]/50 hover:bg-[#e5ddd5]/70 transition-all duration-200 group"
+                                >
+                                  <div className="w-10 h-10 rounded-full flex items-center justify-center bg-white/60 group-hover:bg-white/80 transition-colors">
+                                    <ItemIcon size={20} className={category.iconColor} />
+                                  </div>
+                                  <span className="text-xs font-medium text-[#2d2d2d] text-center group-hover:text-[#2d5a3d] transition-colors">
+                                    {item.label}
+                                  </span>
+                                </Link>
+                              </motion.div>
+                            );
+                          })}
+                        </div>
+                      ))
+                  )}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </motion.div>
+
+        {/* Action Tiles - 2x2 Grid */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.35 }}
           className="grid grid-cols-2 gap-3 mb-5"
         >
-          {actionTiles.map((tile, index) => (
+          {[
+            { id: 'events', label: 'אירועים', href: '/events', image: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&q=80' },
+            { id: 'rewards', label: 'חנות מתנות', href: '/rewards', image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80' },
+            { id: 'tools', label: 'כלי עיצוב', href: '/invoices', image: 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=800&q=80' },
+            { id: 'suppliers', label: 'פגישה עם ספק', href: '/suppliers', image: 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=800&q=80' },
+          ].map((tile, index) => (
             <motion.div
               key={tile.id}
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.3 + index * 0.05 }}
+              transition={{ delay: 0.4 + index * 0.05 }}
             >
               <Link
                 href={tile.href}
                 className="block relative rounded-2xl overflow-hidden shadow-md group"
-                style={{ aspectRatio: '1.4/1', WebkitTransform: 'translateZ(0)' }}
+                style={{ aspectRatio: '1.4/1' }}
               >
                 <Image
                   src={tile.image}
@@ -326,44 +542,15 @@ export default function WalletPage() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
                 <div className="absolute bottom-0 left-0 right-0 p-3">
-                  <p className="text-white font-bold text-sm tracking-wide">
-                    {tile.labelEn}
-                  </p>
+                  <p className="text-white font-bold text-sm tracking-wide">{tile.label}</p>
                 </div>
               </Link>
             </motion.div>
           ))}
         </motion.div>
 
-        {/* More For You Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="mb-6"
-        >
-          <h2 className="text-center text-[#8a8a8a] text-base font-medium mb-4">עוד בשבילך</h2>
-
-          {/* Quick Links */}
-          <div className="grid grid-cols-3 gap-3">
-            {[
-              { icon: FileUp, label: 'העלאת חשבונית', href: '/invoices/upload', color: 'text-emerald-600', bg: 'bg-emerald-50' },
-              { icon: History, label: 'היסטוריה', href: '/invoices', color: 'text-purple-600', bg: 'bg-purple-50' },
-              { icon: Award, label: 'הדרגה שלי', href: '/profile', color: 'text-amber-600', bg: 'bg-amber-50' },
-            ].map((item, i) => (
-              <Link
-                key={i}
-                href={item.href}
-                className="flex flex-col items-center gap-2 bg-white/70 backdrop-blur rounded-2xl p-4 border border-white/50 shadow-sm hover:shadow-md transition-shadow"
-              >
-                <div className={`w-12 h-12 rounded-full ${item.bg} flex items-center justify-center`}>
-                  <item.icon size={22} className={item.color} />
-                </div>
-                <span className="text-xs font-medium text-[#2d2d2d] text-center">{item.label}</span>
-              </Link>
-            ))}
-          </div>
-        </motion.div>
+        {/* More for you */}
+        <p className="text-center text-[#8a8a8a] text-sm font-medium mb-4">עוד בשבילך</p>
 
         {/* Recent Transactions */}
         <motion.div

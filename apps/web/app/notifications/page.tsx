@@ -87,20 +87,20 @@ export default function NotificationsPage() {
         <div className="absolute inset-0 bg-gradient-to-b from-[#0f2620]/30 via-transparent to-[#0f2620]" />
       </div>
 
-      <div className="relative z-10 p-6 pt-28 max-w-4xl mx-auto">
+      <div className="relative z-10 px-4 sm:px-6 pt-24 sm:pt-28 pb-6 max-w-4xl mx-auto">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
-          className="mb-8"
+          className="mb-4 sm:mb-8"
         >
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between gap-3">
             <div>
-              <h1 className="text-3xl font-bold text-white flex items-center gap-3">
-                <Bell className="text-emerald-400" />
+              <h1 className="text-2xl sm:text-3xl font-bold text-white flex items-center gap-2 sm:gap-3">
+                <Bell className="text-emerald-400" size={22} />
                 התראות
               </h1>
-              <p className="text-white/60 mt-1">
+              <p className="text-white/60 mt-1 text-sm sm:text-base">
                 {unreadCount > 0 ? `${unreadCount} התראות שלא נקראו` : 'אין התראות חדשות'}
               </p>
             </div>
@@ -110,10 +110,11 @@ export default function NotificationsPage() {
                 whileTap={{ scale: 0.98 }}
                 onClick={handleMarkAllRead}
                 disabled={markAllRead.isPending}
-                className="flex items-center gap-2 px-4 py-2 bg-emerald-500 hover:bg-emerald-600 rounded-lg text-white transition-colors disabled:opacity-50"
+                className="flex items-center gap-1.5 px-3 py-2 bg-emerald-500 hover:bg-emerald-600 rounded-lg text-white text-sm transition-colors disabled:opacity-50 flex-shrink-0"
               >
-                <CheckCheck size={18} />
-                סמן הכל כנקרא
+                <CheckCheck size={16} />
+                <span className="hidden sm:inline">סמן הכל כנקרא</span>
+                <span className="sm:hidden">נקרא</span>
               </motion.button>
             )}
           </div>
@@ -157,18 +158,18 @@ export default function NotificationsPage() {
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: index * 0.03 }}
                       onClick={() => !notif.isRead && handleMarkAsRead(notif.id)}
-                      className={`p-4 flex items-start gap-4 cursor-pointer transition-colors ${
+                      className={`p-3 sm:p-4 flex items-start gap-3 cursor-pointer transition-colors ${
                         !notif.isRead ? 'bg-emerald-500/10 hover:bg-emerald-500/20' : 'hover:bg-white/5'
                       }`}
                     >
-                      <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${colorClass}`}>
-                        <Icon size={20} />
+                      <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center flex-shrink-0 ${colorClass}`}>
+                        <Icon size={18} />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className={`text-white ${!notif.isRead ? 'font-medium' : ''}`}>
+                        <p className={`text-white text-sm sm:text-base ${!notif.isRead ? 'font-medium' : ''}`}>
                           {notif.title}
                         </p>
-                        <p className="text-white/60 text-sm mt-0.5">{notif.message}</p>
+                        <p className="text-white/60 text-xs sm:text-sm mt-0.5 line-clamp-2">{notif.message}</p>
                         <p className="text-white/40 text-xs mt-2">
                           {new Date(notif.createdAt).toLocaleString('he-IL')}
                         </p>

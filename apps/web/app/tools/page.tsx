@@ -400,7 +400,7 @@ export default function ToolsPage() {
         <div className="absolute inset-0 bg-gradient-to-b from-[#0f2620]/30 via-transparent to-[#0f2620]" />
       </div>
 
-      <div className="relative z-10 p-6 pt-28 max-w-6xl mx-auto">
+      <div className="relative z-10 px-4 sm:px-6 pt-24 sm:pt-28 pb-6 max-w-6xl mx-auto">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}

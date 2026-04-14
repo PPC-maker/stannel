@@ -66,13 +66,11 @@ export default function Navbar() {
       <div className={`w-full px-4 sm:px-6 lg:px-8 flex items-center justify-center relative ${isDarkPage ? 'h-20' : 'h-16'}`}>
         {/* Centered Logo */}
         <Link href="/wallet" className="flex items-center">
-          <Image
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
             src={isLightPage ? "/logo_black1.png" : "/logo1.png"}
             alt="Stannel"
-            width={isDarkPage ? 281 : 218}
-            height={isDarkPage ? 84 : 66}
-            className={isDarkPage ? "h-20 w-auto" : "h-16 w-auto"}
-            priority
+            className={isDarkPage ? "h-20 w-auto" : "h-14 w-auto"}
           />
         </Link>
 

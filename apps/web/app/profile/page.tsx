@@ -197,13 +197,13 @@ export default function ProfilePage() {
   return (
     <div className="min-h-screen bg-[#0f2620] -mt-16">
       {/* Hero Background - Gradient */}
-      <div className="relative h-72 overflow-hidden">
+      <div className="relative h-48 sm:h-72 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-[#0f2620] via-[#1a4a3a] to-[#0f2620]" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(16,185,129,0.2),transparent_50%)]" />
       </div>
 
       {/* Content */}
-      <div className="px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto -mt-32 relative z-10 pb-12">
+      <div className="px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto -mt-20 sm:-mt-32 relative z-10 pb-12">
         {/* Profile Header */}
         <motion.div
           ref={profileRef}
@@ -216,11 +216,11 @@ export default function ProfilePage() {
           transition={{ duration: 0.3 }}
           className={`mb-8 rounded-2xl ${highlightProfile ? 'ring-2 ring-emerald-400 ring-offset-2 ring-offset-transparent' : ''}`}
         >
-          <div className={`bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 relative overflow-visible transition-all duration-300 ${highlightProfile ? 'border-emerald-400 border-2' : ''}`}>
-            <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
+          <div className={`bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-4 sm:p-6 relative overflow-visible transition-all duration-300 ${highlightProfile ? 'border-emerald-400 border-2' : ''}`}>
+            <div className="flex flex-col md:flex-row items-center md:items-start gap-4 sm:gap-6">
               {/* Avatar */}
               <div className="relative group">
-                <div className={`w-32 h-32 rounded-2xl overflow-hidden ring-4 ring-emerald-500/30 bg-gradient-to-br ${getTierBg(currentUser.tier)}`}>
+                <div className={`w-24 h-24 sm:w-32 sm:h-32 rounded-2xl overflow-hidden ring-4 ring-emerald-500/30 bg-gradient-to-br ${getTierBg(currentUser.tier)}`}>
                   {currentUser.avatar ? (
                     <img
                       src={currentUser.avatar}
@@ -290,7 +290,7 @@ export default function ProfilePage() {
                 ) : (
                   <>
                     <div className="flex items-center justify-center md:justify-start gap-3 mb-2">
-                      <h1 className="text-3xl font-bold text-white">{currentUser.name}</h1>
+                      <h1 className="text-2xl sm:text-3xl font-bold text-white">{currentUser.name}</h1>
                     </div>
                     <p className="text-white/60 mb-4">{currentUser.company || 'לא צוין עסק'}</p>
 

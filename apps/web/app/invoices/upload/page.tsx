@@ -159,7 +159,7 @@ export default function InvoiceUploadPage() {
   return (
     <div className="min-h-screen bg-[#0f2620] -mt-16">
       {/* Hero Section */}
-      <div className="relative h-80 overflow-hidden">
+      <div className="relative h-52 sm:h-80 overflow-hidden">
         <Image
           src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=2000&q=80"
           alt="Finance"
@@ -172,22 +172,22 @@ export default function InvoiceUploadPage() {
         <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#0f2620] to-transparent" />
       </div>
 
-      <div className="px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto -mt-40 relative z-10 pb-12">
+      <div className="px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto -mt-24 sm:-mt-40 relative z-10 pb-12">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
-          className="mb-8"
+          className="mb-4 sm:mb-8"
         >
-          <Link href="/invoices" className="inline-flex items-center gap-2 text-white/60 hover:text-emerald-400 mb-4 transition-colors font-medium">
-            <ArrowRight size={16} />
+          <Link href="/invoices" className="inline-flex items-center gap-2 text-white/60 hover:text-emerald-400 mb-3 transition-colors font-medium text-sm">
+            <ArrowRight size={14} />
             חזרה לחשבוניות
           </Link>
-          <h1 className="text-3xl font-bold text-white flex items-center gap-3">
-            <Upload className="text-emerald-400" />
+          <h1 className="text-2xl sm:text-3xl font-bold text-white flex items-center gap-2 sm:gap-3">
+            <Upload className="text-emerald-400" size={24} />
             העלאת חשבונית
           </h1>
-          <p className="text-white/60 mt-1">העלו חשבונית לצבירת נקודות</p>
+          <p className="text-white/60 mt-1 text-sm sm:text-base">העלו חשבונית לצבירת נקודות</p>
         </motion.div>
 
         {/* No suppliers warning */}
@@ -233,14 +233,14 @@ export default function InvoiceUploadPage() {
         )}
 
         {!noSuppliers && (
-          <div className="grid lg:grid-cols-2 gap-6">
+          <div className="grid lg:grid-cols-2 gap-4 sm:gap-6">
             {/* Upload Zone */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6"
+              className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-4 sm:p-6"
             >
-              <h2 className="text-lg font-semibold text-white mb-4">תמונת החשבונית</h2>
+              <h2 className="text-base sm:text-lg font-semibold text-white mb-3 sm:mb-4">תמונת החשבונית</h2>
 
               <div
                 {...getRootProps()}
@@ -332,9 +332,9 @@ export default function InvoiceUploadPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6"
+              className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-4 sm:p-6"
             >
-              <h2 className="text-lg font-semibold text-white mb-4">פרטי העסקה</h2>
+              <h2 className="text-base sm:text-lg font-semibold text-white mb-3 sm:mb-4">פרטי העסקה</h2>
 
               <div className="space-y-5">
                 <div>

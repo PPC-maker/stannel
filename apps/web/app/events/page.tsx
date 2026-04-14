@@ -90,15 +90,15 @@ export default function EventsPage() {
         <div className="absolute inset-0 bg-gradient-to-b from-[#0f2620]/30 via-transparent to-[#0f2620]" />
       </div>
 
-      <div className="relative z-10 p-6 pt-28 max-w-7xl mx-auto">
+      <div className="relative z-10 px-4 sm:px-6 pt-24 sm:pt-28 pb-6 max-w-7xl mx-auto">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-8"
+          className="mb-4 sm:mb-8"
         >
-          <h1 className="text-3xl font-bold text-white">אירועים</h1>
-          <p className="text-white/60 mt-2">הצטרפו לאירועים בלעדיים וצברו נקודות</p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-white">אירועים</h1>
+          <p className="text-white/60 mt-1 text-sm sm:text-base">הצטרפו לאירועים בלעדיים וצברו נקודות</p>
         </motion.div>
 
         {/* Stats Banner */}
@@ -106,31 +106,30 @@ export default function EventsPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="bg-gradient-to-br from-emerald-600/30 to-emerald-800/30 backdrop-blur-md border border-emerald-500/30 rounded-3xl p-6 mb-8"
+          className="bg-gradient-to-br from-emerald-600/30 to-emerald-800/30 backdrop-blur-md border border-emerald-500/30 rounded-2xl sm:rounded-3xl p-4 sm:p-6 mb-4 sm:mb-8"
         >
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-4">
-              <div className="w-14 h-14 rounded-xl bg-emerald-500/30 flex items-center justify-center">
-                <Calendar size={28} className="text-emerald-400" />
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3 sm:gap-4">
+              <div className="w-10 h-10 sm:w-14 sm:h-14 rounded-xl bg-emerald-500/30 flex items-center justify-center flex-shrink-0">
+                <Calendar size={20} className="text-emerald-400 sm:hidden" />
+                <Calendar size={28} className="text-emerald-400 hidden sm:block" />
               </div>
               <div>
-                <p className="text-white/70 text-sm">אירועים קרובים</p>
-                <p className="text-4xl font-bold text-white">
-                  {events.length} <span className="text-lg">אירועים</span>
+                <p className="text-white/70 text-xs sm:text-sm">אירועים קרובים</p>
+                <p className="text-2xl sm:text-4xl font-bold text-white">
+                  {events.length} <span className="text-sm sm:text-lg">אירועים</span>
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-6">
-              <div className="text-center">
-                <p className="text-white/70 text-sm">נרשמתם ל</p>
-                <p className="text-2xl font-semibold text-white">{registeredEvents.length} אירועים</p>
-              </div>
+            <div className="text-center flex-shrink-0">
+              <p className="text-white/70 text-xs sm:text-sm">נרשמתם ל</p>
+              <p className="text-lg sm:text-2xl font-semibold text-white">{registeredEvents.length} אירועים</p>
             </div>
           </div>
         </motion.div>
 
         {/* Events Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {isLoading ? (
             [...Array(6)].map((_, i) => (
               <div key={i} className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl overflow-hidden animate-pulse">
@@ -207,8 +206,8 @@ export default function EventsPage() {
                   </div>
 
                   {/* Event Info */}
-                  <div className="p-6">
-                    <h3 className="text-white font-semibold text-lg mb-2">{event.title}</h3>
+                  <div className="p-4 sm:p-6">
+                    <h3 className="text-white font-semibold text-base sm:text-lg mb-1 sm:mb-2">{event.title}</h3>
                     <p className="text-white/60 text-sm mb-4 line-clamp-2">{event.description}</p>
 
                     {/* Event Details */}

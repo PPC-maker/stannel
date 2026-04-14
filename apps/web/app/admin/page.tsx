@@ -1008,28 +1008,28 @@ Please analyze this error and provide a fix.
 
   return (
     <div className="min-h-screen bg-[#0f2620] -mt-16">
-      <div className="p-6 pt-24 max-w-7xl mx-auto">
+      <div className="px-3 sm:px-6 pt-20 sm:pt-24 pb-6 max-w-7xl mx-auto">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
-          className="mb-8 bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6"
+          className="mb-4 sm:mb-8 bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-4 sm:p-6"
         >
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between gap-3">
             <div>
-              <h1 className="text-3xl font-display font-bold text-white flex items-center gap-3">
-                <Shield className="text-emerald-400" />
+              <h1 className="text-xl sm:text-3xl font-display font-bold text-white flex items-center gap-2 sm:gap-3">
+                <Shield className="text-emerald-400" size={22} />
                 פאנל ניהול
               </h1>
-              <p className="text-white/60 mt-1 font-medium">ניהול משתמשים ומעקב אחרי תקלות המערכת</p>
+              <p className="text-white/60 mt-1 font-medium text-xs sm:text-base">ניהול משתמשים ומעקב אחרי תקלות המערכת</p>
             </div>
             <button
               onClick={fetchData}
               disabled={refreshing}
-              className="px-4 py-2 bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 rounded-xl hover:bg-emerald-500/30 transition-colors flex items-center gap-2"
+              className="px-3 py-2 bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 rounded-xl hover:bg-emerald-500/30 transition-colors flex items-center gap-1.5 text-sm flex-shrink-0"
             >
-              <RefreshCw size={18} className={refreshing ? 'animate-spin' : ''} />
-              רענון
+              <RefreshCw size={16} className={refreshing ? 'animate-spin' : ''} />
+              <span className="hidden sm:inline">רענון</span>
             </button>
           </div>
         </motion.div>

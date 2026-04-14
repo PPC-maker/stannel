@@ -29,7 +29,7 @@ export default function SuppliersDirectoryPage() {
   return (
     <div className="min-h-screen bg-[#0f2620] -mt-16">
       {/* Hero Section */}
-      <div className="relative h-72 overflow-hidden">
+      <div className="relative h-52 sm:h-72 overflow-hidden">
         <Image
           src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=1920&q=80"
           alt="Suppliers"
@@ -39,33 +39,33 @@ export default function SuppliersDirectoryPage() {
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-[#0f2620]" />
 
-        <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6 pt-16">
+        <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4 pt-16">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
           >
-            <h1 className="text-4xl md:text-5xl font-bold text-white mb-3">ספקים מובחרים</h1>
-            <p className="text-white/70 text-lg">גלו את הספקים המובילים בתעשייה</p>
+            <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold text-white mb-2 sm:mb-3">ספקים מובחרים</h1>
+            <p className="text-white/70 text-sm sm:text-lg">גלו את הספקים המובילים בתעשייה</p>
           </motion.div>
         </div>
       </div>
 
       {/* Content */}
-      <div className="max-w-7xl mx-auto px-6 py-8 -mt-8 relative z-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-8 -mt-8 relative z-10">
         {/* Search */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-8"
+          className="mb-4 sm:mb-8"
         >
           <div className="relative max-w-xl mx-auto">
-            <Search className="absolute right-4 top-1/2 -translate-y-1/2 text-white/50" size={20} />
+            <Search className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 text-white/50" size={18} />
             <input
               type="text"
               placeholder="חיפוש ספקים..."
               value={search}
               onChange={(e) => handleSearch(e.target.value)}
-              className="w-full bg-white/10 backdrop-blur border border-white/20 rounded-2xl px-5 py-4 pr-12 text-white placeholder:text-white/50 focus:border-emerald-500/50 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all text-right"
+              className="w-full bg-white/10 backdrop-blur border border-white/20 rounded-xl sm:rounded-2xl px-4 py-3 sm:px-5 sm:py-4 pr-10 sm:pr-12 text-sm sm:text-base text-white placeholder:text-white/50 focus:border-emerald-500/50 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all text-right"
             />
           </div>
         </motion.div>
@@ -77,11 +77,11 @@ export default function SuppliersDirectoryPage() {
           </div>
         ) : suppliers.length === 0 ? (
           <div className="text-center py-20">
-            <Building2 size={64} className="mx-auto text-white/20 mb-4" />
-            <p className="text-white/60 text-lg">לא נמצאו ספקים</p>
+            <Building2 size={48} className="mx-auto text-white/20 mb-4" />
+            <p className="text-white/60 text-base">לא נמצאו ספקים</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {suppliers.map((supplier, index) => (
               <SupplierCard key={supplier.id} supplier={supplier} index={index} />
             ))}
@@ -102,9 +102,9 @@ function SupplierCard({ supplier, index }: { supplier: any; index: number }) {
       transition={{ delay: index * 0.1 }}
     >
       <Link href={`/suppliers/${supplier.id}`}>
-        <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl overflow-hidden hover:border-emerald-500/30 hover:bg-white/10 transition-all group cursor-pointer">
+        <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl sm:rounded-3xl overflow-hidden hover:border-emerald-500/30 hover:bg-white/10 transition-all group cursor-pointer">
           {/* Cover Image */}
-          <div className="relative h-48">
+          <div className="relative h-40 sm:h-48">
             <Image
               src={coverImage}
               alt={supplier.companyName}
@@ -129,7 +129,7 @@ function SupplierCard({ supplier, index }: { supplier: any; index: number }) {
           </div>
 
           {/* Content */}
-          <div className="p-5">
+          <div className="p-4 sm:p-5">
             {/* Description */}
             {supplier.description && (
               <p className="text-white/70 text-sm mb-4 line-clamp-2">

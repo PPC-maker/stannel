@@ -58,18 +58,18 @@ export default function GoalsPage() {
         <div className="absolute inset-0 bg-gradient-to-b from-[#0f2620]/30 via-transparent to-[#0f2620]" />
       </div>
 
-      <div className="relative z-10 p-6 pt-28 max-w-5xl mx-auto">
+      <div className="relative z-10 px-4 sm:px-6 pt-24 sm:pt-28 pb-6 max-w-5xl mx-auto">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
-          className="mb-8"
+          className="mb-4 sm:mb-8"
         >
-          <h1 className="text-3xl font-bold text-white flex items-center gap-3">
-            <Target className="text-emerald-400" />
+          <h1 className="text-2xl sm:text-3xl font-bold text-white flex items-center gap-2 sm:gap-3">
+            <Target className="text-emerald-400" size={24} />
             יעדים ובונוסים
           </h1>
-          <p className="text-white/60 mt-1">מעקב אחר הביצועים שלך</p>
+          <p className="text-white/60 mt-1 text-sm sm:text-base">מעקב אחר הביצועים שלך</p>
         </motion.div>
 
         {/* Stats */}
