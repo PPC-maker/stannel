@@ -438,7 +438,7 @@ export function useCreateGoal() {
 }
 
 // Analytics hooks (Admin)
-export function useAnalyticsTrends(period: 'week' | 'month' | 'quarter' = 'month') {
+export function useAnalyticsTrends(period: 'week' | 'month' | 'quarter' | 'year' = 'month') {
   return useQuery({
     queryKey: ['analytics', 'trends', period],
     queryFn: () => analyticsApi.getTrends(period),
@@ -659,8 +659,8 @@ export function useSupplierProjects(supplierId: string, enabled = true) {
   return useQuery({
     queryKey: ['supplier-projects', supplierId],
     queryFn: async () => {
-      const { config, getHeaders } = await import('@stannel/api-client');
-      const response = await fetch(`${config.baseUrl}/projects/supplier/${supplierId}`, {
+      const { config, getHeaders, fetchWithAuth } = await import('@stannel/api-client');
+      const response = await fetchWithAuth(`${config.baseUrl}/projects/supplier/${supplierId}`, {
         headers: getHeaders(),
       });
       if (!response.ok) throw new Error('Failed to fetch projects');
@@ -674,8 +674,8 @@ export function useSupplierProject(projectId: string, enabled = true) {
   return useQuery({
     queryKey: ['supplier-project', projectId],
     queryFn: async () => {
-      const { config, getHeaders } = await import('@stannel/api-client');
-      const response = await fetch(`${config.baseUrl}/projects/${projectId}`, {
+      const { config, getHeaders, fetchWithAuth } = await import('@stannel/api-client');
+      const response = await fetchWithAuth(`${config.baseUrl}/projects/${projectId}`, {
         headers: getHeaders(),
       });
       if (!response.ok) throw new Error('Failed to fetch project');

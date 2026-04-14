@@ -19,6 +19,7 @@ export async function analyticsRoutes(server: FastifyInstance) {
     if (period === 'week') startDate.setDate(startDate.getDate() - 7);
     else if (period === 'month') startDate.setMonth(startDate.getMonth() - 1);
     else if (period === 'quarter') startDate.setMonth(startDate.getMonth() - 3);
+    else if (period === 'year') startDate.setFullYear(startDate.getFullYear() - 1);
 
     const [invoices, topSuppliers, topArchitects] = await Promise.all([
       prisma.invoice.findMany({

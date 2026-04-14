@@ -1,6 +1,6 @@
 // Analytics API Client
 
-import { config, getHeaders } from './config';
+import { config, getHeaders, fetchWithAuth } from './config';
 
 export interface TrendsSummary {
   totalInvoices: number;
@@ -61,8 +61,8 @@ export interface SupplierPerformance {
 }
 
 export const analyticsApi = {
-  async getTrends(period: 'week' | 'month' | 'quarter' = 'month'): Promise<TrendsResponse> {
-    const response = await fetch(`${config.baseUrl}/analytics/trends?period=${period}`, {
+  async getTrends(period: 'week' | 'month' | 'quarter' | 'year' = 'month'): Promise<TrendsResponse> {
+    const response = await fetchWithAuth(`${config.baseUrl}/analytics/trends?period=${period}`, {
       method: 'GET',
       headers: getHeaders(),
     });
@@ -80,7 +80,7 @@ export const analyticsApi = {
   },
 
   async getSlaReport(): Promise<SlaReport> {
-    const response = await fetch(`${config.baseUrl}/analytics/sla-report`, {
+    const response = await fetchWithAuth(`${config.baseUrl}/analytics/sla-report`, {
       method: 'GET',
       headers: getHeaders(),
     });
@@ -98,7 +98,7 @@ export const analyticsApi = {
   },
 
   async getTopArchitects(): Promise<ArchitectRanking[]> {
-    const response = await fetch(`${config.baseUrl}/analytics/top-architects`, {
+    const response = await fetchWithAuth(`${config.baseUrl}/analytics/top-architects`, {
       method: 'GET',
       headers: getHeaders(),
     });
@@ -116,7 +116,7 @@ export const analyticsApi = {
   },
 
   async getSupplierPerformance(): Promise<SupplierPerformance[]> {
-    const response = await fetch(`${config.baseUrl}/analytics/supplier-performance`, {
+    const response = await fetchWithAuth(`${config.baseUrl}/analytics/supplier-performance`, {
       method: 'GET',
       headers: getHeaders(),
     });

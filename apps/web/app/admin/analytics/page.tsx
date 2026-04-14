@@ -28,13 +28,14 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 
-type Period = 'week' | 'month' | 'quarter';
+type Period = 'week' | 'month' | 'quarter' | 'year';
 type ReportTab = 'overview' | 'architects' | 'suppliers' | 'commissions' | 'sla';
 
 const periodLabels: Record<Period, string> = {
   week: 'שבוע',
   month: 'חודש',
   quarter: 'רבעון',
+  year: 'שנה',
 };
 
 function exportToCSV(data: Record<string, any>[], filename: string) {
@@ -132,7 +133,7 @@ export default function AdminAnalyticsPage() {
           </div>
           {/* Period Selector */}
           <div className="flex gap-1.5 mt-3">
-            {(['week', 'month', 'quarter'] as Period[]).map((p) => (
+            {(['week', 'month', 'quarter', 'year'] as Period[]).map((p) => (
               <button key={p} onClick={() => setPeriod(p)} className={`px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-colors ${period === p ? 'bg-emerald-500 text-white' : 'bg-white/10 text-white/70 hover:bg-white/20'}`}>
                 {periodLabels[p]}
               </button>
