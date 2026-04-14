@@ -286,7 +286,7 @@ export default function NotificationsPage() {
     });
     if (!result.isConfirmed) return;
     try {
-      await notificationsApi.deleteNotification(id);
+      await notificationsApi.delete(id);
       queryClient.invalidateQueries({ queryKey: ['notifications'] });
     } catch (err) {
       console.error('Delete failed:', err);
