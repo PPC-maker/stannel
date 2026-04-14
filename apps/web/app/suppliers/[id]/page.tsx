@@ -124,7 +124,7 @@ export default function SupplierDetailPage() {
           Swal.fire({
             title: 'שליחה למספר טלפון',
             html: `
-              <p style="margin-bottom: 16px; color: #9ca3af; font-size: 14px;">הזן מספר טלפון לשליחת ההמלצה</p>
+              <p style="margin-bottom: 16px; color: #9ca3af; font-size: 15.4px; font-weight: 600;">הזן מספר טלפון לשליחת הכרטיס</p>
               <input id="swal-whatsapp-phone" class="swal2-input" type="tel" inputmode="numeric" pattern="[0-9]*" placeholder="הזן מספר טלפון" dir="ltr" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; border-radius: 12px; text-align: center; font-size: 18px;">
             `,
             showCancelButton: true,
