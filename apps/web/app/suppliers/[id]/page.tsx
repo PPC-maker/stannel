@@ -189,7 +189,7 @@ export default function SupplierDetailPage() {
         // Send meeting request to backend
         try {
           const { fetchWithAuth, config: apiConfig, getHeaders } = await import('@stannel/api-client');
-          await fetchWithAuth(`${apiConfig.baseUrl}/supplier/${supplierId}/meeting-request`, {
+          await fetchWithAuth(`${apiConfig.baseUrl}/suppliers/${supplierId}/meeting-request`, {
             method: 'POST',
             headers: getHeaders() as Record<string, string>,
             body: JSON.stringify({ phone, message, supplierName: supplier.companyName }),

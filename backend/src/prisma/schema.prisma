@@ -442,6 +442,7 @@ enum NotificationType {
   PROFILE_VIEWED
   SYSTEM_ALERT
   WELCOME
+  MEETING_REQUEST
 }
 
 model Notification {
