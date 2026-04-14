@@ -533,6 +533,7 @@ export default function WalletPage() {
                 className="block relative rounded-2xl overflow-hidden shadow-md group"
                 style={{ aspectRatio: '1.4/1' }}
               >
+                <div className="absolute inset-0 bg-white/5 animate-pulse" />
                 <Image
                   src={tile.image}
                   alt={tile.label}

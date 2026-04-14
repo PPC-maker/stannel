@@ -320,14 +320,18 @@ export default function RewardsPage() {
                   onClick={() => setSelectedProduct(product.id)}
                 >
                   {/* Product Image */}
-                  <div className="relative h-48 overflow-hidden">
+                  <div className="relative h-48 overflow-hidden bg-white/5">
                     {product.imageUrl ? (
-                      <Image
-                        src={product.imageUrl}
-                        alt={product.name}
-                        fill
-                        className="object-cover group-hover:scale-105 transition-transform duration-500"
-                      />
+                      <>
+                        <div className="absolute inset-0 bg-white/5 animate-pulse" />
+                        <Image
+                          src={product.imageUrl}
+                          alt={product.name}
+                          fill
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                          className="object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
+                      </>
                     ) : (
                       <div className="w-full h-full bg-white/5 flex items-center justify-center">
                         <Gift size={48} className="text-white/30" />
