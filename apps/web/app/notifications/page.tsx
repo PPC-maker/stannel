@@ -335,8 +335,13 @@ export default function NotificationsPage() {
                       </div>
                     </div>
 
-                    {/* Status indicator only */}
-                    <div className={`w-3 h-3 rounded-full flex-shrink-0 ${config.dot} ${status === 'new' ? 'animate-pulse' : ''}`} />
+                    <button
+                      onClick={(e) => { e.stopPropagation(); handleNotificationClick(notif); }}
+                      className="px-3 py-1.5 bg-white/10 border border-white/20 text-white/70 rounded-lg text-xs hover:bg-white/20 transition-colors flex-shrink-0 flex items-center gap-1"
+                    >
+                      <MessageSquare size={12} />
+                      צפה
+                    </button>
                   </motion.div>
                 );
               })}
