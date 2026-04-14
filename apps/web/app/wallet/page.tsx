@@ -411,19 +411,12 @@ export default function WalletPage() {
                 transition={{ delay: 0.15 + index * 0.05 }}
               >
                 <div className={`bg-white/5 backdrop-blur-md border ${stat.borderColor} rounded-2xl p-5 h-full`}>
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <p className="text-white/60 text-sm mb-2">{stat.label}</p>
-                      <p className={`text-3xl font-bold ${stat.color}`}>
-                        {stat.prefix}
-                        {stat.value}
-                        {stat.suffix && <span className="text-lg mr-1">{stat.suffix}</span>}
-                      </p>
-                    </div>
-                    <div className={`p-3 rounded-xl ${stat.bgColor}`}>
-                      <stat.icon size={24} className={stat.color} />
-                    </div>
-                  </div>
+                  <p className="text-white/60 text-sm mb-2">{stat.label}</p>
+                  <p className={`text-3xl font-bold ${stat.color}`}>
+                    {stat.prefix}
+                    {stat.value}
+                    {stat.suffix && <span className="text-lg mr-1">{stat.suffix}</span>}
+                  </p>
                 </div>
               </motion.div>
             ))}
