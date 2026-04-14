@@ -64,7 +64,7 @@ function extractPhone(message: string): string | null {
 }
 
 function extractMessage(message: string): string | null {
-  const match = message.match(/הודעה:\s*(.*)/s);
+  const match = message.match(/הודעה:\s*([\s\S]*)/);
   return match ? match[1].trim() : null;
 }
 
