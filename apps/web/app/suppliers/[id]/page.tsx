@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
+import ImageWithLoader from '@/components/ui/ImageWithLoader';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { AnimatePresence } from 'framer-motion';
@@ -234,7 +235,7 @@ export default function SupplierDetailPage() {
 
       {/* Hero Section */}
       <div className="relative h-[45vh] min-h-[320px]">
-        <Image
+        <ImageWithLoader
           src={heroImage}
           alt={supplier.companyName || 'Supplier'}
           fill
@@ -348,7 +349,7 @@ export default function SupplierDetailPage() {
                 onClick={() => openLightbox(index)}
                 className="relative aspect-square rounded-xl overflow-hidden group bg-white/5"
               >
-                <Image
+                <ImageWithLoader
                   src={img}
                   alt={`תמונה ${index + 1}`}
                   fill
@@ -381,7 +382,7 @@ export default function SupplierDetailPage() {
               {supplier.products.map((product: any) => (
                 <div key={product.id} className="flex-shrink-0 w-28">
                   <div className="relative aspect-square rounded-xl overflow-hidden mb-2">
-                    <Image
+                    <ImageWithLoader
                       src={product.imageUrl || 'https://via.placeholder.com/200'}
                       alt={product.name}
                       fill
@@ -472,12 +473,13 @@ export default function SupplierDetailPage() {
               className="relative w-full h-full max-w-5xl max-h-[80vh] m-4"
               onClick={(e) => e.stopPropagation()}
             >
-              <Image
+              <ImageWithLoader
                 src={galleryImages[currentImageIndex]}
                 alt={`תמונה ${currentImageIndex + 1}`}
                 fill
                 className="object-contain"
                 unoptimized={galleryImages[currentImageIndex]?.includes('localhost')}
+                spinnerSize={40}
               />
             </motion.div>
 
