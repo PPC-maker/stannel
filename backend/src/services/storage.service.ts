@@ -170,12 +170,7 @@ export const storageService = {
       },
     });
 
-    // Return signed URL valid for 1 year
-    const [url] = await file.getSignedUrl({
-      action: 'read',
-      expires: Date.now() + 365 * 24 * 60 * 60 * 1000,
-    });
-    return url;
+    return `https://storage.googleapis.com/${INVOICE_BUCKET}/assets/${fullPath}`;
   },
 
   async getSignedUrl(bucket: string, filename: string, expiresInMinutes = 60): Promise<string> {
