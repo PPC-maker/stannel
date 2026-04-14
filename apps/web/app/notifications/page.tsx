@@ -159,6 +159,7 @@ export default function NotificationsPage() {
               <button id="swal-handled" style="flex: 1; padding: 10px; background: rgba(16,185,129,0.2); border: 1px solid rgba(16,185,129,0.4); color: #10b981; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer;">✅ טופל</button>
               <button id="swal-pending" style="flex: 1; padding: 10px; background: rgba(234,179,8,0.2); border: 1px solid rgba(234,179,8,0.4); color: #eab308; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer;">⏳ יטופל בהמשך</button>
             </div>
+            <button id="swal-delete" style="width: 100%; padding: 10px; margin-top: 8px; background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.3); color: #ef4444; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer;">🗑️ מחק הודעה</button>
           </div>
         `,
         showConfirmButton: false,
@@ -187,6 +188,13 @@ export default function NotificationsPage() {
             updateStatus(notif.id, 'pending');
             Swal.close();
           });
+          document.getElementById('swal-delete')?.addEventListener('click', async () => {
+            try {
+              await notificationsApi.deleteNotification(notif.id);
+              queryClient.invalidateQueries({ queryKey: ['notifications'] });
+            } catch {}
+            Swal.close();
+          });
         },
       });
     } else {
@@ -201,6 +209,7 @@ export default function NotificationsPage() {
               <button id="swal-handled" style="flex: 1; padding: 10px; background: rgba(16,185,129,0.2); border: 1px solid rgba(16,185,129,0.4); color: #10b981; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer;">✅ טופל</button>
               <button id="swal-pending" style="flex: 1; padding: 10px; background: rgba(234,179,8,0.2); border: 1px solid rgba(234,179,8,0.4); color: #eab308; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer;">⏳ יטופל בהמשך</button>
             </div>
+            <button id="swal-delete" style="width: 100%; padding: 10px; margin-top: 8px; background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.3); color: #ef4444; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer;">🗑️ מחק הודעה</button>
           </div>
         `,
         showConfirmButton: false,
@@ -217,16 +226,38 @@ export default function NotificationsPage() {
             updateStatus(notif.id, 'pending');
             Swal.close();
           });
+          document.getElementById('swal-delete')?.addEventListener('click', async () => {
+            try {
+              await notificationsApi.deleteNotification(notif.id);
+              queryClient.invalidateQueries({ queryKey: ['notifications'] });
+            } catch {}
+            Swal.close();
+          });
         },
       });
     }
   };
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (e: React.MouseEvent, id: string) => {
+    e.stopPropagation();
+    const result = await Swal.fire({
+      title: 'מחיקת הודעה',
+      text: 'האם למחוק?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'מחק',
+      cancelButtonText: 'ביטול',
+      confirmButtonColor: '#ef4444',
+      background: '#0f2620',
+      color: '#fff',
+    });
+    if (!result.isConfirmed) return;
     try {
       await notificationsApi.deleteNotification(id);
       queryClient.invalidateQueries({ queryKey: ['notifications'] });
-    } catch {}
+    } catch (err) {
+      console.error('Delete failed:', err);
+    }
   };
 
   return (
@@ -269,7 +300,7 @@ export default function NotificationsPage() {
               <p className="text-white/50 text-sm mt-1">התראות חדשות יופיעו כאן</p>
             </div>
           ) : (
-            <div className="divide-y divide-white/5">
+            <div className="space-y-3 p-3">
               {notifications.map((notif: any, index: number) => {
                 const Icon = TYPE_ICONS[notif.type] || Info;
                 const status = getNotifStatus(notif);
@@ -282,7 +313,7 @@ export default function NotificationsPage() {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.03 }}
                     onClick={() => handleNotificationClick(notif)}
-                    className={`p-3 sm:p-4 flex items-start gap-3 cursor-pointer transition-all border-r-4 ${config.bg}`}
+                    className={`p-3 sm:p-4 flex items-start gap-3 cursor-pointer transition-all border-r-4 rounded-xl ${config.bg}`}
                     style={{ borderRightColor: status === 'new' ? '#ef4444' : status === 'pending' ? '#eab308' : '#10b981' }}
                   >
                     {/* Status dot */}
@@ -306,7 +337,7 @@ export default function NotificationsPage() {
 
                     <div className="flex items-center gap-1 flex-shrink-0">
                       <button
-                        onClick={(e) => { e.stopPropagation(); handleDelete(notif.id); }}
+                        onClick={(e) => handleDelete(e, notif.id)}
                         className="p-1 rounded hover:bg-red-500/20 text-white/30 hover:text-red-400 transition-colors"
                       >
                         <Trash2 size={14} />
