@@ -1883,7 +1883,7 @@ Please analyze this error and provide a fix.
                   <option value="OVERDUE" className="bg-[#0f2620]">באיחור</option>
                 </select>
               </div>
-              <div className="flex items-center gap-4 mt-3 text-xs text-white/50">
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-3 text-xs text-white/50">
                 <span>סה"כ: {invoices.length} חשבוניות</span>
                 {invoiceSearch || invoiceStatusFilter ? <span>מוצגות: {filteredInvoices.length}</span> : null}
                 <span>ממתינות: {invoices.filter(inv => inv.status === 'PENDING_ADMIN').length}</span>
@@ -1893,7 +1893,7 @@ Please analyze this error and provide a fix.
 
             <div className="grid lg:grid-cols-2 gap-6">
               {/* Architects Folders */}
-              <div className="bg-white/5 backdrop-blur border border-white/10 rounded-2xl p-6">
+              <div className="bg-white/5 backdrop-blur border border-white/10 rounded-2xl p-3 sm:p-6">
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-xl font-semibold text-white flex items-center gap-2">
                     <FolderOpen className="text-emerald-400" />
@@ -1922,26 +1922,26 @@ Please analyze this error and provide a fix.
                           {/* Architect Folder Header */}
                           <div
                             onClick={() => toggleArchitectExpand(group.architectId)}
-                            className={`p-4 cursor-pointer transition-all flex items-center justify-between ${
+                            className={`p-3 sm:p-4 cursor-pointer transition-all flex flex-col sm:flex-row sm:items-center gap-2 sm:justify-between ${
                               isExpanded ? 'bg-emerald-500/10 border-b border-white/10' : 'bg-white/5 hover:bg-white/10'
                             }`}
                           >
-                            <div className="flex items-center gap-3">
-                              <div className={`p-2 rounded-lg ${isExpanded ? 'bg-emerald-500/20' : 'bg-white/10'}`}>
+                            <div className="flex items-center gap-3 min-w-0">
+                              <div className={`p-2 rounded-lg shrink-0 ${isExpanded ? 'bg-emerald-500/20' : 'bg-white/10'}`}>
                                 <FolderOpen size={20} className={isExpanded ? 'text-emerald-400' : 'text-white/60'} />
                               </div>
-                              <div>
-                                <p className="text-white font-medium">{group.architectName}</p>
-                                <p className="text-white/50 text-xs">{group.architectEmail}</p>
+                              <div className="min-w-0">
+                                <p className="text-white font-medium truncate">{group.architectName}</p>
+                                <p className="text-white/50 text-xs truncate">{group.architectEmail}</p>
                               </div>
                             </div>
-                            <div className="flex items-center gap-4">
+                            <div className="flex items-center gap-3 sm:gap-4 mr-9 sm:mr-0">
                               <div className="text-left">
-                                <p className="text-emerald-400 font-bold">₪{group.totalAmount.toLocaleString()}</p>
+                                <p className="text-emerald-400 font-bold text-sm sm:text-base">₪{group.totalAmount.toLocaleString()}</p>
                                 <p className="text-white/50 text-xs">{group.invoices.length} חשבוניות</p>
                               </div>
                               {pendingCount > 0 && (
-                                <span className="bg-yellow-500/20 text-yellow-400 text-xs px-2 py-1 rounded-full">
+                                <span className="bg-yellow-500/20 text-yellow-400 text-xs px-2 py-1 rounded-full whitespace-nowrap">
                                   {pendingCount} ממתינות
                                 </span>
                               )}
@@ -1950,14 +1950,14 @@ Please analyze this error and provide a fix.
                                   e.stopPropagation();
                                   handleBulkDeleteArchitectInvoices(group.architectId, group.architectName, group.invoices.length);
                                 }}
-                                className="p-2 rounded-lg hover:bg-red-500/20 text-red-400 transition-colors"
+                                className="p-2 rounded-lg hover:bg-red-500/20 text-red-400 transition-colors shrink-0"
                                 title="מחק את כל החשבוניות"
                               >
                                 <Trash2 size={16} />
                               </button>
                               <ChevronRight
                                 size={20}
-                                className={`text-white/50 transition-transform ${isExpanded ? 'rotate-90' : ''}`}
+                                className={`text-white/50 transition-transform shrink-0 ${isExpanded ? 'rotate-90' : ''}`}
                               />
                             </div>
                           </div>
