@@ -204,14 +204,14 @@ export default function AuditLogsPage() {
           </div>
         </motion.div>
 
-        <div className="grid lg:grid-cols-2 gap-6">
+        <div className="space-y-6 lg:grid lg:grid-cols-2 lg:gap-6 lg:space-y-0">
           {/* Logs List */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
           >
-            <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6">
+            <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-4 sm:p-6">
               <h2 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
                 <FileText className="text-emerald-400" size={20} />
                 פעולות אחרונות ({filteredLogs.length})
@@ -236,36 +236,79 @@ export default function AuditLogsPage() {
                       label: log.action,
                     };
                     const Icon = config.icon;
+                    const isSelected = selectedLog?.id === log.id;
 
                     return (
                       <motion.div
                         key={log.id}
                         initial={{ opacity: 0, x: -10 }}
                         animate={{ opacity: 1, x: 0 }}
-                        onClick={() => setSelectedLog(log)}
-                        className={`p-4 rounded-lg border cursor-pointer transition-all ${
-                          selectedLog?.id === log.id
+                        onClick={() => setSelectedLog(isSelected ? null : log)}
+                        className={`p-3 sm:p-4 rounded-lg border cursor-pointer transition-all ${
+                          isSelected
                             ? 'border-emerald-400 bg-emerald-500/10'
                             : 'border-white/10 bg-white/5 hover:border-white/20'
                         }`}
                       >
                         <div className="flex items-start gap-3">
-                          <div className={`p-2 rounded-lg bg-white/5`}>
+                          <div className={`p-2 rounded-lg bg-white/5 shrink-0`}>
                             <Icon size={18} className={config.color} />
                           </div>
                           <div className="flex-1 min-w-0">
-                            <p className="text-white font-medium">{config.label}</p>
+                            <p className="text-white font-medium truncate">{config.label}</p>
                             {log.user && (
-                              <p className="text-white/60 text-sm">
+                              <p className="text-white/60 text-sm truncate">
                                 על ידי: {log.user.name}
                               </p>
                             )}
                             <div className="flex items-center gap-2 mt-1 text-xs text-white/40">
-                              <Calendar size={12} />
+                              <Calendar size={12} className="shrink-0" />
                               <span>{new Date(log.createdAt).toLocaleString('he-IL')}</span>
                             </div>
                           </div>
                         </div>
+
+                        {/* Inline details on mobile */}
+                        {isSelected && (
+                          <div className="lg:hidden mt-3 pt-3 border-t border-white/10 space-y-3 overflow-hidden">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                              <div className="p-3 bg-white/5 rounded-lg">
+                                <p className="text-white/40 text-sm">תאריך ושעה</p>
+                                <p className="text-white text-sm">
+                                  {new Date(log.createdAt).toLocaleString('he-IL')}
+                                </p>
+                              </div>
+                              {log.user && (
+                                <div className="p-3 bg-white/5 rounded-lg min-w-0">
+                                  <p className="text-white/40 text-sm">בוצע על ידי</p>
+                                  <p className="text-white text-sm truncate">{log.user.name}</p>
+                                  <p className="text-white/40 text-xs truncate">{log.user.email}</p>
+                                </div>
+                              )}
+                            </div>
+
+                            {log.entityId && (
+                              <div className="p-3 bg-white/5 rounded-lg min-w-0">
+                                <p className="text-white/40 text-sm">מזהה ישות</p>
+                                <p className="text-white font-mono text-xs break-all">{log.entityId}</p>
+                              </div>
+                            )}
+
+                            {log.metadata && Object.keys(log.metadata).length > 0 && (
+                              <div className="p-3 bg-white/5 rounded-lg min-w-0">
+                                <p className="text-white/40 text-sm mb-2">נתונים נוספים</p>
+                                <pre className="text-white/60 text-xs bg-white/5 rounded-lg p-3 overflow-x-auto max-w-full whitespace-pre-wrap break-all">
+                                  {JSON.stringify(log.metadata, null, 2)}
+                                </pre>
+                              </div>
+                            )}
+
+                            <div className="p-3 bg-white/5 rounded-lg min-w-0">
+                              <p className="text-white/40 text-sm">מזהה לוג</p>
+                              <p className="text-white font-mono text-xs break-all">{log.id}</p>
+                            </div>
+                          </div>
+                        )}
                       </motion.div>
                     );
                   })}
@@ -297,13 +340,14 @@ export default function AuditLogsPage() {
             </div>
           </motion.div>
 
-          {/* Selected Log Details */}
+          {/* Selected Log Details - Desktop only */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
+            className="hidden lg:block"
           >
-            <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 h-fit sticky top-6">
+            <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 h-fit sticky top-6 overflow-hidden">
               <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
                 <Eye className="text-emerald-400" size={20} />
                 פרטי הפעולה
@@ -321,12 +365,12 @@ export default function AuditLogsPage() {
                       const Icon = config.icon;
                       return (
                         <div className="flex items-center gap-3">
-                          <div className={`p-3 rounded-lg bg-white/5`}>
+                          <div className={`p-3 rounded-lg bg-white/5 shrink-0`}>
                             <Icon size={24} className={config.color} />
                           </div>
-                          <div>
+                          <div className="min-w-0">
                             <p className="text-white font-bold text-lg">{config.label}</p>
-                            <p className="text-white/40 text-sm">{selectedLog.action}</p>
+                            <p className="text-white/40 text-sm break-all">{selectedLog.action}</p>
                           </div>
                         </div>
                       );
@@ -336,38 +380,38 @@ export default function AuditLogsPage() {
                   <div className="grid grid-cols-2 gap-4">
                     <div className="p-3 bg-white/5 rounded-lg">
                       <p className="text-white/40 text-sm">תאריך ושעה</p>
-                      <p className="text-white">
+                      <p className="text-white text-sm">
                         {new Date(selectedLog.createdAt).toLocaleString('he-IL')}
                       </p>
                     </div>
                     {selectedLog.user && (
-                      <div className="p-3 bg-white/5 rounded-lg">
+                      <div className="p-3 bg-white/5 rounded-lg min-w-0">
                         <p className="text-white/40 text-sm">בוצע על ידי</p>
-                        <p className="text-white">{selectedLog.user.name}</p>
-                        <p className="text-white/40 text-xs">{selectedLog.user.email}</p>
+                        <p className="text-white truncate">{selectedLog.user.name}</p>
+                        <p className="text-white/40 text-xs truncate">{selectedLog.user.email}</p>
                       </div>
                     )}
                   </div>
 
                   {selectedLog.entityId && (
-                    <div className="p-3 bg-white/5 rounded-lg">
+                    <div className="p-3 bg-white/5 rounded-lg min-w-0">
                       <p className="text-white/40 text-sm">מזהה ישות</p>
-                      <p className="text-white font-mono text-sm">{selectedLog.entityId}</p>
+                      <p className="text-white font-mono text-sm break-all">{selectedLog.entityId}</p>
                     </div>
                   )}
 
                   {selectedLog.metadata && Object.keys(selectedLog.metadata).length > 0 && (
-                    <div className="p-3 bg-white/5 rounded-lg">
+                    <div className="p-3 bg-white/5 rounded-lg min-w-0">
                       <p className="text-white/40 text-sm mb-2">נתונים נוספים</p>
-                      <pre className="text-white/60 text-xs bg-white/5 rounded-lg p-3 overflow-x-auto">
+                      <pre className="text-white/60 text-xs bg-white/5 rounded-lg p-3 overflow-x-auto max-w-full whitespace-pre-wrap break-all">
                         {JSON.stringify(selectedLog.metadata, null, 2)}
                       </pre>
                     </div>
                   )}
 
-                  <div className="p-3 bg-white/5 rounded-lg">
+                  <div className="p-3 bg-white/5 rounded-lg min-w-0">
                     <p className="text-white/40 text-sm">מזהה לוג</p>
-                    <p className="text-white font-mono text-xs">{selectedLog.id}</p>
+                    <p className="text-white font-mono text-xs break-all">{selectedLog.id}</p>
                   </div>
                 </div>
               ) : (

@@ -283,30 +283,30 @@ export default function ManageEventsPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6"
+          className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6"
         >
-          <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6">
+          <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-3 sm:p-6">
             <div className="text-center">
-              <p className="text-white/40 text-sm">סה״כ אירועים</p>
-              <p className="text-3xl font-bold text-white">{events?.length || 0}</p>
+              <p className="text-white/40 text-xs sm:text-sm">סה״כ אירועים</p>
+              <p className="text-2xl sm:text-3xl font-bold text-white">{events?.length || 0}</p>
             </div>
           </div>
-          <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 bg-green-500/10">
+          <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-3 sm:p-6 bg-green-500/10">
             <div className="text-center">
-              <p className="text-green-400/70 text-sm">אירועים קרובים</p>
-              <p className="text-3xl font-bold text-green-400">{upcomingEvents.length}</p>
+              <p className="text-green-400/70 text-xs sm:text-sm">אירועים קרובים</p>
+              <p className="text-2xl sm:text-3xl font-bold text-green-400">{upcomingEvents.length}</p>
             </div>
           </div>
-          <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 bg-blue-500/10">
+          <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-3 sm:p-6 bg-blue-500/10">
             <div className="text-center">
-              <p className="text-blue-400/70 text-sm">אירועים שעברו</p>
-              <p className="text-3xl font-bold text-blue-400">{pastEvents.length}</p>
+              <p className="text-blue-400/70 text-xs sm:text-sm">אירועים שעברו</p>
+              <p className="text-2xl sm:text-3xl font-bold text-blue-400">{pastEvents.length}</p>
             </div>
           </div>
-          <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 bg-emerald-500/10">
+          <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-3 sm:p-6 bg-emerald-500/10">
             <div className="text-center">
-              <p className="text-emerald-400/70 text-sm">סה״כ נרשמים</p>
-              <p className="text-3xl font-bold text-emerald-400">
+              <p className="text-emerald-400/70 text-xs sm:text-sm">סה״כ נרשמים</p>
+              <p className="text-2xl sm:text-3xl font-bold text-emerald-400">
                 {events?.reduce((sum: number, e: any) => sum + (e.registeredCount || 0), 0) || 0}
               </p>
             </div>
@@ -350,7 +350,7 @@ export default function ManageEventsPage() {
                   return (
                     <div
                       key={event.id}
-                      className={`p-4 rounded-lg border ${
+                      className={`p-3 sm:p-4 rounded-lg border overflow-hidden ${
                         event.isHidden
                           ? 'border-red-500/30 bg-red-500/5'
                           : isPast
@@ -358,60 +358,39 @@ export default function ManageEventsPage() {
                           : 'border-green-500/30 bg-green-500/5'
                       }`}
                     >
-                      <div className="flex items-start justify-between">
-                        <div className="flex items-start gap-4">
-                          {event.imageUrl ? (
-                            <img
-                              src={event.imageUrl}
-                              alt={event.title}
-                              className="w-16 h-16 rounded-lg object-cover"
-                            />
-                          ) : (
-                            <div className="w-16 h-16 rounded-lg bg-white/10 flex items-center justify-center">
-                              <Calendar size={24} className="text-white/40" />
-                            </div>
-                          )}
-                          <div>
-                            <div className="flex items-center gap-2">
-                              <p className="text-white font-bold">{event.title}</p>
-                              {event.isHidden && (
-                                <span className="px-2 py-0.5 rounded-full text-xs bg-red-500/20 text-red-400">
-                                  מוסתר
-                                </span>
-                              )}
-                              {isPast && (
-                                <span className="px-2 py-0.5 rounded-full text-xs bg-white/10 text-white/40">
-                                  עבר
-                                </span>
-                              )}
-                            </div>
-                            <p className="text-white/40 text-sm line-clamp-1">{event.description}</p>
-                            <div className="flex items-center gap-4 mt-2 text-white/40 text-sm">
-                              <span className="flex items-center gap-1">
-                                <Calendar size={12} />
-                                {new Date(event.date).toLocaleDateString('he-IL')}
-                              </span>
-                              <span className="flex items-center gap-1">
-                                <MapPin size={12} />
-                                {event.location}
-                              </span>
-                              <span className="flex items-center gap-1">
-                                <Users size={12} />
-                                {event.registeredCount}/{event.capacity}
-                              </span>
-                              {event.pointsCost > 0 && (
-                                <span className="flex items-center gap-1 text-emerald-400">
-                                  <Coins size={12} />
-                                  {event.pointsCost} נקודות
-                                </span>
-                              )}
-                            </div>
+                      {/* Top row: image + title + actions */}
+                      <div className="flex items-start gap-3">
+                        {event.imageUrl ? (
+                          <img
+                            src={event.imageUrl}
+                            alt={event.title}
+                            className="w-12 h-12 sm:w-16 sm:h-16 rounded-lg object-cover shrink-0"
+                          />
+                        ) : (
+                          <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-lg bg-white/10 flex items-center justify-center shrink-0">
+                            <Calendar size={20} className="text-white/40" />
                           </div>
+                        )}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <p className="text-white font-bold text-sm sm:text-base truncate">{event.title}</p>
+                            {event.isHidden && (
+                              <span className="px-2 py-0.5 rounded-full text-xs bg-red-500/20 text-red-400 shrink-0">
+                                מוסתר
+                              </span>
+                            )}
+                            {isPast && (
+                              <span className="px-2 py-0.5 rounded-full text-xs bg-white/10 text-white/40 shrink-0">
+                                עבר
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-white/40 text-sm line-clamp-1">{event.description}</p>
                         </div>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-1 shrink-0">
                           <button
                             onClick={() => handleToggleVisibility(event)}
-                            className={`p-2 rounded-lg hover:bg-white/10 transition-colors ${
+                            className={`p-1.5 sm:p-2 rounded-lg hover:bg-white/10 transition-colors ${
                               event.isHidden ? 'text-red-400' : 'text-green-400'
                             }`}
                             title={event.isHidden ? 'הצג אירוע' : 'הסתר אירוע'}
@@ -420,19 +399,40 @@ export default function ManageEventsPage() {
                           </button>
                           <button
                             onClick={() => handleEdit(event)}
-                            className="p-2 rounded-lg hover:bg-white/10 text-white/60 hover:text-white transition-colors"
+                            className="p-1.5 sm:p-2 rounded-lg hover:bg-white/10 text-white/60 hover:text-white transition-colors"
                             title="ערוך"
                           >
                             <Edit2 size={16} />
                           </button>
                           <button
                             onClick={() => handleDelete(event)}
-                            className="p-2 rounded-lg hover:bg-red-500/20 text-red-400 transition-colors"
+                            className="p-1.5 sm:p-2 rounded-lg hover:bg-red-500/20 text-red-400 transition-colors"
                             title="מחק"
                           >
                             <Trash2 size={16} />
                           </button>
                         </div>
+                      </div>
+                      {/* Metadata row */}
+                      <div className="flex items-center gap-3 sm:gap-4 mt-2 text-white/40 text-xs sm:text-sm flex-wrap">
+                        <span className="flex items-center gap-1">
+                          <Calendar size={12} className="shrink-0" />
+                          {new Date(event.date).toLocaleDateString('he-IL')}
+                        </span>
+                        <span className="flex items-center gap-1 min-w-0">
+                          <MapPin size={12} className="shrink-0" />
+                          <span className="truncate">{event.location}</span>
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <Users size={12} className="shrink-0" />
+                          {event.registeredCount}/{event.capacity}
+                        </span>
+                        {event.pointsCost > 0 && (
+                          <span className="flex items-center gap-1 text-emerald-400">
+                            <Coins size={12} className="shrink-0" />
+                            {event.pointsCost} נקודות
+                          </span>
+                        )}
                       </div>
                     </div>
                   );
