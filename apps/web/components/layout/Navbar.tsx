@@ -50,8 +50,10 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // All pages now use the dark green theme - make navbar transparent on all pages
-  const isDarkPage = true;
+  // Pages with light backgrounds need dark navbar styling
+  const lightPages = ['/wallet'];
+  const isLightPage = lightPages.includes(pathname || '');
+  const isDarkPage = !isLightPage;
 
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
@@ -60,16 +62,16 @@ export default function Navbar() {
           ? 'bg-black/40 backdrop-blur-xl border-b border-white/10 shadow-lg shadow-black/20'
           : 'bg-transparent'
         : 'bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100'
-    }`}>
+    }`} style={{ paddingTop: 'env(safe-area-inset-top, 0px)', WebkitBackdropFilter: isScrolled || !isDarkPage ? 'blur(16px)' : undefined }}>
       <div className={`w-full px-4 sm:px-6 lg:px-8 flex items-center justify-center relative ${isDarkPage ? 'h-20' : 'h-16'}`}>
         {/* Centered Logo */}
-        <Link href="/" className="flex items-center">
+        <Link href="/wallet" className="flex items-center">
           <Image
-            src="/logo1.png"
+            src={isLightPage ? "/logo_black1.png" : "/logo1.png"}
             alt="Stannel"
             width={isDarkPage ? 281 : 218}
             height={isDarkPage ? 84 : 66}
-            className={isDarkPage ? "h-20 w-auto" : "h-14 w-auto"}
+            className={isDarkPage ? "h-20 w-auto" : "h-16 w-auto"}
             priority
           />
         </Link>
@@ -78,7 +80,7 @@ export default function Navbar() {
         <div className="absolute right-4 top-1/2 -translate-y-1/2">
           <button
             onClick={() => setIsProfileOpen(!isProfileOpen)}
-            className={`w-10 h-10 rounded-full border-2 flex items-center justify-center transition-colors ${
+            className={`w-11 h-11 rounded-full border-2 flex items-center justify-center transition-colors ${
               isDarkPage
                 ? 'border-white/50 hover:bg-white/20 bg-white/15 shadow-[0_0_10px_rgba(255,255,255,0.2)]'
                 : 'border-gray-200 hover:bg-gray-50 bg-white shadow-sm'

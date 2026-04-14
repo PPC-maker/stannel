@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { useAuth } from '@/lib/auth-context';
 import { useAuthGuard, AuthGuardLoader } from '@/lib/useAuthGuard';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { config, getHeaders } from '@stannel/api-client';
+import { config, getHeaders, fetchWithAuth } from '@stannel/api-client';
 import Swal from 'sweetalert2';
 import {
   ArrowRight,
@@ -39,7 +39,7 @@ interface Project {
 // API functions
 const projectsApi = {
   async getMyProjects(): Promise<{ data: Project[] }> {
-    const response = await fetch(`${config.baseUrl}/projects/my`, {
+    const response = await fetchWithAuth(`${config.baseUrl}/projects/my`, {
       headers: getHeaders(),
     });
     if (!response.ok) throw new Error('Failed to fetch projects');
@@ -47,7 +47,7 @@ const projectsApi = {
   },
 
   async createProject(data: Partial<Project>): Promise<Project> {
-    const response = await fetch(`${config.baseUrl}/projects`, {
+    const response = await fetchWithAuth(`${config.baseUrl}/projects`, {
       method: 'POST',
       headers: getHeaders(),
       body: JSON.stringify(data),
@@ -57,7 +57,7 @@ const projectsApi = {
   },
 
   async updateProject(id: string, data: Partial<Project>): Promise<Project> {
-    const response = await fetch(`${config.baseUrl}/projects/${id}`, {
+    const response = await fetchWithAuth(`${config.baseUrl}/projects/${id}`, {
       method: 'PATCH',
       headers: getHeaders(),
       body: JSON.stringify(data),
@@ -67,7 +67,7 @@ const projectsApi = {
   },
 
   async deleteProject(id: string): Promise<void> {
-    const response = await fetch(`${config.baseUrl}/projects/${id}`, {
+    const response = await fetchWithAuth(`${config.baseUrl}/projects/${id}`, {
       method: 'DELETE',
       headers: getHeaders(),
     });
@@ -79,7 +79,7 @@ const projectsApi = {
     formData.append('file', file);
 
     const headers = getHeaders() as Record<string, string>;
-    const response = await fetch(`${config.baseUrl}/supplier/upload-business-image`, {
+    const response = await fetchWithAuth(`${config.baseUrl}/supplier/upload-business-image`, {
       method: 'POST',
       headers: {
         Authorization: headers['Authorization'] || '',

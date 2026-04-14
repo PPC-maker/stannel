@@ -1,6 +1,6 @@
 // Goals API Client (Architect Goals)
 
-import { config, getHeaders } from './config';
+import { config, getHeaders, fetchWithAuth } from './config';
 
 export interface ArchitectGoal {
   id: string;
@@ -38,7 +38,7 @@ export interface GoalStats {
 
 export const goalsApi = {
   async getAll(): Promise<{ data: ArchitectGoal[] }> {
-    const response = await fetch(`${config.baseUrl}/goals`, {
+    const response = await fetchWithAuth(`${config.baseUrl}/goals`, {
       method: 'GET',
       headers: getHeaders(),
     });
@@ -52,7 +52,7 @@ export const goalsApi = {
   },
 
   async getActive(): Promise<ArchitectGoal | null> {
-    const response = await fetch(`${config.baseUrl}/goals/active`, {
+    const response = await fetchWithAuth(`${config.baseUrl}/goals/active`, {
       method: 'GET',
       headers: getHeaders(),
     });
@@ -79,7 +79,7 @@ export const goalsApi = {
     if (params?.page) searchParams.set('page', String(params.page));
     if (params?.pageSize) searchParams.set('pageSize', String(params.pageSize));
 
-    const response = await fetch(`${config.baseUrl}/goals/bonuses?${searchParams}`, {
+    const response = await fetchWithAuth(`${config.baseUrl}/goals/bonuses?${searchParams}`, {
       method: 'GET',
       headers: getHeaders(),
     });
@@ -93,7 +93,7 @@ export const goalsApi = {
   },
 
   async getStats(): Promise<GoalStats> {
-    const response = await fetch(`${config.baseUrl}/goals/stats`, {
+    const response = await fetchWithAuth(`${config.baseUrl}/goals/stats`, {
       method: 'GET',
       headers: getHeaders(),
     });
@@ -116,7 +116,7 @@ export const goalsApi = {
       startDate: string;
       endDate: string;
     }): Promise<ArchitectGoal> {
-      const response = await fetch(`${config.baseUrl}/goals/admin/create`, {
+      const response = await fetchWithAuth(`${config.baseUrl}/goals/admin/create`, {
         method: 'POST',
         headers: getHeaders(),
         body: JSON.stringify(data),
@@ -146,7 +146,7 @@ export const goalsApi = {
       if (params?.pageSize) searchParams.set('pageSize', String(params.pageSize));
       if (params?.activeOnly) searchParams.set('activeOnly', 'true');
 
-      const response = await fetch(`${config.baseUrl}/goals/admin/all?${searchParams}`, {
+      const response = await fetchWithAuth(`${config.baseUrl}/goals/admin/all?${searchParams}`, {
         method: 'GET',
         headers: getHeaders(),
       });
@@ -160,7 +160,7 @@ export const goalsApi = {
     },
 
     async updateProgress(id: string, addAmount: number): Promise<ArchitectGoal> {
-      const response = await fetch(`${config.baseUrl}/goals/admin/${id}/progress`, {
+      const response = await fetchWithAuth(`${config.baseUrl}/goals/admin/${id}/progress`, {
         method: 'PATCH',
         headers: getHeaders(),
         body: JSON.stringify({ addAmount }),

@@ -1,6 +1,6 @@
 // Notifications API Client
 
-import { config, getHeaders } from './config';
+import { config, getHeaders, fetchWithAuth } from './config';
 
 export interface Notification {
   id: string;
@@ -35,7 +35,7 @@ export const notificationsApi = {
     if (params?.page) searchParams.set('page', String(params.page));
     if (params?.pageSize) searchParams.set('pageSize', String(params.pageSize));
 
-    const response = await fetch(`${config.baseUrl}/notifications?${searchParams}`, {
+    const response = await fetchWithAuth(`${config.baseUrl}/notifications?${searchParams}`, {
       method: 'GET',
       headers: getHeaders(),
     });
@@ -53,7 +53,7 @@ export const notificationsApi = {
   },
 
   async getUnreadCount(): Promise<{ count: number }> {
-    const response = await fetch(`${config.baseUrl}/notifications/unread-count`, {
+    const response = await fetchWithAuth(`${config.baseUrl}/notifications/unread-count`, {
       method: 'GET',
       headers: getHeaders(),
     });
@@ -71,7 +71,7 @@ export const notificationsApi = {
   },
 
   async markAsRead(id: string): Promise<{ success: boolean }> {
-    const response = await fetch(`${config.baseUrl}/notifications/${id}/read`, {
+    const response = await fetchWithAuth(`${config.baseUrl}/notifications/${id}/read`, {
       method: 'PATCH',
       headers: getHeaders(),
     });
@@ -89,7 +89,7 @@ export const notificationsApi = {
   },
 
   async markAllAsRead(): Promise<{ success: boolean }> {
-    const response = await fetch(`${config.baseUrl}/notifications/read-all`, {
+    const response = await fetchWithAuth(`${config.baseUrl}/notifications/read-all`, {
       method: 'PATCH',
       headers: getHeaders(),
     });
@@ -107,7 +107,7 @@ export const notificationsApi = {
   },
 
   async delete(id: string): Promise<{ success: boolean }> {
-    const response = await fetch(`${config.baseUrl}/notifications/${id}`, {
+    const response = await fetchWithAuth(`${config.baseUrl}/notifications/${id}`, {
       method: 'DELETE',
       headers: getHeaders(),
     });

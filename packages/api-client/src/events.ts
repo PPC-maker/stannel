@@ -1,6 +1,6 @@
 // Events API Client
 
-import { config, getHeaders } from './config';
+import { config, getHeaders, fetchWithAuth } from './config';
 import type {
   Event,
   EventWithRegistration,
@@ -20,7 +20,7 @@ export const eventsApi = {
     if (params?.pageSize) searchParams.set('pageSize', String(params.pageSize));
     if (params?.upcoming !== undefined) searchParams.set('upcoming', String(params.upcoming));
 
-    const response = await fetch(`${config.baseUrl}/events?${searchParams}`, {
+    const response = await fetchWithAuth(`${config.baseUrl}/events?${searchParams}`, {
       method: 'GET',
       headers: getHeaders(),
     });
@@ -38,7 +38,7 @@ export const eventsApi = {
   },
 
   async getById(id: string): Promise<EventWithRegistration> {
-    const response = await fetch(`${config.baseUrl}/events/${id}`, {
+    const response = await fetchWithAuth(`${config.baseUrl}/events/${id}`, {
       method: 'GET',
       headers: getHeaders(),
     });
@@ -56,7 +56,7 @@ export const eventsApi = {
   },
 
   async register(eventId: string): Promise<EventRegistration> {
-    const response = await fetch(`${config.baseUrl}/events/register`, {
+    const response = await fetchWithAuth(`${config.baseUrl}/events/register`, {
       method: 'POST',
       headers: getHeaders(),
       body: JSON.stringify({ eventId }),
@@ -75,7 +75,7 @@ export const eventsApi = {
   },
 
   async cancelRegistration(eventId: string): Promise<SuccessResponse> {
-    const response = await fetch(`${config.baseUrl}/events/${eventId}/cancel`, {
+    const response = await fetchWithAuth(`${config.baseUrl}/events/${eventId}/cancel`, {
       method: 'DELETE',
       headers: getHeaders(),
     });
@@ -93,7 +93,7 @@ export const eventsApi = {
   },
 
   async getMyEvents(): Promise<EventWithRegistration[]> {
-    const response = await fetch(`${config.baseUrl}/events/my`, {
+    const response = await fetchWithAuth(`${config.baseUrl}/events/my`, {
       method: 'GET',
       headers: getHeaders(),
     });
@@ -114,7 +114,7 @@ export const eventsApi = {
   admin: {
     async getAllEvents(): Promise<Event[]> {
       // Use admin endpoint to get ALL events including hidden ones
-      const response = await fetch(`${config.baseUrl}/admin/events`, {
+      const response = await fetchWithAuth(`${config.baseUrl}/admin/events`, {
         method: 'GET',
         headers: getHeaders(),
       });
@@ -137,7 +137,7 @@ export const eventsApi = {
       pointsCost?: number;
       imageUrl?: string;
     }): Promise<Event> {
-      const response = await fetch(`${config.baseUrl}/admin/events`, {
+      const response = await fetchWithAuth(`${config.baseUrl}/admin/events`, {
         method: 'POST',
         headers: getHeaders(),
         body: JSON.stringify(data),
@@ -161,7 +161,7 @@ export const eventsApi = {
       imageUrl: string;
       isHidden: boolean;
     }>): Promise<Event> {
-      const response = await fetch(`${config.baseUrl}/admin/events/${id}`, {
+      const response = await fetchWithAuth(`${config.baseUrl}/admin/events/${id}`, {
         method: 'PATCH',
         headers: getHeaders(),
         body: JSON.stringify(data),
@@ -176,7 +176,7 @@ export const eventsApi = {
     },
 
     async deleteEvent(id: string): Promise<{ success: boolean }> {
-      const response = await fetch(`${config.baseUrl}/admin/events/${id}`, {
+      const response = await fetchWithAuth(`${config.baseUrl}/admin/events/${id}`, {
         method: 'DELETE',
         headers: getHeaders(),
       });

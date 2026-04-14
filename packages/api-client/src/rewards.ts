@@ -1,6 +1,6 @@
 // Rewards API Client
 
-import { config, getHeaders } from './config';
+import { config, getHeaders, fetchWithAuth } from './config';
 import type {
   Product,
   Redemption,
@@ -20,7 +20,7 @@ export const rewardsApi = {
     if (params?.pageSize) searchParams.set('pageSize', String(params.pageSize));
     if (params?.supplierId) searchParams.set('supplierId', params.supplierId);
 
-    const response = await fetch(`${config.baseUrl}/rewards/products?${searchParams}`, {
+    const response = await fetchWithAuth(`${config.baseUrl}/rewards/products?${searchParams}`, {
       method: 'GET',
       headers: getHeaders(),
     });
@@ -38,7 +38,7 @@ export const rewardsApi = {
   },
 
   async getProductById(id: string): Promise<Product> {
-    const response = await fetch(`${config.baseUrl}/rewards/products/${id}`, {
+    const response = await fetchWithAuth(`${config.baseUrl}/rewards/products/${id}`, {
       method: 'GET',
       headers: getHeaders(),
     });
@@ -56,7 +56,7 @@ export const rewardsApi = {
   },
 
   async redeem(data: RedeemRequest): Promise<Redemption> {
-    const response = await fetch(`${config.baseUrl}/rewards/redeem`, {
+    const response = await fetchWithAuth(`${config.baseUrl}/rewards/redeem`, {
       method: 'POST',
       headers: getHeaders(),
       body: JSON.stringify(data),
@@ -82,7 +82,7 @@ export const rewardsApi = {
     if (params?.page) searchParams.set('page', String(params.page));
     if (params?.pageSize) searchParams.set('pageSize', String(params.pageSize));
 
-    const response = await fetch(`${config.baseUrl}/rewards/redemptions?${searchParams}`, {
+    const response = await fetchWithAuth(`${config.baseUrl}/rewards/redemptions?${searchParams}`, {
       method: 'GET',
       headers: getHeaders(),
     });

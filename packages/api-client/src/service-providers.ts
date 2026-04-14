@@ -1,6 +1,6 @@
 // Service Providers API Client
 
-import { config, getHeaders } from './config';
+import { config, getHeaders, fetchWithAuth } from './config';
 
 export interface ServiceProvider {
   id: string;
@@ -31,7 +31,7 @@ export const serviceProvidersApi = {
     if (params?.category) searchParams.set('category', params.category);
     if (params?.search) searchParams.set('search', params.search);
 
-    const response = await fetch(`${config.baseUrl}/service-providers?${searchParams}`, {
+    const response = await fetchWithAuth(`${config.baseUrl}/service-providers?${searchParams}`, {
       method: 'GET',
       headers: getHeaders(),
     });
@@ -49,7 +49,7 @@ export const serviceProvidersApi = {
   },
 
   async getById(id: string): Promise<ServiceProvider> {
-    const response = await fetch(`${config.baseUrl}/service-providers/${id}`, {
+    const response = await fetchWithAuth(`${config.baseUrl}/service-providers/${id}`, {
       method: 'GET',
       headers: getHeaders(),
     });
@@ -67,7 +67,7 @@ export const serviceProvidersApi = {
   },
 
   async getCategories(): Promise<{ categories: ServiceProviderCategory[] }> {
-    const response = await fetch(`${config.baseUrl}/service-providers/meta/categories`, {
+    const response = await fetchWithAuth(`${config.baseUrl}/service-providers/meta/categories`, {
       method: 'GET',
       headers: getHeaders(),
     });
@@ -95,7 +95,7 @@ export const serviceProvidersApi = {
       website?: string;
       address?: string;
     }): Promise<ServiceProvider> {
-      const response = await fetch(`${config.baseUrl}/service-providers/admin/create`, {
+      const response = await fetchWithAuth(`${config.baseUrl}/service-providers/admin/create`, {
         method: 'POST',
         headers: getHeaders(),
         body: JSON.stringify(data),
@@ -120,7 +120,7 @@ export const serviceProvidersApi = {
       isActive: boolean;
       isVerified: boolean;
     }>): Promise<ServiceProvider> {
-      const response = await fetch(`${config.baseUrl}/service-providers/admin/${id}`, {
+      const response = await fetchWithAuth(`${config.baseUrl}/service-providers/admin/${id}`, {
         method: 'PATCH',
         headers: getHeaders(),
         body: JSON.stringify(data),
@@ -135,7 +135,7 @@ export const serviceProvidersApi = {
     },
 
     async delete(id: string): Promise<{ success: boolean }> {
-      const response = await fetch(`${config.baseUrl}/service-providers/admin/${id}`, {
+      const response = await fetchWithAuth(`${config.baseUrl}/service-providers/admin/${id}`, {
         method: 'DELETE',
         headers: getHeaders(),
       });
@@ -162,7 +162,7 @@ export const serviceProvidersApi = {
       if (params?.page) searchParams.set('page', String(params.page));
       if (params?.pageSize) searchParams.set('pageSize', String(params.pageSize));
 
-      const response = await fetch(`${config.baseUrl}/service-providers/admin/all?${searchParams}`, {
+      const response = await fetchWithAuth(`${config.baseUrl}/service-providers/admin/all?${searchParams}`, {
         method: 'GET',
         headers: getHeaders(),
       });

@@ -1,6 +1,6 @@
 // Auth API Client
 
-import { config, getHeaders, setAuthToken, fetchWithRetry } from './config';
+import { config, getHeaders, setAuthToken, fetchWithRetry, fetchWithAuth } from './config';
 import type { AuthResponse, LoginRequest, RegisterRequest, AuthUser } from '@stannel/types';
 
 export const authApi = {
@@ -22,7 +22,7 @@ export const authApi = {
   },
 
   async login(data: LoginRequest): Promise<AuthResponse> {
-    const response = await fetch(`${config.baseUrl}/auth/login`, {
+    const response = await fetchWithRetry(`${config.baseUrl}/auth/login`, {
       method: 'POST',
       headers: getHeaders(),
       body: JSON.stringify(data),
@@ -73,7 +73,7 @@ export const authApi = {
   },
 
   async getMe(): Promise<AuthUser> {
-    const response = await fetch(`${config.baseUrl}/auth/me`, {
+    const response = await fetchWithAuth(`${config.baseUrl}/auth/me`, {
       method: 'GET',
       headers: getHeaders(),
     });
@@ -91,7 +91,7 @@ export const authApi = {
   },
 
   async updateProfile(data: Partial<AuthUser>): Promise<AuthUser> {
-    const response = await fetch(`${config.baseUrl}/auth/profile`, {
+    const response = await fetchWithAuth(`${config.baseUrl}/auth/profile`, {
       method: 'PATCH',
       headers: getHeaders(),
       body: JSON.stringify(data),
@@ -117,7 +117,7 @@ export const authApi = {
     // Remove Content-Type to let browser set it with boundary for multipart
     delete (headers as Record<string, string>)['Content-Type'];
 
-    const response = await fetch(`${config.baseUrl}/auth/profile/image`, {
+    const response = await fetchWithAuth(`${config.baseUrl}/auth/profile/image`, {
       method: 'POST',
       headers,
       body: formData,

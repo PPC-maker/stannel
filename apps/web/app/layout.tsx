@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Assistant } from 'next/font/google';
 import './globals.css';
 import Navbar from '@/components/layout/Navbar';
@@ -11,6 +11,14 @@ const assistant = Assistant({
   weight: ['300', '400', '500', '600', '700'],
   display: 'swap',
 });
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  viewportFit: 'cover',
+};
 
 export const metadata: Metadata = {
   title: 'STANNEL | פלטפורמת ניהול מועדון לקוחות מקצועי',
@@ -37,7 +45,7 @@ export default function RootLayout({
           {/* Main app shell */}
           <div className="relative z-10 min-h-screen flex flex-col items-center">
             <Navbar />
-            <main className="flex-1 pt-16 w-full bg-transparent">
+            <main className="flex-1 pt-16 w-full bg-transparent" style={{ paddingTop: 'calc(4rem + env(safe-area-inset-top, 0px))' }}>
               {children}
             </main>
           </div>

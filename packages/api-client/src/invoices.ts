@@ -1,6 +1,6 @@
 // Invoices API Client
 
-import { config, getHeaders, getMultipartHeaders } from './config';
+import { config, getHeaders, getMultipartHeaders, fetchWithAuth } from './config';
 import type {
   Invoice,
   InvoiceWithDetails,
@@ -11,7 +11,7 @@ import type {
 
 export const invoicesApi = {
   async getSuppliers(): Promise<{ data: { id: string; companyName: string; email?: string }[] }> {
-    const response = await fetch(`${config.baseUrl}/invoices/suppliers`, {
+    const response = await fetchWithAuth(`${config.baseUrl}/invoices/suppliers`, {
       method: 'GET',
       headers: getHeaders(),
     });
@@ -29,7 +29,7 @@ export const invoicesApi = {
   },
 
   async getMySuppliers(): Promise<{ data: { id: string; companyName: string; email?: string; invoiceCount: number; totalAmount: number }[] }> {
-    const response = await fetch(`${config.baseUrl}/invoices/my-suppliers`, {
+    const response = await fetchWithAuth(`${config.baseUrl}/invoices/my-suppliers`, {
       method: 'GET',
       headers: getHeaders(),
     });
@@ -47,7 +47,7 @@ export const invoicesApi = {
   },
 
   async upload(formData: FormData): Promise<{ invoice: Invoice; aiValidation: AIValidationResult }> {
-    const response = await fetch(`${config.baseUrl}/invoices/upload`, {
+    const response = await fetchWithAuth(`${config.baseUrl}/invoices/upload`, {
       method: 'POST',
       headers: getMultipartHeaders(),
       body: formData,
@@ -75,7 +75,7 @@ export const invoicesApi = {
     if (params?.pageSize) searchParams.set('pageSize', String(params.pageSize));
     if (params?.status) searchParams.set('status', params.status);
 
-    const response = await fetch(`${config.baseUrl}/invoices?${searchParams}`, {
+    const response = await fetchWithAuth(`${config.baseUrl}/invoices?${searchParams}`, {
       method: 'GET',
       headers: getHeaders(),
     });
@@ -93,7 +93,7 @@ export const invoicesApi = {
   },
 
   async getById(id: string): Promise<InvoiceWithDetails> {
-    const response = await fetch(`${config.baseUrl}/invoices/${id}`, {
+    const response = await fetchWithAuth(`${config.baseUrl}/invoices/${id}`, {
       method: 'GET',
       headers: getHeaders(),
     });
@@ -111,7 +111,7 @@ export const invoicesApi = {
   },
 
   async getStats(): Promise<InvoiceStats> {
-    const response = await fetch(`${config.baseUrl}/invoices/stats`, {
+    const response = await fetchWithAuth(`${config.baseUrl}/invoices/stats`, {
       method: 'GET',
       headers: getHeaders(),
     });
@@ -133,7 +133,7 @@ export const invoicesApi = {
     status: 'APPROVED' | 'REJECTED' | 'CLARIFICATION_NEEDED';
     note?: string;
   }): Promise<Invoice> {
-    const response = await fetch(`${config.baseUrl}/admin/invoices/${id}/verify`, {
+    const response = await fetchWithAuth(`${config.baseUrl}/admin/invoices/${id}/verify`, {
       method: 'PATCH',
       headers: getHeaders(),
       body: JSON.stringify(data),
@@ -149,7 +149,7 @@ export const invoicesApi = {
 
   // Supplier endpoints
   async confirmPayment(id: string, reference: string): Promise<Invoice> {
-    const response = await fetch(`${config.baseUrl}/supplier/invoices/${id}/confirm`, {
+    const response = await fetchWithAuth(`${config.baseUrl}/supplier/invoices/${id}/confirm`, {
       method: 'PATCH',
       headers: getHeaders(),
       body: JSON.stringify({ reference }),

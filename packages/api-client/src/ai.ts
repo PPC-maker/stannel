@@ -1,6 +1,6 @@
 // AI API Client
 
-import { config, getHeaders } from './config';
+import { config, getHeaders, fetchWithAuth } from './config';
 import type { ChatMessage, ChatResponse, SuggestedPrompt } from '@stannel/types';
 
 export const aiApi = {
@@ -8,7 +8,7 @@ export const aiApi = {
     message: string,
     conversationHistory: ChatMessage[] = []
   ): Promise<ChatResponse> {
-    const response = await fetch(`${config.baseUrl}/ai/chat`, {
+    const response = await fetchWithAuth(`${config.baseUrl}/ai/chat`, {
       method: 'POST',
       headers: getHeaders(),
       body: JSON.stringify({ message, conversationHistory }),
@@ -27,7 +27,7 @@ export const aiApi = {
   },
 
   async getPrompts(): Promise<{ prompts: SuggestedPrompt[] }> {
-    const response = await fetch(`${config.baseUrl}/ai/prompts`, {
+    const response = await fetchWithAuth(`${config.baseUrl}/ai/prompts`, {
       method: 'GET',
       headers: getHeaders(),
     });

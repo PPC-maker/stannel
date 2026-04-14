@@ -1,6 +1,6 @@
 // Supplier API Client
 
-import { config, getHeaders, getAuthToken } from './config';
+import { config, getHeaders, getAuthToken, fetchWithAuth } from './config';
 
 export interface SupplierInvoice {
   id: string;
@@ -90,7 +90,7 @@ export interface UpdateProfileData {
 export const supplierApi = {
   // Profile methods
   async getProfile(): Promise<SupplierProfile> {
-    const response = await fetch(`${config.baseUrl}/supplier/profile`, {
+    const response = await fetchWithAuth(`${config.baseUrl}/supplier/profile`, {
       method: 'GET',
       headers: getHeaders(),
     });
@@ -104,7 +104,7 @@ export const supplierApi = {
   },
 
   async updateProfile(data: UpdateProfileData): Promise<SupplierProfile> {
-    const response = await fetch(`${config.baseUrl}/supplier/profile`, {
+    const response = await fetchWithAuth(`${config.baseUrl}/supplier/profile`, {
       method: 'PUT',
       headers: getHeaders(),
       body: JSON.stringify(data),
@@ -123,7 +123,7 @@ export const supplierApi = {
     formData.append('file', file);
 
     const token = getAuthToken();
-    const response = await fetch(`${config.baseUrl}/supplier/upload-business-image`, {
+    const response = await fetchWithAuth(`${config.baseUrl}/supplier/upload-business-image`, {
       method: 'POST',
       headers: {
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
@@ -140,7 +140,7 @@ export const supplierApi = {
   },
 
   async deleteBusinessImage(imageUrl: string): Promise<void> {
-    const response = await fetch(`${config.baseUrl}/supplier/business-image`, {
+    const response = await fetchWithAuth(`${config.baseUrl}/supplier/business-image`, {
       method: 'DELETE',
       headers: getHeaders(),
       body: JSON.stringify({ imageUrl }),
@@ -164,7 +164,7 @@ export const supplierApi = {
     if (params?.pageSize) searchParams.set('pageSize', params.pageSize.toString());
     if (params?.status) searchParams.set('status', params.status);
 
-    const response = await fetch(`${config.baseUrl}/supplier/invoices?${searchParams}`, {
+    const response = await fetchWithAuth(`${config.baseUrl}/supplier/invoices?${searchParams}`, {
       method: 'GET',
       headers: getHeaders(),
     });
@@ -181,7 +181,7 @@ export const supplierApi = {
     const body: { reference: string; paymentProofUrl?: string } = { reference };
     if (paymentProofUrl) body.paymentProofUrl = paymentProofUrl;
 
-    const response = await fetch(`${config.baseUrl}/supplier/invoices/${invoiceId}/confirm`, {
+    const response = await fetchWithAuth(`${config.baseUrl}/supplier/invoices/${invoiceId}/confirm`, {
       method: 'PATCH',
       headers: getHeaders(),
       body: JSON.stringify(body),
@@ -200,7 +200,7 @@ export const supplierApi = {
     formData.append('file', file);
 
     const token = getAuthToken();
-    const response = await fetch(`${config.baseUrl}/supplier/upload-payment-proof`, {
+    const response = await fetchWithAuth(`${config.baseUrl}/supplier/upload-payment-proof`, {
       method: 'POST',
       headers: {
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
@@ -217,7 +217,7 @@ export const supplierApi = {
   },
 
   async getStats(): Promise<SupplierStats> {
-    const response = await fetch(`${config.baseUrl}/supplier/stats`, {
+    const response = await fetchWithAuth(`${config.baseUrl}/supplier/stats`, {
       method: 'GET',
       headers: getHeaders(),
     });
@@ -231,7 +231,7 @@ export const supplierApi = {
   },
 
   async getGoals(): Promise<SupplierGoal[]> {
-    const response = await fetch(`${config.baseUrl}/supplier/goals`, {
+    const response = await fetchWithAuth(`${config.baseUrl}/supplier/goals`, {
       method: 'GET',
       headers: getHeaders(),
     });
@@ -245,7 +245,7 @@ export const supplierApi = {
   },
 
   async getCatalog(): Promise<SupplierProduct[]> {
-    const response = await fetch(`${config.baseUrl}/supplier/catalog`, {
+    const response = await fetchWithAuth(`${config.baseUrl}/supplier/catalog`, {
       method: 'GET',
       headers: getHeaders(),
     });
@@ -266,7 +266,7 @@ export const supplierApi = {
     cashCost?: number;
     stock: number;
   }): Promise<SupplierProduct> {
-    const response = await fetch(`${config.baseUrl}/supplier/catalog`, {
+    const response = await fetchWithAuth(`${config.baseUrl}/supplier/catalog`, {
       method: 'POST',
       headers: getHeaders(),
       body: JSON.stringify(data),
@@ -288,7 +288,7 @@ export const supplierApi = {
     cashCost: number;
     stock: number;
   }>): Promise<SupplierProduct> {
-    const response = await fetch(`${config.baseUrl}/supplier/catalog/${id}`, {
+    const response = await fetchWithAuth(`${config.baseUrl}/supplier/catalog/${id}`, {
       method: 'PATCH',
       headers: getHeaders(),
       body: JSON.stringify(data),
@@ -313,7 +313,7 @@ export const supplierApi = {
     if (params?.page) searchParams.set('page', params.page.toString());
     if (params?.pageSize) searchParams.set('pageSize', params.pageSize.toString());
 
-    const response = await fetch(`${config.baseUrl}/supplier/commissions?${searchParams}`, {
+    const response = await fetchWithAuth(`${config.baseUrl}/supplier/commissions?${searchParams}`, {
       method: 'GET',
       headers: getHeaders(),
     });
@@ -338,7 +338,7 @@ export const supplierApi = {
     if (params?.pageSize) searchParams.set('pageSize', params.pageSize.toString());
     searchParams.set('status', 'PAID'); // Only paid invoices for history
 
-    const response = await fetch(`${config.baseUrl}/supplier/invoices?${searchParams}`, {
+    const response = await fetchWithAuth(`${config.baseUrl}/supplier/invoices?${searchParams}`, {
       method: 'GET',
       headers: getHeaders(),
     });

@@ -37,6 +37,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const isAuthenticating = useRef(false);
+  const firebaseUserRef = useRef<User | null>(null);
+
+  // Keep ref in sync with state
+  useEffect(() => {
+    firebaseUserRef.current = firebaseUser;
+  }, [firebaseUser]);
 
   useEffect(() => {
     const auth = getFirebaseAuth();
@@ -152,17 +158,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => clearInterval(interval);
   }, [firebaseUser]);
 
-  // Register token refresh callback for 401 auto-retry
+  // Register token refresh callback for 401 auto-retry (uses ref to avoid stale closures)
   useEffect(() => {
     setTokenRefreshCallback(async () => {
-      if (firebaseUser) {
-        const token = await firebaseUser.getIdToken(true);
+      const currentUser = firebaseUserRef.current;
+      if (currentUser) {
+        const token = await currentUser.getIdToken(true);
         setAuthToken(token);
         return token;
       }
       return null;
     });
-  }, [firebaseUser]);
+  }, []);
 
   const login = async (email: string, password: string): Promise<AuthUser | null> => {
     setError(null);

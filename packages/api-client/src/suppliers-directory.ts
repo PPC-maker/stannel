@@ -1,6 +1,6 @@
 // Suppliers Directory API Client - For architects to browse suppliers
 
-import { config, getHeaders } from './config';
+import { config, getHeaders, fetchWithAuth } from './config';
 
 export interface SupplierListItem {
   id: string;
@@ -46,7 +46,7 @@ export const suppliersDirectoryApi = {
     if (params?.pageSize) searchParams.set('pageSize', params.pageSize.toString());
     if (params?.search) searchParams.set('search', params.search);
 
-    const response = await fetch(`${config.baseUrl}/suppliers?${searchParams}`, {
+    const response = await fetchWithAuth(`${config.baseUrl}/suppliers?${searchParams}`, {
       method: 'GET',
       headers: getHeaders(),
     });
@@ -64,7 +64,7 @@ export const suppliersDirectoryApi = {
   },
 
   async getById(id: string): Promise<SupplierDetail> {
-    const response = await fetch(`${config.baseUrl}/suppliers/${id}`, {
+    const response = await fetchWithAuth(`${config.baseUrl}/suppliers/${id}`, {
       method: 'GET',
       headers: getHeaders(),
     });

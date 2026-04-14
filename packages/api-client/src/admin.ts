@@ -1,6 +1,6 @@
 // Admin API Client
 
-import { config, getHeaders, getHeadersNoBody, getMultipartHeaders } from './config';
+import { config, getHeaders, getHeadersNoBody, getMultipartHeaders, fetchWithAuth } from './config';
 import type { SystemLog, SystemLogStats, SystemLogSeverity, SystemLogCategory, PaginatedResponse } from '@stannel/types';
 
 export interface HealthReport {
@@ -34,7 +34,7 @@ export interface ScheduledTask {
 export const adminApi = {
   // Health Reports
   async getHealthReport(): Promise<HealthReport> {
-    const res = await fetch(`${config.baseUrl}/admin/health-report`, {
+    const res = await fetchWithAuth(`${config.baseUrl}/admin/health-report`, {
       headers: getHeaders(),
     });
 
@@ -47,7 +47,7 @@ export const adminApi = {
   },
 
   async getHealthReports(): Promise<{ data: HealthReport[] }> {
-    const res = await fetch(`${config.baseUrl}/admin/health-reports`, {
+    const res = await fetchWithAuth(`${config.baseUrl}/admin/health-reports`, {
       headers: getHeaders(),
     });
 
@@ -60,7 +60,7 @@ export const adminApi = {
   },
 
   async sendHealthReport(): Promise<HealthReport> {
-    const res = await fetch(`${config.baseUrl}/admin/health-report/send`, {
+    const res = await fetchWithAuth(`${config.baseUrl}/admin/health-report/send`, {
       method: 'POST',
       headers: getHeaders(),
     });
@@ -75,7 +75,7 @@ export const adminApi = {
 
   // Scheduled Tasks
   async getScheduledTasks(): Promise<{ data: ScheduledTask[] }> {
-    const res = await fetch(`${config.baseUrl}/admin/scheduled-tasks`, {
+    const res = await fetchWithAuth(`${config.baseUrl}/admin/scheduled-tasks`, {
       headers: getHeaders(),
     });
 
@@ -88,7 +88,7 @@ export const adminApi = {
   },
 
   async runScheduledTask(name: string): Promise<{ success: boolean; task: string }> {
-    const res = await fetch(`${config.baseUrl}/admin/scheduled-tasks/${name}/run`, {
+    const res = await fetchWithAuth(`${config.baseUrl}/admin/scheduled-tasks/${name}/run`, {
       method: 'POST',
       headers: getHeaders(),
     });
@@ -102,7 +102,7 @@ export const adminApi = {
   },
 
   async toggleScheduledTask(name: string, enabled: boolean): Promise<{ success: boolean; task: string; enabled: boolean }> {
-    const res = await fetch(`${config.baseUrl}/admin/scheduled-tasks/${name}`, {
+    const res = await fetchWithAuth(`${config.baseUrl}/admin/scheduled-tasks/${name}`, {
       method: 'PATCH',
       headers: getHeaders(),
       body: JSON.stringify({ enabled }),
@@ -130,7 +130,7 @@ export const adminApi = {
     if (params?.role) searchParams.set('role', params.role);
     if (params?.isActive !== undefined) searchParams.set('isActive', params.isActive.toString());
 
-    const res = await fetch(`${config.baseUrl}/admin/users?${searchParams}`, {
+    const res = await fetchWithAuth(`${config.baseUrl}/admin/users?${searchParams}`, {
       headers: getHeaders(),
     });
 
@@ -153,7 +153,7 @@ export const adminApi = {
     if (params?.page) searchParams.set('page', params.page.toString());
     if (params?.pageSize) searchParams.set('pageSize', params.pageSize.toString());
 
-    const res = await fetch(`${config.baseUrl}/admin/users/pending?${searchParams}`, {
+    const res = await fetchWithAuth(`${config.baseUrl}/admin/users/pending?${searchParams}`, {
       headers: getHeaders(),
     });
 
@@ -166,7 +166,7 @@ export const adminApi = {
   },
 
   async activateUser(userId: string, sendEmail: boolean = true): Promise<any> {
-    const res = await fetch(`${config.baseUrl}/admin/users/${userId}/activate`, {
+    const res = await fetchWithAuth(`${config.baseUrl}/admin/users/${userId}/activate`, {
       method: 'PATCH',
       headers: getHeaders(),
       body: JSON.stringify({ sendEmail }),
@@ -186,7 +186,7 @@ export const adminApi = {
     failed: number;
     results: Array<{ userId: string; success: boolean; error?: string }>;
   }> {
-    const res = await fetch(`${config.baseUrl}/admin/users/bulk-activate`, {
+    const res = await fetchWithAuth(`${config.baseUrl}/admin/users/bulk-activate`, {
       method: 'POST',
       headers: getHeaders(),
       body: JSON.stringify({ userIds, sendEmail }),
@@ -201,7 +201,7 @@ export const adminApi = {
   },
 
   async deactivateUser(userId: string): Promise<any> {
-    const res = await fetch(`${config.baseUrl}/admin/users/${userId}/deactivate`, {
+    const res = await fetchWithAuth(`${config.baseUrl}/admin/users/${userId}/deactivate`, {
       method: 'PATCH',
       headers: getHeaders(),
     });
@@ -215,7 +215,7 @@ export const adminApi = {
   },
 
   async loginAsUser(userId: string): Promise<{ customToken: string }> {
-    const res = await fetch(`${config.baseUrl}/admin/users/${userId}/login-as`, {
+    const res = await fetchWithAuth(`${config.baseUrl}/admin/users/${userId}/login-as`, {
       method: 'POST',
       headers: getHeaders(),
       body: JSON.stringify({}),
@@ -230,7 +230,7 @@ export const adminApi = {
   },
 
   async deleteUser(userId: string): Promise<{ success: boolean }> {
-    const res = await fetch(`${config.baseUrl}/admin/users/${userId}`, {
+    const res = await fetchWithAuth(`${config.baseUrl}/admin/users/${userId}`, {
       method: 'DELETE',
       headers: getHeadersNoBody(),
     });
@@ -259,7 +259,7 @@ export const adminApi = {
       linkedin?: string;
     };
   }): Promise<any> {
-    const res = await fetch(`${config.baseUrl}/admin/users/${userId}`, {
+    const res = await fetchWithAuth(`${config.baseUrl}/admin/users/${userId}`, {
       method: 'PATCH',
       headers: getHeaders(),
       body: JSON.stringify(data),
@@ -287,7 +287,7 @@ export const adminApi = {
     if (params?.status) searchParams.set('status', params.status);
     if (params?.includeDeleted) searchParams.set('includeDeleted', 'true');
 
-    const res = await fetch(`${config.baseUrl}/admin/invoices?${searchParams}`, {
+    const res = await fetchWithAuth(`${config.baseUrl}/admin/invoices?${searchParams}`, {
       headers: getHeaders(),
     });
 
@@ -311,7 +311,7 @@ export const adminApi = {
     if (params?.page) searchParams.set('page', params.page.toString());
     if (params?.pageSize) searchParams.set('pageSize', params.pageSize.toString());
 
-    const res = await fetch(`${config.baseUrl}/admin/invoices/deleted?${searchParams}`, {
+    const res = await fetchWithAuth(`${config.baseUrl}/admin/invoices/deleted?${searchParams}`, {
       headers: getHeaders(),
     });
 
@@ -325,7 +325,7 @@ export const adminApi = {
 
   // Soft delete invoice (move to recycle bin)
   async deleteInvoice(invoiceId: string): Promise<{ success: boolean }> {
-    const res = await fetch(`${config.baseUrl}/admin/invoices/${invoiceId}`, {
+    const res = await fetchWithAuth(`${config.baseUrl}/admin/invoices/${invoiceId}`, {
       method: 'DELETE',
       headers: getHeadersNoBody(),
     });
@@ -340,7 +340,7 @@ export const adminApi = {
 
   // Bulk delete all invoices for an architect
   async deleteArchitectInvoices(architectId: string): Promise<{ success: boolean; deletedCount: number }> {
-    const res = await fetch(`${config.baseUrl}/admin/invoices/architect/${architectId}`, {
+    const res = await fetchWithAuth(`${config.baseUrl}/admin/invoices/architect/${architectId}`, {
       method: 'DELETE',
       headers: getHeadersNoBody(),
     });
@@ -355,7 +355,7 @@ export const adminApi = {
 
   // Restore invoice from recycle bin
   async restoreInvoice(invoiceId: string): Promise<{ success: boolean }> {
-    const res = await fetch(`${config.baseUrl}/admin/invoices/${invoiceId}/restore`, {
+    const res = await fetchWithAuth(`${config.baseUrl}/admin/invoices/${invoiceId}/restore`, {
       method: 'PATCH',
       headers: getHeadersNoBody(),
     });
@@ -370,7 +370,7 @@ export const adminApi = {
 
   // Permanently delete invoice
   async permanentDeleteInvoice(invoiceId: string): Promise<{ success: boolean }> {
-    const res = await fetch(`${config.baseUrl}/admin/invoices/${invoiceId}/permanent`, {
+    const res = await fetchWithAuth(`${config.baseUrl}/admin/invoices/${invoiceId}/permanent`, {
       method: 'DELETE',
       headers: getHeadersNoBody(),
     });
@@ -385,7 +385,7 @@ export const adminApi = {
 
   // Cleanup recycle bin (delete invoices older than 30 days)
   async cleanupRecycleBin(): Promise<{ success: boolean; deletedCount: number }> {
-    const res = await fetch(`${config.baseUrl}/admin/invoices/recycle-bin/cleanup`, {
+    const res = await fetchWithAuth(`${config.baseUrl}/admin/invoices/recycle-bin/cleanup`, {
       method: 'DELETE',
       headers: getHeadersNoBody(),
     });
@@ -399,7 +399,7 @@ export const adminApi = {
   },
 
   async verifyInvoice(invoiceId: string, data: { status: 'APPROVED' | 'REJECTED' | 'CLARIFICATION_NEEDED'; note?: string }): Promise<any> {
-    const res = await fetch(`${config.baseUrl}/admin/invoices/${invoiceId}/verify`, {
+    const res = await fetchWithAuth(`${config.baseUrl}/admin/invoices/${invoiceId}/verify`, {
       method: 'PATCH',
       headers: getHeaders(),
       body: JSON.stringify(data),
@@ -425,7 +425,7 @@ export const adminApi = {
     if (params?.page) searchParams.set('page', params.page.toString());
     if (params?.pageSize) searchParams.set('pageSize', params.pageSize.toString());
 
-    const res = await fetch(`${config.baseUrl}/admin/audit-logs?${searchParams}`, {
+    const res = await fetchWithAuth(`${config.baseUrl}/admin/audit-logs?${searchParams}`, {
       headers: getHeaders(),
     });
 
@@ -452,7 +452,7 @@ export const adminApi = {
     if (params?.category) searchParams.set('category', params.category);
     if (params?.resolved !== undefined) searchParams.set('resolved', params.resolved.toString());
 
-    const res = await fetch(`${config.baseUrl}/admin/logs?${searchParams}`, {
+    const res = await fetchWithAuth(`${config.baseUrl}/admin/logs?${searchParams}`, {
       headers: getHeaders(),
     });
 
@@ -465,7 +465,7 @@ export const adminApi = {
   },
 
   async getSystemLog(id: string): Promise<SystemLog> {
-    const res = await fetch(`${config.baseUrl}/admin/logs/${id}`, {
+    const res = await fetchWithAuth(`${config.baseUrl}/admin/logs/${id}`, {
       headers: getHeaders(),
     });
 
@@ -478,7 +478,7 @@ export const adminApi = {
   },
 
   async getSystemLogStats(): Promise<SystemLogStats> {
-    const res = await fetch(`${config.baseUrl}/admin/logs/stats`, {
+    const res = await fetchWithAuth(`${config.baseUrl}/admin/logs/stats`, {
       headers: getHeaders(),
     });
 
@@ -491,7 +491,7 @@ export const adminApi = {
   },
 
   async resolveSystemLog(id: string): Promise<SystemLog> {
-    const res = await fetch(`${config.baseUrl}/admin/logs/${id}/resolve`, {
+    const res = await fetchWithAuth(`${config.baseUrl}/admin/logs/${id}/resolve`, {
       method: 'PATCH',
       headers: getHeaders(),
     });
@@ -510,7 +510,7 @@ export const adminApi = {
     warnings: number;
     results: Array<{ name: string; status: string; message: string }>;
   }> {
-    const res = await fetch(`${config.baseUrl}/admin/scan`, {
+    const res = await fetchWithAuth(`${config.baseUrl}/admin/scan`, {
       method: 'POST',
       headers: getHeaders(),
     });
@@ -541,7 +541,7 @@ export const adminApi = {
     claudeFormat?: string;
     createdAt: string;
   } | { error: string }> {
-    const res = await fetch(`${config.baseUrl}/admin/scan/latest`, {
+    const res = await fetchWithAuth(`${config.baseUrl}/admin/scan/latest`, {
       headers: getHeaders(),
     });
 
@@ -553,7 +553,7 @@ export const adminApi = {
   },
 
   async getScanHistory(limit: number = 10): Promise<{ data: any[] }> {
-    const res = await fetch(`${config.baseUrl}/admin/scan/history?limit=${limit}`, {
+    const res = await fetchWithAuth(`${config.baseUrl}/admin/scan/history?limit=${limit}`, {
       headers: getHeaders(),
     });
 
@@ -567,7 +567,7 @@ export const adminApi = {
 
   // Contracts
   async getContracts(): Promise<any[]> {
-    const res = await fetch(`${config.baseUrl}/admin/contracts`, {
+    const res = await fetchWithAuth(`${config.baseUrl}/admin/contracts`, {
       headers: getHeaders(),
     });
 
@@ -586,7 +586,7 @@ export const adminApi = {
     validFrom: string;
     validTo: string;
   }): Promise<any> {
-    const res = await fetch(`${config.baseUrl}/admin/contracts`, {
+    const res = await fetchWithAuth(`${config.baseUrl}/admin/contracts`, {
       method: 'POST',
       headers: getHeaders(),
       body: JSON.stringify(data),
@@ -605,7 +605,7 @@ export const adminApi = {
     const formData = new FormData();
     formData.append('image', file);
 
-    const res = await fetch(`${config.baseUrl}/admin/upload-image`, {
+    const res = await fetchWithAuth(`${config.baseUrl}/admin/upload-image`, {
       method: 'POST',
       headers: getMultipartHeaders(),
       body: formData,
@@ -621,7 +621,7 @@ export const adminApi = {
 
   // Products Management
   async getProducts(): Promise<{ data: any[]; total: number }> {
-    const res = await fetch(`${config.baseUrl}/admin/products`, {
+    const res = await fetchWithAuth(`${config.baseUrl}/admin/products`, {
       headers: getHeaders(),
     });
 
@@ -641,7 +641,7 @@ export const adminApi = {
     stock: number;
     imageUrl?: string;
   }): Promise<any> {
-    const res = await fetch(`${config.baseUrl}/admin/products`, {
+    const res = await fetchWithAuth(`${config.baseUrl}/admin/products`, {
       method: 'POST',
       headers: getHeaders(),
       body: JSON.stringify(data),
@@ -664,7 +664,7 @@ export const adminApi = {
     imageUrl?: string;
     isActive?: boolean;
   }): Promise<any> {
-    const res = await fetch(`${config.baseUrl}/admin/products/${id}`, {
+    const res = await fetchWithAuth(`${config.baseUrl}/admin/products/${id}`, {
       method: 'PATCH',
       headers: getHeaders(),
       body: JSON.stringify(data),
@@ -679,7 +679,7 @@ export const adminApi = {
   },
 
   async deleteProduct(id: string): Promise<{ success: boolean }> {
-    const res = await fetch(`${config.baseUrl}/admin/products/${id}`, {
+    const res = await fetchWithAuth(`${config.baseUrl}/admin/products/${id}`, {
       method: 'DELETE',
       headers: getHeaders(),
     });
@@ -711,7 +711,7 @@ export const adminApi = {
     }>;
     lastUpdated: string;
   }> {
-    const res = await fetch(`${config.baseUrl}/admin/system-status`, {
+    const res = await fetchWithAuth(`${config.baseUrl}/admin/system-status`, {
       headers: getHeaders(),
     });
 
@@ -724,7 +724,7 @@ export const adminApi = {
   },
 
   async sendSystemAlert(data?: { subject?: string; message?: string }): Promise<{ success: boolean; sentTo: string[] }> {
-    const res = await fetch(`${config.baseUrl}/admin/system-status/alert`, {
+    const res = await fetchWithAuth(`${config.baseUrl}/admin/system-status/alert`, {
       method: 'POST',
       headers: getHeaders(),
       body: JSON.stringify(data || {}),
@@ -743,7 +743,7 @@ export const adminApi = {
     hourlyStats: Array<{ hour: string; errors: number; warnings: number; total: number }>;
     totalInPeriod: number;
   }> {
-    const res = await fetch(`${config.baseUrl}/admin/system-status/history?hours=${hours}`, {
+    const res = await fetchWithAuth(`${config.baseUrl}/admin/system-status/history?hours=${hours}`, {
       headers: getHeaders(),
     });
 
@@ -756,7 +756,7 @@ export const adminApi = {
   },
 
   async sendTestEmail(): Promise<{ success: boolean; sentTo: string[] }> {
-    const res = await fetch(`${config.baseUrl}/admin/system-status/test-email`, {
+    const res = await fetchWithAuth(`${config.baseUrl}/admin/system-status/test-email`, {
       method: 'POST',
       headers: getHeaders(),
     });

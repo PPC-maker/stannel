@@ -187,13 +187,10 @@ export default function SupplierDetailPage() {
 
         // Send meeting request to backend
         try {
-          const { getAuthToken } = await import('@stannel/api-client');
-          await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:7070'}/api/v1/supplier/${supplierId}/meeting-request`, {
+          const { fetchWithAuth, config: apiConfig, getHeaders } = await import('@stannel/api-client');
+          await fetchWithAuth(`${apiConfig.baseUrl}/supplier/${supplierId}/meeting-request`, {
             method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${getAuthToken()}`,
-            },
+            headers: getHeaders() as Record<string, string>,
             body: JSON.stringify({ phone, message, supplierName: supplier.companyName }),
           });
         } catch (err) {

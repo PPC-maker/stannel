@@ -1,6 +1,6 @@
 // Wallet API Client
 
-import { config, getHeaders } from './config';
+import { config, getHeaders, fetchWithAuth } from './config';
 import type {
   WalletBalance,
   CardTransaction,
@@ -10,7 +10,7 @@ import type {
 
 export const walletApi = {
   async getBalance(): Promise<WalletBalance> {
-    const response = await fetch(`${config.baseUrl}/wallet/balance`, {
+    const response = await fetchWithAuth(`${config.baseUrl}/wallet/balance`, {
       method: 'GET',
       headers: getHeaders(),
     });
@@ -37,7 +37,7 @@ export const walletApi = {
     if (params?.pageSize) searchParams.set('pageSize', String(params.pageSize));
     if (params?.type) searchParams.set('type', params.type);
 
-    const response = await fetch(`${config.baseUrl}/wallet/transactions?${searchParams}`, {
+    const response = await fetchWithAuth(`${config.baseUrl}/wallet/transactions?${searchParams}`, {
       method: 'GET',
       headers: getHeaders(),
     });
@@ -55,7 +55,7 @@ export const walletApi = {
   },
 
   async getCard(): Promise<DigitalCard> {
-    const response = await fetch(`${config.baseUrl}/wallet/card`, {
+    const response = await fetchWithAuth(`${config.baseUrl}/wallet/card`, {
       method: 'GET',
       headers: getHeaders(),
     });

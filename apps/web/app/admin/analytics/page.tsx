@@ -68,9 +68,9 @@ export default function AdminAnalyticsPage() {
 
   // Fetch commission stats
   useEffect(() => {
-    import('@stannel/api-client').then(({ getAuthToken }) => {
-      fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:7070'}/api/v1/admin/commission-stats`, {
-        headers: { Authorization: `Bearer ${getAuthToken()}` },
+    import('@stannel/api-client').then(({ fetchWithAuth, config, getHeaders }) => {
+      fetchWithAuth(`${config.baseUrl}/admin/commission-stats`, {
+        headers: getHeaders() as Record<string, string>,
       })
         .then(res => res.json())
         .then(data => setCommissionStats(data))

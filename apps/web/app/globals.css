@@ -47,6 +47,8 @@ html, body {
   color: var(--elal-text);
   overflow-x: hidden;
   min-height: 100vh;
+  min-height: 100dvh;
+  -webkit-text-size-adjust: 100%;
 }
 
 /* ===== El Al Style Cards ===== */
@@ -57,6 +59,8 @@ html, body {
   box-shadow: var(--card-shadow);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   overflow: hidden;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
 }
 
 .glass-card:hover {
@@ -270,6 +274,7 @@ select:focus {
 .hero-bg {
   position: relative;
   min-height: 100vh;
+  min-height: 100dvh;
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
@@ -291,6 +296,7 @@ select:focus {
 .page-with-bg {
   position: relative;
   min-height: 100vh;
+  min-height: 100dvh;
 }
 
 .page-with-bg::before {
@@ -330,6 +336,7 @@ select:focus {
 /* ===== Weather Widget Style ===== */
 .weather-widget {
   background: rgba(255, 255, 255, 0.9);
+  -webkit-backdrop-filter: blur(20px);
   backdrop-filter: blur(20px);
   border-radius: 20px;
   padding: 16px 24px;
@@ -552,6 +559,7 @@ html.big-cursor * {
   right: 0;
   background: white;
   padding: 12px 24px;
+  padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
   box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
   border-top-left-radius: 24px;
   border-top-right-radius: 24px;

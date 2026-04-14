@@ -51,13 +51,22 @@ export const setTokenRefreshCallback = (cb: () => Promise<string | null>) => {
   tokenRefreshCallback = cb;
 };
 
+// Mutex for token refresh to prevent multiple simultaneous refreshes
+let refreshPromise: Promise<string | null> | null = null;
+
 // Try to refresh token and retry request on 401
 export async function fetchWithAuth(url: string, options: RequestInit): Promise<Response> {
   let response = await fetchWithRetry(url, options);
 
   if (response.status === 401 && tokenRefreshCallback) {
     try {
-      const newToken = await tokenRefreshCallback();
+      // Deduplicate concurrent refresh calls - reuse in-flight refresh
+      if (!refreshPromise) {
+        refreshPromise = tokenRefreshCallback().finally(() => {
+          refreshPromise = null;
+        });
+      }
+      const newToken = await refreshPromise;
       if (newToken) {
         authToken = newToken;
         // Update Authorization header and retry
