@@ -188,12 +188,20 @@ export default function SupplierDetailPage() {
 
         // Send meeting request to backend
         try {
-          const { fetchWithAuth, config: apiConfig, getHeaders } = await import('@stannel/api-client');
-          await fetchWithAuth(`${apiConfig.baseUrl}/suppliers/${supplierId}/meeting-request`, {
+          const { getAuthToken } = await import('@stannel/api-client');
+          const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:7070';
+          const res = await fetch(`${apiUrl}/api/v1/suppliers/${supplierId}/meeting-request`, {
             method: 'POST',
-            headers: getHeaders() as Record<string, string>,
-            body: JSON.stringify({ phone, message, supplierName: supplier.companyName }),
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${getAuthToken()}`,
+            },
+            body: JSON.stringify({ phone, message }),
           });
+          if (!res.ok) {
+            const err = await res.json().catch(() => ({}));
+            console.error('Meeting request failed:', err);
+          }
         } catch (err) {
           console.error('Meeting request error:', err);
         }
