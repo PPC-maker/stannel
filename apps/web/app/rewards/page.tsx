@@ -78,6 +78,7 @@ export default function RewardsPage() {
     return <AuthGuardLoader />;
   }
 
+  const isArchitect = user?.role === 'ARCHITECT';
   const points = balance?.points || 0;
   const rank = card?.rank || user?.rank || 'BRONZE';
   const allProducts = (productsResponse as any)?.data || productsResponse || [];
@@ -395,7 +396,11 @@ export default function RewardsPage() {
 
                       {/* Action Buttons */}
                       <div className="flex gap-2">
-                        {affordable && product.stock > 0 ? (
+                        {!isArchitect ? (
+                          <div className="flex-1 px-4 py-2.5 rounded-lg text-sm font-medium bg-white/10 text-white/50 text-center">
+                            מימוש מוצרים מיועד לאדריכלים בלבד
+                          </div>
+                        ) : affordable && product.stock > 0 ? (
                           <button
                             disabled={isRedeeming}
                             onClick={(e) => {

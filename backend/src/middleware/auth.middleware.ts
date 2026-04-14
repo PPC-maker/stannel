@@ -92,11 +92,11 @@ export async function authMiddleware(
 export function requireRole(...roles: UserRole[]) {
   return async (request: FastifyRequest, reply: FastifyReply) => {
     if (!request.user) {
-      return reply.code(401).send({ error: 'Unauthorized', message: 'Not authenticated' });
+      return reply.code(401).send({ error: 'Unauthorized', message: 'פג תוקף החיבור. אנא התחבר/י מחדש למערכת.' });
     }
 
     if (!roles.includes(request.user.role)) {
-      return reply.code(403).send({ error: 'Forbidden', message: 'Insufficient permissions' });
+      return reply.code(403).send({ error: 'Forbidden', message: 'אין לך הרשאה לפעולה זו. פעולה זו מיועדת לאדריכלים בלבד.' });
     }
   };
 }
