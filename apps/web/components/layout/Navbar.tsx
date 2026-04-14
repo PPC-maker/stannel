@@ -36,9 +36,60 @@ const supplierLinks = [
 export default function Navbar() {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
   const { user, logout } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
+
+  // Fetch unread notification count + WebSocket
+  useEffect(() => {
+    if (!user) return;
+
+    const fetchUnread = async () => {
+      try {
+        const { getAuthToken } = await import('@stannel/api-client');
+        const token = getAuthToken();
+        if (!token) return;
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:7070'}/api/v1/notifications/unread-count`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (res.ok) {
+          const data = await res.json();
+          setUnreadCount(data.count || 0);
+        }
+      } catch {}
+    };
+
+    fetchUnread();
+    const interval = setInterval(fetchUnread, 30000);
+
+    // WebSocket for real-time badge
+    const wsUrl = (process.env.NEXT_PUBLIC_API_URL?.replace('http', 'ws') || 'ws://localhost:7070') + '/ws';
+    let ws: WebSocket | null = null;
+    let reconnectTimeout: NodeJS.Timeout | null = null;
+
+    const connectWs = () => {
+      try {
+        ws = new WebSocket(wsUrl);
+        ws.onmessage = (event) => {
+          try {
+            const msg = JSON.parse(event.data);
+            if (msg.type === 'notification:new') {
+              fetchUnread();
+            }
+          } catch {}
+        };
+        ws.onclose = () => { reconnectTimeout = setTimeout(connectWs, 5000); };
+      } catch {}
+    };
+    connectWs();
+
+    return () => {
+      clearInterval(interval);
+      if (reconnectTimeout) clearTimeout(reconnectTimeout);
+      if (ws) ws.close();
+    };
+  }, [user]);
 
   // Detect scroll to add blur effect
   useEffect(() => {
@@ -139,11 +190,19 @@ export default function Navbar() {
                         <Link
                           key={link.href}
                           href={link.href}
-                          onClick={() => setIsProfileOpen(false)}
-                          className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-50 text-gray-700 hover:text-[#0066CC] transition-colors"
+                          onClick={() => {
+                            setIsProfileOpen(false);
+                            if (link.href === '/notifications') setUnreadCount(0);
+                          }}
+                          className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-50 text-gray-700 hover:text-[#0066CC] transition-colors relative"
                         >
                           <link.icon size={18} className="text-gray-400" />
                           <span className="font-medium">{link.label}</span>
+                          {link.href === '/notifications' && unreadCount > 0 && (
+                            <span className="bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center animate-pulse">
+                              {unreadCount}
+                            </span>
+                          )}
                         </Link>
                       ))}
                       <hr className="my-2 border-gray-100" />
