@@ -45,7 +45,7 @@ export default function SupplierMessagesPage() {
 
   const fetchMessages = async () => {
     try {
-      const data = await notificationsApi.getNotifications({ pageSize: 50 });
+      const data = await notificationsApi.getAll({ pageSize: 50 });
       setMessages((data as any)?.data || data || []);
     } catch (err) {
       console.error('Error fetching messages:', err);
@@ -122,7 +122,7 @@ export default function SupplierMessagesPage() {
     if (!result.isConfirmed) return;
 
     try {
-      await notificationsApi.deleteNotification(id);
+      await notificationsApi.delete(id);
       setMessages(prev => prev.filter(m => m.id !== id));
       if (selectedMessage?.id === id) setSelectedMessage(null);
     } catch (err) {
