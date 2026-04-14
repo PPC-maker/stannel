@@ -63,6 +63,10 @@ export default function Navbar() {
     fetchUnread();
     const interval = setInterval(fetchUnread, 30000);
 
+    // Listen for notification-read event from notifications page
+    const handleRead = () => fetchUnread();
+    window.addEventListener('notification-read', handleRead);
+
     // WebSocket for real-time badge
     const wsUrl = (process.env.NEXT_PUBLIC_API_URL?.replace('http', 'ws') || 'ws://localhost:7070') + '/ws';
     let ws: WebSocket | null = null;
@@ -86,6 +90,7 @@ export default function Navbar() {
 
     return () => {
       clearInterval(interval);
+      window.removeEventListener('notification-read', handleRead);
       if (reconnectTimeout) clearTimeout(reconnectTimeout);
       if (ws) ws.close();
     };

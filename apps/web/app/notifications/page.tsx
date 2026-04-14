@@ -161,6 +161,8 @@ export default function NotificationsPage() {
     setLocalStatuses(prev => ({ ...prev, [id]: status }));
     if (status !== 'new') {
       markAsRead.mutate(id);
+      // Refresh badge in Navbar
+      window.dispatchEvent(new Event('notification-read'));
     }
   };
 

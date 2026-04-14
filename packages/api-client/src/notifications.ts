@@ -1,6 +1,6 @@
 // Notifications API Client
 
-import { config, getHeaders, fetchWithAuth } from './config';
+import { config, getHeaders, getHeadersNoBody, fetchWithAuth } from './config';
 
 export interface Notification {
   id: string;
@@ -109,7 +109,7 @@ export const notificationsApi = {
   async delete(id: string): Promise<{ success: boolean }> {
     const response = await fetchWithAuth(`${config.baseUrl}/notifications/${id}`, {
       method: 'DELETE',
-      headers: getHeaders(),
+      headers: getHeadersNoBody(),
     });
 
     if (response.status === 401) {
