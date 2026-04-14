@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { useAdminGuard, AuthGuardLoader } from '@/lib/useAuthGuard';
@@ -25,11 +25,6 @@ import {
   Download,
   Search,
   DollarSign,
-  FileText,
-  Calendar,
-  Filter,
-  ChevronDown,
-  Receipt,
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -72,7 +67,7 @@ export default function AdminAnalyticsPage() {
   const { data: supplierPerformance, isLoading: suppliersLoading } = useSupplierPerformance();
 
   // Fetch commission stats
-  useState(() => {
+  useEffect(() => {
     import('@stannel/api-client').then(({ getAuthToken }) => {
       fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:7070'}/api/v1/admin/commission-stats`, {
         headers: { Authorization: `Bearer ${getAuthToken()}` },
@@ -81,7 +76,7 @@ export default function AdminAnalyticsPage() {
         .then(data => setCommissionStats(data))
         .catch(console.error);
     });
-  });
+  }, []);
 
   // Filtered architects
   const filteredArchitects = useMemo(() => {
@@ -129,27 +124,25 @@ export default function AdminAnalyticsPage() {
             <ArrowRight size={16} />
             חזרה לפאנל ניהול
           </Link>
-          <div className="flex items-center justify-between flex-wrap gap-4">
-            <div>
-              <h1 className="text-3xl font-bold text-white flex items-center gap-3">
-                <BarChart3 className="text-emerald-400" />
-                אנליטיקות ודוחות
-              </h1>
-              <p className="text-white/60 mt-1">נתונים, סטטיסטיקות וייצוא דוחות</p>
-            </div>
-            {/* Period Selector */}
-            <div className="flex gap-2">
-              {(['week', 'month', 'quarter', 'year'] as Period[]).map((p) => (
-                <button key={p} onClick={() => setPeriod(p)} className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${period === p ? 'bg-emerald-500 text-white' : 'bg-white/10 text-white/70 hover:bg-white/20'}`}>
-                  {periodLabels[p]}
-                </button>
-              ))}
-            </div>
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-bold text-white flex items-center gap-3 mb-1">
+              <BarChart3 className="text-emerald-400" size={28} />
+              אנליטיקות ודוחות
+            </h1>
+            <p className="text-white/60 text-sm">נתונים, סטטיסטיקות וייצוא דוחות</p>
+          </div>
+          {/* Period Selector */}
+          <div className="flex gap-1.5 mt-3">
+            {(['week', 'month', 'quarter', 'year'] as Period[]).map((p) => (
+              <button key={p} onClick={() => setPeriod(p)} className={`px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-colors ${period === p ? 'bg-emerald-500 text-white' : 'bg-white/10 text-white/70 hover:bg-white/20'}`}>
+                {periodLabels[p]}
+              </button>
+            ))}
           </div>
         </motion.div>
 
         {/* Summary Cards */}
-        <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 mb-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-6">
           {[
             { label: 'חשבוניות', value: trendsData?.summary?.totalInvoices || 0, color: 'text-white', border: 'border-white/10' },
             { label: 'אושרו', value: trendsData?.summary?.approvedCount || 0, color: 'text-emerald-400', border: 'border-emerald-500/30' },
@@ -158,37 +151,37 @@ export default function AdminAnalyticsPage() {
             { label: 'SLA', value: slaData ? `${slaData.complianceRate}%` : '...', color: 'text-blue-400', border: 'border-blue-500/30' },
           ].map((stat, i) => (
             <motion.div key={i} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
-              <div className={`bg-white/5 backdrop-blur border ${stat.border} rounded-xl p-4 text-center`}>
-                <p className="text-white/50 text-xs mb-1">{stat.label}</p>
-                <p className={`text-xl font-bold ${stat.color}`}>{trendsLoading ? <Loader2 className="w-5 h-5 mx-auto animate-spin" /> : stat.value}</p>
+              <div className={`bg-white/5 backdrop-blur border ${stat.border} rounded-xl p-3 sm:p-4 text-center`}>
+                <p className="text-white/50 text-[10px] sm:text-xs mb-1">{stat.label}</p>
+                <p className={`text-lg sm:text-xl font-bold ${stat.color}`}>{trendsLoading ? <Loader2 className="w-5 h-5 mx-auto animate-spin" /> : stat.value}</p>
               </div>
             </motion.div>
           ))}
         </div>
 
-        {/* Tabs + Search */}
-        <div className="flex flex-col sm:flex-row gap-3 mb-6">
-          <div className="flex gap-2 overflow-x-auto scrollbar-hide flex-1">
-            {tabs.map((tab) => (
-              <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={`px-4 py-2.5 rounded-xl text-sm font-medium transition-colors flex items-center gap-2 whitespace-nowrap ${activeTab === tab.id ? 'bg-emerald-500 text-white' : 'bg-white/10 text-white/70 hover:bg-white/20'}`}>
-                <tab.icon size={16} />
-                {tab.label}
-              </button>
-            ))}
-          </div>
-          {(activeTab === 'architects' || activeTab === 'suppliers') && (
-            <div className="relative">
-              <Search size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="חיפוש..."
-                className="pr-10 pl-4 py-2.5 bg-white/10 border border-white/20 rounded-xl text-white text-sm placeholder-white/40 focus:outline-none focus:border-emerald-500 w-full sm:w-64"
-              />
-            </div>
-          )}
+        {/* Tabs */}
+        <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-2 mb-4 -mx-1 px-1">
+          {tabs.map((tab) => (
+            <button key={tab.id} onClick={() => { setActiveTab(tab.id); setSearchQuery(''); }} className={`px-3 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-medium transition-colors flex items-center gap-1.5 whitespace-nowrap flex-shrink-0 ${activeTab === tab.id ? 'bg-emerald-500 text-white' : 'bg-white/10 text-white/70 hover:bg-white/20'}`}>
+              <tab.icon size={14} />
+              {tab.label}
+            </button>
+          ))}
         </div>
+
+        {/* Search (for relevant tabs) */}
+        {(activeTab === 'architects' || activeTab === 'suppliers') && (
+          <div className="relative mb-4">
+            <Search size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder={activeTab === 'architects' ? 'חיפוש אדריכל...' : 'חיפוש ספק...'}
+              className="w-full pr-10 pl-4 py-2.5 bg-white/10 border border-white/20 rounded-xl text-white text-sm placeholder-white/40 focus:outline-none focus:border-emerald-500"
+            />
+          </div>
+        )}
 
         {/* Tab Content */}
         <motion.div key={activeTab} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
@@ -294,7 +287,7 @@ export default function AdminAnalyticsPage() {
                   onClick={() => exportToCSV(filteredArchitects.map((a: any) => ({
                     שם: a.name, אימייל: a.email || '', חשבוניות: a.invoiceCount, 'סה"כ ₪': a.totalEarned, דרגה: a.tier
                   })), 'architects_report')}
-                  className="px-4 py-2 bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 rounded-lg text-sm flex items-center gap-2 hover:bg-emerald-500/30"
+                  className="px-3 py-2 bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 rounded-lg text-xs sm:text-sm flex items-center gap-1.5 hover:bg-emerald-500/30 whitespace-nowrap"
                 >
                   <Download size={14} />
                   ייצוא CSV
@@ -344,7 +337,7 @@ export default function AdminAnalyticsPage() {
                   onClick={() => exportToCSV(filteredSuppliers.map((s: any) => ({
                     חברה: s.companyName, חשבוניות: s.invoiceCount, 'ציון אמון': s.trustScore, 'חוזה פעיל': s.hasActiveContract ? 'כן' : 'לא'
                   })), 'suppliers_report')}
-                  className="px-4 py-2 bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 rounded-lg text-sm flex items-center gap-2 hover:bg-emerald-500/30"
+                  className="px-3 py-2 bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 rounded-lg text-xs sm:text-sm flex items-center gap-1.5 hover:bg-emerald-500/30 whitespace-nowrap"
                 >
                   <Download size={14} />
                   ייצוא CSV
@@ -409,7 +402,7 @@ export default function AdminAnalyticsPage() {
                         'שער המרה': commissionStats.pointsPerShekel,
                       }], 'commission_report');
                     }}
-                    className="px-4 py-2 bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 rounded-lg text-sm flex items-center gap-2 hover:bg-emerald-500/30"
+                    className="px-3 py-2 bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 rounded-lg text-xs sm:text-sm flex items-center gap-1.5 hover:bg-emerald-500/30 whitespace-nowrap"
                   >
                     <Download size={14} />
                     ייצוא CSV
@@ -475,7 +468,7 @@ export default function AdminAnalyticsPage() {
                       }));
                       exportToCSV(rows, 'sla_report');
                     }}
-                    className="px-4 py-2 bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 rounded-lg text-sm flex items-center gap-2 hover:bg-emerald-500/30"
+                    className="px-3 py-2 bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 rounded-lg text-xs sm:text-sm flex items-center gap-1.5 hover:bg-emerald-500/30 whitespace-nowrap"
                   >
                     <Download size={14} />
                     ייצוא CSV
