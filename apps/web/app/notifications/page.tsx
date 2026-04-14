@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import {
@@ -15,9 +16,13 @@ import {
   Award,
   Eye,
   Zap,
+  MessageSquare,
+  Phone,
 } from 'lucide-react';
 import { useNotifications, useMarkNotificationRead, useMarkAllNotificationsRead } from '@/lib/api-hooks';
 import { useAuthGuard, AuthGuardLoader } from '@/lib/useAuthGuard';
+import { useQueryClient } from '@tanstack/react-query';
+import Swal from 'sweetalert2';
 
 const TYPE_ICONS: Record<string, any> = {
   INVOICE_SUBMITTED: FileText,
@@ -31,10 +36,7 @@ const TYPE_ICONS: Record<string, any> = {
   PROFILE_VIEWED: Eye,
   SYSTEM_ALERT: Zap,
   WELCOME: Shield,
-  info: Info,
-  warning: AlertTriangle,
-  error: XCircle,
-  success: Check,
+  MEETING_REQUEST: MessageSquare,
 };
 
 const TYPE_COLORS: Record<string, string> = {
@@ -49,10 +51,22 @@ const TYPE_COLORS: Record<string, string> = {
   PROFILE_VIEWED: 'bg-cyan-500/20 text-cyan-400',
   SYSTEM_ALERT: 'bg-orange-500/20 text-orange-400',
   WELCOME: 'bg-indigo-500/20 text-indigo-400',
+  MEETING_REQUEST: 'bg-emerald-500/20 text-emerald-400',
 };
+
+function extractPhone(message: string): string | null {
+  const match = message.match(/טלפון:\s*(\S+)/);
+  return match ? match[1] : null;
+}
+
+function extractMessage(message: string): string | null {
+  const match = message.match(/הודעה:\s*(.*)/s);
+  return match ? match[1].trim() : null;
+}
 
 export default function NotificationsPage() {
   const { isReady } = useAuthGuard();
+  const queryClient = useQueryClient();
   const { data: notificationsData, isLoading } = useNotifications();
   const markAsRead = useMarkNotificationRead();
   const markAllRead = useMarkAllNotificationsRead();
@@ -60,12 +74,93 @@ export default function NotificationsPage() {
   const notifications = notificationsData?.data || [];
   const unreadCount = notificationsData?.unreadCount || 0;
 
+  // WebSocket for real-time notifications
+  useEffect(() => {
+    const wsUrl = (process.env.NEXT_PUBLIC_API_URL?.replace('http', 'ws') || 'ws://localhost:7070') + '/ws';
+    let ws: WebSocket | null = null;
+    let reconnectTimeout: NodeJS.Timeout | null = null;
+
+    const connect = () => {
+      try {
+        ws = new WebSocket(wsUrl);
+        ws.onmessage = (event) => {
+          try {
+            const msg = JSON.parse(event.data);
+            if (msg.type === 'notification:new') {
+              queryClient.invalidateQueries({ queryKey: ['notifications'] });
+            }
+          } catch {}
+        };
+        ws.onclose = () => { reconnectTimeout = setTimeout(connect, 5000); };
+      } catch {}
+    };
+
+    connect();
+    return () => {
+      if (reconnectTimeout) clearTimeout(reconnectTimeout);
+      if (ws) ws.close();
+    };
+  }, [queryClient]);
+
   if (!isReady) {
     return <AuthGuardLoader />;
   }
 
-  const handleMarkAsRead = (id: string) => {
-    markAsRead.mutate(id);
+  const handleNotificationClick = (notif: any) => {
+    // Mark as read
+    if (!notif.isRead) {
+      markAsRead.mutate(notif.id);
+    }
+
+    const phone = extractPhone(notif.message);
+    const msg = extractMessage(notif.message);
+
+    if (notif.type === 'MEETING_REQUEST' && phone) {
+      // Meeting request - show SweetAlert with actions
+      Swal.fire({
+        title: notif.title,
+        html: `
+          <div dir="rtl" style="text-align: right;">
+            <div style="background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.3); border-radius: 12px; padding: 16px; margin-bottom: 16px;">
+              <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                <span style="color: rgba(255,255,255,0.5); font-size: 14px;">טלפון:</span>
+                <span style="color: #10b981; font-weight: bold; font-size: 16px;" dir="ltr">${phone}</span>
+              </div>
+              ${msg ? `<div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.1);"><span style="color: rgba(255,255,255,0.5); font-size: 14px;">הודעה:</span><p style="color: white; margin-top: 4px; font-size: 14px;">${msg}</p></div>` : ''}
+            </div>
+            <p style="color: rgba(255,255,255,0.4); font-size: 12px;">${new Date(notif.createdAt).toLocaleString('he-IL')}</p>
+          </div>
+        `,
+        showDenyButton: true,
+        showCancelButton: true,
+        confirmButtonText: '📞 התקשר',
+        denyButtonText: '💬 WhatsApp',
+        cancelButtonText: 'סגור',
+        confirmButtonColor: '#10b981',
+        denyButtonColor: '#25D366',
+        background: '#0f2620',
+        color: '#fff',
+        customClass: { popup: 'rounded-2xl' },
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.open(`tel:${phone}`, '_self');
+        } else if (result.isDenied) {
+          const waMessage = encodeURIComponent(`שלום, קיבלתי את בקשת תיאום הפגישה שלך דרך STANNEL CLUB. אשמח לתאם.`);
+          window.open(`https://wa.me/${phone.replace(/[-\s]/g, '')}?text=${waMessage}`, '_blank');
+        }
+      });
+    } else {
+      // Generic notification
+      Swal.fire({
+        title: notif.title,
+        html: `<p style="color: rgba(255,255,255,0.7); text-align: right;" dir="rtl">${notif.message}</p><p style="color: rgba(255,255,255,0.3); font-size: 12px; margin-top: 12px; text-align: right;">${new Date(notif.createdAt).toLocaleString('he-IL')}</p>`,
+        icon: 'info',
+        confirmButtonText: 'סגור',
+        confirmButtonColor: '#10b981',
+        background: '#0f2620',
+        color: '#fff',
+      });
+    }
   };
 
   const handleMarkAllRead = () => {
@@ -76,24 +171,14 @@ export default function NotificationsPage() {
     <div className="min-h-screen bg-[#0f2620] -mt-16">
       {/* Hero Background */}
       <div className="absolute inset-x-0 top-0 h-[35vh]">
-        <Image
-          src="https://images.unsplash.com/photo-1557804506-669a67965ba0?w=1920&q=80"
-          alt="Notifications"
-          fill
-          className="object-cover"
-          priority
-        />
+        <Image src="https://images.unsplash.com/photo-1557804506-669a67965ba0?w=1920&q=80" alt="Notifications" fill className="object-cover" priority />
         <div className="absolute inset-0 bg-black/50" />
         <div className="absolute inset-0 bg-gradient-to-b from-[#0f2620]/30 via-transparent to-[#0f2620]" />
       </div>
 
       <div className="relative z-10 px-4 sm:px-6 pt-24 sm:pt-28 pb-6 max-w-4xl mx-auto">
         {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          className="mb-4 sm:mb-8"
-        >
+        <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="mb-4 sm:mb-8">
           <div className="flex items-center justify-between gap-3">
             <div>
               <h1 className="text-2xl sm:text-3xl font-bold text-white flex items-center gap-2 sm:gap-3">
@@ -121,11 +206,7 @@ export default function NotificationsPage() {
         </motion.div>
 
         {/* Notifications List */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-        >
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
           <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl overflow-hidden">
             {isLoading ? (
               <div className="space-y-0 divide-y divide-white/10">
@@ -157,7 +238,7 @@ export default function NotificationsPage() {
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: index * 0.03 }}
-                      onClick={() => !notif.isRead && handleMarkAsRead(notif.id)}
+                      onClick={() => handleNotificationClick(notif)}
                       className={`p-3 sm:p-4 flex items-start gap-3 cursor-pointer transition-colors ${
                         !notif.isRead ? 'bg-emerald-500/10 hover:bg-emerald-500/20' : 'hover:bg-white/5'
                       }`}
@@ -174,9 +255,14 @@ export default function NotificationsPage() {
                           {new Date(notif.createdAt).toLocaleString('he-IL')}
                         </p>
                       </div>
-                      {!notif.isRead && (
-                        <div className="w-2 h-2 rounded-full bg-emerald-400 mt-2 flex-shrink-0" />
-                      )}
+                      <div className="flex items-center gap-2 flex-shrink-0">
+                        {notif.type === 'MEETING_REQUEST' && (
+                          <Phone size={16} className="text-emerald-400" />
+                        )}
+                        {!notif.isRead && (
+                          <div className="w-3 h-3 rounded-full bg-red-500 animate-pulse" />
+                        )}
+                      </div>
                     </motion.div>
                   );
                 })}

@@ -109,25 +109,19 @@ export async function suppliersDirectoryRoutes(server: FastifyInstance) {
       return reply.code(400).send({ error: 'נא להזין מספר טלפון' });
     }
 
-    // Find supplier - try by user ID first, then by supplier profile ID
-    let supplierUser = await prisma.user.findUnique({
-      where: { id },
+    // Find supplier by user ID
+    console.log('[Meeting Request] Looking for supplier with ID:', id);
+    let supplierUser = await prisma.user.findFirst({
+      where: {
+        OR: [
+          { id },
+          { supplierProfile: { id } },
+        ],
+      },
       include: { supplierProfile: true },
     });
 
-    if (!supplierUser?.supplierProfile) {
-      // Try by supplier profile ID
-      const profile = await prisma.supplierProfile.findUnique({
-        where: { id },
-        include: { user: true },
-      });
-      if (profile) {
-        supplierUser = await prisma.user.findUnique({
-          where: { id: profile.userId },
-          include: { supplierProfile: true },
-        });
-      }
-    }
+    console.log('[Meeting Request] Found:', supplierUser?.name || 'NOT FOUND');
 
     if (!supplierUser) {
       return reply.code(404).send({ error: 'ספק לא נמצא' });
