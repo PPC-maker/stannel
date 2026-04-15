@@ -1,10 +1,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
 import { CheckCircle, ArrowLeft, Users, Gift, Building2, Star, ChevronLeft, Instagram, Facebook, Globe } from 'lucide-react';
+import { useAuth } from '@/lib/auth-context';
 
 // Why choose us features - with unique colors
 const whyChooseUs = [
@@ -73,12 +75,20 @@ const projects = [
 
 export default function HomePage() {
   const [mounted, setMounted] = useState(false);
+  const { user, loading } = useAuth();
+  const router = useRouter();
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  if (!mounted) {
+  useEffect(() => {
+    if (!loading && !user) {
+      router.replace('/login');
+    }
+  }, [loading, user, router]);
+
+  if (!mounted || loading || !user) {
     return <div className="min-h-screen bg-[#0f2620]" />;
   }
 
@@ -89,7 +99,7 @@ export default function HomePage() {
         {/* Background Image Container - Limited Height */}
         <div className="relative h-[60vh] min-h-[400px]">
           <Image
-            src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1920&q=80"
+            src="/bg_top.jpg"
             alt="Modern architecture"
             fill
             className="object-cover"

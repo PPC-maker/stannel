@@ -88,15 +88,14 @@ export default function LoginPage() {
       {/* Background Image - positioned at top */}
       <div className="absolute inset-x-0 top-0 h-[50vh]">
         <Image
-          src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1920&q=80"
+          src="/bg_top.jpg"
           alt="Modern architecture"
           fill
-          className="object-cover object-center"
+          className="object-cover object-top"
           priority
         />
-        {/* Dark overlay + gradient fade to dark green */}
-        <div className="absolute inset-0 bg-black/30" />
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#0f2620]/50 to-[#0f2620]" />
+        {/* Gradient fade to dark green */}
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#0f2620]" />
       </div>
 
       {/* Content */}
@@ -108,14 +107,14 @@ export default function LoginPage() {
           transition={{ duration: 0.6 }}
           className="text-center mb-8"
         >
-          <h2 className="text-2xl md:text-3xl text-white font-light leading-tight">
-            הפלטפורמה המובילה
+          <h2 className="text-xl md:text-2xl text-white/90 font-light leading-tight tracking-wide" style={{ fontFamily: "'Playfair Display', serif" }}>
+            The leading platform
           </h2>
-          <h2 className="text-2xl md:text-3xl text-white font-light leading-tight">
-            לאדריכלים ומעצבים
+          <h2 className="text-xl md:text-2xl text-white/90 font-light leading-tight tracking-wide" style={{ fontFamily: "'Playfair Display', serif" }}>
+            for architects & designers
           </h2>
-          <p className="text-white/60 mt-3 text-sm tracking-wide">
-            התחברו. צרו. היו חלק מהתעשייה.
+          <p className="text-white/50 mt-3 text-sm tracking-widest">
+            Connect. Create. Be part of the industry.
           </p>
         </motion.div>
 
