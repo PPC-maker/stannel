@@ -132,10 +132,12 @@ export default function Navbar() {
         {/* Centered Logo */}
         <Link href="/wallet" className="flex items-center">
           {pathname === '/login' ? (
-            <div className="text-center mt-4">
-              <span className="text-5xl text-white font-light tracking-[0.15em] block" style={{ fontFamily: "'Playfair Display', serif" }}>stannel</span>
-              <span className="text-white/70 text-[15px] tracking-[0.35em] uppercase font-light">DESIGN CLUB</span>
-            </div>
+            /* eslint-disable-next-line @next/next/no-img-element */
+            <img
+              src="/logo-f2.png"
+              alt="Stannel"
+              className="h-20 w-auto mt-4"
+            />
           ) : (
             /* eslint-disable-next-line @next/next/no-img-element */
             <img
