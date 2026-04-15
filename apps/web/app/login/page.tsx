@@ -100,7 +100,7 @@ export default function LoginPage() {
 
       {/* Content */}
       <div className="relative z-10 min-h-screen flex flex-col items-center justify-center px-6 py-12 pt-[50vh]">
-        {/* Tagline */}
+        {/* Logo + Tagline */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}

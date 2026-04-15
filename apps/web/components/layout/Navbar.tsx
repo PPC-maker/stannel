@@ -131,12 +131,19 @@ export default function Navbar() {
       <div className={`w-full px-4 sm:px-6 lg:px-8 flex items-center justify-center relative ${isDarkPage ? 'h-20' : 'h-16'}`}>
         {/* Centered Logo */}
         <Link href="/wallet" className="flex items-center">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={isLightPage ? "/logo_black1.png" : "/logo1.png"}
-            alt="Stannel"
-            className={isDarkPage ? "h-20 w-auto" : "h-14 w-auto"}
-          />
+          {pathname === '/login' ? (
+            <div className="text-center mt-4">
+              <span className="text-5xl text-white font-light tracking-[0.15em] block" style={{ fontFamily: "'Playfair Display', serif" }}>stannel</span>
+              <span className="text-white/70 text-[15px] tracking-[0.35em] uppercase font-light">DESIGN CLUB</span>
+            </div>
+          ) : (
+            /* eslint-disable-next-line @next/next/no-img-element */
+            <img
+              src={isLightPage ? "/logo_black1.png" : "/logo1.png"}
+              alt="Stannel"
+              className={isDarkPage ? "h-20 w-auto" : "h-14 w-auto"}
+            />
+          )}
         </Link>
 
         {/* Menu Icon - Fixed position on the right (RTL) */}
