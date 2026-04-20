@@ -296,6 +296,7 @@ export async function adminRoutes(server: FastifyInstance) {
           ...(body.supplierProfile.facebook !== undefined && { facebook: body.supplierProfile.facebook }),
           ...(body.supplierProfile.instagram !== undefined && { instagram: body.supplierProfile.instagram }),
           ...(body.supplierProfile.linkedin !== undefined && { linkedin: body.supplierProfile.linkedin }),
+          ...(body.supplierProfile.commissionRate !== undefined && { commissionRate: body.supplierProfile.commissionRate }),
         },
       });
     }

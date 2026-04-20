@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Mail, Lock, User, Phone, Building2, ArrowLeft, Check, AlertCircle, Camera, X, Palette, ChevronDown } from 'lucide-react';
+import { Mail, Lock, User, Phone, Building2, ArrowLeft, Check, AlertCircle, Camera, X, Palette, ChevronDown, MapPin } from 'lucide-react';
 import Image from 'next/image';
 import { useAuth } from '@/lib/auth-context';
 
@@ -62,6 +62,8 @@ export default function RegisterPage() {
     phone: '',
     password: '',
     companyName: '',
+    city: '',
+    address: '',
   });
   const [passwordErrors, setPasswordErrors] = useState<string[]>([]);
   const [profileImage, setProfileImage] = useState<string | null>(null);
@@ -184,8 +186,8 @@ export default function RegisterPage() {
                 animate={{ opacity: 1, x: 0 }}
               >
                 <div className="text-center mb-8">
-                  <h1 className="text-2xl font-bold text-white mb-2">הצטרפו ל-STANNEL</h1>
-                  <p className="text-white/60">בחרו את סוג החשבון שלכם</p>
+                  <h1 className="text-3xl font-extrabold text-white mb-3">הצטרפו ל-STANNEL</h1>
+                  <p className="text-white/60 text-lg font-medium">בחרו את סוג החשבון שלכם</p>
                 </div>
 
                 <div className="grid gap-3">
@@ -198,16 +200,16 @@ export default function RegisterPage() {
                     className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-5 text-right hover:border-emerald-500/50 hover:bg-white/10 transition-all group"
                   >
                     <div className="flex items-start gap-4">
-                      <div className="w-11 h-11 rounded-xl bg-emerald-500/20 flex items-center justify-center group-hover:bg-emerald-500/30 transition-all">
-                        <User size={22} className="text-emerald-400" />
+                      <div className="w-12 h-12 rounded-xl bg-emerald-500/20 flex items-center justify-center group-hover:bg-emerald-500/30 transition-all">
+                        <User size={24} className="text-emerald-400" />
                       </div>
                       <div className="flex-1">
-                        <h3 className="text-lg font-semibold text-white mb-1">אדריכל</h3>
-                        <p className="text-white/60 text-sm">
+                        <h3 className="text-xl font-bold text-white mb-1">אדריכל</h3>
+                        <p className="text-white/60 text-base">
                           אדריכלות, תכנון עירוני, אדריכלות נוף
                         </p>
                       </div>
-                      <ArrowLeft className="text-white/40 group-hover:text-emerald-400 transition-colors" />
+                      <ArrowLeft className="text-white/40 group-hover:text-emerald-400 transition-colors" size={24} />
                     </div>
                   </button>
 
@@ -220,16 +222,16 @@ export default function RegisterPage() {
                     className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-5 text-right hover:border-emerald-500/50 hover:bg-white/10 transition-all group"
                   >
                     <div className="flex items-start gap-4">
-                      <div className="w-11 h-11 rounded-xl bg-purple-500/20 flex items-center justify-center group-hover:bg-purple-500/30 transition-all">
-                        <Palette size={22} className="text-purple-400" />
+                      <div className="w-12 h-12 rounded-xl bg-purple-500/20 flex items-center justify-center group-hover:bg-purple-500/30 transition-all">
+                        <Palette size={24} className="text-purple-400" />
                       </div>
                       <div className="flex-1">
-                        <h3 className="text-lg font-semibold text-white mb-1">מעצב</h3>
-                        <p className="text-white/60 text-sm">
+                        <h3 className="text-xl font-bold text-white mb-1">מעצב</h3>
+                        <p className="text-white/60 text-base">
                           עיצוב פנים, עיצוב רהיטים, עיצוב תאורה
                         </p>
                       </div>
-                      <ArrowLeft className="text-white/40 group-hover:text-purple-400 transition-colors" />
+                      <ArrowLeft className="text-white/40 group-hover:text-purple-400 transition-colors" size={24} />
                     </div>
                   </button>
 
@@ -242,23 +244,23 @@ export default function RegisterPage() {
                     className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-5 text-right hover:border-emerald-500/50 hover:bg-white/10 transition-all group"
                   >
                     <div className="flex items-start gap-4">
-                      <div className="w-11 h-11 rounded-xl bg-amber-500/20 flex items-center justify-center group-hover:bg-amber-500/30 transition-all">
-                        <Building2 size={22} className="text-amber-400" />
+                      <div className="w-12 h-12 rounded-xl bg-amber-500/20 flex items-center justify-center group-hover:bg-amber-500/30 transition-all">
+                        <Building2 size={24} className="text-amber-400" />
                       </div>
                       <div className="flex-1">
-                        <h3 className="text-lg font-semibold text-white mb-1">ספק / יצרן</h3>
-                        <p className="text-white/60 text-sm">
+                        <h3 className="text-xl font-bold text-white mb-1">ספק / יצרן</h3>
+                        <p className="text-white/60 text-base">
                           תאורה, ריהוט, חומרי בניין ועוד
                         </p>
                       </div>
-                      <ArrowLeft className="text-white/40 group-hover:text-amber-400 transition-colors" />
+                      <ArrowLeft className="text-white/40 group-hover:text-amber-400 transition-colors" size={24} />
                     </div>
                   </button>
                 </div>
 
-                <p className="text-center mt-6 text-white/60">
+                <p className="text-center mt-6 text-white/60 text-base font-medium">
                   יש לכם חשבון?{' '}
-                  <Link href="/login" className="text-emerald-400 hover:text-emerald-300 transition-colors font-medium">
+                  <Link href="/login" className="text-emerald-400 hover:text-emerald-300 transition-colors font-bold">
                     היכנסו כאן
                   </Link>
                 </p>
@@ -272,10 +274,10 @@ export default function RegisterPage() {
                 animate={{ opacity: 1, x: 0 }}
               >
                 <div className="text-center mb-6">
-                  <h1 className="text-2xl font-bold text-white mb-2">
+                  <h1 className="text-3xl font-extrabold text-white mb-3">
                     {roleCategory === 'ARCHITECT' ? 'הרשמה כאדריכל' : roleCategory === 'DESIGNER' ? 'הרשמה כמעצב' : 'הרשמה כספק'}
                   </h1>
-                  <p className="text-white/60">מלאו את הפרטים שלכם</p>
+                  <p className="text-white/60 text-lg font-medium">מלאו את הפרטים שלכם</p>
                 </div>
 
                 {/* Profile Image Upload */}
@@ -333,14 +335,14 @@ export default function RegisterPage() {
 
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div>
-                    <label className="block text-white/60 text-sm mb-2">שם מלא</label>
+                    <label className="block text-white/70 text-base font-semibold mb-2">שם מלא</label>
                     <div className="relative">
-                      <User className="absolute right-4 top-1/2 -translate-y-1/2 text-emerald-400" size={20} />
+                      <User className="absolute right-4 top-1/2 -translate-y-1/2 text-emerald-400" size={22} />
                       <input
                         type="text"
                         value={formData.name}
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                        className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 pr-12 text-white placeholder-white/40 focus:border-emerald-500 focus:bg-white/15 transition-all"
+                        className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-4 pr-12 text-white text-lg font-medium placeholder-white/40 focus:border-emerald-500 focus:bg-white/15 transition-all"
                         placeholder="ישראל ישראלי"
                         required
                         disabled={isLoading}
@@ -349,32 +351,64 @@ export default function RegisterPage() {
                   </div>
 
                   {role === 'SUPPLIER' && (
-                    <div>
-                      <label className="block text-white/60 text-sm mb-2">שם החברה</label>
-                      <div className="relative">
-                        <Building2 className="absolute right-4 top-1/2 -translate-y-1/2 text-emerald-400" size={20} />
-                        <input
-                          type="text"
-                          value={formData.companyName}
-                          onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
-                          className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 pr-12 text-white placeholder-white/40 focus:border-emerald-500 focus:bg-white/15 transition-all"
-                          placeholder="שם החברה בע״מ"
-                          required
-                          disabled={isLoading}
-                        />
+                    <>
+                      <div>
+                        <label className="block text-white/70 text-base font-semibold mb-2">שם החברה</label>
+                        <div className="relative">
+                          <Building2 className="absolute right-4 top-1/2 -translate-y-1/2 text-emerald-400" size={22} />
+                          <input
+                            type="text"
+                            value={formData.companyName}
+                            onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
+                            className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-4 pr-12 text-white text-lg font-medium placeholder-white/40 focus:border-emerald-500 focus:bg-white/15 transition-all"
+                            placeholder="שם החברה בע״מ"
+                            required
+                            disabled={isLoading}
+                          />
+                        </div>
                       </div>
-                    </div>
+                      <div>
+                        <label className="block text-white/70 text-base font-semibold mb-2">עיר</label>
+                        <div className="relative">
+                          <MapPin className="absolute right-4 top-1/2 -translate-y-1/2 text-emerald-400" size={22} />
+                          <input
+                            type="text"
+                            value={formData.city}
+                            onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                            className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-4 pr-12 text-white text-lg font-medium placeholder-white/40 focus:border-emerald-500 focus:bg-white/15 transition-all"
+                            placeholder="תל אביב"
+                            required
+                            disabled={isLoading}
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-white/70 text-base font-semibold mb-2">כתובת</label>
+                        <div className="relative">
+                          <MapPin className="absolute right-4 top-1/2 -translate-y-1/2 text-emerald-400" size={22} />
+                          <input
+                            type="text"
+                            value={formData.address}
+                            onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                            className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-4 pr-12 text-white text-lg font-medium placeholder-white/40 focus:border-emerald-500 focus:bg-white/15 transition-all"
+                            placeholder="רחוב הרצל 1"
+                            required
+                            disabled={isLoading}
+                          />
+                        </div>
+                      </div>
+                    </>
                   )}
 
                   {/* Specialization dropdown */}
                   <div>
-                    <label className="block text-white/60 text-sm mb-2">תחום התמחות</label>
+                    <label className="block text-white/70 text-base font-semibold mb-2">תחום התמחות</label>
                     <div className="relative">
-                      <ChevronDown className="absolute left-4 top-1/2 -translate-y-1/2 text-white/40 pointer-events-none" size={20} />
+                      <ChevronDown className="absolute left-4 top-1/2 -translate-y-1/2 text-white/40 pointer-events-none" size={22} />
                       <select
                         value={specialization}
                         onChange={(e) => setSpecialization(e.target.value)}
-                        className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white focus:border-emerald-500 focus:bg-white/15 transition-all appearance-none cursor-pointer"
+                        className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-4 text-white text-lg font-medium focus:border-emerald-500 focus:bg-white/15 transition-all appearance-none cursor-pointer"
                         required
                         disabled={isLoading}
                       >
@@ -389,14 +423,14 @@ export default function RegisterPage() {
                   </div>
 
                   <div>
-                    <label className="block text-white/60 text-sm mb-2">אימייל</label>
+                    <label className="block text-white/70 text-base font-semibold mb-2">אימייל</label>
                     <div className="relative">
-                      <Mail className="absolute right-4 top-1/2 -translate-y-1/2 text-emerald-400" size={20} />
+                      <Mail className="absolute right-4 top-1/2 -translate-y-1/2 text-emerald-400" size={22} />
                       <input
                         type="email"
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                        className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 pr-12 text-white placeholder-white/40 focus:border-emerald-500 focus:bg-white/15 transition-all"
+                        className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-4 pr-12 text-white text-lg font-medium placeholder-white/40 focus:border-emerald-500 focus:bg-white/15 transition-all"
                         placeholder="your@email.com"
                         required
                         dir="ltr"
@@ -406,14 +440,14 @@ export default function RegisterPage() {
                   </div>
 
                   <div>
-                    <label className="block text-white/60 text-sm mb-2">טלפון</label>
+                    <label className="block text-white/70 text-base font-semibold mb-2">טלפון</label>
                     <div className="relative">
-                      <Phone className="absolute right-4 top-1/2 -translate-y-1/2 text-emerald-400" size={20} />
+                      <Phone className="absolute right-4 top-1/2 -translate-y-1/2 text-emerald-400" size={22} />
                       <input
                         type="tel"
                         value={formData.phone}
                         onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                        className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 pr-12 text-white placeholder-white/40 focus:border-emerald-500 focus:bg-white/15 transition-all"
+                        className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-4 pr-12 text-white text-lg font-medium placeholder-white/40 focus:border-emerald-500 focus:bg-white/15 transition-all"
                         placeholder="050-123-4567"
                         dir="ltr"
                         disabled={isLoading}
@@ -422,14 +456,14 @@ export default function RegisterPage() {
                   </div>
 
                   <div>
-                    <label className="block text-white/60 text-sm mb-2">סיסמה</label>
+                    <label className="block text-white/70 text-base font-semibold mb-2">סיסמה</label>
                     <div className="relative">
-                      <Lock className="absolute right-4 top-1/2 -translate-y-1/2 text-emerald-400" size={20} />
+                      <Lock className="absolute right-4 top-1/2 -translate-y-1/2 text-emerald-400" size={22} />
                       <input
                         type="password"
                         value={formData.password}
                         onChange={(e) => handlePasswordChange(e.target.value)}
-                        className={`w-full bg-white/10 border rounded-xl px-4 py-3 pr-12 text-white placeholder-white/40 focus:bg-white/15 transition-all ${
+                        className={`w-full bg-white/10 border rounded-xl px-4 py-4 pr-12 text-white text-lg font-medium placeholder-white/40 focus:bg-white/15 transition-all ${
                           formData.password && passwordErrors.length > 0
                             ? 'border-red-500/50 focus:border-red-500'
                             : formData.password && passwordErrors.length === 0
@@ -473,14 +507,14 @@ export default function RegisterPage() {
                       type="button"
                       onClick={() => setStep(1)}
                       disabled={isLoading}
-                      className="flex-1 bg-white/10 border border-white/20 rounded-xl py-3 text-white hover:bg-white/20 transition-colors disabled:opacity-50"
+                      className="flex-1 bg-white/10 border border-white/20 rounded-xl py-4 text-white text-lg font-semibold hover:bg-white/20 transition-colors disabled:opacity-50"
                     >
                       חזרה
                     </button>
                     <button
                       type="submit"
                       disabled={isLoading || authLoading}
-                      className="flex-1 bg-gradient-to-r from-emerald-500 to-teal-600 text-white py-3 rounded-xl font-semibold hover:from-emerald-600 hover:to-teal-700 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                      className="flex-1 bg-gradient-to-r from-emerald-500 to-teal-600 text-white py-4 rounded-xl font-bold text-xl tracking-wide hover:from-emerald-600 hover:to-teal-700 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                     >
                       {isLoading ? (
                         <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -506,11 +540,11 @@ export default function RegisterPage() {
                 <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center">
                   <Check size={40} className="text-white" />
                 </div>
-                <h1 className="text-2xl font-bold text-white mb-2">נרשמת בהצלחה!</h1>
-                <p className="text-white/60 mb-8">
+                <h1 className="text-3xl font-extrabold text-white mb-3">נרשמת בהצלחה!</h1>
+                <p className="text-white/60 text-lg font-medium mb-8">
                   החשבון שלך ממתין לאישור מנהל. נעדכן אותך במייל ברגע שהחשבון יאושר.
                 </p>
-                <Link href="/" className="inline-block bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-8 py-3 rounded-xl font-semibold hover:from-emerald-600 hover:to-teal-700 transition-all">
+                <Link href="/" className="inline-block bg-gradient-to-r from-emerald-500 to-teal-600 text-white px-8 py-4 rounded-xl font-bold text-xl tracking-wide hover:from-emerald-600 hover:to-teal-700 transition-all">
                   חזרה לעמוד הראשי
                 </Link>
               </motion.div>

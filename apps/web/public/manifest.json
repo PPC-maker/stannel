@@ -1,0 +1,26 @@
+{
+  "name": "STANNEL - Design Club",
+  "short_name": "STANNEL",
+  "description": "הפלטפורמה האקסקלוסיבית לאדריכלים וספקים",
+  "start_url": "/login",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0f2620",
+  "theme_color": "#0f2620",
+  "dir": "rtl",
+  "lang": "he",
+  "icons": [
+    {
+      "src": "/logo-f.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/logo1.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

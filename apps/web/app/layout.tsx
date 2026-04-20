@@ -3,6 +3,7 @@ import { Assistant } from 'next/font/google';
 import './globals.css';
 import Navbar from '@/components/layout/Navbar';
 import AccessibilityWidget from '@/components/layout/AccessibilityWidget';
+import SplashScreen from '@/components/layout/SplashScreen';
 import { Providers } from './providers';
 
 const assistant = Assistant({
@@ -25,6 +26,20 @@ export const metadata: Metadata = {
   description: 'הפלטפורמה האקסקלוסיבית לאדריכלים וספקים בתחום הבנייה והעיצוב',
   keywords: ['אדריכלות', 'עיצוב פנים', 'מועדון לקוחות', 'נקודות', 'הטבות'],
   authors: [{ name: 'STANNEL' }],
+  manifest: '/manifest.json',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'black-translucent',
+    title: 'STANNEL',
+    startupImage: '/logo-f.png',
+  },
+  other: {
+    'theme-color': '#0f2620',
+    'mobile-web-app-capable': 'yes',
+  },
+  icons: {
+    apple: '/logo-f.png',
+  },
   openGraph: {
     title: 'STANNEL | פלטפורמת ניהול מועדון לקוחות',
     description: 'הפלטפורמה האקסקלוסיבית לאדריכלים וספקים',
@@ -41,6 +56,7 @@ export default function RootLayout({
   return (
     <html lang="he" dir="rtl" className={assistant.variable} suppressHydrationWarning>
       <body className="min-h-screen antialiased" suppressHydrationWarning>
+
         <Providers>
           {/* Main app shell */}
           <div className="relative z-10 min-h-screen flex flex-col items-center">
@@ -52,6 +68,8 @@ export default function RootLayout({
 
           {/* Accessibility Widget - fixed button bottom left */}
           <AccessibilityWidget />
+          {/* Splash Screen + Service Worker */}
+          <SplashScreen />
         </Providers>
       </body>
     </html>

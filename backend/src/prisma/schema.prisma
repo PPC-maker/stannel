@@ -117,6 +117,9 @@ model SupplierProfile {
   totalRedeemed   Float       @default(0)
   cardNumber      String?     @unique
 
+  // Commission rate for this supplier (e.g. 0.02 = 2%)
+  commissionRate  Float       @default(0.02)
+
   // Onboarding status
   onboardingStatus String     @default("pending_review") // pending_review, approved, rejected
   status          String      @default("active") // active, suspended, inactive

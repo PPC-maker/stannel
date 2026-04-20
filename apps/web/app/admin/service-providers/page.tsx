@@ -5,6 +5,9 @@ import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { useAdminGuard, AuthGuardLoader } from '@/lib/useAuthGuard';
 import { useSuppliers } from '@/lib/api-hooks';
+import { adminApi } from '@stannel/api-client';
+import { useQueryClient } from '@tanstack/react-query';
+import Swal from 'sweetalert2';
 import {
   Building2,
   Mail,
@@ -12,6 +15,7 @@ import {
   ArrowRight,
   Search,
   CheckCircle,
+  Percent,
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -21,11 +25,14 @@ interface Supplier {
   email?: string;
   phone?: string;
   status?: string;
+  userId?: string;
+  commissionRate?: number;
 }
 
 export default function ManageSuppliersPage() {
   const { isReady } = useAdminGuard();
   const [searchTerm, setSearchTerm] = useState('');
+  const queryClient = useQueryClient();
 
   const { data: suppliersData, isLoading } = useSuppliers();
 
@@ -38,6 +45,63 @@ export default function ManageSuppliersPage() {
       (s.email && s.email.toLowerCase().includes(searchTerm.toLowerCase()));
     return matchesSearch;
   });
+
+  const handleEditCommission = async (supplier: Supplier) => {
+    const currentRate = (supplier.commissionRate ?? 0.02) * 100;
+
+    const { value: newRate } = await Swal.fire({
+      title: `עמלה - ${supplier.companyName}`,
+      input: 'number',
+      inputLabel: 'אחוז עמלה',
+      inputValue: currentRate,
+      inputAttributes: {
+        min: '0',
+        max: '100',
+        step: '0.5',
+      },
+      showCancelButton: true,
+      confirmButtonText: 'עדכון',
+      cancelButtonText: 'ביטול',
+      background: '#1a2e2a',
+      color: '#fff',
+      confirmButtonColor: '#10B981',
+      inputValidator: (value) => {
+        const num = parseFloat(value);
+        if (isNaN(num) || num < 0 || num > 100) {
+          return 'הזינו אחוז תקין בין 0 ל-100';
+        }
+        return null;
+      },
+    });
+
+    if (newRate !== undefined && supplier.userId) {
+      try {
+        await adminApi.updateUser(supplier.userId, {
+          supplierProfile: {
+            commissionRate: parseFloat(newRate) / 100,
+          },
+        });
+        queryClient.invalidateQueries({ queryKey: ['suppliers'] });
+        Swal.fire({
+          title: 'עודכן!',
+          text: `העמלה עודכנה ל-${newRate}%`,
+          icon: 'success',
+          timer: 2000,
+          showConfirmButton: false,
+          background: '#1a2e2a',
+          color: '#fff',
+        });
+      } catch {
+        Swal.fire({
+          title: 'שגיאה',
+          text: 'לא ניתן לעדכן את העמלה',
+          icon: 'error',
+          background: '#1a2e2a',
+          color: '#fff',
+        });
+      }
+    }
+  };
 
   if (!isReady) {
     return <AuthGuardLoader />;
@@ -153,50 +217,44 @@ export default function ManageSuppliersPage() {
                 <p className="text-white/60">אין ספקים להצגה</p>
               </div>
             ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead>
-                    <tr className="border-b border-white/10">
-                      <th className="py-3 px-4 text-right text-white/60 font-medium">ספק</th>
-                      <th className="py-3 px-4 text-right text-white/60 font-medium">אימייל</th>
-                      <th className="py-3 px-4 text-right text-white/60 font-medium">סטטוס</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filteredSuppliers.map((supplier, index) => (
-                      <motion.tr
-                        key={supplier.id}
-                        initial={{ opacity: 0, x: -10 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: index * 0.03 }}
-                        className="border-b border-white/5 hover:bg-white/5 transition-colors"
+              <div className="space-y-3">
+                {filteredSuppliers.map((supplier, index) => (
+                  <motion.div
+                    key={supplier.id}
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.03 }}
+                    className="bg-white/5 border border-white/10 rounded-xl p-4 hover:bg-white/8 transition-colors"
+                  >
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center">
+                          <Building2 size={18} className="text-emerald-400" />
+                        </div>
+                        <span className="font-bold text-white text-lg">{supplier.companyName || 'ספק'}</span>
+                      </div>
+                      <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs bg-green-500/20 text-green-400">
+                        <CheckCircle size={12} />
+                        פעיל
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      {supplier.email && (
+                        <div className="flex items-center gap-2 text-white/60 text-sm truncate ml-3">
+                          <Mail size={14} className="flex-shrink-0" />
+                          <span className="truncate">{supplier.email}</span>
+                        </div>
+                      )}
+                      <button
+                        onClick={() => handleEditCommission(supplier)}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-500/15 text-amber-400 hover:bg-amber-500/25 transition-colors font-semibold text-sm flex-shrink-0"
                       >
-                        <td className="py-4 px-4">
-                          <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center">
-                              <Building2 size={18} className="text-emerald-400" />
-                            </div>
-                            <span className="font-medium text-white">{supplier.companyName || 'ספק'}</span>
-                          </div>
-                        </td>
-                        <td className="py-4 px-4">
-                          {supplier.email && (
-                            <div className="flex items-center gap-2 text-white/60">
-                              <Mail size={14} />
-                              {supplier.email}
-                            </div>
-                          )}
-                        </td>
-                        <td className="py-4 px-4">
-                          <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs bg-green-500/20 text-green-400">
-                            <CheckCircle size={12} />
-                            פעיל
-                          </span>
-                        </td>
-                      </motion.tr>
-                    ))}
-                  </tbody>
-                </table>
+                        <Percent size={14} />
+                        {((supplier.commissionRate ?? 0.02) * 100).toFixed(1)}%
+                      </button>
+                    </div>
+                  </motion.div>
+                ))}
               </div>
             )}
           </div>

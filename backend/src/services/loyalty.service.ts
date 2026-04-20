@@ -9,20 +9,24 @@ const POINTS_PER_SHEKEL = 40;    // 1₪ = 40 points
 
 export const loyaltyService = {
   // Credit points for paid invoice
-  // 4% total commission: 2% to architect (as points), 2% to admin (as ₪)
+  // Commission is per-supplier: supplier.commissionRate for each side
   async creditInvoicePoints(invoiceId: string): Promise<void> {
     const invoice = await prisma.invoice.findUnique({
       where: { id: invoiceId },
+      include: { supplier: true },
     });
 
     if (!invoice) {
       throw new Error('Invoice not found');
     }
 
+    // Use supplier-specific commission rate, fallback to default 2%
+    const rate = invoice.supplier?.commissionRate ?? COMMISSION_RATE;
+
     // Calculate commissions
-    const architectCommission = invoice.amount * 0.02;  // 2% in ₪
-    const adminCommission = invoice.amount * 0.02;      // 2% in ₪
-    const architectPoints = architectCommission * 40;    // Convert to points (1₪ = 40 pts)
+    const architectCommission = invoice.amount * rate;   // supplier rate in ₪
+    const adminCommission = invoice.amount * rate;       // supplier rate in ₪
+    const architectPoints = architectCommission * POINTS_PER_SHEKEL; // Convert to points
 
     await prisma.$transaction([
       // Update architect points balance

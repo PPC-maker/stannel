@@ -86,7 +86,7 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen relative overflow-hidden bg-[#0f2620] -mt-16">
       {/* Background Image - positioned at top */}
-      <div className="absolute inset-x-0 top-0 h-[50vh]">
+      <div className="absolute inset-x-0 top-0 h-[42vh]">
         <Image
           src="/bg_top.jpg"
           alt="Modern architecture"
@@ -99,21 +99,21 @@ export default function LoginPage() {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 min-h-screen flex flex-col items-center justify-center px-6 py-12 pt-[50vh]">
+      <div className="relative z-10 min-h-screen flex flex-col items-center justify-center px-6 py-6 pt-[40vh]">
         {/* Logo + Tagline */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6 }}
-          className="text-center mb-8"
+          className="text-center mb-5"
         >
-          <h2 className="text-xl md:text-2xl text-white/90 font-light leading-tight tracking-wide" style={{ fontFamily: "'Playfair Display', serif" }}>
+          <h2 className="text-2xl md:text-3xl text-white font-semibold leading-snug tracking-wide" style={{ fontFamily: "'Playfair Display', serif" }}>
             The leading platform
           </h2>
-          <h2 className="text-xl md:text-2xl text-white/90 font-light leading-tight tracking-wide" style={{ fontFamily: "'Playfair Display', serif" }}>
+          <h2 className="text-2xl md:text-3xl text-white font-semibold leading-snug tracking-wide" style={{ fontFamily: "'Playfair Display', serif" }}>
             for architects & designers
           </h2>
-          <p className="text-white/50 mt-3 text-sm tracking-widest">
+          <p className="text-white/60 mt-3 text-base font-medium tracking-widest">
             Connect. Create. Be part of the industry.
           </p>
         </motion.div>
@@ -132,10 +132,10 @@ export default function LoginPage() {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-3">
             {/* Email Input */}
             <div className="relative">
-              <Mail className="absolute right-5 top-1/2 -translate-y-1/2 text-white/70 z-10" size={22} />
+              <Mail className="absolute right-5 top-1/2 -translate-y-1/2 text-white/70 z-10" size={24} />
               <input
                 type="email"
                 placeholder="אימייל / טלפון"
@@ -143,13 +143,13 @@ export default function LoginPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 disabled={isLoading}
-                className="w-full bg-white/10 backdrop-blur border border-white/20 rounded-2xl px-5 py-4 pr-14 text-white placeholder:text-white/50 focus:border-white/40 focus:outline-none focus:ring-2 focus:ring-white/20 transition-all text-base text-right"
+                className="w-full bg-white/10 backdrop-blur border border-white/20 rounded-2xl px-5 py-5 pr-14 text-white placeholder:text-white/40 focus:border-white/40 focus:outline-none focus:ring-2 focus:ring-white/20 transition-all text-lg font-medium text-right"
               />
             </div>
 
             {/* Password Input */}
             <div className="relative">
-              <Lock className="absolute right-5 top-1/2 -translate-y-1/2 text-white/70 z-10" size={22} />
+              <Lock className="absolute right-5 top-1/2 -translate-y-1/2 text-white/70 z-10" size={24} />
               <input
                 type={showPassword ? 'text' : 'password'}
                 placeholder="סיסמה"
@@ -157,7 +157,7 @@ export default function LoginPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 disabled={isLoading}
-                className="w-full bg-white/10 backdrop-blur border border-white/20 rounded-2xl px-5 py-4 pr-14 pl-14 text-white placeholder:text-white/50 focus:border-white/40 focus:outline-none focus:ring-2 focus:ring-white/20 transition-all text-base text-right"
+                className="w-full bg-white/10 backdrop-blur border border-white/20 rounded-2xl px-5 py-5 pr-14 pl-14 text-white placeholder:text-white/40 focus:border-white/40 focus:outline-none focus:ring-2 focus:ring-white/20 transition-all text-lg font-medium text-right"
               />
               <button
                 type="button"
@@ -170,7 +170,7 @@ export default function LoginPage() {
 
             {/* Forgot Password */}
             <div className="text-right">
-              <Link href="/forgot-password" className="text-white/70 hover:text-white text-sm transition-colors">
+              <Link href="/forgot-password" className="text-white/70 hover:text-white text-base font-medium transition-colors">
                 שכחתם סיסמה?
               </Link>
             </div>
@@ -179,7 +179,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-[#1d5a45] hover:bg-[#2d6a55] text-white font-semibold py-4 rounded-2xl transition-colors disabled:opacity-50 text-base"
+              className="w-full bg-[#1d5a45] hover:bg-[#2d6a55] text-white font-bold py-5 rounded-2xl transition-colors disabled:opacity-50 text-xl tracking-wide"
             >
               {isLoading ? (
                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin mx-auto" />
@@ -190,9 +190,9 @@ export default function LoginPage() {
           </form>
 
           {/* Divider */}
-          <div className="flex items-center gap-4 my-6">
+          <div className="flex items-center gap-4 my-4">
             <div className="flex-1 h-px bg-white/20" />
-            <span className="text-white/50 text-sm">או</span>
+            <span className="text-white/50 text-base font-medium">או</span>
             <div className="flex-1 h-px bg-white/20" />
           </div>
 
@@ -201,7 +201,7 @@ export default function LoginPage() {
             type="button"
             onClick={handleGoogleLogin}
             disabled={isLoading}
-            className="w-full bg-white/10 backdrop-blur border border-white/20 hover:bg-white/20 text-white py-4 rounded-2xl transition-all flex items-center justify-center gap-3 disabled:opacity-50 text-base"
+            className="w-full bg-white/10 backdrop-blur border border-white/20 hover:bg-white/20 text-white py-5 rounded-2xl transition-all flex items-center justify-center gap-3 disabled:opacity-50 text-lg font-semibold"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24">
               <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -213,9 +213,9 @@ export default function LoginPage() {
           </button>
 
           {/* Sign Up Link */}
-          <p className="text-center mt-8 text-white/70 text-sm">
+          <p className="text-center mt-5 text-white/70 text-base font-medium">
             אין לכם חשבון?{' '}
-            <Link href="/register" className="text-white hover:underline font-medium">
+            <Link href="/register" className="text-white hover:underline font-bold">
               הירשמו כאן
             </Link>
           </p>

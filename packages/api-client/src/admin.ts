@@ -257,6 +257,7 @@ export const adminApi = {
       facebook?: string;
       instagram?: string;
       linkedin?: string;
+      commissionRate?: number;
     };
   }): Promise<any> {
     const res = await fetchWithAuth(`${config.baseUrl}/admin/users/${userId}`, {

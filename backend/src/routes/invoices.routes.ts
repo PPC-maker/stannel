@@ -21,8 +21,9 @@ export async function invoiceRoutes(server: FastifyInstance) {
       select: {
         id: true,
         companyName: true,
+        commissionRate: true,
         user: {
-          select: { name: true, email: true },
+          select: { name: true, email: true, id: true },
         },
       },
       orderBy: { companyName: 'asc' },
@@ -33,6 +34,8 @@ export async function invoiceRoutes(server: FastifyInstance) {
         id: s.id,
         companyName: s.companyName || s.user.name || 'ספק',
         email: s.user.email,
+        userId: s.user.id,
+        commissionRate: s.commissionRate,
       })),
     };
   });
