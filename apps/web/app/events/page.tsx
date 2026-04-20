@@ -4,7 +4,10 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { ImgWithLoader } from '@/components/ui/ImageWithLoader';
-import { Calendar, MapPin, Users, Clock, CheckCircle, Loader2 } from 'lucide-react';
+import { Calendar, MapPin, Users, Clock, CheckCircle, Loader2, Building2, FileText, XCircle } from 'lucide-react';
+import { meetingsApi } from '@stannel/api-client';
+import { useQuery } from '@tanstack/react-query';
+import { useAuth } from '@/lib/auth-context';
 
 function isValidImageUrl(url: string | undefined): boolean {
   if (!url) return false;
@@ -33,11 +36,20 @@ function formatDate(dateStr: string): string {
 
 export default function EventsPage() {
   const { isReady } = useAuthGuard();
+  const { user } = useAuth();
   const [registeredEvents, setRegisteredEvents] = useState<string[]>([]);
   const [registeringId, setRegisteringId] = useState<string | null>(null);
 
   const { data: eventsResponse, isLoading } = useEvents();
   const registerMutation = useRegisterForEvent();
+
+  const isArchitect = user?.role === 'ARCHITECT';
+  const { data: meetingsData, isLoading: meetingsLoading } = useQuery({
+    queryKey: ['my-meetings'],
+    queryFn: () => meetingsApi.getAll(),
+    enabled: isReady && isArchitect,
+  });
+  const meetings = (meetingsData?.data || []).filter((m: any) => m.status !== 'cancelled');
 
   if (!isReady) {
     return <AuthGuardLoader />;
@@ -128,6 +140,84 @@ export default function EventsPage() {
             </div>
           </div>
         </motion.div>
+
+        {/* My Meetings Section */}
+        {isArchitect && meetings.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.15 }}
+            className="mb-6"
+          >
+            <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+              <Building2 size={22} className="text-amber-400" />
+              הפגישות שלי עם ספקים
+            </h2>
+            <div className="space-y-3">
+              {meetings.map((meeting: any) => {
+                const statusConfig: Record<string, { label: string; color: string; bg: string }> = {
+                  pending: { label: 'ממתין לאישור', color: 'text-amber-400', bg: 'bg-amber-500/15' },
+                  approved: { label: 'אושרה', color: 'text-emerald-400', bg: 'bg-emerald-500/15' },
+                  rejected: { label: 'נדחתה', color: 'text-red-400', bg: 'bg-red-500/15' },
+                };
+                const st = statusConfig[meeting.status] || statusConfig.pending;
+
+                return (
+                  <motion.div
+                    key={meeting.id}
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-4 hover:bg-white/8 transition-colors"
+                  >
+                    <div className="flex items-start justify-between mb-2">
+                      <div className="flex-1">
+                        <h3 className="text-white font-semibold text-base">{meeting.subject}</h3>
+                        <p className="text-white/50 text-sm">
+                          {meeting.supplier?.companyName || 'ספק'}
+                        </p>
+                      </div>
+                      <span className={`px-3 py-1 rounded-full text-xs font-medium ${st.bg} ${st.color}`}>
+                        {st.label}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-4 text-white/50 text-sm">
+                      <div className="flex items-center gap-1">
+                        <Calendar size={14} />
+                        <span>{new Date(meeting.date).toLocaleDateString('he-IL')}</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <Clock size={14} />
+                        <span>{meeting.time}</span>
+                      </div>
+                      {meeting.documentUrl && (
+                        <a href={meeting.documentUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-blue-400 hover:underline">
+                          <FileText size={14} />
+                          <span>מסמך</span>
+                        </a>
+                      )}
+                    </div>
+                    {meeting.notes && (
+                      <p className="text-white/40 text-xs mt-2">{meeting.notes}</p>
+                    )}
+                  </motion.div>
+                );
+              })}
+            </div>
+          </motion.div>
+        )}
+
+        {isArchitect && !meetingsLoading && meetings.length === 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.15 }}
+            className="mb-6 bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 text-center"
+          >
+            <Building2 size={32} className="mx-auto text-white/20 mb-2" />
+            <p className="text-white/50 text-sm">אין פגישות מתוכננות</p>
+            <p className="text-white/30 text-xs mt-1">קבעו פגישה עם ספק מעמוד הספקים</p>
+          </motion.div>
+        )}
 
         {/* Events Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
