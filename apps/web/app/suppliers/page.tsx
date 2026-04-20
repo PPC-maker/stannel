@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import Image from 'next/image';
 import ImageWithLoader from '@/components/ui/ImageWithLoader';
 import Link from 'next/link';
-import { Search, Building2, MapPin, Phone, Globe, ChevronLeft, Star, Loader2 } from 'lucide-react';
+import { Search, Building2, MapPin, Phone, Globe, ChevronLeft, Loader2 } from 'lucide-react';
 import { useSuppliersDirectory } from '@/lib/api-hooks';
 import { useAuthGuard, AuthGuardLoader } from '@/lib/useAuthGuard';
 
@@ -116,13 +116,6 @@ function SupplierCard({ supplier, index }: { supplier: any; index: number }) {
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
-            {/* Badge */}
-            <div className="absolute top-4 right-4">
-              <span className="px-3 py-1.5 bg-emerald-500/90 backdrop-blur text-white text-xs font-medium rounded-full flex items-center gap-1">
-                <Star size={12} fill="currentColor" />
-                ספק מוביל
-              </span>
-            </div>
 
             {/* Company Name Overlay */}
             <div className="absolute bottom-0 left-0 right-0 p-4">

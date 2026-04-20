@@ -21,7 +21,6 @@ import {
   ArrowRight,
   Loader2,
   Award,
-  Star,
   Download,
   Search,
   DollarSign,
@@ -244,10 +243,6 @@ export default function AdminAnalyticsPage() {
                           <p className="text-white/40 text-xs">{sup.invoiceCount} חשבוניות</p>
                         </div>
                         <div className="text-left">
-                          <div className="flex items-center gap-1">
-                            <Star size={12} className="text-amber-400" />
-                            <span className="text-white font-bold text-sm">{sup.trustScore}</span>
-                          </div>
                           {sup.hasActiveContract && <span className="text-xs text-emerald-400">חוזה פעיל</span>}
                         </div>
                       </div>
@@ -335,7 +330,7 @@ export default function AdminAnalyticsPage() {
                 <h2 className="text-lg font-semibold text-white">דוח ספקים ({filteredSuppliers.length})</h2>
                 <button
                   onClick={() => exportToCSV(filteredSuppliers.map((s: any) => ({
-                    חברה: s.companyName, חשבוניות: s.invoiceCount, 'ציון אמון': s.trustScore, 'חוזה פעיל': s.hasActiveContract ? 'כן' : 'לא'
+                    חברה: s.companyName, חשבוניות: s.invoiceCount, 'חוזה פעיל': s.hasActiveContract ? 'כן' : 'לא'
                   })), 'suppliers_report')}
                   className="px-3 py-2 bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 rounded-lg text-xs sm:text-sm flex items-center gap-1.5 hover:bg-emerald-500/30 whitespace-nowrap"
                 >
@@ -349,29 +344,20 @@ export default function AdminAnalyticsPage() {
                 <p className="text-white/40 text-center py-12">{searchQuery ? 'לא נמצאו תוצאות' : 'אין נתונים'}</p>
               ) : (
                 <>
-                  <div className="hidden md:grid grid-cols-5 gap-4 px-4 py-2 text-white/50 text-sm border-b border-white/10 mb-2">
-                    <span>חברה</span><span>חשבוניות</span><span>ציון אמון</span><span>סטטוס חוזה</span><span>ביצוע</span>
+                  <div className="hidden md:grid grid-cols-3 gap-4 px-4 py-2 text-white/50 text-sm border-b border-white/10 mb-2">
+                    <span>חברה</span><span>חשבוניות</span><span>סטטוס חוזה</span>
                   </div>
                   <div className="space-y-2 max-h-[600px] overflow-y-auto">
                     {filteredSuppliers.map((sup: any) => (
-                      <div key={sup.id} className="grid grid-cols-2 md:grid-cols-5 gap-4 items-center p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors">
+                      <div key={sup.id} className="grid grid-cols-2 md:grid-cols-3 gap-4 items-center p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors">
                         <div>
                           <p className="text-white font-medium text-sm">{sup.companyName}</p>
                           <p className="text-white/40 text-xs md:hidden">{sup.invoiceCount} חשבוניות</p>
                         </div>
                         <p className="text-white/70 text-sm hidden md:block">{sup.invoiceCount}</p>
-                        <div className="flex items-center gap-1 hidden md:flex">
-                          <Star size={14} className="text-amber-400" />
-                          <span className="text-white font-bold">{sup.trustScore}</span>
-                        </div>
                         <span className={`px-2 py-0.5 rounded-full text-xs w-fit hidden md:inline ${sup.hasActiveContract ? 'bg-emerald-500/20 text-emerald-400' : 'bg-white/10 text-white/40'}`}>
                           {sup.hasActiveContract ? 'חוזה פעיל' : 'ללא חוזה'}
                         </span>
-                        <div className="hidden md:block">
-                          <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden">
-                            <div className="h-full bg-emerald-400 rounded-full" style={{ width: `${Math.min(100, (sup.trustScore || 0) * 10)}%` }} />
-                          </div>
-                        </div>
                       </div>
                     ))}
                   </div>

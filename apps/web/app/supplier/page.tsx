@@ -20,7 +20,6 @@ import {
   Building2,
   FileText,
   CreditCard,
-  Star,
   Shield,
   ChevronDown,
   User,
@@ -227,15 +226,6 @@ export default function SupplierDashboardPage() {
                 <Shield size={16} className="text-emerald-400" />
                 <span className="text-white text-sm">ספק מאושר</span>
               </motion.div>
-              <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ delay: 0.5, type: 'spring' }}
-                className="flex items-center gap-2 px-5 py-2.5 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full"
-              >
-                <Star size={16} className="text-amber-400" />
-                <span className="text-white text-sm">דירוג 5.0</span>
-              </motion.div>
             </div>
 
             {/* View Profile Button */}
@@ -346,29 +336,6 @@ export default function SupplierDashboardPage() {
             </div>
           </motion.div>
 
-          {/* Rating */}
-          <motion.div
-            whileHover={{ scale: 1.02, y: -2 }}
-            className="bg-gradient-to-br from-purple-500/20 to-pink-600/10 backdrop-blur-md border border-purple-500/30 rounded-2xl p-5 relative overflow-hidden group"
-          >
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-400 to-pink-500" />
-            <div className="absolute -left-4 -bottom-4 w-20 h-20 bg-purple-500/10 rounded-full blur-xl group-hover:bg-purple-500/20 transition-colors" />
-            <div className="relative">
-              <div className="flex items-center justify-between mb-3">
-                <div className="w-10 h-10 rounded-xl bg-purple-500/20 flex items-center justify-center">
-                  <Star className="text-purple-400" size={22} />
-                </div>
-                <div className="flex">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} size={10} className="text-amber-400 fill-amber-400" />
-                  ))}
-                </div>
-              </div>
-              <p className="text-white/60 text-sm mb-1">דירוג ממוצע</p>
-              <p className="text-3xl font-bold text-white">5.0</p>
-              <p className="text-purple-400 text-sm font-medium">0 ביקורות</p>
-            </div>
-          </motion.div>
         </motion.div>
 
         {/* Quick Actions */}
