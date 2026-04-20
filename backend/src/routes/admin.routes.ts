@@ -260,6 +260,7 @@ export async function adminRoutes(server: FastifyInstance) {
         facebook?: string;
         instagram?: string;
         linkedin?: string;
+        commissionRate?: number;
       };
     };
 
