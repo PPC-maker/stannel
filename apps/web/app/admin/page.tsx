@@ -1983,6 +1983,8 @@ Please analyze this error and provide a fix.
                                   OVERDUE: { bg: 'bg-orange-500/20', text: 'text-orange-400', label: 'באיחור' },
                                 };
                                 const status = invoiceStatusConfig[invoice.status] || { bg: 'bg-gray-500/20', text: 'text-white/60', label: invoice.status };
+                                const hasAmountMismatch = invoice.aiExtractedAmount && invoice.aiExtractedAmount > 0 && invoice.aiStatus !== 'MATCH' && Math.abs(invoice.amount - invoice.aiExtractedAmount) > 1;
+                                const isApprovedWithMismatch = hasAmountMismatch && invoice.status !== 'PENDING_ADMIN' && invoice.status !== 'REJECTED';
 
                                 return (
                                   <div
@@ -1991,12 +1993,14 @@ Please analyze this error and provide a fix.
                                     className={`p-3 rounded-lg cursor-pointer transition-all flex items-center justify-between ${
                                       selectedInvoice?.id === invoice.id
                                         ? 'border border-emerald-500/50 bg-emerald-500/10'
-                                        : 'border border-white/5 bg-white/5 hover:border-white/20'
+                                        : isApprovedWithMismatch
+                                          ? 'border border-red-500/40 bg-red-500/10 hover:border-red-500/60'
+                                          : 'border border-white/5 bg-white/5 hover:border-white/20'
                                     }`}
                                   >
                                     <div className="flex items-center gap-3">
-                                      <div className={`p-1.5 rounded-lg ${status.bg}`}>
-                                        <Receipt size={14} className={status.text} />
+                                      <div className={`p-1.5 rounded-lg ${isApprovedWithMismatch ? 'bg-red-500/20' : status.bg}`}>
+                                        <Receipt size={14} className={isApprovedWithMismatch ? 'text-red-400' : status.text} />
                                       </div>
                                       <div>
                                         <p className="text-white font-medium text-sm">₪{invoice.amount.toLocaleString()}</p>
@@ -2006,6 +2010,43 @@ Please analyze this error and provide a fix.
                                       </div>
                                     </div>
                                     <div className="flex items-center gap-3">
+                                      {isApprovedWithMismatch && (
+                                        <button
+                                          onClick={async (e) => {
+                                            e.stopPropagation();
+                                            const result = await Swal.fire({
+                                              title: 'תיקון סכום',
+                                              html: `<p>סכום נוכחי: ₪${invoice.amount.toLocaleString()}</p><p>סכום שזוהה: ₪${invoice.aiExtractedAmount!.toLocaleString()}</p>`,
+                                              icon: 'question',
+                                              showCancelButton: true,
+                                              confirmButtonText: `תקן ל-₪${invoice.aiExtractedAmount!.toLocaleString()}`,
+                                              cancelButtonText: 'ביטול',
+                                              confirmButtonColor: '#f59e0b',
+                                              background: '#0f2620',
+                                              color: '#fff',
+                                            });
+                                            if (result.isConfirmed) {
+                                              try {
+                                                const { getHeaders: getH, fetchWithAuth: fetchAuth, config: apiConfig } = await import('@stannel/api-client');
+                                                await fetchAuth(`${apiConfig.baseUrl}/admin/invoices/${invoice.id}/update-amount`, {
+                                                  method: 'PATCH',
+                                                  headers: getH() as Record<string, string>,
+                                                  body: JSON.stringify({ amount: invoice.aiExtractedAmount }),
+                                                });
+                                                await fetchInvoices();
+                                                Swal.fire({ title: 'תוקן!', text: `הסכום עודכן ל-₪${invoice.aiExtractedAmount?.toLocaleString()}`, icon: 'success', background: '#0f2620', color: '#fff', timer: 1500, showConfirmButton: false });
+                                              } catch (err) {
+                                                console.error(err);
+                                                Swal.fire({ title: 'שגיאה', text: 'לא ניתן לתקן את הסכום', icon: 'error', background: '#0f2620', color: '#fff' });
+                                              }
+                                            }
+                                          }}
+                                          className="px-2 py-1 rounded-lg bg-red-500/20 border border-red-500/30 text-red-300 text-xs hover:bg-red-500/30 transition-colors whitespace-nowrap"
+                                          title="תקן סכום"
+                                        >
+                                          תקן סכום
+                                        </button>
+                                      )}
                                       <div className="text-left">
                                         <span className={`px-2 py-0.5 rounded-full text-xs ${status.bg} ${status.text}`}>
                                           {status.label}
@@ -2222,7 +2263,75 @@ Please analyze this error and provide a fix.
                     {selectedInvoice.status === 'PENDING_ADMIN' && (
                       <div className="flex gap-3 pt-4">
                         <button
-                          onClick={() => handleVerifyInvoice(selectedInvoice.id, 'APPROVED')}
+                          onClick={async () => {
+                            const hasMismatch = selectedInvoice.aiExtractedAmount && selectedInvoice.aiExtractedAmount > 0 && selectedInvoice.aiStatus !== 'MATCH' && Math.abs(selectedInvoice.amount - selectedInvoice.aiExtractedAmount) > 1;
+
+                            if (hasMismatch) {
+                              // Step 1: Alert about approving without fix
+                              const step1 = await Swal.fire({
+                                title: 'אישור ללא תיקון סכום',
+                                html: `<p style="margin-bottom:8px">לחצתם על אישור חשבונית ללא התיקון</p><p style="font-size:14px;opacity:0.7">סכום שהוזן: ₪${selectedInvoice.amount.toLocaleString()} | סכום שזוהה: ₪${selectedInvoice.aiExtractedAmount!.toLocaleString()}</p>`,
+                                icon: 'warning',
+                                showCancelButton: true,
+                                confirmButtonText: 'תקן סכום חשבונית',
+                                cancelButtonText: 'לא',
+                                confirmButtonColor: '#f59e0b',
+                                cancelButtonColor: '#6b7280',
+                                background: '#0f2620',
+                                color: '#fff',
+                                reverseButtons: true,
+                              });
+
+                              if (step1.isConfirmed) {
+                                // Fix amount and approve
+                                try {
+                                  setProcessingInvoice(selectedInvoice.id);
+                                  const { getHeaders: getH, fetchWithAuth: fetchAuth, config: apiConfig } = await import('@stannel/api-client');
+                                  await fetchAuth(`${apiConfig.baseUrl}/admin/invoices/${selectedInvoice.id}/update-amount`, {
+                                    method: 'PATCH',
+                                    headers: getH() as Record<string, string>,
+                                    body: JSON.stringify({ amount: selectedInvoice.aiExtractedAmount }),
+                                  });
+                                  await adminApi.verifyInvoice(selectedInvoice.id, {
+                                    status: 'APPROVED',
+                                    note: `סכום תוקן מ-₪${selectedInvoice.amount} ל-₪${selectedInvoice.aiExtractedAmount} לפי זיהוי AI`,
+                                  });
+                                  await fetchInvoices();
+                                  setSelectedInvoice(null);
+                                  Swal.fire({ title: 'תוקן ואושר!', text: `הסכום עודכן ל-₪${selectedInvoice.aiExtractedAmount?.toLocaleString()} והחשבונית אושרה`, icon: 'success', background: '#0f2620', color: '#fff', timer: 2000, showConfirmButton: false });
+                                } catch (err) {
+                                  console.error(err);
+                                  Swal.fire({ title: 'שגיאה', text: 'שגיאה בתיקון הסכום', icon: 'error', background: '#0f2620', color: '#fff' });
+                                } finally {
+                                  setProcessingInvoice(null);
+                                }
+                              } else if (step1.dismiss === Swal.DismissReason.cancel) {
+                                // Step 2: Are you sure you want to approve with different amount?
+                                const step2 = await Swal.fire({
+                                  title: 'האם אתה בטוח?',
+                                  text: 'האם אתה בטוח שאתה רוצה לאשר את החשבונית עם סכום שונה?',
+                                  icon: 'question',
+                                  showCancelButton: true,
+                                  confirmButtonText: 'כן, אשר',
+                                  cancelButtonText: 'לא',
+                                  confirmButtonColor: '#10b981',
+                                  cancelButtonColor: '#6b7280',
+                                  background: '#0f2620',
+                                  color: '#fff',
+                                  reverseButtons: true,
+                                });
+
+                                if (step2.isConfirmed) {
+                                  // Approve with mismatched amount
+                                  handleVerifyInvoice(selectedInvoice.id, 'APPROVED', 'אושר עם סכום שונה מזיהוי AI');
+                                }
+                                // If cancelled - do nothing, go back
+                              }
+                            } else {
+                              // No mismatch - approve normally
+                              handleVerifyInvoice(selectedInvoice.id, 'APPROVED');
+                            }
+                          }}
                           disabled={processingInvoice === selectedInvoice.id}
                           className="flex-1 px-4 py-2 bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 rounded-xl hover:bg-emerald-500/30 transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
                         >
