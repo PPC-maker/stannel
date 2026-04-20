@@ -22,9 +22,11 @@ import {
   ChevronLeft,
   ChevronRight,
   ZoomIn,
+  FileUp,
 } from 'lucide-react';
 import { useSupplierDetail } from '@/lib/api-hooks';
 import { useAuthGuard, AuthGuardLoader } from '@/lib/useAuthGuard';
+import { meetingsApi } from '@stannel/api-client';
 import Swal from 'sweetalert2';
 
 export default function SupplierDetailPage() {
@@ -160,13 +162,19 @@ export default function SupplierDetailPage() {
   };
 
   const handleScheduleMeeting = () => {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const minDate = tomorrow.toISOString().split('T')[0];
+
     Swal.fire({
-      title: 'תיאום פגישה',
+      title: 'קביעת פגישה',
       html: `
-        <p style="margin-bottom: 16px; color: #9ca3af; font-size: 14px; text-align: center;">נציג מ-${supplier.companyName} יצור איתך קשר בהקדם</p>
-        <div style="display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 320px; margin: 0 auto;">
-          <input id="swal-phone" type="tel" inputmode="numeric" pattern="[0-9]*" placeholder="מספר טלפון" dir="rtl" style="width: 100%; padding: 14px 16px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); color: white; border-radius: 12px; font-size: 16px; text-align: right; outline: none; box-sizing: border-box;">
-          <textarea id="swal-message" placeholder="הודעה (אופציונלי)" dir="rtl" style="width: 100%; padding: 14px 16px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); color: white; border-radius: 12px; min-height: 90px; font-size: 14px; text-align: right; outline: none; resize: none; box-sizing: border-box;"></textarea>
+        <p style="margin-bottom: 16px; color: #9ca3af; font-size: 14px; text-align: center;">קביעת פגישה עם ${supplier.companyName}</p>
+        <div style="display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 320px; margin: 0 auto;" dir="rtl">
+          <input id="swal-subject" type="text" placeholder="נושא הפגישה *" style="width: 100%; padding: 14px 16px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); color: white; border-radius: 12px; font-size: 16px; text-align: right; outline: none; box-sizing: border-box;">
+          <input id="swal-date" type="date" min="${minDate}" style="width: 100%; padding: 14px 16px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); color: white; border-radius: 12px; font-size: 16px; outline: none; box-sizing: border-box;" dir="ltr">
+          <input id="swal-time" type="time" value="10:00" style="width: 100%; padding: 14px 16px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); color: white; border-radius: 12px; font-size: 16px; outline: none; box-sizing: border-box;" dir="ltr">
+          <textarea id="swal-notes" placeholder="הערות (אופציונלי)" style="width: 100%; padding: 14px 16px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); color: white; border-radius: 12px; min-height: 80px; font-size: 14px; text-align: right; outline: none; resize: none; box-sizing: border-box;"></textarea>
         </div>
       `,
       showCancelButton: true,
@@ -175,44 +183,94 @@ export default function SupplierDetailPage() {
       confirmButtonColor: '#0d7a5f',
       background: '#1a1a1a',
       color: '#ffffff',
-      customClass: {
-        popup: 'rounded-3xl',
-      },
       preConfirm: async () => {
-        const phone = (document.getElementById('swal-phone') as HTMLInputElement).value;
-        if (!phone) {
-          Swal.showValidationMessage('נא להזין מספר טלפון');
-          return;
-        }
-        const message = (document.getElementById('swal-message') as HTMLTextAreaElement).value;
+        const subject = (document.getElementById('swal-subject') as HTMLInputElement).value;
+        const date = (document.getElementById('swal-date') as HTMLInputElement).value;
+        const time = (document.getElementById('swal-time') as HTMLInputElement).value;
+        const notes = (document.getElementById('swal-notes') as HTMLTextAreaElement).value;
 
-        // Send meeting request to backend
+        if (!subject) { Swal.showValidationMessage('נא להזין נושא'); return; }
+        if (!date) { Swal.showValidationMessage('נא לבחור תאריך'); return; }
+        if (!time) { Swal.showValidationMessage('נא לבחור שעה'); return; }
+
         try {
-          const { getAuthToken } = await import('@stannel/api-client');
-          const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:7070';
-          const res = await fetch(`${apiUrl}/api/v1/suppliers/${supplierId}/meeting-request`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${getAuthToken()}`,
-            },
-            body: JSON.stringify({ phone, message }),
+          await meetingsApi.create({
+            supplierId,
+            date,
+            time,
+            subject,
+            notes: notes || undefined,
           });
-          if (!res.ok) {
-            const err = await res.json().catch(() => ({}));
-            console.error('Meeting request failed:', err);
-          }
-        } catch (err) {
-          console.error('Meeting request error:', err);
+          return true;
+        } catch (err: any) {
+          Swal.showValidationMessage(err.message || 'שגיאה בשליחת הבקשה');
+          return false;
         }
-
-        return { phone, message };
       },
     }).then((result) => {
       if (result.isConfirmed) {
         Swal.fire({
           title: 'הבקשה נשלחה!',
-          text: 'נציג יצור איתך קשר בהקדם',
+          text: 'הספק יקבל הודעה ויאשר את הפגישה',
+          icon: 'success',
+          confirmButtonColor: '#0d7a5f',
+          background: '#1a1a1a',
+          color: '#ffffff',
+        });
+      }
+    });
+  };
+
+  const handleUploadDocument = () => {
+    Swal.fire({
+      title: 'שליחת מסמך לספק',
+      html: `
+        <p style="margin-bottom: 16px; color: #9ca3af; font-size: 14px; text-align: center;">העלו קובץ PDF ל-${supplier.companyName}</p>
+        <div style="display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 320px; margin: 0 auto;" dir="rtl">
+          <input id="swal-doc-subject" type="text" placeholder="נושא המסמך *" style="width: 100%; padding: 14px 16px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); color: white; border-radius: 12px; font-size: 16px; text-align: right; outline: none; box-sizing: border-box;">
+          <label style="display: flex; align-items: center; justify-content: center; gap: 8px; padding: 16px; background: rgba(255,255,255,0.05); border: 2px dashed rgba(255,255,255,0.2); border-radius: 12px; color: rgba(255,255,255,0.5); cursor: pointer; font-size: 14px;">
+            <span id="swal-file-label">בחרו קובץ PDF</span>
+            <input id="swal-file" type="file" accept=".pdf" style="display: none;" onchange="document.getElementById('swal-file-label').textContent = this.files[0]?.name || 'בחרו קובץ PDF'">
+          </label>
+        </div>
+      `,
+      showCancelButton: true,
+      confirmButtonText: 'שלח מסמך',
+      cancelButtonText: 'ביטול',
+      confirmButtonColor: '#0d7a5f',
+      background: '#1a1a1a',
+      color: '#ffffff',
+      preConfirm: async () => {
+        const subject = (document.getElementById('swal-doc-subject') as HTMLInputElement).value;
+        const fileInput = document.getElementById('swal-file') as HTMLInputElement;
+        const file = fileInput.files?.[0];
+
+        if (!subject) { Swal.showValidationMessage('נא להזין נושא'); return; }
+        if (!file) { Swal.showValidationMessage('נא לבחור קובץ'); return; }
+
+        try {
+          // First create a meeting for this document
+          const meeting = await meetingsApi.create({
+            supplierId,
+            date: new Date().toISOString().split('T')[0],
+            time: '00:00',
+            subject: `מסמך: ${subject}`,
+            notes: 'מסמך נשלח',
+          });
+
+          // Then upload the document
+          await meetingsApi.uploadDocument(meeting.id, file);
+          return true;
+        } catch (err: any) {
+          Swal.showValidationMessage(err.message || 'שגיאה בשליחת המסמך');
+          return false;
+        }
+      },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire({
+          title: 'המסמך נשלח!',
+          text: 'הספק יקבל את המסמך במייל',
           icon: 'success',
           confirmButtonColor: '#0d7a5f',
           background: '#1a1a1a',
@@ -422,13 +480,21 @@ export default function SupplierDetailPage() {
             <Share2 size={22} />
           </button>
 
+          {/* Upload Document Button */}
+          <button
+            onClick={handleUploadDocument}
+            className="w-14 h-14 bg-[#2563eb] hover:bg-[#1d4ed8] text-white rounded-2xl transition-colors flex items-center justify-center shadow-lg shadow-blue-900/30"
+          >
+            <FileUp size={22} />
+          </button>
+
           {/* Schedule Meeting Button */}
           <button
             onClick={handleScheduleMeeting}
             className="flex-1 py-4 bg-[#0d7a5f] hover:bg-[#0a6650] text-white font-semibold rounded-2xl transition-colors flex items-center justify-center gap-2 shadow-lg shadow-emerald-900/30"
           >
             <Calendar size={20} />
-            תיאום פגישה
+            קביעת פגישה
           </button>
         </motion.div>
       </div>

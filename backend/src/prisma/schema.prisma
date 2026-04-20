@@ -101,6 +101,7 @@ model ArchitectProfile {
   // New relations from BASE44 migration
   architectGoals  ArchitectGoal[]
   bonusTransactions BonusTransaction[]
+  meetings        Meeting[]
 }
 
 model SupplierProfile {
@@ -139,6 +140,7 @@ model SupplierProfile {
   supplierGoals SupplierGoal[]
   products      Product[]
   cardTransactions SupplierCardTransaction[]
+  meetings      Meeting[]
 
   // New relations from BASE44 migration
   supplierPayments SupplierPayment[]
@@ -628,4 +630,27 @@ model SupplierProject {
 
   @@index([supplierId, isActive])
   @@index([createdAt])
+}
+
+model Meeting {
+  id            String    @id @default(cuid())
+  architectId   String
+  architect     ArchitectProfile @relation(fields: [architectId], references: [id], onDelete: Cascade)
+  supplierId    String
+  supplier      SupplierProfile @relation(fields: [supplierId], references: [id], onDelete: Cascade)
+
+  date          DateTime
+  time          String          // e.g. "10:00"
+  subject       String          // Meeting topic
+  notes         String?         // Additional notes
+
+  status        String    @default("pending") // pending, approved, rejected, cancelled
+  documentUrl   String?         // PDF document attached by architect
+
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([architectId])
+  @@index([supplierId])
+  @@index([status])
 }

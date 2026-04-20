@@ -9,6 +9,8 @@ import {
   useConfirmPayment,
   useUploadPaymentProof,
 } from '@/lib/api-hooks';
+import { meetingsApi } from '@stannel/api-client';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
 import Image from 'next/image';
 import Swal from 'sweetalert2';
@@ -20,6 +22,7 @@ import {
   Building2,
   FileText,
   CreditCard,
+  Calendar,
   Shield,
   ChevronDown,
   User,
@@ -75,6 +78,31 @@ export default function SupplierDashboardPage() {
   const { data: invoicesData, isLoading: invoicesLoading } = useSupplierInvoices(statusFilter || undefined);
   const confirmPayment = useConfirmPayment();
   const uploadPaymentProof = useUploadPaymentProof();
+  const queryClient = useQueryClient();
+
+  const { data: meetingsData } = useQuery({
+    queryKey: ['meetings'],
+    queryFn: () => meetingsApi.getAll(),
+    enabled: isReady,
+  });
+  const pendingMeetings = (meetingsData?.data || []).filter((m: any) => m.status === 'pending');
+
+  const handleMeetingAction = async (meetingId: string, status: 'approved' | 'rejected') => {
+    try {
+      await meetingsApi.updateStatus(meetingId, status);
+      queryClient.invalidateQueries({ queryKey: ['meetings'] });
+      Swal.fire({
+        title: status === 'approved' ? 'הפגישה אושרה!' : 'הפגישה נדחתה',
+        icon: status === 'approved' ? 'success' : 'info',
+        timer: 2000,
+        showConfirmButton: false,
+        background: '#0a1f18',
+        color: '#fff',
+      });
+    } catch {
+      Swal.fire({ title: 'שגיאה', icon: 'error', background: '#0a1f18', color: '#fff' });
+    }
+  };
 
   const invoices = invoicesData?.data || [];
 
@@ -337,6 +365,55 @@ export default function SupplierDashboardPage() {
           </motion.div>
 
         </motion.div>
+
+        {/* Pending Meetings */}
+        {pendingMeetings.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.35 }}
+            className="mb-8"
+          >
+            <h3 className="text-white font-semibold text-lg mb-4 flex items-center gap-2">
+              <Calendar className="text-amber-400" size={20} />
+              בקשות פגישה ({pendingMeetings.length})
+            </h3>
+            <div className="space-y-3">
+              {pendingMeetings.map((meeting: any) => (
+                <div key={meeting.id} className="bg-white/5 backdrop-blur-md border border-amber-500/20 rounded-2xl p-4">
+                  <div className="flex items-start justify-between mb-3">
+                    <div>
+                      <p className="text-white font-medium">{meeting.subject}</p>
+                      <p className="text-white/50 text-sm">
+                        {meeting.architect?.user?.name || 'אדריכל'} • {new Date(meeting.date).toLocaleDateString('he-IL')} בשעה {meeting.time}
+                      </p>
+                      {meeting.notes && <p className="text-white/40 text-xs mt-1">{meeting.notes}</p>}
+                      {meeting.documentUrl && (
+                        <a href={meeting.documentUrl} target="_blank" rel="noopener noreferrer" className="text-blue-400 text-xs mt-1 inline-block hover:underline">
+                          צפייה במסמך מצורף
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => handleMeetingAction(meeting.id, 'approved')}
+                      className="flex-1 py-2 bg-emerald-500/20 text-emerald-400 rounded-xl text-sm font-medium hover:bg-emerald-500/30 transition-colors"
+                    >
+                      אישור
+                    </button>
+                    <button
+                      onClick={() => handleMeetingAction(meeting.id, 'rejected')}
+                      className="flex-1 py-2 bg-red-500/20 text-red-400 rounded-xl text-sm font-medium hover:bg-red-500/30 transition-colors"
+                    >
+                      דחייה
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        )}
 
         {/* Quick Actions */}
         <motion.div
