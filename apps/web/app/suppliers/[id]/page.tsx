@@ -22,7 +22,6 @@ import {
   ChevronLeft,
   ChevronRight,
   ZoomIn,
-  FileUp,
 } from 'lucide-react';
 import { useSupplierDetail } from '@/lib/api-hooks';
 import { useAuthGuard, AuthGuardLoader } from '@/lib/useAuthGuard';
@@ -175,6 +174,11 @@ export default function SupplierDetailPage() {
           <input id="swal-date" type="date" min="${minDate}" style="width: 100%; padding: 14px 16px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); color: white; border-radius: 12px; font-size: 16px; outline: none; box-sizing: border-box;" dir="ltr">
           <input id="swal-time" type="time" value="10:00" style="width: 100%; padding: 14px 16px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); color: white; border-radius: 12px; font-size: 16px; outline: none; box-sizing: border-box;" dir="ltr">
           <textarea id="swal-notes" placeholder="הערות (אופציונלי)" style="width: 100%; padding: 14px 16px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); color: white; border-radius: 12px; min-height: 80px; font-size: 14px; text-align: right; outline: none; resize: none; box-sizing: border-box;"></textarea>
+          <label style="display: flex; align-items: center; justify-content: center; gap: 8px; padding: 16px; background: rgba(255,255,255,0.05); border: 2px dashed rgba(255,255,255,0.2); border-radius: 12px; color: rgba(255,255,255,0.5); cursor: pointer; font-size: 14px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            <span id="swal-file-label">צירוף מסמך PDF (אופציונלי)</span>
+            <input id="swal-file" type="file" accept=".pdf" style="display: none;" onchange="document.getElementById('swal-file-label').textContent = this.files[0]?.name || 'צירוף מסמך PDF (אופציונלי)'">
+          </label>
         </div>
       `,
       showCancelButton: true,
@@ -188,19 +192,27 @@ export default function SupplierDetailPage() {
         const date = (document.getElementById('swal-date') as HTMLInputElement).value;
         const time = (document.getElementById('swal-time') as HTMLInputElement).value;
         const notes = (document.getElementById('swal-notes') as HTMLTextAreaElement).value;
+        const fileInput = document.getElementById('swal-file') as HTMLInputElement;
+        const file = fileInput.files?.[0];
 
         if (!subject) { Swal.showValidationMessage('נא להזין נושא'); return; }
         if (!date) { Swal.showValidationMessage('נא לבחור תאריך'); return; }
         if (!time) { Swal.showValidationMessage('נא לבחור שעה'); return; }
 
         try {
-          await meetingsApi.create({
+          const meeting = await meetingsApi.create({
             supplierId,
             date,
             time,
             subject,
             notes: notes || undefined,
           });
+
+          // Upload document if attached
+          if (file) {
+            await meetingsApi.uploadDocument(meeting.id, file);
+          }
+
           return true;
         } catch (err: any) {
           Swal.showValidationMessage(err.message || 'שגיאה בשליחת הבקשה');
@@ -212,65 +224,6 @@ export default function SupplierDetailPage() {
         Swal.fire({
           title: 'הבקשה נשלחה!',
           text: 'הספק יקבל הודעה ויאשר את הפגישה',
-          icon: 'success',
-          confirmButtonColor: '#0d7a5f',
-          background: '#1a1a1a',
-          color: '#ffffff',
-        });
-      }
-    });
-  };
-
-  const handleUploadDocument = () => {
-    Swal.fire({
-      title: 'שליחת מסמך לספק',
-      html: `
-        <p style="margin-bottom: 16px; color: #9ca3af; font-size: 14px; text-align: center;">העלו קובץ PDF ל-${supplier.companyName}</p>
-        <div style="display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 320px; margin: 0 auto;" dir="rtl">
-          <input id="swal-doc-subject" type="text" placeholder="נושא המסמך *" style="width: 100%; padding: 14px 16px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); color: white; border-radius: 12px; font-size: 16px; text-align: right; outline: none; box-sizing: border-box;">
-          <label style="display: flex; align-items: center; justify-content: center; gap: 8px; padding: 16px; background: rgba(255,255,255,0.05); border: 2px dashed rgba(255,255,255,0.2); border-radius: 12px; color: rgba(255,255,255,0.5); cursor: pointer; font-size: 14px;">
-            <span id="swal-file-label">בחרו קובץ PDF</span>
-            <input id="swal-file" type="file" accept=".pdf" style="display: none;" onchange="document.getElementById('swal-file-label').textContent = this.files[0]?.name || 'בחרו קובץ PDF'">
-          </label>
-        </div>
-      `,
-      showCancelButton: true,
-      confirmButtonText: 'שלח מסמך',
-      cancelButtonText: 'ביטול',
-      confirmButtonColor: '#0d7a5f',
-      background: '#1a1a1a',
-      color: '#ffffff',
-      preConfirm: async () => {
-        const subject = (document.getElementById('swal-doc-subject') as HTMLInputElement).value;
-        const fileInput = document.getElementById('swal-file') as HTMLInputElement;
-        const file = fileInput.files?.[0];
-
-        if (!subject) { Swal.showValidationMessage('נא להזין נושא'); return; }
-        if (!file) { Swal.showValidationMessage('נא לבחור קובץ'); return; }
-
-        try {
-          // First create a meeting for this document
-          const meeting = await meetingsApi.create({
-            supplierId,
-            date: new Date().toISOString().split('T')[0],
-            time: '00:00',
-            subject: `מסמך: ${subject}`,
-            notes: 'מסמך נשלח',
-          });
-
-          // Then upload the document
-          await meetingsApi.uploadDocument(meeting.id, file);
-          return true;
-        } catch (err: any) {
-          Swal.showValidationMessage(err.message || 'שגיאה בשליחת המסמך');
-          return false;
-        }
-      },
-    }).then((result) => {
-      if (result.isConfirmed) {
-        Swal.fire({
-          title: 'המסמך נשלח!',
-          text: 'הספק יקבל את המסמך במייל',
           icon: 'success',
           confirmButtonColor: '#0d7a5f',
           background: '#1a1a1a',
@@ -478,14 +431,6 @@ export default function SupplierDetailPage() {
             className="w-14 h-14 bg-[#25D366] hover:bg-[#20bd5a] text-white rounded-2xl transition-colors flex items-center justify-center shadow-lg shadow-green-900/30"
           >
             <Share2 size={22} />
-          </button>
-
-          {/* Upload Document Button */}
-          <button
-            onClick={handleUploadDocument}
-            className="w-14 h-14 bg-[#2563eb] hover:bg-[#1d4ed8] text-white rounded-2xl transition-colors flex items-center justify-center shadow-lg shadow-blue-900/30"
-          >
-            <FileUp size={22} />
           </button>
 
           {/* Schedule Meeting Button */}
