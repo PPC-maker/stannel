@@ -221,6 +221,7 @@ model Product {
   name            String
   description     String?
   imageUrl        String
+  category        String    @default("כללי")
   pointCost       Float                   // Total points required for the product
   pointsPerShekel Float     @default(100) // Exchange rate: how many points = 1 shekel (for cash completion)
   stock           Int       @default(0)

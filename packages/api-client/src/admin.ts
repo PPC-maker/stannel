@@ -634,6 +634,14 @@ export const adminApi = {
     return res.json();
   },
 
+  async getProductCategories(): Promise<{ data: string[] }> {
+    const res = await fetchWithAuth(`${config.baseUrl}/admin/product-categories`, {
+      headers: getHeaders(),
+    });
+    if (!res.ok) return { data: [] };
+    return res.json();
+  },
+
   async createProduct(data: {
     name: string;
     description?: string;
@@ -641,6 +649,7 @@ export const adminApi = {
     cashCost?: number;
     stock: number;
     imageUrl?: string;
+    category?: string;
   }): Promise<any> {
     const res = await fetchWithAuth(`${config.baseUrl}/admin/products`, {
       method: 'POST',

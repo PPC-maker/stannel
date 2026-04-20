@@ -4,7 +4,7 @@ import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import ImageWithLoader from '@/components/ui/ImageWithLoader';
-import { Gift, Star, ShoppingCart, Loader2, Coins, Banknote, Plane, Smartphone, GraduationCap, Briefcase } from 'lucide-react';
+import { Gift, Star, ShoppingCart, Loader2, Coins, Banknote } from 'lucide-react';
 import { useWalletBalance, useRewardProducts, useRedeemReward, useWalletCard } from '@/lib/api-hooks';
 import { useAuth } from '@/lib/auth-context';
 import { useAuthGuard, AuthGuardLoader } from '@/lib/useAuthGuard';
@@ -16,35 +16,6 @@ const rankEmojis: Record<string, string> = {
   GOLD: '🥇',
   PLATINUM: '💎',
 };
-
-// Category definitions
-const CATEGORIES = [
-  { id: 'all', label: 'הכל', icon: Gift, color: 'emerald' },
-  { id: 'vacations', label: 'חופשות יוקרתיות', icon: Plane, color: 'blue' },
-  { id: 'gadgets', label: 'סלולר וגאדג\'טים', icon: Smartphone, color: 'purple' },
-  { id: 'academy', label: 'אקדמיה והעשרה', icon: GraduationCap, color: 'amber' },
-  { id: 'business', label: 'לעסק שלך', icon: Briefcase, color: 'teal' },
-];
-
-// Keywords to categorize products
-const categoryKeywords: Record<string, string[]> = {
-  vacations: ['חופשה', 'טיסה', 'מלון', 'נופש', 'ספא', 'צימר', 'vacation', 'hotel', 'flight', 'resort', 'לילה', 'סופ"ש'],
-  gadgets: ['טלפון', 'אוזניות', 'שעון', 'מחשב', 'טאבלט', 'מסך', 'סלולר', 'גאדג\'ט', 'phone', 'watch', 'headphones', 'laptop', 'iphone', 'samsung', 'apple'],
-  academy: ['קורס', 'לימודים', 'הדרכה', 'סדנה', 'course', 'workshop', 'training', 'כנס', 'השתלמות'],
-  business: ['עסקי', 'משרד', 'ציוד', 'תוכנה', 'שירות', 'business', 'office', 'software'],
-};
-
-function getCategoryForProduct(product: any): string {
-  const searchText = `${product.name} ${product.description}`.toLowerCase();
-
-  for (const [category, keywords] of Object.entries(categoryKeywords)) {
-    if (keywords.some(keyword => searchText.includes(keyword.toLowerCase()))) {
-      return category;
-    }
-  }
-
-  return 'business'; // Default category
-}
 
 function calculateCashCompletion(userPoints: number, productPointCost: number, pointsPerShekel: number) {
   if (userPoints >= productPointCost) {
@@ -83,20 +54,20 @@ export default function RewardsPage() {
   const rank = card?.rank || user?.rank || 'BRONZE';
   const allProducts = (productsResponse as any)?.data || productsResponse || [];
 
-  // Categorize and sort products - vacations first
+  // Use categories from products in DB
   const categorizedProducts = useMemo(() => {
-    const withCategory = allProducts.map((product: any) => ({
+    return allProducts.map((product: any) => ({
       ...product,
-      category: getCategoryForProduct(product),
+      category: product.category || 'כללי',
     }));
-
-    // Sort: vacations first, then others
-    return withCategory.sort((a: any, b: any) => {
-      if (a.category === 'vacations' && b.category !== 'vacations') return -1;
-      if (b.category === 'vacations' && a.category !== 'vacations') return 1;
-      return 0;
-    });
   }, [allProducts]);
+
+  // Build dynamic categories from actual products
+  const dynamicCategories = useMemo(() => {
+    const cats = new Set<string>();
+    categorizedProducts.forEach((p: any) => cats.add(p.category));
+    return ['all', ...Array.from(cats)];
+  }, [categorizedProducts]);
 
   // Filter by selected category
   const products = selectedCategory === 'all'
@@ -226,38 +197,28 @@ export default function RewardsPage() {
         {/* Category Tabs */}
         <div className="mb-4 sm:mb-8 overflow-x-auto pb-2" style={{ scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}>
           <div className="flex gap-2 sm:gap-3 min-w-max">
-            {CATEGORIES.map((category) => {
-              const Icon = category.icon;
-              const count = categoryCounts[category.id] || 0;
-              const isSelected = selectedCategory === category.id;
-
-              const colorClasses: Record<string, { bg: string; border: string; text: string; activeBg: string }> = {
-                emerald: { bg: 'bg-emerald-500/10', border: 'border-emerald-500/30', text: 'text-emerald-400', activeBg: 'bg-emerald-500/20' },
-                blue: { bg: 'bg-blue-500/10', border: 'border-blue-500/30', text: 'text-blue-400', activeBg: 'bg-blue-500/20' },
-                purple: { bg: 'bg-purple-500/10', border: 'border-purple-500/30', text: 'text-purple-400', activeBg: 'bg-purple-500/20' },
-                amber: { bg: 'bg-amber-500/10', border: 'border-amber-500/30', text: 'text-amber-400', activeBg: 'bg-amber-500/20' },
-                teal: { bg: 'bg-teal-500/10', border: 'border-teal-500/30', text: 'text-teal-400', activeBg: 'bg-teal-500/20' },
-              };
-
-              const colors = colorClasses[category.color];
+            {dynamicCategories.map((cat) => {
+              const count = cat === 'all' ? categorizedProducts.length : (categoryCounts[cat] || 0);
+              const isSelected = selectedCategory === cat;
+              const label = cat === 'all' ? 'הכל' : cat;
 
               return (
                 <motion.button
-                  key={category.id}
-                  onClick={() => setSelectedCategory(category.id)}
+                  key={cat}
+                  onClick={() => setSelectedCategory(cat)}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-5 py-2 sm:py-3 rounded-xl border transition-all text-sm sm:text-base ${
                     isSelected
-                      ? `${colors.activeBg} ${colors.border} ${colors.text}`
+                      ? 'bg-emerald-500/20 border-emerald-500/30 text-emerald-400'
                       : 'bg-white/5 border-white/10 text-white/70 hover:bg-white/10 hover:text-white'
                   }`}
                 >
-                  <Icon size={20} className={isSelected ? colors.text : ''} />
-                  <span className="font-medium whitespace-nowrap">{category.label}</span>
+                  {cat === 'all' && <Gift size={20} />}
+                  <span className="font-medium whitespace-nowrap">{label}</span>
                   {count > 0 && (
                     <span className={`px-2 py-0.5 rounded-full text-xs ${
-                      isSelected ? `${colors.bg} ${colors.text}` : 'bg-white/10 text-white/50'
+                      isSelected ? 'bg-emerald-500/10 text-emerald-400' : 'bg-white/10 text-white/50'
                     }`}>
                       {count}
                     </span>
@@ -276,13 +237,8 @@ export default function RewardsPage() {
             className="mb-6"
           >
             <h2 className="text-xl font-semibold text-white flex items-center gap-2">
-              {(() => {
-                const cat = CATEGORIES.find(c => c.id === selectedCategory);
-                if (!cat) return null;
-                const Icon = cat.icon;
-                return <Icon size={24} className={`text-${cat.color}-400`} />;
-              })()}
-              {CATEGORIES.find(c => c.id === selectedCategory)?.label}
+              <Gift size={24} className="text-emerald-400" />
+              {selectedCategory}
             </h2>
           </motion.div>
         )}
@@ -337,14 +293,9 @@ export default function RewardsPage() {
                       </div>
                     )}
                     {/* Category Badge */}
-                    {selectedCategory === 'all' && (
-                      <div className={`absolute top-3 right-3 px-2 py-1 rounded-full text-xs font-medium backdrop-blur-sm ${
-                        product.category === 'vacations' ? 'bg-blue-500/80 text-white' :
-                        product.category === 'gadgets' ? 'bg-purple-500/80 text-white' :
-                        product.category === 'academy' ? 'bg-amber-500/80 text-white' :
-                        'bg-teal-500/80 text-white'
-                      }`}>
-                        {CATEGORIES.find(c => c.id === product.category)?.label}
+                    {selectedCategory === 'all' && product.category && (
+                      <div className="absolute top-3 right-3 px-2 py-1 rounded-full text-xs font-medium backdrop-blur-sm bg-emerald-500/80 text-white">
+                        {product.category}
                       </div>
                     )}
                     {product.stock <= 3 && product.stock > 0 && (

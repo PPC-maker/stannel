@@ -35,6 +35,7 @@ interface Product {
   imageUrl?: string;
   isActive: boolean;
   createdAt: string;
+  category?: string;
 }
 
 export default function AdminRewardsPage() {
@@ -53,6 +54,14 @@ export default function AdminRewardsPage() {
     pointsPerShekel: 100,
     stock: 10,
     imageUrl: '',
+    category: '',
+  });
+  const [newCategory, setNewCategory] = useState('');
+  const [showNewCategory, setShowNewCategory] = useState(false);
+
+  const { data: categoriesData } = useQuery({
+    queryKey: ['admin', 'product-categories'],
+    queryFn: () => adminApi.getProductCategories(),
   });
 
   const { data: productsData, isLoading } = useQuery({
@@ -64,6 +73,7 @@ export default function AdminRewardsPage() {
     mutationFn: (data: typeof form) => adminApi.createProduct(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin', 'products'] });
+      queryClient.invalidateQueries({ queryKey: ['admin', 'product-categories'] });
       setShowModal(false);
       resetForm();
       Swal.fire({
@@ -150,7 +160,10 @@ export default function AdminRewardsPage() {
       pointsPerShekel: 100,
       stock: 10,
       imageUrl: '',
+      category: '',
     });
+    setNewCategory('');
+    setShowNewCategory(false);
   };
 
   const handleView = (product: Product) => {
@@ -167,6 +180,7 @@ export default function AdminRewardsPage() {
       pointsPerShekel: product.pointsPerShekel || 100,
       stock: product.stock,
       imageUrl: product.imageUrl || '',
+      category: product.category || '',
     });
     setShowModal(true);
   };
@@ -191,10 +205,14 @@ export default function AdminRewardsPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    const submitData = {
+      ...form,
+      category: showNewCategory ? newCategory : (form.category || 'כללי'),
+    };
     if (editingProduct) {
-      updateMutation.mutate({ id: editingProduct.id, data: form });
+      updateMutation.mutate({ id: editingProduct.id, data: submitData });
     } else {
-      createMutation.mutate(form);
+      createMutation.mutate(submitData);
     }
   };
 
@@ -353,7 +371,10 @@ export default function AdminRewardsPage() {
                   </div>
 
                   {/* Product Info */}
-                  <h3 className="text-white font-semibold text-lg mb-2">{product.name}</h3>
+                  <h3 className="text-white font-semibold text-lg mb-1">{product.name}</h3>
+                  {product.category && (
+                    <span className="inline-block text-xs px-2 py-0.5 bg-emerald-500/20 text-emerald-400 rounded-full mb-2">{product.category}</span>
+                  )}
                   <p className="text-white/60 text-sm mb-4 line-clamp-2">{product.description}</p>
 
                   <div className="flex items-center justify-between mb-4">
@@ -496,6 +517,50 @@ export default function AdminRewardsPage() {
                   className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-white/40"
                   placeholder="תיאור קצר של המוצר"
                 />
+              </div>
+
+              {/* Category */}
+              <div>
+                <label className="block text-sm font-medium text-white/60 mb-2">קטגוריה *</label>
+                {!showNewCategory ? (
+                  <div className="space-y-2">
+                    <select
+                      value={form.category}
+                      onChange={(e) => setForm({ ...form, category: e.target.value })}
+                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white appearance-none cursor-pointer"
+                    >
+                      <option value="" className="bg-[#0a1f18]">בחר קטגוריה</option>
+                      {(categoriesData?.data || []).map((cat: string) => (
+                        <option key={cat} value={cat} className="bg-[#0a1f18]">{cat}</option>
+                      ))}
+                    </select>
+                    <button
+                      type="button"
+                      onClick={() => setShowNewCategory(true)}
+                      className="text-emerald-400 text-sm hover:text-emerald-300 transition-colors"
+                    >
+                      + צור קטגוריה חדשה
+                    </button>
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    <input
+                      type="text"
+                      value={newCategory}
+                      onChange={(e) => setNewCategory(e.target.value)}
+                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-white/40"
+                      placeholder="שם הקטגוריה החדשה"
+                      required
+                    />
+                    <button
+                      type="button"
+                      onClick={() => { setShowNewCategory(false); setNewCategory(''); }}
+                      className="text-white/40 text-sm hover:text-white transition-colors"
+                    >
+                      ← חזרה לקטגוריות קיימות
+                    </button>
+                  </div>
+                )}
               </div>
 
               {/* Point Cost */}

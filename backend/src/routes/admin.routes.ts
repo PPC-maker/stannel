@@ -1288,6 +1288,17 @@ Please analyze this error and provide a fix.
     return { data: products, total, page, pageSize };
   });
 
+  // Get all product categories
+  server.get('/product-categories', async () => {
+    const products = await prisma.product.findMany({
+      where: { isActive: true },
+      select: { category: true },
+      distinct: ['category'],
+    });
+    const categories = products.map(p => p.category).filter(Boolean);
+    return { data: categories };
+  });
+
   // Create product
   server.post('/products', async (request: FastifyRequest, reply: FastifyReply) => {
     const body = request.body as {
@@ -1298,6 +1309,7 @@ Please analyze this error and provide a fix.
       stock: number;
       imageUrl?: string;
       supplierId?: string;
+      category?: string;
     };
 
     if (!body.name || body.pointCost === undefined || body.stock === undefined) {
@@ -1313,6 +1325,7 @@ Please analyze this error and provide a fix.
         stock: body.stock,
         imageUrl: body.imageUrl,
         supplierId: body.supplierId,
+        category: body.category || 'כללי',
         isActive: true,
       },
     });
@@ -1340,6 +1353,7 @@ Please analyze this error and provide a fix.
       stock?: number;
       imageUrl?: string;
       isActive?: boolean;
+      category?: string;
     };
 
     const product = await prisma.product.update({
