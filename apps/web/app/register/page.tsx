@@ -66,6 +66,7 @@ export default function RegisterPage() {
     address: '',
   });
   const [passwordErrors, setPasswordErrors] = useState<string[]>([]);
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -335,7 +336,7 @@ export default function RegisterPage() {
 
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div>
-                    <label className="block text-white/70 text-base font-semibold mb-2">שם מלא</label>
+                    <label className="block text-white/70 text-base font-semibold mb-2">שם מלא <span className="text-red-400/70 text-xs font-normal">(שדה חובה)</span></label>
                     <div className="relative">
                       <User className="absolute right-4 top-1/2 -translate-y-1/2 text-emerald-400" size={22} />
                       <input
@@ -353,7 +354,7 @@ export default function RegisterPage() {
                   {role === 'SUPPLIER' && (
                     <>
                       <div>
-                        <label className="block text-white/70 text-base font-semibold mb-2">שם החברה</label>
+                        <label className="block text-white/70 text-base font-semibold mb-2">שם החברה <span className="text-red-400/70 text-xs font-normal">(שדה חובה)</span></label>
                         <div className="relative">
                           <Building2 className="absolute right-4 top-1/2 -translate-y-1/2 text-emerald-400" size={22} />
                           <input
@@ -368,7 +369,7 @@ export default function RegisterPage() {
                         </div>
                       </div>
                       <div>
-                        <label className="block text-white/70 text-base font-semibold mb-2">עיר</label>
+                        <label className="block text-white/70 text-base font-semibold mb-2">עיר <span className="text-red-400/70 text-xs font-normal">(שדה חובה)</span></label>
                         <div className="relative">
                           <MapPin className="absolute right-4 top-1/2 -translate-y-1/2 text-emerald-400" size={22} />
                           <input
@@ -383,7 +384,7 @@ export default function RegisterPage() {
                         </div>
                       </div>
                       <div>
-                        <label className="block text-white/70 text-base font-semibold mb-2">כתובת</label>
+                        <label className="block text-white/70 text-base font-semibold mb-2">כתובת <span className="text-red-400/70 text-xs font-normal">(שדה חובה)</span></label>
                         <div className="relative">
                           <MapPin className="absolute right-4 top-1/2 -translate-y-1/2 text-emerald-400" size={22} />
                           <input
@@ -402,7 +403,7 @@ export default function RegisterPage() {
 
                   {/* Specialization dropdown */}
                   <div>
-                    <label className="block text-white/70 text-base font-semibold mb-2">תחום התמחות</label>
+                    <label className="block text-white/70 text-base font-semibold mb-2">תחום התמחות <span className="text-red-400/70 text-xs font-normal">(שדה חובה)</span></label>
                     <div className="relative">
                       <ChevronDown className="absolute left-4 top-1/2 -translate-y-1/2 text-white/40 pointer-events-none" size={22} />
                       <select
@@ -423,7 +424,7 @@ export default function RegisterPage() {
                   </div>
 
                   <div>
-                    <label className="block text-white/70 text-base font-semibold mb-2">אימייל</label>
+                    <label className="block text-white/70 text-base font-semibold mb-2">אימייל <span className="text-red-400/70 text-xs font-normal">(שדה חובה)</span></label>
                     <div className="relative">
                       <Mail className="absolute right-4 top-1/2 -translate-y-1/2 text-emerald-400" size={22} />
                       <input
@@ -456,7 +457,7 @@ export default function RegisterPage() {
                   </div>
 
                   <div>
-                    <label className="block text-white/70 text-base font-semibold mb-2">סיסמה</label>
+                    <label className="block text-white/70 text-base font-semibold mb-2">סיסמה <span className="text-red-400/70 text-xs font-normal">(שדה חובה)</span></label>
                     <div className="relative">
                       <Lock className="absolute right-4 top-1/2 -translate-y-1/2 text-emerald-400" size={22} />
                       <input
@@ -502,6 +503,20 @@ export default function RegisterPage() {
                     </div>
                   </div>
 
+                  {/* Terms Checkbox */}
+                  <div className="flex items-start gap-3 pt-2">
+                    <input
+                      type="checkbox"
+                      id="terms"
+                      checked={acceptedTerms}
+                      onChange={(e) => setAcceptedTerms(e.target.checked)}
+                      className="mt-1 w-5 h-5 rounded border-white/30 bg-white/10 text-emerald-500 focus:ring-emerald-500 cursor-pointer flex-shrink-0"
+                    />
+                    <label htmlFor="terms" className="text-white/60 text-sm cursor-pointer leading-relaxed">
+                      קראתי ואני מסכים/ה ל<Link href="/terms" target="_blank" className="text-emerald-400 hover:text-emerald-300 underline">תקנון ותנאי השימוש</Link> של מועדון סטאנל דיזיין קלאב
+                    </label>
+                  </div>
+
                   <div className="flex gap-3 pt-4">
                     <button
                       type="button"
@@ -513,7 +528,7 @@ export default function RegisterPage() {
                     </button>
                     <button
                       type="submit"
-                      disabled={isLoading || authLoading}
+                      disabled={isLoading || authLoading || !acceptedTerms}
                       className="flex-1 bg-gradient-to-r from-emerald-500 to-teal-600 text-white py-4 rounded-xl font-bold text-xl tracking-wide hover:from-emerald-600 hover:to-teal-700 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                     >
                       {isLoading ? (

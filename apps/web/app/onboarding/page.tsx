@@ -70,7 +70,7 @@ export default function OnboardingPage() {
         iconColor: '#d4af37',
       });
 
-      router.push('/dashboard');
+      router.push('/wallet');
     } catch (error) {
       Swal.fire({
         title: 'שגיאה',

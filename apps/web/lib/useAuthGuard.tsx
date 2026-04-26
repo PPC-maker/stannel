@@ -39,7 +39,7 @@ export function useAdminGuard() {
       if (!user) {
         router.replace('/login');
       } else if (user.role !== 'ADMIN') {
-        router.replace('/dashboard');
+        router.replace('/wallet');
       }
     }
   }, [user, loading, router]);
@@ -64,7 +64,7 @@ export function useSupplierGuard() {
       if (!user) {
         router.replace('/login');
       } else if (user.role !== 'SUPPLIER') {
-        router.replace('/dashboard');
+        router.replace('/wallet');
       }
     }
   }, [user, loading, router]);

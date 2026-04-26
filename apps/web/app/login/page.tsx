@@ -31,7 +31,7 @@ export default function LoginPage() {
       } else if (user.role === 'SUPPLIER') {
         router.push('/supplier');
       } else {
-        router.push('/dashboard');
+        router.push('/wallet');
       }
     }
   }, [user, authLoading, router]);
@@ -48,7 +48,7 @@ export default function LoginPage() {
       } else if (loggedInUser?.role === 'SUPPLIER') {
         router.push('/supplier');
       } else {
-        router.push('/dashboard');
+        router.push('/wallet');
       }
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'התחברות נכשלה';
@@ -69,7 +69,7 @@ export default function LoginPage() {
       } else if (loggedInUser?.role === 'SUPPLIER') {
         router.push('/supplier');
       } else {
-        router.push('/dashboard');
+        router.push('/wallet');
       }
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'התחברות עם Google נכשלה';
@@ -134,6 +134,7 @@ export default function LoginPage() {
 
           <form onSubmit={handleSubmit} className="space-y-3">
             {/* Email Input */}
+            <label className="block text-white/60 text-sm font-medium mb-1">אימייל <span className="text-red-400/70 text-xs font-normal">(שדה חובה)</span></label>
             <div className="relative">
               <Mail className="absolute right-5 top-1/2 -translate-y-1/2 text-white/70 z-10" size={24} />
               <input
@@ -148,6 +149,7 @@ export default function LoginPage() {
             </div>
 
             {/* Password Input */}
+            <label className="block text-white/60 text-sm font-medium mb-1">סיסמה <span className="text-red-400/70 text-xs font-normal">(שדה חובה)</span></label>
             <div className="relative">
               <Lock className="absolute right-5 top-1/2 -translate-y-1/2 text-white/70 z-10" size={24} />
               <input
@@ -217,6 +219,13 @@ export default function LoginPage() {
             אין לכם חשבון?{' '}
             <Link href="/register" className="text-white hover:underline font-bold">
               הירשמו כאן
+            </Link>
+          </p>
+
+          {/* Terms Link */}
+          <p className="text-center mt-3">
+            <Link href="/terms" className="text-white/40 hover:text-white/60 text-xs transition-colors">
+              תקנון ותנאי שימוש
             </Link>
           </p>
         </motion.div>

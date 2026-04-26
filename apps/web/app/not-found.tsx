@@ -59,7 +59,7 @@ export default function NotFound() {
           transition={{ delay: 0.6 }}
         >
           <Link
-            href="/dashboard"
+            href="/wallet"
             className="inline-flex items-center gap-2 bg-gradient-to-r from-[#d4af37] to-[#f5d77e] text-[#0a1628] px-8 py-4 rounded-xl font-semibold text-lg hover:shadow-lg hover:shadow-[#d4af37]/30 transition-all duration-300"
           >
             <span>חזרה לדף הבית</span>

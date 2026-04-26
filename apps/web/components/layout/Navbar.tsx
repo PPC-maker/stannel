@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter, usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, User, LogOut, Settings, Wallet, FileText, Gift, Calendar, Home, LogIn, Bot, Shield, Bell, Target, Wrench, X, Building2 } from 'lucide-react';
+import { Menu, User, LogOut, Settings, Wallet, FileText, Gift, Calendar, Home, LogIn, Bot, Shield, Bell, Target, Wrench, X, Building2, ChevronRight, ChevronLeft } from 'lucide-react';
 import { useAuth } from '@/lib/auth-context';
 import Swal from 'sweetalert2';
 
@@ -129,6 +129,34 @@ export default function Navbar() {
         : 'bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100'
     }`} style={{ paddingTop: 'env(safe-area-inset-top, 0px)', WebkitBackdropFilter: isScrolled || !isDarkPage ? 'blur(16px)' : undefined }}>
       <div className={`w-full px-4 sm:px-6 lg:px-8 flex items-center justify-center relative ${isDarkPage ? 'h-20' : 'h-16'}`}>
+        {/* Back/Forward Navigation - Left side (RTL: appears on left) */}
+        {pathname !== '/' && pathname !== '/login' && pathname !== '/register' && (
+        <div className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center gap-1" suppressHydrationWarning>
+          <button
+            onClick={() => window.history.back()}
+            className={`w-9 h-9 rounded-full flex items-center justify-center transition-colors ${
+              isDarkPage
+                ? 'hover:bg-white/15 text-white/70 hover:text-white'
+                : 'hover:bg-gray-100 text-gray-500 hover:text-gray-700'
+            }`}
+            aria-label="חזרה"
+          >
+            <ChevronRight size={22} />
+          </button>
+          <button
+            onClick={() => window.history.forward()}
+            className={`w-9 h-9 rounded-full flex items-center justify-center transition-colors ${
+              isDarkPage
+                ? 'hover:bg-white/15 text-white/70 hover:text-white'
+                : 'hover:bg-gray-100 text-gray-500 hover:text-gray-700'
+            }`}
+            aria-label="קדימה"
+          >
+            <ChevronLeft size={22} />
+          </button>
+        </div>
+        )}
+
         {/* Centered Logo */}
         <Link href="/wallet" className="flex items-center">
           {pathname === '/login' ? (
@@ -255,6 +283,14 @@ export default function Navbar() {
                           <span className="font-semibold">פאנל ניהול</span>
                         </Link>
                       )}
+                      <Link
+                        href="/terms"
+                        onClick={() => setIsProfileOpen(false)}
+                        className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-50 text-gray-700 hover:text-[#0066CC] transition-colors"
+                      >
+                        <FileText size={18} className="text-gray-400" />
+                        <span className="font-medium">תקנון ותנאי שימוש</span>
+                      </Link>
                       <hr className="my-2 border-gray-100" />
                       <button
                         onClick={async () => {

@@ -682,7 +682,7 @@ export default function AdminPage() {
       const { customToken } = await adminApi.loginAsUser(userId);
       const { token } = await loginWithCustomToken(customToken);
       setAuthToken(token);
-      router.push('/dashboard');
+      router.push('/wallet');
     } catch (error) {
       console.error('Error logging in as user:', error);
       Swal.fire({

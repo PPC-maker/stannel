@@ -496,7 +496,7 @@ export default function AdminRewardsPage() {
 
               {/* Name */}
               <div>
-                <label className="block text-sm font-medium text-white/60 mb-2">שם המוצר *</label>
+                <label className="block text-sm font-medium text-white/60 mb-2">שם המוצר <span className="text-red-400/70 text-xs font-normal">(שדה חובה)</span></label>
                 <input
                   type="text"
                   value={form.name}
@@ -521,7 +521,7 @@ export default function AdminRewardsPage() {
 
               {/* Category */}
               <div>
-                <label className="block text-sm font-medium text-white/60 mb-2">קטגוריה *</label>
+                <label className="block text-sm font-medium text-white/60 mb-2">קטגוריה <span className="text-red-400/70 text-xs font-normal">(שדה חובה)</span></label>
                 {!showNewCategory ? (
                   <div className="space-y-2">
                     <select
@@ -566,7 +566,7 @@ export default function AdminRewardsPage() {
               {/* Point Cost */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-white/60 mb-2">עלות בנקודות *</label>
+                  <label className="block text-sm font-medium text-white/60 mb-2">עלות בנקודות <span className="text-red-400/70 text-xs font-normal">(שדה חובה)</span></label>
                   <input
                     type="number"
                     value={form.pointCost}
@@ -591,7 +591,7 @@ export default function AdminRewardsPage() {
 
               {/* Stock */}
               <div>
-                <label className="block text-sm font-medium text-white/60 mb-2">כמות במלאי *</label>
+                <label className="block text-sm font-medium text-white/60 mb-2">כמות במלאי <span className="text-red-400/70 text-xs font-normal">(שדה חובה)</span></label>
                 <input
                   type="number"
                   value={form.stock}

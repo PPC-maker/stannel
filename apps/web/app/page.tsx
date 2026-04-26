@@ -377,7 +377,7 @@ export default function HomePage() {
             <div>
               <h4 className="font-semibold text-white mb-4">משפטי</h4>
               <ul className="space-y-2 text-sm text-white/50">
-                <li><Link href="/privacy" className="hover:text-white transition-colors">תנאי שימוש</Link></li>
+                <li><Link href="/terms" className="hover:text-white transition-colors">תקנון ותנאי שימוש</Link></li>
                 <li><Link href="/privacy" className="hover:text-white transition-colors">מדיניות פרטיות</Link></li>
               </ul>
             </div>
