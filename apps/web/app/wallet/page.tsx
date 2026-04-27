@@ -628,6 +628,39 @@ export default function WalletPage() {
             </div>
           </div>
         </motion.div>
+
+        {/* Magazine Link */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
+          className="mt-6"
+        >
+          <div className="bg-white/70 backdrop-blur rounded-3xl p-5 border border-white/50 shadow-sm">
+            <a
+              href="https://stannelmarketplace.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-between group"
+            >
+              <div className="flex items-center gap-4">
+                <div className="w-14 h-14 rounded-2xl bg-[#0f2620] flex items-center justify-center flex-shrink-0 shadow-md">
+                  <span className="text-3xl font-black text-white" style={{ fontFamily: "'Playfair Display', serif" }}>S</span>
+                </div>
+                <div>
+                  <h3 className="text-[#1a3a2a] font-extrabold text-xl tracking-tight" style={{ fontFamily: "'Playfair Display', serif" }}>stannel</h3>
+                  <p className="text-[#0d7a5f] text-sm font-semibold">גלו השראה, טרנדים ועיצוב</p>
+                </div>
+              </div>
+              <div className="w-11 h-11 rounded-full bg-[#0f2620] flex items-center justify-center group-hover:scale-110 transition-transform shadow-md">
+                <ArrowUpRight size={22} className="text-emerald-400" />
+              </div>
+            </a>
+          </div>
+        </motion.div>
+
+        {/* Bottom spacing */}
+        <div className="h-6" />
       </div>
     </div>
   );
