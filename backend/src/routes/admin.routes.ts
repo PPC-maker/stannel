@@ -411,6 +411,43 @@ export async function adminRoutes(server: FastifyInstance) {
     return { customToken };
   });
 
+  // Reset user password (admin)
+  server.post('/users/:id/reset-password', async (request: FastifyRequest, reply: FastifyReply) => {
+    const { id } = request.params as { id: string };
+    const { newPassword } = request.body as { newPassword: string };
+
+    if (!newPassword || newPassword.length < 6) {
+      return reply.code(400).send({ error: 'הסיסמה חייבת להכיל לפחות 6 תווים' });
+    }
+
+    const targetUser = await prisma.user.findUnique({ where: { id } });
+    if (!targetUser) {
+      return reply.code(404).send({ error: 'משתמש לא נמצא' });
+    }
+
+    if (!targetUser.firebaseUid) {
+      return reply.code(400).send({ error: 'למשתמש אין חשבון Firebase' });
+    }
+
+    try {
+      const { getAuth } = await import('firebase-admin/auth');
+      await getAuth().updateUser(targetUser.firebaseUid, { password: newPassword });
+
+      await prisma.auditLog.create({
+        data: {
+          userId: request.user!.id,
+          action: 'PASSWORD_RESET',
+          entityId: id,
+          metadata: { targetUser: targetUser.email },
+        },
+      });
+
+      return { success: true };
+    } catch (err: any) {
+      return reply.code(500).send({ error: err.message || 'שגיאה באיפוס הסיסמה' });
+    }
+  });
+
   // Get all invoices (admin view) - excludes deleted by default
   server.get('/invoices', async (request: FastifyRequest) => {
     const query = request.query as { page?: string; pageSize?: string; status?: string; includeDeleted?: string };

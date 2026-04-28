@@ -60,6 +60,7 @@ import {
   Save,
   X,
   Camera,
+  KeyRound,
 } from 'lucide-react';
 import Swal from 'sweetalert2';
 import Link from 'next/link';
@@ -737,6 +738,62 @@ export default function AdminPage() {
       });
     } finally {
       setDeletingUser(null);
+    }
+  };
+
+  const handleResetPassword = async (userId: string, userName: string) => {
+    const { value: newPassword } = await Swal.fire({
+      title: `איפוס סיסמה - ${userName}`,
+      input: 'text',
+      inputLabel: 'הזן סיסמה חדשה',
+      inputPlaceholder: 'סיסמה חדשה (מינימום 6 תווים)',
+      showCancelButton: true,
+      confirmButtonText: 'אפס סיסמה',
+      cancelButtonText: 'ביטול',
+      confirmButtonColor: '#0d7a5f',
+      background: '#0f2620',
+      color: '#fff',
+      inputValidator: (value) => {
+        if (!value || value.length < 6) {
+          return 'הסיסמה חייבת להכיל לפחות 6 תווים';
+        }
+        return null;
+      },
+    });
+
+    if (!newPassword) return;
+
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:7070'}/api/v1/admin/users/${userId}/reset-password`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${(await import('@stannel/api-client')).getAuthToken()}`,
+        },
+        body: JSON.stringify({ newPassword }),
+      });
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error || 'שגיאה באיפוס');
+      }
+
+      Swal.fire({
+        title: 'הסיסמה אופסה!',
+        text: `הסיסמה של ${userName} שונתה בהצלחה`,
+        icon: 'success',
+        confirmButtonText: 'אישור',
+        background: '#0f2620',
+        color: '#fff',
+      });
+    } catch (error: any) {
+      Swal.fire({
+        title: 'שגיאה',
+        text: error.message || 'שגיאה באיפוס הסיסמה',
+        icon: 'error',
+        background: '#0f2620',
+        color: '#fff',
+      });
     }
   };
 
@@ -1483,6 +1540,7 @@ Please analyze this error and provide a fix.
                                       {user.isActive && user.role !== 'ADMIN' && <button onClick={() => handleLoginAsUser(user.id)} disabled={loggingInAs === user.id} className="px-4 py-2 bg-white/10 border border-white/20 text-white/80 rounded-lg hover:bg-white/20 transition-colors text-sm flex items-center gap-2 disabled:opacity-50">{loggingInAs === user.id ? <Loader2 size={16} className="animate-spin" /> : <ExternalLink size={16} />}כניסה לחשבון</button>}
                                       {!user.isActive && <button onClick={() => handleApproveUser(user.id)} disabled={approvingUser === user.id} className="px-4 py-2 bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 rounded-lg hover:bg-emerald-500/30 transition-colors text-sm flex items-center gap-2 disabled:opacity-50">{approvingUser === user.id ? <Loader2 size={16} className="animate-spin" /> : <UserCheck size={16} />}אשר משתמש</button>}
                                       {user.isActive && user.role !== 'ADMIN' && <button onClick={() => handleDeactivateUser(user.id, user.name)} disabled={deactivatingUser === user.id} className="px-4 py-2 bg-yellow-500/10 border border-yellow-500/20 text-yellow-400 rounded-lg hover:bg-yellow-500/20 transition-colors text-sm flex items-center gap-2 disabled:opacity-50">{deactivatingUser === user.id ? <Loader2 size={16} className="animate-spin" /> : <Ban size={16} />}נתק משתמש</button>}
+                                      {user.role !== 'ADMIN' && <button onClick={() => handleResetPassword(user.id, user.name)} className="px-4 py-2 bg-blue-500/10 border border-blue-500/20 text-blue-400 rounded-lg hover:bg-blue-500/20 transition-colors text-sm flex items-center gap-2"><KeyRound size={16} />איפוס סיסמה</button>}
                                       {user.role !== 'ADMIN' && <button onClick={() => handleDeleteUser(user.id, user.name)} disabled={deletingUser === user.id} className="px-4 py-2 bg-red-500/10 border border-red-500/20 text-red-400 rounded-lg hover:bg-red-500/20 transition-colors text-sm flex items-center gap-2 disabled:opacity-50">{deletingUser === user.id ? <Loader2 size={16} className="animate-spin" /> : <Trash2 size={16} />}מחק משתמש</button>}
                                     </div>
                                   </div>
