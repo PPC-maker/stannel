@@ -33,6 +33,9 @@ export const metadata: Metadata = {
     title: 'STANNEL',
     startupImage: '/logo-f.png',
   },
+  verification: {
+    google: 't24_wOD9p0neygB7Y0IhjQDYgN8TnkqPRme_hIGtswI',
+  },
   other: {
     'theme-color': '#0f2620',
     'mobile-web-app-capable': 'yes',
