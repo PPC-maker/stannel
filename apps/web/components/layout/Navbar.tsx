@@ -128,10 +128,10 @@ export default function Navbar() {
           : 'bg-transparent'
         : 'bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100'
     }`} style={{ paddingTop: 'env(safe-area-inset-top, 0px)', WebkitBackdropFilter: isScrolled || !isDarkPage ? 'blur(16px)' : undefined }}>
-      <div className={`w-full px-4 sm:px-6 lg:px-8 flex items-center justify-center relative ${isDarkPage ? 'h-20' : 'h-16'}`}>
+      <div className={`w-full px-4 sm:px-6 lg:px-8 flex items-center justify-center relative ${isDarkPage ? 'h-16 sm:h-20' : 'h-14 sm:h-16'}`}>
         {/* Back/Forward Navigation - Left side (RTL: appears on left) */}
         {pathname !== '/' && pathname !== '/login' && pathname !== '/register' && (
-        <div className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center gap-1" suppressHydrationWarning>
+        <div className="absolute left-6 top-1/2 -translate-y-1/2 flex items-center gap-1" suppressHydrationWarning>
           <button
             onClick={() => window.history.back()}
             className={`w-9 h-9 rounded-full flex items-center justify-center transition-colors ${
@@ -171,13 +171,13 @@ export default function Navbar() {
             <img
               src={isLightPage ? "/logo_black1.png" : "/logo1.png"}
               alt="Stannel"
-              className={isDarkPage ? "h-20 w-auto" : "h-14 w-auto"}
+              className={isDarkPage ? "h-14 sm:h-20 w-auto" : "h-11 sm:h-14 w-auto"}
             />
           )}
         </Link>
 
         {/* Menu Icon - Fixed position on the right (RTL) */}
-        <div className="absolute right-4 top-1/2 -translate-y-1/2">
+        <div className="absolute right-6 top-1/2 -translate-y-1/2">
           <button
             onClick={() => setIsProfileOpen(!isProfileOpen)}
             className={`w-11 h-11 rounded-full border-2 flex items-center justify-center transition-colors ${

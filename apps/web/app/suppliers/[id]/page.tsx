@@ -253,7 +253,7 @@ export default function SupplierDetailPage() {
       </div>
 
       {/* Hero Section */}
-      <div className="relative h-[45vh] min-h-[320px]">
+      <div className="relative h-[35vh] min-h-[260px]">
         <ImageWithLoader
           src={heroImage}
           alt={supplier.companyName || 'Supplier'}
@@ -366,7 +366,7 @@ export default function SupplierDetailPage() {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.1 + index * 0.05 }}
                 onClick={() => openLightbox(index)}
-                className="relative aspect-square rounded-xl overflow-hidden group bg-white/5"
+                className="relative aspect-[4/3] rounded-xl overflow-hidden group bg-white/5"
               >
                 <ImageWithLoader
                   src={img}
@@ -432,6 +432,16 @@ export default function SupplierDetailPage() {
           >
             <Share2 size={22} />
           </button>
+
+          {/* Quick Call Button */}
+          {supplier.phone && (
+            <a
+              href={`tel:${supplier.phone}`}
+              className="w-14 h-14 bg-blue-500 hover:bg-blue-600 text-white rounded-2xl transition-colors flex items-center justify-center shadow-lg shadow-blue-900/30"
+            >
+              <Phone size={22} />
+            </a>
+          )}
 
           {/* Schedule Meeting Button */}
           <button

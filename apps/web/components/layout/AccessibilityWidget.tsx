@@ -106,7 +106,7 @@ export default function AccessibilityWidget() {
     <>
       <motion.button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 left-6 z-50 w-14 h-14 rounded-full bg-[#0066CC] text-white shadow-lg flex items-center justify-center hover:scale-110 transition-transform border-2 border-white"
+        className="fixed bottom-24 left-6 z-50 w-14 h-14 rounded-full bg-[#0066CC] text-white shadow-lg flex items-center justify-center hover:scale-110 transition-transform border-2 border-white"
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
         aria-label="פתח תפריט נגישות"
@@ -131,7 +131,7 @@ export default function AccessibilityWidget() {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 20, scale: 0.9 }}
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-              className="fixed bottom-24 left-6 z-50 w-72 bg-white rounded-2xl p-4 shadow-2xl border border-gray-200"
+              className="fixed bottom-[7.5rem] left-6 z-50 w-72 bg-white rounded-2xl p-4 shadow-2xl border border-gray-200"
             >
               <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
                 <Accessibility size={20} className="text-[#0066CC]" />

@@ -4,7 +4,7 @@ import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import ImageWithLoader from '@/components/ui/ImageWithLoader';
-import { Gift, Star, ShoppingCart, Loader2, Coins, Banknote } from 'lucide-react';
+import { Gift, Star, ShoppingCart, Loader2, Coins, Banknote, Share2 } from 'lucide-react';
 import { useWalletBalance, useRewardProducts, useRedeemReward, useWalletCard } from '@/lib/api-hooks';
 import { useAuth } from '@/lib/auth-context';
 import { useAuthGuard, AuthGuardLoader } from '@/lib/useAuthGuard';
@@ -313,11 +313,11 @@ export default function RewardsPage() {
                   {/* Product Info */}
                   <div className="p-4 sm:p-6">
                     <h3 className="text-white font-semibold text-base sm:text-lg mb-1 sm:mb-2">{product.name}</h3>
-                    <p className="text-white/60 text-sm mb-4 line-clamp-2">{product.description}</p>
+                    <p className="text-white/80 text-sm mb-4 line-clamp-2">{product.description}</p>
 
                     {/* Price & Action */}
                     <div className="flex flex-col gap-3">
-                      <div className="flex items-center justify-between">
+                      <div className="flex items-center justify-between" dir="rtl">
                         <span className="text-emerald-400 font-bold text-xl">
                           {product.pointCost.toLocaleString()} נק׳
                         </span>
@@ -333,22 +333,33 @@ export default function RewardsPage() {
 
                       {/* Cash completion info */}
                       {!affordable && product.stock > 0 && (
-                        <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-3 text-sm">
-                          <div className="flex items-center gap-2 text-blue-400 mb-1">
+                        <div className="bg-blue-500/15 border border-blue-400/30 rounded-lg p-3 text-sm">
+                          <div className="flex items-center gap-2 text-blue-300 mb-1 font-medium">
                             <Coins size={14} />
                             <span>חסרים {completion.missingPoints.toLocaleString()} נק׳</span>
                           </div>
-                          <div className="flex items-center gap-2 text-green-400 font-medium">
+                          <div className="flex items-center gap-2 text-green-300 font-bold text-base">
                             <Banknote size={14} />
                             <span>השלם עם ₪{completion.cashNeeded.toLocaleString()}</span>
                           </div>
                         </div>
                       )}
 
-                      {/* Action Buttons */}
+                      {/* Share + Action Buttons */}
                       <div className="flex gap-2">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            const shareText = `היי! ראיתי את "${product.name}" ב-Stannel Club 🎁\nעלות: ${product.pointCost.toLocaleString()} נקודות\n\nhttps://stannelclub.co.il/rewards`;
+                            window.open(`https://wa.me/?text=${encodeURIComponent(shareText)}`, '_blank');
+                          }}
+                          className="w-10 h-10 flex-shrink-0 rounded-lg bg-[#25D366]/20 text-[#25D366] flex items-center justify-center hover:bg-[#25D366]/30 transition-colors"
+                          title="שיתוף בוואטסאפ"
+                        >
+                          <Share2 size={16} />
+                        </button>
                         {!isArchitect ? (
-                          <div className="flex-1 px-4 py-2.5 rounded-lg text-sm font-medium bg-white/10 text-white/50 text-center">
+                          <div className="flex-1 px-4 py-2.5 rounded-lg text-sm font-medium bg-white/10 text-white/70 text-center border border-white/20">
                             מימוש מוצרים מיועד לאדריכלים בלבד
                           </div>
                         ) : affordable && product.stock > 0 ? (

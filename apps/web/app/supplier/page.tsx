@@ -285,9 +285,10 @@ export default function SupplierDashboardPage() {
           className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8"
         >
           {/* Paid Invoices */}
+          <Link href="/supplier/invoices?filter=paid">
           <motion.div
             whileHover={{ scale: 1.02, y: -2 }}
-            className="bg-gradient-to-br from-emerald-500/20 to-emerald-600/10 backdrop-blur-md border border-emerald-500/30 rounded-2xl p-5 relative overflow-hidden group"
+            className="bg-gradient-to-br from-emerald-500/20 to-emerald-600/10 backdrop-blur-md border border-emerald-500/30 rounded-2xl p-5 relative overflow-hidden group cursor-pointer"
           >
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-400 to-teal-500" />
             <div className="absolute -left-4 -bottom-4 w-20 h-20 bg-emerald-500/10 rounded-full blur-xl group-hover:bg-emerald-500/20 transition-colors" />
@@ -298,7 +299,7 @@ export default function SupplierDashboardPage() {
                 </div>
                 <TrendingUp size={16} className="text-emerald-400" />
               </div>
-              <p className="text-white/60 text-sm mb-1">חשבוניות ששולמו</p>
+              <p className="text-white/60 text-sm mb-1 flex items-center gap-1">חשבוניות ששולמו <ChevronDown size={12} className="rotate-[-90deg] text-emerald-400 opacity-0 group-hover:opacity-100 transition-opacity" /></p>
               {statsLoading ? (
                 <Loader2 className="w-6 h-6 animate-spin text-emerald-400" />
               ) : (
@@ -313,11 +314,17 @@ export default function SupplierDashboardPage() {
               )}
             </div>
           </motion.div>
+          </Link>
 
           {/* Pending Invoices */}
+          <Link href="/supplier/invoices?filter=pending">
           <motion.div
             whileHover={{ scale: 1.02, y: -2 }}
-            className="bg-gradient-to-br from-amber-500/20 to-orange-600/10 backdrop-blur-md border border-amber-500/30 rounded-2xl p-5 relative overflow-hidden group"
+            className={`bg-gradient-to-br from-amber-500/20 to-orange-600/10 backdrop-blur-md border rounded-2xl p-5 relative overflow-hidden group cursor-pointer ${
+              (stats?.pendingPayments?.count || pendingInvoices.length) > 0
+                ? 'border-amber-400/50 ring-1 ring-amber-400/20'
+                : 'border-amber-500/30'
+            }`}
           >
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-400 to-orange-500" />
             <div className="absolute -left-4 -bottom-4 w-20 h-20 bg-amber-500/10 rounded-full blur-xl group-hover:bg-amber-500/20 transition-colors" />
@@ -326,9 +333,13 @@ export default function SupplierDashboardPage() {
                 <div className="w-10 h-10 rounded-xl bg-amber-500/20 flex items-center justify-center">
                   <Clock className="text-amber-400" size={22} />
                 </div>
-                <span className="text-xs text-amber-400 font-medium">ממתין</span>
+                {(stats?.pendingPayments?.count || pendingInvoices.length) > 0 ? (
+                  <span className="text-xs text-red-400 font-bold animate-pulse">⬤ דורש טיפול</span>
+                ) : (
+                  <span className="text-xs text-amber-400 font-medium">ממתין</span>
+                )}
               </div>
-              <p className="text-white/60 text-sm mb-1">ממתינות לתשלום</p>
+              <p className="text-white/60 text-sm mb-1 flex items-center gap-1">ממתינות לתשלום <ChevronDown size={12} className="rotate-[-90deg] text-amber-400 opacity-0 group-hover:opacity-100 transition-opacity" /></p>
               {statsLoading ? (
                 <Loader2 className="w-6 h-6 animate-spin text-amber-400" />
               ) : (
@@ -343,6 +354,7 @@ export default function SupplierDashboardPage() {
               )}
             </div>
           </motion.div>
+          </Link>
 
           {/* Trust Score */}
           <motion.div
