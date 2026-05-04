@@ -303,7 +303,7 @@ export default function WalletPage() {
           {[
             { id: 'events', label: 'אירועים', href: '/events', image: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&q=80' },
             { id: 'rewards', label: 'חנות מתנות', href: '/rewards', image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80' },
-            { id: 'tools', label: 'כלי עיצוב', href: '/invoices', image: 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=800&q=80' },
+            { id: 'tools', label: 'כלי עיצוב', href: '/tools', image: 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=800&q=80' },
             { id: 'suppliers', label: 'פגישה עם ספק', href: '/suppliers', image: 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=800&q=80' },
           ].map((tile, index) => (
             <motion.div
