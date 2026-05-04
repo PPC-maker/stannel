@@ -189,103 +189,75 @@ export default function WalletPage() {
     return <AuthGuardLoader />;
   }
 
+  const metalGradient = 'linear-gradient(135deg, #E8C97D 0%, #C9A961 18%, #DDB870 38%, #A88845 55%, #E5C580 72%, #B8945A 90%, #8B6F3A 100%)';
+  const shineOverlay = 'linear-gradient(135deg, transparent 0%, rgba(255,250,220,0.3) 45%, transparent 100%)';
+  const marbleBg = `radial-gradient(ellipse 90% 90% at 15% 10%, rgba(229,197,128,0.18), transparent), radial-gradient(ellipse 100% 100% at 90% 30%, rgba(201,169,97,0.12), transparent), radial-gradient(ellipse 110% 110% at 30% 90%, rgba(184,148,90,0.10), transparent), #F6F1E7`;
+  const goldShadow = '0 6px 24px rgba(139,111,58,0.18), 0 2px 8px rgba(139,111,58,0.12)';
+  const goldShadowLight = '0 4px 16px rgba(139,111,58,0.12), 0 1px 4px rgba(139,111,58,0.08)';
+
   return (
-    <div className="min-h-screen -mt-16 pt-20" style={{ background: 'linear-gradient(180deg, #f5f0eb 0%, #ede7e0 50%, #f5f0eb 100%)' }}>
-      <div className="max-w-lg mx-auto px-5 pb-12">
+    <div className="min-h-screen -mt-16 pt-20" style={{ background: marbleBg }}>
+      <div className="max-w-lg mx-auto px-4 pb-12">
 
-        {/* Greeting */}
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-4 pt-2"
-        >
-          <h1 className="text-2xl font-bold text-[#2d2d2d] mb-0.5">
-            שלום {firstName} 👋
-          </h1>
-          <p className="text-[#8a8a8a] text-sm">
-            {isAdmin ? 'מה נעשה היום?' : 'מה תרצה לעשות היום?'}
-          </p>
-        </motion.div>
-
-        {/* Digital Membership Card */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="mb-4"
-        >
-          <div className="relative rounded-3xl shadow-xl" style={{ WebkitTransform: 'translateZ(0)' }}>
-            {/* Card Background - Green Leather Texture */}
-            <div className="absolute inset-0 rounded-3xl overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-[#2d5a3d] via-[#3a6b4a] to-[#1e4430]" />
-              <div className="absolute inset-0" style={{
-                backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-              }} />
-              {/* Subtle grain overlay */}
-              <div className="absolute inset-0 opacity-20" style={{
-                backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.4'/%3E%3C/svg%3E")`,
-              }} />
-            </div>
-
-            {/* Card Content */}
+        {/* ── MemberCard ── */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="mb-3">
+          <div className="relative rounded-2xl overflow-hidden" style={{ boxShadow: goldShadow }}>
+            <div className="absolute inset-0" style={{ background: metalGradient }} />
+            <div className="absolute inset-0" style={{ background: shineOverlay }} />
             <div className="relative p-5 flex flex-col gap-4">
               {/* Top Row */}
               <div className="flex items-start justify-between">
-                <div className="flex items-center gap-3">
-                  {/* Card Icon */}
-                  <div className="w-11 h-11 rounded-xl bg-white/10 backdrop-blur-sm flex items-center justify-center border border-white/15" style={{ WebkitBackdropFilter: 'blur(4px)' }}>
-                    <CreditCard size={22} className="text-white/80" />
+                <div className="flex items-center gap-2">
+                  <div className="w-6 h-6 rounded bg-[rgba(255,250,220,0.4)] flex items-center justify-center">
+                    <span className="text-[#4A3A1F] text-xs font-medium">{rank.badge}</span>
                   </div>
-                  {/* Accumulation Link */}
-                  <Link href="/rewards" className="flex items-center gap-1 group">
-                    <span className="text-white/70 text-sm font-medium group-hover:text-white/90 transition-colors">
-                      צבירה ומימוש
-                    </span>
-                    <ChevronLeft size={14} className="text-white/50 group-hover:text-white/70 transition-colors" />
-                    <ChevronLeft size={14} className="text-white/40 -mr-2" />
-                    <ChevronLeft size={14} className="text-white/30 -mr-2" />
-                  </Link>
+                  <span className="text-[#4A3A1F] text-sm font-medium tracking-[1.5px]">{rank.label}</span>
                 </div>
-
-                <div className="flex flex-col items-end gap-1">
-                  <span className="text-white/60 text-xs tracking-[0.2em] font-medium">STANNEL CLUB</span>
-                  <div className="flex items-center gap-2">
-                    <span className="text-white font-bold text-base tracking-wider">{rank.label}</span>
-                    <div className="w-7 h-7 rounded-full bg-emerald-300/30 flex items-center justify-center border border-emerald-200/30">
-                      <span className="text-white text-xs font-bold">{rank.badge}</span>
-                    </div>
+                <div className="flex items-center gap-2">
+                  <Link href="/rewards" className="text-[#4A3A1F]/70 text-[9px] hover:text-[#4A3A1F] transition-colors">
+                    צריכה ושימוש &laquo;&laquo;
+                  </Link>
+                  <div className="w-7 h-6 rounded overflow-hidden flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #E8C97D, #8B6F3A)' }}>
+                    <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><rect x="0" y="0" width="6" height="6" rx="1" stroke="#4A3A1F" strokeWidth="1.2"/><rect x="10" y="0" width="6" height="6" rx="1" stroke="#4A3A1F" strokeWidth="1.2"/><rect x="0" y="10" width="6" height="6" rx="1" stroke="#4A3A1F" strokeWidth="1.2"/><rect x="10" y="10" width="6" height="6" rx="1" stroke="#4A3A1F" strokeWidth="1.2"/></svg>
                   </div>
                 </div>
               </div>
 
-              {/* Card Number */}
-              <div>
+              {/* Card Number + Glossy Dots */}
+              <div className="flex flex-col items-center gap-2">
                 {isLoading ? (
-                  <div className="h-7 w-56 bg-white/10 rounded animate-pulse" />
+                  <div className="h-5 w-40 bg-[rgba(255,250,220,0.3)] rounded animate-pulse" />
                 ) : (
-                  <p className="text-xl font-mono text-white tracking-[0.15em] font-medium" dir="ltr">
-                    {card?.cardNumber
-                      ? `${card.cardNumber.slice(0, 4)} •••• •••• ••••`
-                      : '**** •••• •••• ••••'}
+                  <p className="text-base text-[#4A3A1F] tracking-[3px] font-medium" dir="ltr">
+                    {card?.cardNumber ? card.cardNumber.slice(0, 4) : 'cmnq'}
                   </p>
                 )}
+                <div className="flex items-center gap-1">
+                  {[...Array(4)].map((_, i) => (
+                    <div key={`a${i}`} className="w-2.5 h-2.5 rounded-full" style={{ background: 'radial-gradient(circle at 30% 30%, #FFE9A8, #C9A961, #8B6F3A)' }} />
+                  ))}
+                  <div className="w-4" />
+                  {[...Array(4)].map((_, i) => (
+                    <div key={`b${i}`} className="w-2.5 h-2.5 rounded-full" style={{ background: 'radial-gradient(circle at 30% 30%, #FFE9A8, #C9A961, #8B6F3A)' }} />
+                  ))}
+                </div>
               </div>
 
               {/* Bottom Row */}
               <div className="flex justify-between items-end">
                 <div>
-                  <p className="text-white/50 text-xs mb-0.5">{isAdmin ? 'עמלה' : 'Points'}</p>
-                  <p className="text-white text-2xl font-bold">
+                  <p className="text-[#4A3A1F]/60 text-[9px] mb-0.5">מספר כרטיס</p>
+                  <p className="text-[#4A3A1F] text-sm font-medium">
+                    {isSupplier ? (card as any)?.holderName : user?.name || 'יפעת לייט'}
+                  </p>
+                </div>
+                <div className="text-left">
+                  <p className="text-[#4A3A1F]/60 text-[9px] mb-0.5">{isAdmin ? 'עמלה' : 'Points'}</p>
+                  <p className="text-[#4A3A1F] text-sm font-medium">
                     {isAdmin
                       ? (adminStats ? `₪${adminStats.adminCommission.toLocaleString()}` : '...')
                       : (isLoading ? '...' : (balance?.points || 0).toLocaleString())
                     }
-                  </p>
-                </div>
-                <div className="text-left">
-                  <p className="text-white/50 text-xs mb-0.5">מספר כרטיס</p>
-                  <p className="text-white font-semibold text-base">
-                    {isSupplier ? (card as any)?.holderName : user?.name || 'משתמש'}
                   </p>
                 </div>
               </div>
@@ -293,184 +265,141 @@ export default function WalletPage() {
           </div>
         </motion.div>
 
-        {/* Action Tiles - 2x2 Grid */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.15 }}
-          className="grid grid-cols-2 gap-3 mb-4"
-        >
-          {[
-            { id: 'events', label: 'אירועים', href: '/events', image: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&q=80' },
-            { id: 'rewards', label: 'חנות מתנות', href: '/rewards', image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80' },
-            { id: 'tools', label: 'כלי עיצוב', href: '/tools', image: 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=800&q=80' },
-            { id: 'suppliers', label: 'פגישה עם ספק', href: '/suppliers', image: 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=800&q=80' },
-          ].map((tile, index) => (
-            <motion.div
-              key={tile.id}
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.2 + index * 0.05 }}
-            >
-              <Link
-                href={tile.href}
-                className="block relative rounded-2xl overflow-hidden shadow-md group"
-                style={{ aspectRatio: '1.4/1' }}
-              >
-                <ImageWithLoader
-                  src={tile.image}
-                  alt={tile.label}
-                  fill
-                  sizes="(max-width: 768px) 50vw, 300px"
-                  className="object-cover group-hover:scale-110 transition-transform duration-700"
-                />
-                <div className="absolute bottom-0 left-0 right-0 bg-[#2d5a3d]/85 backdrop-blur-sm py-2.5 px-3 rounded-b-2xl">
-                  <p className="text-white font-bold text-sm tracking-wide text-center">{tile.label}</p>
+        {/* ── HeroCard Carousel ── */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="mb-3">
+          <div className="flex gap-3 overflow-x-auto pb-2" style={{ scrollbarWidth: 'none' }}>
+            {[
+              { label: 'חנות מתנות אקסקלוסיבית', href: '/rewards', image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80' },
+              { label: 'אירועים', href: '/events', image: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&q=80' },
+              { label: 'כלי עיצוב', href: '/tools', image: 'https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=800&q=80' },
+              { label: 'פגישה עם ספק', href: '/suppliers', image: 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=800&q=80' },
+            ].map((slide, i, arr) => (
+              <Link key={i} href={slide.href} className="flex-shrink-0 group" style={{ width: '85%' }}>
+                <div className="bg-white rounded-2xl overflow-hidden" style={{ boxShadow: goldShadow }}>
+                  <div className="relative h-40">
+                    <ImageWithLoader src={slide.image} alt={slide.label} fill sizes="85vw" className="object-cover group-hover:scale-105 transition-transform duration-700" />
+                    {/* Badge */}
+                    <div className="absolute bottom-2 left-2 px-2 py-0.5 rounded text-[10px] text-[#4A3A1F] font-medium" style={{ background: metalGradient }}>
+                      {i + 1}/{arr.length}
+                    </div>
+                  </div>
+                  {/* Gift icon floating */}
+                  <div className="flex justify-center -mt-5 relative z-10">
+                    <div className="w-10 h-10 rounded-full border-2 border-white flex items-center justify-center" style={{ background: metalGradient, boxShadow: '0 0 12px rgba(201,169,97,0.35)' }}>
+                      <Gift size={18} className="text-white" />
+                    </div>
+                  </div>
+                  <div className="text-center pb-4 pt-1">
+                    <p className="text-[#4A3A1F] text-sm font-medium">{slide.label}</p>
+                  </div>
                 </div>
               </Link>
-            </motion.div>
-          ))}
+            ))}
+          </div>
         </motion.div>
 
-        {/* Admin Stats Row */}
+        {/* ── ProgressCard ── */}
+        {!isAdmin && (
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="mb-3 mx-1">
+            <div className="bg-white rounded-2xl p-4" style={{ boxShadow: goldShadowLight }}>
+              <div className="flex items-center mb-3">
+                <div className="flex-1 text-center">
+                  <p className="text-[#8B6F3A] text-[10px]">דרגה הבאה</p>
+                  <p className="text-[#4A3A1F] text-sm font-medium">{pointsToNextRank.toLocaleString()} נקודות</p>
+                </div>
+                <div className="flex-1 text-center">
+                  <p className="text-[#8B6F3A] text-[10px]">יתרה נוכחית</p>
+                  <p className="text-[#4A3A1F] text-sm font-medium">
+                    {isLoading ? '...' : `${(balance?.cash || 0).toLocaleString()} ₪`}
+                  </p>
+                </div>
+                <div className="flex-1 text-center">
+                  <p className="text-[#8B6F3A] text-[10px]">נקודות וזיכויים</p>
+                  <p className="text-[#4A3A1F] text-sm font-medium">
+                    {isLoading ? '...' : (balance?.points || 0).toLocaleString()}
+                  </p>
+                </div>
+              </div>
+              <div className="w-full h-2 bg-[#F2EAD8] rounded-full overflow-hidden">
+                <motion.div
+                  initial={{ width: 0 }}
+                  animate={{ width: `${progressPercent}%` }}
+                  transition={{ duration: 1, ease: 'easeOut' }}
+                  className="h-full rounded-full"
+                  style={{ background: metalGradient, boxShadow: '0 0 12px rgba(201,169,97,0.35)' }}
+                />
+              </div>
+            </div>
+          </motion.div>
+        )}
+
+        {/* Admin Stats */}
         {isAdmin && adminStats && (
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.15 }}
-            className="grid grid-cols-2 gap-3 mb-6"
-          >
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="grid grid-cols-2 gap-3 mb-4">
             {[
-              { label: 'מחזור חשבוניות', value: `₪${adminStats.totalRevenue.toLocaleString()}`, color: 'text-emerald-700' },
-              { label: 'נקודות אדריכלים', value: `${adminStats.architectPoints.toLocaleString()} נק׳`, color: 'text-purple-700' },
-              { label: 'חשבוניות ששולמו', value: adminStats.totalPaidInvoices.toString(), color: 'text-amber-700' },
-              { label: 'עמלה (2%)', value: `₪${adminStats.adminCommission.toLocaleString()}`, color: 'text-emerald-700' },
+              { label: 'מחזור חשבוניות', value: `₪${adminStats.totalRevenue.toLocaleString()}` },
+              { label: 'נקודות אדריכלים', value: `${adminStats.architectPoints.toLocaleString()} נק׳` },
+              { label: 'חשבוניות ששולמו', value: adminStats.totalPaidInvoices.toString() },
+              { label: 'עמלה (2%)', value: `₪${adminStats.adminCommission.toLocaleString()}` },
             ].map((stat, i) => (
-              <div key={i} className="bg-white/70 backdrop-blur rounded-2xl p-4 border border-white/50 shadow-sm">
-                <p className="text-[#8a8a8a] text-xs mb-1">{stat.label}</p>
-                <p className={`text-xl font-bold ${stat.color}`}>{stat.value}</p>
+              <div key={i} className="bg-white rounded-2xl p-4" style={{ boxShadow: goldShadowLight }}>
+                <p className="text-[#8B6F3A] text-xs mb-1">{stat.label}</p>
+                <p className="text-[#4A3A1F] text-xl font-medium">{stat.value}</p>
               </div>
             ))}
           </motion.div>
         )}
 
-        {/* Balance + Progress combined row */}
-        {!isAdmin && (
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.15 }}
-            className="mb-4"
-          >
-            <div className="bg-white/70 backdrop-blur rounded-2xl p-3.5 border border-white/50 shadow-sm">
-              {/* Balance row */}
-              <div className="flex items-center justify-between mb-2.5">
-                <div className="flex items-center gap-4">
-                  <div>
-                    <p className="text-[#8a8a8a] text-[10px]">נקודות זמינות</p>
-                    <p className="text-xl font-bold text-[#2d5a3d]">
-                      {isLoading ? '...' : (balance?.points || 0).toLocaleString()}
-                    </p>
-                  </div>
-                  {!isSupplier && (
-                    <div className="border-r border-[#e5ddd5] pr-4">
-                      <p className="text-[#8a8a8a] text-[10px]">יתרת מזומן</p>
-                      <p className="text-xl font-bold text-[#2d5a3d]">
-                        ₪{isLoading ? '...' : (balance?.cash || 0).toLocaleString()}
-                      </p>
-                    </div>
-                  )}
-                </div>
-                <span className="text-[10px] text-[#8a8a8a]">{pointsToNextRank.toLocaleString()} לדרגה הבאה</span>
-              </div>
-              {/* Progress bar */}
-              <div className="w-full h-2 bg-[#e5ddd5] rounded-full overflow-hidden">
-                <motion.div
-                  initial={{ width: 0 }}
-                  animate={{ width: `${progressPercent}%` }}
-                  transition={{ duration: 1, ease: 'easeOut' }}
-                  className="h-full bg-gradient-to-r from-[#2d5a3d] to-[#4a8c5c] rounded-full"
-                />
-              </div>
-            </div>
-          </motion.div>
-        )}
 
-        {/* Quick Actions */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.25 }}
-          className="mb-5"
-        >
-          <div className="bg-white/70 backdrop-blur rounded-3xl p-5 border border-white/50 shadow-sm">
-            <h2 className="text-lg font-bold text-[#2d2d2d] mb-5 flex items-center justify-center gap-2">
-              <Sparkles size={18} className="text-[#2d5a3d]" />
-              פעולות מהירות
-            </h2>
+        {/* ── Quick Actions Title ── */}
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }} className="flex items-center justify-center gap-2 my-4">
+          <span className="text-[#C9A961] text-sm">&#10022;</span>
+          <span className="text-[#4A3A1F] text-sm font-medium">פעולות מהירות</span>
+          <span className="text-[#C9A961] text-sm">&#10022;</span>
+        </motion.div>
 
-            {/* Circular Category Icons */}
-            <div
-              className="flex gap-4 md:gap-3 py-2 px-2 overflow-x-auto md:overflow-visible md:justify-center"
-              style={{ scrollbarWidth: 'none', msOverflowStyle: 'none', WebkitOverflowScrolling: 'touch' }}
-            >
-              {quickActionCategories.map((category) => {
-                const IconComponent = category.icon;
-                const isActive = activeCategory === category.id;
-
-                return (
-                  <motion.button
-                    key={category.id}
-                    onClick={() => setActiveCategory(isActive ? null : category.id)}
-                    whileTap={{ scale: 0.95 }}
-                    className="flex flex-col items-center gap-3 min-w-[72px] md:min-w-[76px] flex-shrink-0"
+        {/* ── QuickActionsNav ── */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }} className="mb-5">
+          <div className="flex justify-around mb-4">
+            {quickActionCategories.slice(0, 4).map((category) => {
+              const IconComponent = category.icon;
+              const isActive = activeCategory === category.id;
+              return (
+                <button key={category.id} onClick={() => setActiveCategory(isActive ? null : category.id)} className="flex flex-col items-center gap-2">
+                  <div
+                    className={`w-13 h-13 rounded-full flex items-center justify-center border transition-all duration-300 ${
+                      isActive ? 'border-[#C9A961] scale-110' : 'border-[#C9A961]/50 hover:border-[#C9A961]'
+                    }`}
+                    style={{ width: 52, height: 52, background: isActive ? metalGradient : 'linear-gradient(180deg, #FFFFFF, #F2EAD8)', boxShadow: isActive ? '0 4px 16px rgba(201,169,97,0.35)' : goldShadowLight }}
                   >
-                    <div
-                      className={`
-                        w-20 h-20 md:w-20 md:h-20 rounded-full flex items-center justify-center
-                        transition-all duration-300 border-2
-                        ${isActive
-                          ? `${category.color} border-white/30 shadow-lg scale-110`
-                          : 'bg-[#e5ddd5]/50 border-[#d5cdc5] hover:bg-[#e5ddd5]'
-                        }
-                      `}
-                    >
-                      <IconComponent
-                        size={32}
-                        className={`transition-colors duration-200 ${isActive ? 'text-white' : category.iconColor}`}
-                      />
-                    </div>
-                    <span className={`text-xs font-medium text-center transition-colors duration-200 ${isActive ? 'text-[#2d2d2d]' : 'text-[#8a8a8a]'}`}>
-                      {category.label}
-                    </span>
-                  </motion.button>
-                );
-              })}
-            </div>
+                    <IconComponent size={22} className={isActive ? 'text-white' : 'text-[#C9A961]'} strokeWidth={1.6} />
+                  </div>
+                  <span className="text-[9px] text-[#4A3A1F]">{category.label}</span>
+                </button>
+              );
+            })}
+          </div>
 
-            {/* Expanded Sub-Items */}
-            <AnimatePresence>
-              {activeCategory && (
-                <motion.div
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: 'auto' }}
-                  exit={{ opacity: 0, height: 0 }}
-                  transition={{ duration: 0.3 }}
-                  className="mt-5 pt-5 border-t border-[#e5ddd5] overflow-hidden"
-                >
-                  {/* Suppliers Grid */}
+          {/* Expanded Sub-Items */}
+          <AnimatePresence>
+            {activeCategory && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.3 }}
+                className="overflow-hidden"
+              >
+                <div className="bg-white rounded-2xl p-4 border border-[#F2EAD8]" style={{ boxShadow: goldShadowLight }}>
                   {activeCategory === 'suppliers' ? (
                     <div>
-                      <h3 className="text-base font-semibold text-[#2d2d2d] mb-3">כל הספקים במערכת</h3>
+                      <h3 className="text-sm font-medium text-[#4A3A1F] mb-3">כל הספקים במערכת</h3>
                       {suppliersLoading ? (
                         <div className="grid grid-cols-2 gap-3">
                           {[...Array(4)].map((_, i) => (
-                            <div key={i} className="bg-[#e5ddd5]/40 rounded-2xl overflow-hidden animate-pulse">
-                              <div className="aspect-[4/3] bg-[#d5cdc5]/50" />
-                              <div className="p-2.5">
-                                <div className="h-3.5 w-20 bg-[#d5cdc5]/50 rounded mb-1.5" />
-                                <div className="h-3 w-14 bg-[#d5cdc5]/30 rounded" />
-                              </div>
+                            <div key={i} className="bg-[#F2EAD8]/40 rounded-xl overflow-hidden animate-pulse">
+                              <div className="aspect-[4/3] bg-[#F2EAD8]" />
+                              <div className="p-2"><div className="h-3 w-16 bg-[#F2EAD8] rounded" /></div>
                             </div>
                           ))}
                         </div>
@@ -479,35 +408,17 @@ export default function WalletPage() {
                           {allSuppliers.data.map((supplier: any, index: number) => {
                             const coverImage = supplier.businessImages?.[0] || supplier.profileImage || 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&q=80';
                             return (
-                              <motion.div
-                                key={supplier.id}
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: index * 0.05 }}
-                              >
-                                <Link
-                                  href={`/suppliers/${supplier.id}`}
-                                  className="block bg-[#e5ddd5]/40 rounded-2xl overflow-hidden border border-[#d5cdc5]/50 hover:border-[#2d5a3d]/30 transition-all group"
-                                >
+                              <motion.div key={supplier.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.05 }}>
+                                <Link href={`/suppliers/${supplier.id}`} className="block rounded-xl overflow-hidden border border-[#F2EAD8] hover:border-[#C9A961]/30 transition-all group">
                                   <div className="relative aspect-[4/3]">
-                                    <Image
-                                      src={coverImage}
-                                      alt={supplier.companyName || ''}
-                                      fill
-                                      className="object-cover group-hover:scale-105 transition-transform duration-500"
-                                      unoptimized={coverImage.includes('localhost')}
-                                    />
+                                    <Image src={coverImage} alt={supplier.companyName || ''} fill className="object-cover group-hover:scale-105 transition-transform duration-500" unoptimized={coverImage.includes('localhost')} />
                                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                                    <div className="absolute bottom-0 left-0 right-0 p-2.5">
-                                      <h3 className="text-white font-bold text-xs tracking-wide uppercase">{supplier.companyName}</h3>
+                                    <div className="absolute bottom-0 left-0 right-0 p-2">
+                                      <h3 className="text-white font-medium text-xs">{supplier.companyName}</h3>
                                     </div>
                                   </div>
-                                  <div className="p-2.5">
-                                    <p className="text-[#8a8a8a] text-[10px] line-clamp-2">{supplier.description || 'לחץ לצפייה בפרופיל'}</p>
-                                    <div className="mt-1.5 flex items-center justify-between">
-                                      <span className="text-[#2d5a3d] text-[10px] font-medium">צפה בפרופיל</span>
-                                      <ArrowLeft size={12} className="text-[#2d5a3d]" />
-                                    </div>
+                                  <div className="p-2">
+                                    <p className="text-[#8B6F3A] text-[10px] line-clamp-1">{supplier.description || 'צפה בפרופיל'}</p>
                                   </div>
                                 </Link>
                               </motion.div>
@@ -515,151 +426,104 @@ export default function WalletPage() {
                           })}
                         </div>
                       ) : (
-                        <div className="py-8 text-center">
-                          <Building2 size={32} className="mx-auto text-[#8a8a8a] mb-2" />
-                          <p className="text-[#8a8a8a] text-sm">אין ספקים במערכת</p>
+                        <div className="py-6 text-center">
+                          <Building2 size={28} className="mx-auto text-[#C9A961] mb-2" />
+                          <p className="text-[#8B6F3A] text-sm">אין ספקים במערכת</p>
                         </div>
                       )}
                     </div>
                   ) : (
-                    /* Other Category Items */
-                    quickActionCategories
-                      .filter(cat => cat.id === activeCategory)
-                      .map(category => (
-                        <div key={category.id} className="grid grid-cols-2 gap-3">
-                          {category.items.map((item, index) => {
-                            const ItemIcon = item.icon;
-                            return (
-                              <motion.div
-                                key={item.href}
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: index * 0.05 }}
-                              >
-                                <Link
-                                  href={item.href}
-                                  className="flex flex-col items-center gap-2 p-4 rounded-xl bg-[#e5ddd5]/40 border border-[#d5cdc5]/50 hover:bg-[#e5ddd5]/70 transition-all duration-200 group"
-                                >
-                                  <div className="w-10 h-10 rounded-full flex items-center justify-center bg-white/60 group-hover:bg-white/80 transition-colors">
-                                    <ItemIcon size={20} className={category.iconColor} />
-                                  </div>
-                                  <span className="text-xs font-medium text-[#2d2d2d] text-center group-hover:text-[#2d5a3d] transition-colors">
-                                    {item.label}
-                                  </span>
-                                </Link>
-                              </motion.div>
-                            );
-                          })}
-                        </div>
-                      ))
+                    quickActionCategories.filter(cat => cat.id === activeCategory).map(category => (
+                      <div key={category.id} className="grid grid-cols-2 gap-3">
+                        {category.items.map((item, index) => {
+                          const ItemIcon = item.icon;
+                          return (
+                            <motion.div key={item.href} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.05 }}>
+                              <Link href={item.href} className="flex flex-col items-center gap-2 p-3 rounded-xl border border-[#F2EAD8] hover:border-[#C9A961]/30 transition-all group">
+                                <div className="w-9 h-9 rounded-full flex items-center justify-center" style={{ background: 'linear-gradient(180deg, #FFFFFF, #F2EAD8)' }}>
+                                  <ItemIcon size={18} className="text-[#C9A961]" />
+                                </div>
+                                <span className="text-[10px] font-medium text-[#4A3A1F] text-center">{item.label}</span>
+                              </Link>
+                            </motion.div>
+                          );
+                        })}
+                      </div>
+                    ))
                   )}
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </motion.div>
 
-        {/* Recent Transactions */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.45 }}
-        >
-          <div className="bg-white/70 backdrop-blur rounded-3xl p-5 border border-white/50 shadow-sm">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-bold text-[#2d2d2d] flex items-center gap-2">
-                <Clock size={18} className="text-[#2d5a3d]" />
-                תנועות אחרונות
-              </h2>
-            </div>
-
+        {/* ── Recent Transactions ── */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
+          <div className="bg-white rounded-2xl p-5 border border-[#F2EAD8]" style={{ boxShadow: goldShadowLight }}>
+            <h2 className="text-sm font-medium text-[#4A3A1F] mb-4 flex items-center gap-2">
+              <Clock size={16} className="text-[#C9A961]" />
+              תנועות אחרונות
+            </h2>
             <div className="space-y-1">
               {transactionsLoading ? (
                 [...Array(3)].map((_, i) => (
-                  <div key={i} className="flex items-center gap-3 py-3 border-b border-[#e5ddd5]/50 animate-pulse">
-                    <div className="w-10 h-10 bg-[#e5ddd5] rounded-xl" />
-                    <div className="flex-1">
-                      <div className="h-3.5 w-32 bg-[#e5ddd5] rounded mb-1.5" />
-                      <div className="h-3 w-20 bg-[#e5ddd5]/60 rounded" />
-                    </div>
-                    <div className="h-4 w-16 bg-[#e5ddd5] rounded" />
+                  <div key={i} className="flex items-center gap-3 py-3 border-b border-[#F2EAD8] animate-pulse">
+                    <div className="w-9 h-9 bg-[#F2EAD8] rounded-xl" />
+                    <div className="flex-1"><div className="h-3 w-28 bg-[#F2EAD8] rounded mb-1" /><div className="h-2.5 w-16 bg-[#F2EAD8]/60 rounded" /></div>
+                    <div className="h-3 w-14 bg-[#F2EAD8] rounded" />
                   </div>
                 ))
               ) : transactions && transactions.length > 0 ? (
                 transactions.slice(0, 5).map((tx: any, index: number) => {
                   const isCredit = tx.type === 'CREDIT';
                   const txDate = new Date(tx.createdAt);
-
                   return (
-                    <motion.div
-                      key={tx.id}
-                      initial={{ opacity: 0, x: -10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.05 }}
-                      className="flex items-center gap-3 py-3 border-b border-[#e5ddd5]/50 last:border-0"
-                    >
-                      <div className={`p-2.5 rounded-xl ${isCredit ? 'bg-green-100' : 'bg-red-100'}`}>
-                        {isCredit ? (
-                          <ArrowUpRight className="text-green-600" size={18} />
-                        ) : (
-                          <ArrowDownRight className="text-red-500" size={18} />
-                        )}
+                    <motion.div key={tx.id} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: index * 0.05 }} className="flex items-center gap-3 py-3 border-b border-[#F2EAD8] last:border-0">
+                      <div className={`p-2 rounded-xl ${isCredit ? 'bg-green-50' : 'bg-red-50'}`}>
+                        {isCredit ? <ArrowUpRight className="text-green-600" size={16} /> : <ArrowDownRight className="text-red-500" size={16} />}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-[#2d2d2d] font-medium text-sm truncate">{tx.description || (isCredit ? 'זיכוי' : 'חיוב')}</p>
-                        <p className="text-[#8a8a8a] text-xs">
-                          {txDate.toLocaleDateString('he-IL')} {txDate.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' })}
-                        </p>
+                        <p className="text-[#4A3A1F] font-medium text-sm truncate">{tx.description || (isCredit ? 'זיכוי' : 'חיוב')}</p>
+                        <p className="text-[#8B6F3A]/60 text-xs">{txDate.toLocaleDateString('he-IL')} {txDate.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' })}</p>
                       </div>
-                      <div className={`font-bold text-sm ${isCredit ? 'text-green-600' : 'text-red-500'}`}>
+                      <div className={`font-medium text-sm ${isCredit ? 'text-green-600' : 'text-red-500'}`}>
                         {isCredit ? '+' : '-'}{Math.abs(tx.amount || 0).toLocaleString()} {tx.currency === 'ILS' ? '₪' : 'נק׳'}
                       </div>
                     </motion.div>
                   );
                 })
               ) : (
-                <div className="text-center py-8">
-                  <div className="w-14 h-14 mx-auto mb-3 rounded-full bg-[#e5ddd5]/50 flex items-center justify-center">
-                    <Wallet size={28} className="text-[#8a8a8a]" />
+                <div className="text-center py-6">
+                  <div className="w-12 h-12 mx-auto mb-2 rounded-full bg-[#F2EAD8] flex items-center justify-center">
+                    <Wallet size={24} className="text-[#C9A961]" />
                   </div>
-                  <p className="text-[#8a8a8a] text-sm">אין תנועות להצגה</p>
+                  <p className="text-[#8B6F3A] text-sm">אין תנועות להצגה</p>
                 </div>
               )}
             </div>
           </div>
         </motion.div>
 
-        {/* Magazine Link */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="mt-6"
-        >
-          <div className="bg-white/70 backdrop-blur rounded-3xl p-5 border border-white/50 shadow-sm">
-            <a
-              href="https://stannelmarketplace.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center justify-between group"
-            >
-              <div className="flex items-center gap-4">
-                <div className="w-14 h-14 rounded-2xl bg-[#0f2620] flex items-center justify-center flex-shrink-0 shadow-md">
-                  <span className="text-3xl font-black text-white" style={{ fontFamily: "'Playfair Display', serif" }}>S</span>
+        {/* ── Magazine Link ── */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.45 }} className="mt-4">
+          <div className="bg-white rounded-2xl p-4 border border-[#F2EAD8]" style={{ boxShadow: goldShadowLight }}>
+            <a href="https://stannelmarketplace.com/" target="_blank" rel="noopener noreferrer" className="flex items-center justify-between group">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: metalGradient }}>
+                  <span className="text-2xl font-bold text-white" style={{ fontFamily: "'Playfair Display', serif" }}>S</span>
                 </div>
                 <div>
-                  <h3 className="text-[#1a3a2a] font-extrabold text-xl tracking-tight" style={{ fontFamily: "'Playfair Display', serif" }}>stannel</h3>
-                  <p className="text-[#0d7a5f] text-sm font-semibold">גלו השראה, טרנדים ועיצוב</p>
+                  <h3 className="text-[#4A3A1F] font-bold text-lg tracking-tight" style={{ fontFamily: "'Playfair Display', serif" }}>stannel</h3>
+                  <p className="text-[#C9A961] text-xs font-medium">גלו השראה, טרנדים ועיצוב</p>
                 </div>
               </div>
-              <div className="w-11 h-11 rounded-full bg-[#0f2620] flex items-center justify-center group-hover:scale-110 transition-transform shadow-md">
-                <ArrowUpRight size={22} className="text-emerald-400" />
+              <div className="w-9 h-9 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform" style={{ background: metalGradient }}>
+                <ArrowUpRight size={18} className="text-white" />
               </div>
             </a>
           </div>
         </motion.div>
 
-        {/* Bottom spacing */}
         <div className="h-6" />
       </div>
     </div>
