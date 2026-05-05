@@ -193,9 +193,9 @@ function MagazineCarousel({ metalGradient, goldShadowLight }: { metalGradient: s
             </a>
 
             {/* Desktop: 3 articles */}
-            <div className="hidden sm:grid grid-cols-3 divide-x divide-[#F2EAD8]">
+            <div className="hidden sm:grid grid-cols-3 gap-[5px] bg-white p-[5px]">
               {visible.map((article, i) => (
-                <a key={i} href={article.url} target="_blank" rel="noopener noreferrer" className="group">
+                <a key={i} href={article.url} target="_blank" rel="noopener noreferrer" className="group rounded-xl overflow-hidden">
                   <div className="relative h-44 overflow-hidden">
                     <img src={article.image} alt={article.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
