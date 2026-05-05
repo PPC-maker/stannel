@@ -137,10 +137,10 @@ function MagazineCarousel({ metalGradient, goldShadowLight }: { metalGradient: s
     return () => clearInterval(timer);
   }, []);
 
-  // Show 1 article on mobile, 3 on desktop
+  // Show 1 article on mobile, 2 on desktop
   const getVisibleArticles = useCallback(() => {
     const articles = [];
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < 2; i++) {
       articles.push(magazineArticles[(currentIndex + i) % magazineArticles.length]);
     }
     return articles;
@@ -192,22 +192,22 @@ function MagazineCarousel({ metalGradient, goldShadowLight }: { metalGradient: s
               </div>
             </a>
 
-            {/* Desktop: 3 articles */}
-            <div className="hidden sm:grid grid-cols-3 gap-[5px] bg-white p-[5px]">
+            {/* Desktop: 2 articles - portrait */}
+            <div className="hidden sm:grid grid-cols-2 gap-[5px] bg-white p-[5px]">
               {visible.map((article, i) => (
                 <a key={i} href={article.url} target="_blank" rel="noopener noreferrer" className="group rounded-xl overflow-hidden">
-                  <div className="relative h-44 overflow-hidden">
+                  <div className="relative h-64 overflow-hidden">
                     <img src={article.image} alt={article.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
                     {i === 0 && (
-                      <div className="absolute top-2 left-2 px-2 py-0.5 rounded text-[8px] font-medium text-white/90" style={{ background: metalGradient }}>
+                      <div className="absolute top-3 left-3 px-2 py-0.5 rounded text-[9px] font-medium text-white/90" style={{ background: metalGradient }}>
                         stannel magazine
                       </div>
                     )}
-                  </div>
-                  <div className="p-3">
-                    <h4 className="text-[#4A3A1F] font-semibold text-xs leading-snug mb-1 line-clamp-2 group-hover:text-[#8B6F3A] transition-colors">{article.title}</h4>
-                    <p className="text-[#8B6F3A]/70 text-[10px] line-clamp-2">{article.excerpt}</p>
+                    <div className="absolute bottom-0 left-0 right-0 p-4">
+                      <h4 className="text-white font-bold text-sm leading-snug mb-1 line-clamp-2">{article.title}</h4>
+                      <p className="text-white/70 text-xs line-clamp-2">{article.excerpt}</p>
+                    </div>
                   </div>
                 </a>
               ))}
