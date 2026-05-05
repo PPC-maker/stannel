@@ -3,7 +3,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import ImageWithLoader from '@/components/ui/ImageWithLoader';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import {
   Wallet,
   CreditCard,
@@ -102,6 +102,136 @@ const quickActionCategories = [
     ],
   },
 ];
+
+// Magazine articles from stannelmarketplace.com
+const magazineArticles = [
+  { title: 'בית החווה Farasha | אירוח איטי בין הרי האטלס למרקש', excerpt: 'בית החווה פאראשה ממוקם במרוקו, כ-40 דקות נסיעה משדה התעופה של מרקש', image: 'https://stannelmarketplace.com/wp-content/uploads/2026/04/שער.png', url: 'https://stannelmarketplace.com/%d7%91%d7%99%d7%aa-%d7%94%d7%97%d7%95%d7%95%d7%94-farasha/' },
+  { title: 'המתח העדין שבין קרבה לניכור | לירן ורדיאל', excerpt: 'השפה של לירן ורדיאל אינה מתמסרת להגדרה אחת ברורה', image: 'https://stannelmarketplace.com/wp-content/uploads/2026/04/COVER.jpg', url: 'https://stannelmarketplace.com/%d7%94%d7%9e%d7%aa%d7%97-%d7%94%d7%a2%d7%93%d7%99%d7%9f/' },
+  { title: 'שפה מאופקת מול נוף דרמטי | בית על חוף ספרד', excerpt: 'על מגרש תלול המשקיף אל הים, באזור טויש-מסקראט שבקאלפה', image: 'https://stannelmarketplace.com/wp-content/uploads/2026/04/שער-1.jpg', url: 'https://stannelmarketplace.com/%d7%a9%d7%a4%d7%94-%d7%9e%d7%90%d7%95%d7%a4%d7%a7%d7%aa/' },
+  { title: 'קווים נקיים, בטון חשוף וגרם מדרגות פיסולי', excerpt: 'הבית שתכנן אדריכל ירון אלדד יחד עם הנדסאית האדריכלות נוי סנדגרטן', image: 'https://stannelmarketplace.com/wp-content/uploads/2026/02/אינסטגרם.jpg', url: 'https://stannelmarketplace.com/%d7%a7%d7%95%d7%95%d7%99%d7%9d-%d7%a0%d7%a7%d7%99%d7%99%d7%9d/' },
+  { title: 'מחוברים לאדמה | יקב בוטיק ואורווה מקצועית', excerpt: 'פרויקט שמחבר בין שני חלומות ושני מגרשים צמודים ביקנעם המושבה', image: 'https://stannelmarketplace.com/wp-content/uploads/2026/02/שער-אינסטגרם-כתבה.jpg', url: 'https://stannelmarketplace.com/%d7%9e%d7%97%d7%95%d7%91%d7%a8%d7%99%d7%9d-%d7%9c%d7%90%d7%93%d7%9e%d7%94/' },
+  { title: 'איך מתכננים בית שבו מסות כבדות נדמות כמרחפות', excerpt: 'בית בהרצליה פיתוח, שנבנה עבור משפחה בת שש נפשות על מגרש ששטחו דונם', image: 'https://stannelmarketplace.com/wp-content/uploads/2025/12/Image.jpg', url: 'https://stannelmarketplace.com/%d7%90%d7%99%d7%9a-%d7%9e%d7%aa%d7%9b%d7%a0%d7%a0%d7%99%d7%9d/' },
+  { title: 'ספוטלייט | האדריכלות ההוליסטית של נוימן חיינר', excerpt: 'משרד האדריכלים נוימן-חיינר הוא בין המגוונים והמשפיעים בתחום', image: 'https://stannelmarketplace.com/wp-content/uploads/2026/01/שער-קטן.jpg', url: 'https://stannelmarketplace.com/%d7%a1%d7%a4%d7%95%d7%98%d7%9c%d7%99%d7%99%d7%98/' },
+  { title: 'הפרויקט הסודי בעיר הלבנה | פנטהאוז בבניין לשימור', excerpt: 'שיפוץ מיוחד ומסקרן לדירת פנטהאוז בבניין תל-אביבי לשימור', image: 'https://stannelmarketplace.com/wp-content/uploads/2026/01/שער-כתבה-.jpg', url: 'https://stannelmarketplace.com/2277/' },
+  { title: 'הבית שתל אביב לא ראתה קודם | אסיה פוגשת מזרח־תיכון', excerpt: 'בני זוג ושלושת בניהם המתבגרים רכשו בית ברחוב שקט בצפון תל אביב', image: 'https://stannelmarketplace.com/wp-content/uploads/2025/12/cover-big.jpg', url: 'https://stannelmarketplace.com/%d7%90%d7%a1%d7%99%d7%94-%d7%a4%d7%95%d7%92%d7%a9%d7%aa/' },
+  { title: 'יש לי ספריה בראש על כל לקוח | קרן ליזרוביץ', excerpt: 'בסבלנות, בהקשבה ובמסירות, תופרת אדריכלית קרן ליזרוביץ פרויקט ייחודי', image: 'https://stannelmarketplace.com/wp-content/uploads/2026/03/5-1.jpg', url: 'https://stannelmarketplace.com/%d7%99%d7%a9-%d7%9c%d7%99-%d7%a1%d7%a4%d7%a8%d7%99%d7%94/' },
+  { title: 'בין אייקונים מקומיים לאופק בינלאומי חדש | קימל אשכולות', excerpt: 'משרד האדריכלים קימל אשכולות מציין השנה 40 שנות פעילות', image: 'https://stannelmarketplace.com/wp-content/uploads/2025/12/22.jpg', url: 'https://stannelmarketplace.com/%d7%91%d7%99%d7%9f-%d7%90%d7%99%d7%99%d7%a7%d7%95%d7%a0%d7%99%d7%9d/' },
+  { title: 'הפנינה השחורה – בית עכשווי המאזן בין חומריות, אור וצל', excerpt: 'מכל זווית ובכל מבט, הבית הזה מרשים ומוקפד', image: 'https://stannelmarketplace.com/wp-content/uploads/2025/11/שער.jpg', url: 'https://stannelmarketplace.com/%d7%94%d7%a4%d7%a0%d7%99%d7%a0%d7%94-%d7%94%d7%a9%d7%97%d7%95%d7%a8%d7%94/' },
+  { title: 'בית חלומי בנחלה – משפחה ישראלית פוגשת סטייל איטלקי', excerpt: 'שיפוץ בית במושב במרכז הארץ עבור בני זוג בגיל השלישי', image: 'https://stannelmarketplace.com/wp-content/uploads/2025/09/שער-אורלי.jpg', url: 'https://stannelmarketplace.com/%d7%91%d7%99%d7%aa-%d7%97%d7%9c%d7%95%d7%9e%d7%99/' },
+  { title: 'להוריד הילוך מעל העיר | פנטהאוז בדרום תל אביב', excerpt: 'בדרום תל־אביב, בלב אזור תעשייתי של נגריות, בתי מלאכה וחנויות', image: 'https://stannelmarketplace.com/wp-content/uploads/2026/02/Yael.jpg', url: 'https://stannelmarketplace.com/%d7%9c%d7%94%d7%95%d7%a8%d7%99%d7%93-%d7%94%d7%99%d7%9c%d7%95%d7%9a/' },
+  { title: 'יוצרת העולמות של קפה גן סיפור | שני רינג', excerpt: 'המסעדות של גן סיפור אינן פועלות בתוך המרחב העירוני הרגיל', image: 'https://stannelmarketplace.com/wp-content/uploads/2026/02/שער-שני.jpg', url: 'https://stannelmarketplace.com/2574/' },
+  { title: 'לחיות את העיר בקצב אחר | דירת לופט בלב תל אביב', excerpt: 'מגדל תל־אביבי גבוה או שכונה ותיקה ובעלת אופי?', image: 'https://stannelmarketplace.com/wp-content/uploads/2026/01/שער-קטן-1.jpg', url: 'https://stannelmarketplace.com/%d7%9c%d7%97%d7%99%d7%95%d7%aa-%d7%90%d7%aa-%d7%94%d7%a2%d7%99%d7%a8/' },
+  { title: 'בין קצב גלובלי לשקט מקומי | בית על חופי אשקלון', excerpt: 'על רצועת החוף של אשקלון שוכן פרויקט מגורים יוקרתי בשטח של 560 מ״ר', image: 'https://stannelmarketplace.com/wp-content/uploads/2026/01/שער-כתבה-1.jpg', url: 'https://stannelmarketplace.com/%d7%91%d7%99%d7%9f-%d7%a7%d7%a6%d7%91/' },
+  { title: 'מינימליזם יוקרתי בהרמונייה עם הטבע', excerpt: 'ליעד יוסף, מעצב פנים שכבר ביסס את מעמדו גם ככוכב רשת ומשפיען', image: 'https://stannelmarketplace.com/wp-content/uploads/2025/09/15.png', url: 'https://stannelmarketplace.com/%d7%9e%d7%99%d7%a0%d7%99%d7%9e%d7%9c%d7%99%d7%96%d7%9d/' },
+  { title: 'איך נראה "חלומודרני" בבית במזכרת בתיה', excerpt: 'אדריכל רז קשלס, העוסק בבנייה פרטית לצד תכנון מסחרי ומשרדים', image: 'https://stannelmarketplace.com/wp-content/uploads/2025/09/13.png', url: 'https://stannelmarketplace.com/%d7%90%d7%99%d7%9a-%d7%a0%d7%a8%d7%90%d7%94/' },
+  { title: 'אדריכלות טוטאלית בסביון – חלל, חומר וטבע', excerpt: 'לתפיסתו של אדריכל סטפן מטי, המבנה הוא שיח בין האדם לסביבתו', image: 'https://stannelmarketplace.com/wp-content/uploads/2025/09/14.png', url: 'https://stannelmarketplace.com/stefan-matty-architect/' },
+];
+
+function MagazineCarousel({ metalGradient, goldShadowLight }: { metalGradient: string; goldShadowLight: string }) {
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % magazineArticles.length);
+    }, 3000);
+    return () => clearInterval(timer);
+  }, []);
+
+  // Show 1 article on mobile, 3 on desktop
+  const getVisibleArticles = useCallback(() => {
+    const articles = [];
+    for (let i = 0; i < 3; i++) {
+      articles.push(magazineArticles[(currentIndex + i) % magazineArticles.length]);
+    }
+    return articles;
+  }, [currentIndex]);
+
+  const visible = getVisibleArticles();
+
+  return (
+    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.45 }} className="mt-4">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-3 px-1">
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: metalGradient }}>
+            <span className="text-sm font-bold text-white" style={{ fontFamily: "'Playfair Display', serif" }}>S</span>
+          </div>
+          <div>
+            <h3 className="text-[#4A3A1F] font-bold text-sm tracking-tight" style={{ fontFamily: "'Playfair Display', serif" }}>stannel magazine</h3>
+            <p className="text-[#C9A961] text-[10px]">השראה, טרנדים ועיצוב</p>
+          </div>
+        </div>
+        <a href="https://stannelmarketplace.com/" target="_blank" rel="noopener noreferrer" className="text-[#C9A961] text-xs hover:text-[#8B6F3A] transition-colors flex items-center gap-1">
+          כל הכתבות
+          <ChevronLeft size={14} />
+        </a>
+      </div>
+
+      {/* Carousel */}
+      <div className="overflow-hidden rounded-2xl bg-white border border-[#F2EAD8]" style={{ boxShadow: goldShadowLight }}>
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentIndex}
+            initial={{ opacity: 0, x: -30 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 30 }}
+            transition={{ duration: 0.4 }}
+          >
+            {/* Mobile: 1 article */}
+            <a href={visible[0].url} target="_blank" rel="noopener noreferrer" className="block sm:hidden group">
+              <div className="relative h-48 overflow-hidden">
+                <img src={visible[0].image} alt={visible[0].title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                <div className="absolute top-3 left-3 px-2 py-0.5 rounded text-[9px] font-medium text-white/90" style={{ background: metalGradient }}>
+                  stannel magazine
+                </div>
+                <div className="absolute bottom-0 left-0 right-0 p-4">
+                  <h4 className="text-white font-bold text-sm leading-snug mb-1">{visible[0].title}</h4>
+                  <p className="text-white/70 text-xs line-clamp-2">{visible[0].excerpt}</p>
+                </div>
+              </div>
+            </a>
+
+            {/* Desktop: 3 articles */}
+            <div className="hidden sm:grid grid-cols-3 divide-x divide-[#F2EAD8]">
+              {visible.map((article, i) => (
+                <a key={i} href={article.url} target="_blank" rel="noopener noreferrer" className="group">
+                  <div className="relative h-44 overflow-hidden">
+                    <img src={article.image} alt={article.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                    {i === 0 && (
+                      <div className="absolute top-2 left-2 px-2 py-0.5 rounded text-[8px] font-medium text-white/90" style={{ background: metalGradient }}>
+                        stannel magazine
+                      </div>
+                    )}
+                  </div>
+                  <div className="p-3">
+                    <h4 className="text-[#4A3A1F] font-semibold text-xs leading-snug mb-1 line-clamp-2 group-hover:text-[#8B6F3A] transition-colors">{article.title}</h4>
+                    <p className="text-[#8B6F3A]/70 text-[10px] line-clamp-2">{article.excerpt}</p>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </motion.div>
+        </AnimatePresence>
+
+        {/* Dots indicator */}
+        <div className="flex justify-center gap-1 pb-3 pt-1">
+          {magazineArticles.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setCurrentIndex(i)}
+              className={`h-1.5 rounded-full transition-all duration-300 ${
+                i === currentIndex ? 'w-5' : 'w-1.5'
+              }`}
+              style={{ background: i === currentIndex ? metalGradient : '#E2D5B8' }}
+            />
+          ))}
+        </div>
+      </div>
+    </motion.div>
+  );
+}
 
 export default function WalletPage() {
   const { isReady } = useAuthGuard();
@@ -337,15 +467,18 @@ export default function WalletPage() {
         {isAdmin && adminStats && (
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="grid grid-cols-2 gap-3 mb-4">
             {[
-              { label: 'מחזור חשבוניות', value: `₪${adminStats.totalRevenue.toLocaleString()}` },
-              { label: 'נקודות אדריכלים', value: `${adminStats.architectPoints.toLocaleString()} נק׳` },
-              { label: 'חשבוניות ששולמו', value: adminStats.totalPaidInvoices.toString() },
-              { label: 'עמלה (2%)', value: `₪${adminStats.adminCommission.toLocaleString()}` },
+              { label: 'מחזור חשבוניות', value: `₪${adminStats.totalRevenue.toLocaleString()}`, href: '/admin?tab=invoices' },
+              { label: 'נקודות אדריכלים', value: `${adminStats.architectPoints.toLocaleString()} נק׳`, href: '/admin?tab=users' },
+              { label: 'חשבוניות ששולמו', value: adminStats.totalPaidInvoices.toString(), href: '/invoices?filter=paid' },
+              { label: 'עמלה (2%)', value: `₪${adminStats.adminCommission.toLocaleString()}`, href: '/admin?tab=invoices' },
             ].map((stat, i) => (
-              <div key={i} className="bg-white rounded-2xl p-4" style={{ boxShadow: goldShadowLight }}>
-                <p className="text-[#8B6F3A] text-xs mb-1">{stat.label}</p>
+              <Link key={i} href={stat.href} className="bg-white rounded-2xl p-4 group hover:border-[#C9A961]/30 border border-transparent transition-all" style={{ boxShadow: goldShadowLight }}>
+                <div className="flex items-center justify-between mb-1">
+                  <p className="text-[#8B6F3A] text-xs">{stat.label}</p>
+                  <ChevronLeft size={14} className="text-[#C9A961] opacity-0 group-hover:opacity-100 transition-opacity" />
+                </div>
                 <p className="text-[#4A3A1F] text-xl font-medium">{stat.value}</p>
-              </div>
+              </Link>
             ))}
           </motion.div>
         )}
@@ -504,25 +637,8 @@ export default function WalletPage() {
           </div>
         </motion.div>
 
-        {/* ── Magazine Link ── */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.45 }} className="mt-4">
-          <div className="bg-white rounded-2xl p-4 border border-[#F2EAD8]" style={{ boxShadow: goldShadowLight }}>
-            <a href="https://stannelmarketplace.com/" target="_blank" rel="noopener noreferrer" className="flex items-center justify-between group">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ background: metalGradient }}>
-                  <span className="text-2xl font-bold text-white" style={{ fontFamily: "'Playfair Display', serif" }}>S</span>
-                </div>
-                <div>
-                  <h3 className="text-[#4A3A1F] font-bold text-lg tracking-tight" style={{ fontFamily: "'Playfair Display', serif" }}>stannel</h3>
-                  <p className="text-[#C9A961] text-xs font-medium">גלו השראה, טרנדים ועיצוב</p>
-                </div>
-              </div>
-              <div className="w-9 h-9 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform" style={{ background: metalGradient }}>
-                <ArrowUpRight size={18} className="text-white" />
-              </div>
-            </a>
-          </div>
-        </motion.div>
+        {/* ── Magazine Carousel ── */}
+        <MagazineCarousel metalGradient={metalGradient} goldShadowLight={goldShadowLight} />
 
         <div className="h-6" />
       </div>

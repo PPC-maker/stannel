@@ -17,9 +17,9 @@ interface GmailConfig {
 }
 
 const getConfig = (): GmailConfig => ({
-  user: process.env.GMAIL_USER || 'ppc@newpost.co.il',
+  user: process.env.GMAIL_USER || 'orenshp77@gmail.com',
   appPassword: process.env.GMAIL_APP_PASSWORD || '',
-  fromName: process.env.EMAIL_FROM_NAME || 'STANNEL',
+  fromName: process.env.EMAIL_FROM_NAME || 'STANNEL - ניטור',
 });
 
 // Create reusable transporter

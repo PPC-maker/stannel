@@ -246,7 +246,7 @@ export default function SupplierDetailPage() {
             alt="Stannel"
             width={281}
             height={84}
-            className="h-20 w-auto object-contain"
+            className="h-12 w-auto object-contain"
           />
           <div className="w-10" />
         </div>
@@ -290,54 +290,55 @@ export default function SupplierDetailPage() {
             <h2 className="text-2xl font-bold text-white mb-2 tracking-wide">
               {supplier.companyName}
             </h2>
-            <p className="text-white/60 text-sm leading-relaxed">
+            <p className="text-white/70 text-base leading-relaxed">
               {supplier.description || 'מוצרים איכותיים המשלבים עיצוב ואלגנטיות.'}
             </p>
           </div>
 
-          {/* Section Header */}
-          <div className="px-6 pb-2">
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-medium text-white">מידע</span>
-              <span className="text-white/40 text-xs">פרויקטים &gt;</span>
-            </div>
-          </div>
-
-          {/* Contact Info */}
-          <div className="px-6 pb-6">
-            <div className="space-y-3">
+          {/* Contact Info - Prominent */}
+          <div className="px-6 pb-4">
+            <div className="grid grid-cols-2 gap-2">
               {supplier.phone && (
-                <a href={`tel:${supplier.phone}`} className="flex items-center gap-3 text-white/70 hover:text-white transition-colors">
-                  <span dir="ltr" className="text-sm">{supplier.phone}</span>
-                  <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center mr-auto">
-                    <Phone size={16} className="text-white/60" />
+                <a href={`tel:${supplier.phone}`} className="flex items-center gap-3 p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors">
+                  <div className="w-9 h-9 rounded-full bg-blue-500/20 flex items-center justify-center flex-shrink-0">
+                    <Phone size={16} className="text-blue-400" />
+                  </div>
+                  <div>
+                    <p className="text-white/50 text-[10px]">טלפון</p>
+                    <p dir="ltr" className="text-white text-sm font-medium">{supplier.phone}</p>
                   </div>
                 </a>
               )}
               {supplier.user?.email && (
-                <a href={`mailto:${supplier.user.email}`} className="flex items-center gap-3 text-white/70 hover:text-white transition-colors">
-                  <span className="text-sm">{supplier.user.email}</span>
-                  <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center mr-auto">
-                    <Mail size={16} className="text-white/60" />
+                <a href={`mailto:${supplier.user.email}`} className="flex items-center gap-3 p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors">
+                  <div className="w-9 h-9 rounded-full bg-purple-500/20 flex items-center justify-center flex-shrink-0">
+                    <Mail size={16} className="text-purple-400" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-white/50 text-[10px]">מייל</p>
+                    <p className="text-white text-sm font-medium truncate">{supplier.user.email}</p>
                   </div>
                 </a>
               )}
               {supplier.address && (
-                <div className="flex items-center gap-3 text-white/70">
-                  <span className="text-sm">{supplier.address}</span>
-                  <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center mr-auto">
-                    <MapPin size={16} className="text-white/60" />
+                <a href={`https://maps.google.com/?q=${encodeURIComponent(supplier.address)}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors">
+                  <div className="w-9 h-9 rounded-full bg-red-500/20 flex items-center justify-center flex-shrink-0">
+                    <MapPin size={16} className="text-red-400" />
                   </div>
-                </div>
+                  <div className="min-w-0">
+                    <p className="text-white/50 text-[10px]">כתובת</p>
+                    <p className="text-white text-sm font-medium truncate">{supplier.address}</p>
+                  </div>
+                </a>
               )}
               {supplier.website && (
-                <a href={supplier.website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-white/70 hover:text-white transition-colors">
-                  <span className="text-sm flex items-center gap-1">
-                    אתר אינטרנט
-                    <ExternalLink size={12} />
-                  </span>
-                  <div className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center mr-auto">
-                    <Globe size={16} className="text-white/60" />
+                <a href={supplier.website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors">
+                  <div className="w-9 h-9 rounded-full bg-emerald-500/20 flex items-center justify-center flex-shrink-0">
+                    <Globe size={16} className="text-emerald-400" />
+                  </div>
+                  <div>
+                    <p className="text-white/50 text-[10px]">אתר</p>
+                    <p className="text-white text-sm font-medium flex items-center gap-1">אתר אינטרנט <ExternalLink size={10} /></p>
                   </div>
                 </a>
               )}
@@ -358,7 +359,7 @@ export default function SupplierDetailPage() {
             גלריה
             <span className="text-white/40 text-xs">{galleryImages.length} תמונות</span>
           </h3>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             {galleryImages.map((img: string, index: number) => (
               <motion.button
                 key={index}
@@ -366,7 +367,7 @@ export default function SupplierDetailPage() {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.1 + index * 0.05 }}
                 onClick={() => openLightbox(index)}
-                className="relative aspect-[4/3] rounded-xl overflow-hidden group bg-white/5"
+                className="relative aspect-[16/10] rounded-xl overflow-hidden group bg-white/5"
               >
                 <ImageWithLoader
                   src={img}
@@ -437,9 +438,10 @@ export default function SupplierDetailPage() {
           {supplier.phone && (
             <a
               href={`tel:${supplier.phone}`}
-              className="w-14 h-14 bg-blue-500 hover:bg-blue-600 text-white rounded-2xl transition-colors flex items-center justify-center shadow-lg shadow-blue-900/30"
+              className="px-4 h-14 bg-blue-500 hover:bg-blue-600 text-white rounded-2xl transition-colors flex items-center justify-center gap-2 shadow-lg shadow-blue-900/30"
             >
-              <Phone size={22} />
+              <Phone size={20} />
+              <span className="text-sm font-semibold">חייג מהיר</span>
             </a>
           )}
 

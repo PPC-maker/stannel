@@ -124,11 +124,11 @@ export default function Navbar() {
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
       isDarkPage
         ? isScrolled
-          ? 'bg-black/40 backdrop-blur-xl border-b border-white/10 shadow-lg shadow-black/20'
+          ? 'bg-[#4A3A1F]/40 backdrop-blur-xl border-b border-white/10 shadow-lg shadow-black/20'
           : 'bg-transparent'
-        : 'bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100'
+        : 'bg-[#FEFCF7]/95 backdrop-blur-md shadow-sm border-b border-[#C9A961]/20'
     }`} style={{ paddingTop: 'env(safe-area-inset-top, 0px)', WebkitBackdropFilter: isScrolled || !isDarkPage ? 'blur(16px)' : undefined }}>
-      <div className={`w-full px-4 sm:px-6 lg:px-8 flex items-center justify-center relative ${isDarkPage ? 'h-16 sm:h-20' : 'h-14 sm:h-16'}`}>
+      <div className={`w-full px-4 sm:px-6 lg:px-8 flex items-center justify-center relative ${isDarkPage ? 'h-14 sm:h-16' : 'h-12 sm:h-14'}`}>
         {/* Back/Forward Navigation - Left side (RTL: appears on left) */}
         {pathname !== '/' && pathname !== '/login' && pathname !== '/register' && (
         <div className="absolute left-6 top-1/2 -translate-y-1/2 flex items-center gap-1" suppressHydrationWarning>
@@ -171,7 +171,7 @@ export default function Navbar() {
             <img
               src={isLightPage ? "/logo_black1.png" : "/logo1.png"}
               alt="Stannel"
-              className={isDarkPage ? "h-14 sm:h-20 w-auto" : "h-11 sm:h-14 w-auto"}
+              className={isDarkPage ? "h-10 sm:h-14 w-auto" : "h-9 sm:h-11 w-auto"}
             />
           )}
         </Link>
@@ -211,7 +211,7 @@ export default function Navbar() {
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: 10, scale: 0.95 }}
                   transition={{ duration: 0.2 }}
-                  className="absolute right-0 mt-2 w-56 bg-white border border-gray-100 rounded-2xl p-2 shadow-xl z-50 max-h-[calc(75vh-120px)] overflow-y-auto"
+                  className="absolute right-0 mt-2 w-56 bg-white border border-[#C9A961]/30 rounded-2xl p-2 shadow-xl z-50 max-h-[calc(75vh-120px)] overflow-y-auto"
                 >
                   {/* User Info Header */}
                   {user && (
@@ -227,9 +227,9 @@ export default function Navbar() {
                       key={link.href}
                       href={link.href}
                       onClick={() => setIsProfileOpen(false)}
-                      className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-50 text-gray-700 hover:text-[#0066CC] transition-colors"
+                      className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-[#FDF6E3] text-gray-700 hover:text-[#8B6F3A] transition-colors"
                     >
-                      <link.icon size={18} className="text-gray-400" />
+                      <link.icon size={18} className="text-[#C9A961]" />
                       <span className="font-medium">{link.label}</span>
                     </Link>
                   ))}
@@ -245,9 +245,9 @@ export default function Navbar() {
                             setIsProfileOpen(false);
                             if (link.href === '/notifications') setUnreadCount(0);
                           }}
-                          className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-50 text-gray-700 hover:text-[#0066CC] transition-colors relative"
+                          className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-[#FDF6E3] text-gray-700 hover:text-[#8B6F3A] transition-colors relative"
                         >
-                          <link.icon size={18} className="text-gray-400" />
+                          <link.icon size={18} className="text-[#C9A961]" />
                           <span className="font-medium">{link.label}</span>
                           {link.href === '/notifications' && unreadCount > 0 && (
                             <span className="bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center animate-pulse">
@@ -260,35 +260,35 @@ export default function Navbar() {
                       <Link
                         href="/profile"
                         onClick={() => setIsProfileOpen(false)}
-                        className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-50 text-gray-700 hover:text-[#0066CC] transition-colors"
+                        className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-[#FDF6E3] text-gray-700 hover:text-[#8B6F3A] transition-colors"
                       >
-                        <User size={18} className="text-gray-400" />
+                        <User size={18} className="text-[#C9A961]" />
                         <span className="font-medium">הפרופיל שלי</span>
                       </Link>
                       <Link
                         href="/settings"
                         onClick={() => setIsProfileOpen(false)}
-                        className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-50 text-gray-700 hover:text-[#0066CC] transition-colors"
+                        className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-[#FDF6E3] text-gray-700 hover:text-[#8B6F3A] transition-colors"
                       >
-                        <Settings size={18} className="text-gray-400" />
+                        <Settings size={18} className="text-[#C9A961]" />
                         <span className="font-medium">הגדרות</span>
                       </Link>
                       {user.role === 'ADMIN' && (
                         <Link
                           href="/admin"
                           onClick={() => setIsProfileOpen(false)}
-                          className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-blue-50 text-[#0066CC] transition-colors"
+                          className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-[#FDF6E3] text-[#8B6F3A] transition-colors"
                         >
-                          <Shield size={18} className="text-[#0066CC]" />
+                          <Shield size={18} className="text-[#C9A961]" />
                           <span className="font-semibold">פאנל ניהול</span>
                         </Link>
                       )}
                       <Link
                         href="/terms"
                         onClick={() => setIsProfileOpen(false)}
-                        className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-50 text-gray-700 hover:text-[#0066CC] transition-colors"
+                        className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-[#FDF6E3] text-gray-700 hover:text-[#8B6F3A] transition-colors"
                       >
-                        <FileText size={18} className="text-gray-400" />
+                        <FileText size={18} className="text-[#C9A961]" />
                         <span className="font-medium">תקנון ותנאי שימוש</span>
                       </Link>
                       <hr className="my-2 border-gray-100" />
@@ -320,7 +320,7 @@ export default function Navbar() {
                         }}
                         className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-red-50 text-gray-700 hover:text-red-600 transition-colors w-full"
                       >
-                        <LogOut size={18} className="text-gray-400" />
+                        <LogOut size={18} className="text-[#C9A961]" />
                         <span className="font-medium">התנתק</span>
                       </button>
                     </>
@@ -330,7 +330,7 @@ export default function Navbar() {
                       <Link
                         href="/login"
                         onClick={() => setIsProfileOpen(false)}
-                        className="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-[#0066CC] text-white hover:bg-[#0055AA] transition-colors mt-2"
+                        className="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-[#8B6F3A] text-white hover:bg-[#6B5530] transition-colors mt-2"
                       >
                         <LogIn size={18} />
                         <span className="font-semibold">התחברות למערכת</span>

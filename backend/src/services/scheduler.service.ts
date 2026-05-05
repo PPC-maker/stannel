@@ -18,16 +18,18 @@ interface ScheduledTask {
 const tasks: Map<string, ScheduledTask> = new Map();
 
 // Calculate next run time based on cron-like schedule
-function getNextSunday9AM(): Date {
+function getNextMonday9AM(): Date {
   const now = new Date();
-  const daysUntilSunday = (7 - now.getDay()) % 7 || 7;
-  const nextSunday = new Date(now);
-  nextSunday.setDate(now.getDate() + daysUntilSunday);
-  nextSunday.setHours(9, 0, 0, 0);
-  if (nextSunday <= now) {
-    nextSunday.setDate(nextSunday.getDate() + 7);
+  // Monday = 1
+  const currentDay = now.getDay();
+  const daysUntilMonday = (1 - currentDay + 7) % 7 || 7;
+  const nextMonday = new Date(now);
+  nextMonday.setDate(now.getDate() + daysUntilMonday);
+  nextMonday.setHours(9, 0, 0, 0);
+  if (nextMonday <= now) {
+    nextMonday.setDate(nextMonday.getDate() + 7);
   }
-  return nextSunday;
+  return nextMonday;
 }
 
 // Calculate next 10:00 AM (daily)
@@ -72,7 +74,7 @@ function getNext2AM(): Date {
 function getNextRunTime(name: string): Date {
   switch (name) {
     case 'weekly-health-report':
-      return getNextSunday9AM();
+      return getNextMonday9AM();
     case 'daily-system-report':
       return getNext10AM();
     case 'daily-backup':
@@ -92,7 +94,7 @@ export const schedulerService = {
     // Register scheduled tasks
     this.registerTask({
       name: 'weekly-health-report',
-      cronExpression: '0 9 * * 0', // Every Sunday at 9:00 AM
+      cronExpression: '0 9 * * 1', // Every Monday at 9:00 AM
       lastRun: null,
       nextRun: getNextRunTime('weekly-health-report'),
       enabled: true,
