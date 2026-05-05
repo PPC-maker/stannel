@@ -177,36 +177,21 @@ function MagazineCarousel({ metalGradient, goldShadowLight }: { metalGradient: s
             exit={{ opacity: 0, x: 30 }}
             transition={{ duration: 0.4 }}
           >
-            {/* Mobile: 1 article */}
-            <a href={visible[0].url} target="_blank" rel="noopener noreferrer" className="block sm:hidden group">
-              <div className="relative h-48 overflow-hidden">
-                <img src={visible[0].image} alt={visible[0].title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-                <div className="absolute top-3 left-3 px-2 py-0.5 rounded text-[9px] font-medium text-white/90" style={{ background: metalGradient }}>
-                  stannel magazine
-                </div>
-                <div className="absolute bottom-0 left-0 right-0 p-4">
-                  <h4 className="text-white font-bold text-sm leading-snug mb-1">{visible[0].title}</h4>
-                  <p className="text-white/70 text-xs line-clamp-2">{visible[0].excerpt}</p>
-                </div>
-              </div>
-            </a>
-
-            {/* Desktop: 2 articles - portrait */}
-            <div className="hidden sm:grid grid-cols-2 gap-[5px] bg-white p-[5px]">
+            {/* 2 articles - portrait */}
+            <div className="grid grid-cols-2 gap-[5px] bg-white p-[5px]">
               {visible.map((article, i) => (
                 <a key={i} href={article.url} target="_blank" rel="noopener noreferrer" className="group rounded-xl overflow-hidden">
-                  <div className="relative h-64 overflow-hidden">
+                  <div className="relative h-52 sm:h-64 overflow-hidden">
                     <img src={article.image} alt={article.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
                     {i === 0 && (
-                      <div className="absolute top-3 left-3 px-2 py-0.5 rounded text-[9px] font-medium text-white/90" style={{ background: metalGradient }}>
+                      <div className="absolute top-2 left-2 px-2 py-0.5 rounded text-[8px] font-medium text-white/90" style={{ background: metalGradient }}>
                         stannel magazine
                       </div>
                     )}
-                    <div className="absolute bottom-0 left-0 right-0 p-4">
-                      <h4 className="text-white font-bold text-sm leading-snug mb-1 line-clamp-2">{article.title}</h4>
-                      <p className="text-white/70 text-xs line-clamp-2">{article.excerpt}</p>
+                    <div className="absolute bottom-0 left-0 right-0 p-3">
+                      <h4 className="text-white font-bold text-xs sm:text-sm leading-snug mb-1 line-clamp-2">{article.title}</h4>
+                      <p className="text-white/60 text-[10px] line-clamp-2">{article.excerpt}</p>
                     </div>
                   </div>
                 </a>
