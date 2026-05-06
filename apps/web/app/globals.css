@@ -3,31 +3,48 @@
 @tailwind utilities;
 
 :root {
-  /* El Al Style Colors */
-  --elal-blue: #0066CC;
-  --elal-blue-dark: #004499;
-  --elal-blue-light: #3399FF;
-  --elal-sky: #E8F4FD;
+  /* Gold/Cream Premium Colors */
+  --elal-blue: #C9A961;
+  --elal-blue-dark: #8B6F3A;
+  --elal-blue-light: #E8C97D;
+  --elal-sky: #F2EAD8;
   --elal-white: #FFFFFF;
-  --elal-gray: #F8FAFC;
-  --elal-gray-dark: #64748B;
-  --elal-text: #1E293B;
-  --elal-text-light: #64748B;
+  --elal-gray: #F6F1E7;
+  --elal-gray-dark: #8B6F3A;
+  --elal-text: #4A3A1F;
+  --elal-text-light: #8B6F3A;
   --elal-success: #22C55E;
   --elal-warning: #F59E0B;
 
+  /* Stannel Premium Palette */
+  --bg-main: #efe4d2;
+  --bg-soft: #f6eee1;
+  --dark-main: #1d1e22;
+  --dark-soft: #2b2d32;
+  --bronze-main: #a67c52;
+  --bronze-dark: #7c5a40;
+  --gold-main: #c99b4a;
+  --gold-soft: #e6cc8d;
+  --text-light: rgba(255,255,255,0.92);
+  --text-soft: rgba(255,255,255,0.62);
+  --text-dark: #2b241d;
+  --text-muted: #8b7c69;
+  --stannel-dark: #1d1e22;
+  --stannel-shadow: 0 12px 30px rgba(42, 36, 30, 0.22);
+  --stannel-shadow-strong: 0 18px 45px rgba(42, 36, 30, 0.30);
+
   /* Legacy mappings */
-  --primary: #0066CC;
-  --primary-dark: #004499;
-  --primary-darker: #F8FAFC;
-  --gold: #0066CC;
-  --gold-dark: #004499;
+  --primary: #C9A961;
+  --primary-dark: #8B6F3A;
+  --primary-darker: #F6F1E7;
+  --gold: #C9A961;
+  --gold-dark: #8B6F3A;
 
   /* Card styles - floating white cards */
   --card-bg: rgba(255, 255, 255, 0.98);
   --card-border: rgba(0, 0, 0, 0.04);
-  --card-shadow: 0 4px 24px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04);
-  --card-shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.06);
+  --card-shadow: 0 4px 24px rgba(139, 111, 58, 0.12), 0 1px 3px rgba(139, 111, 58, 0.06);
+  --card-shadow-hover: 0 12px 40px rgba(139, 111, 58, 0.18), 0 4px 12px rgba(139, 111, 58, 0.09);
 }
 
 * {
@@ -45,7 +62,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: #0f2620;
+  background: #F6F1E7;
   transition: opacity 0.4s ease-out;
 }
 #splash-screen.hide {
@@ -59,7 +76,7 @@
   margin-bottom: 16px;
 }
 #splash-screen .splash-text {
-  color: rgba(255,255,255,0.6);
+  color: #4A3A1F;
   font-size: 18px;
   font-weight: 500;
   letter-spacing: 1px;
@@ -68,8 +85,8 @@
 #splash-screen .splash-loader {
   width: 32px;
   height: 32px;
-  border: 3px solid rgba(255,255,255,0.15);
-  border-top-color: rgba(255,255,255,0.7);
+  border: 3px solid rgba(139,111,58,0.15);
+  border-top-color: rgba(139,111,58,0.7);
   border-radius: 50%;
   animation: splash-spin 0.8s linear infinite;
   margin-top: 32px;
@@ -111,9 +128,42 @@ html, body {
 }
 
 .glass-card-gold {
-  background: linear-gradient(135deg, #0066CC 0%, #004499 100%);
+  background: linear-gradient(135deg, #E8C97D 0%, #C9A961 18%, #DDB870 38%, #A88845 55%, #E5C580 72%, #B8945A 90%, #8B6F3A 100%);
   color: white;
   border: none;
+}
+
+/* ===== Gold Shine Overlay (add to any card) ===== */
+.gold-shine {
+  position: relative;
+  overflow: hidden;
+}
+.gold-shine::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, transparent 0%, rgba(255,250,220,0.15) 40%, transparent 60%);
+  pointer-events: none;
+}
+
+/* ===== Marble Background (global) ===== */
+.marble-bg {
+  background:
+    radial-gradient(ellipse 90% 90% at 15% 10%, rgba(229,197,128,0.18), transparent),
+    radial-gradient(ellipse 100% 100% at 90% 30%, rgba(201,169,97,0.12), transparent),
+    radial-gradient(ellipse 110% 110% at 30% 90%, rgba(184,148,90,0.10), transparent),
+    #F6F1E7;
+}
+
+/* ===== Gold Shadow Utility ===== */
+.shadow-gold {
+  box-shadow: 0 6px 24px rgba(139,111,58,0.18), 0 2px 8px rgba(139,111,58,0.12);
+}
+.shadow-gold-sm {
+  box-shadow: 0 4px 16px rgba(139,111,58,0.12), 0 1px 4px rgba(139,111,58,0.08);
+}
+.shadow-gold-glow {
+  box-shadow: 0 0 20px rgba(201,169,97,0.3), 0 4px 16px rgba(139,111,58,0.15);
 }
 
 /* ===== Ticket Style Card (like boarding pass) ===== */
@@ -147,15 +197,15 @@ html, body {
 
 /* ===== Blue Gradient Card ===== */
 .blue-card {
-  background: linear-gradient(135deg, #0066CC 0%, #0088FF 100%);
+  background: linear-gradient(135deg, #E8C97D 0%, #DDB870 100%);
   color: white;
   border-radius: 20px;
-  box-shadow: 0 8px 32px rgba(0, 102, 204, 0.25);
+  box-shadow: 0 8px 32px rgba(201, 169, 97, 0.25);
 }
 
 /* ===== Text Styles ===== */
 .text-gradient-gold {
-  background: linear-gradient(135deg, #0066CC 0%, #0088FF 50%, #0066CC 100%);
+  background: linear-gradient(135deg, #E8C97D 0%, #C9A961 50%, #8B6F3A 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -172,17 +222,17 @@ html, body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(0, 102, 204, 0.2);
+  background: rgba(201, 169, 97, 0.2);
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 102, 204, 0.4);
+  background: rgba(201, 169, 97, 0.4);
 }
 
 /* Selection */
 ::selection {
-  background: var(--elal-blue);
+  background: #C9A961;
   color: white;
 }
 
@@ -201,13 +251,13 @@ input:focus,
 textarea:focus,
 select:focus {
   outline: none;
-  border-color: var(--elal-blue);
-  box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.15);
+  border-color: #C9A961;
+  box-shadow: 0 0 0 3px rgba(201, 169, 97, 0.15);
 }
 
 /* ===== Buttons - El Al Style ===== */
 .btn-primary {
-  background: linear-gradient(135deg, #0066CC 0%, #004499 100%);
+  background: linear-gradient(135deg, #C9A961 0%, #8B6F3A 100%);
   color: white;
   padding: 14px 28px;
   border-radius: 14px;
@@ -220,7 +270,7 @@ select:focus {
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0, 102, 204, 0.35);
+  box-shadow: 0 8px 24px rgba(139, 111, 58, 0.35);
 }
 
 .btn-primary:disabled {
@@ -231,19 +281,19 @@ select:focus {
 
 .btn-secondary {
   background: white;
-  color: var(--elal-blue);
+  color: #C9A961;
   padding: 14px 28px;
   border-radius: 14px;
   font-weight: 600;
   transition: all 0.3s ease;
-  border: 2px solid rgba(0, 102, 204, 0.15);
+  border: 2px solid rgba(201, 169, 97, 0.15);
   cursor: pointer;
   font-size: 15px;
 }
 
 .btn-secondary:hover {
-  background: var(--elal-sky);
-  border-color: var(--elal-blue);
+  background: #F2EAD8;
+  border-color: #C9A961;
 }
 
 .btn-secondary:disabled {
@@ -252,7 +302,7 @@ select:focus {
 }
 
 .btn-gold {
-  background: linear-gradient(135deg, #0066CC 0%, #0088FF 100%);
+  background: linear-gradient(135deg, #E8C97D 0%, #C9A961 100%);
   color: white;
   padding: 14px 28px;
   border-radius: 14px;
@@ -265,7 +315,7 @@ select:focus {
 
 .btn-gold:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0, 102, 204, 0.35);
+  box-shadow: 0 8px 24px rgba(201, 169, 97, 0.35);
 }
 
 /* ===== Status Badges ===== */
@@ -306,8 +356,8 @@ select:focus {
 .spinner {
   width: 24px;
   height: 24px;
-  border: 3px solid rgba(0, 102, 204, 0.15);
-  border-top-color: var(--elal-blue);
+  border: 3px solid rgba(139, 111, 58, 0.15);
+  border-top-color: #C9A961;
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
@@ -329,8 +379,8 @@ select:focus {
   background: linear-gradient(
     to bottom,
     rgba(255, 255, 255, 0.1) 0%,
-    rgba(248, 250, 252, 0.95) 60%,
-    rgba(248, 250, 252, 1) 100%
+    rgba(246, 241, 231, 0.95) 60%,
+    rgba(246, 241, 231, 1) 100%
   );
 }
 
@@ -363,8 +413,8 @@ select:focus {
   background: linear-gradient(
     to bottom,
     rgba(0, 0, 0, 0.1) 0%,
-    rgba(248, 250, 252, 0.7) 70%,
-    rgba(248, 250, 252, 1) 100%
+    rgba(246, 241, 231, 0.7) 70%,
+    rgba(246, 241, 231, 1) 100%
   );
   z-index: 1;
 }
@@ -416,8 +466,8 @@ select:focus {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--elal-sky);
-  color: var(--elal-blue);
+  background: #F2EAD8;
+  color: #C9A961;
 }
 
 .circle-icon-sm {
@@ -473,8 +523,8 @@ select:focus {
     background: linear-gradient(
       to bottom,
       rgba(255, 255, 255, 0) 0%,
-      rgba(248, 250, 252, 0.9) 50%,
-      rgba(248, 250, 252, 1) 100%
+      rgba(246, 241, 231, 0.9) 50%,
+      rgba(246, 241, 231, 1) 100%
     );
   }
 }
@@ -490,14 +540,14 @@ html.high-contrast .glass-card {
 }
 
 html.highlight-links a {
-  background-color: rgba(0, 102, 204, 0.15) !important;
+  background-color: rgba(201, 169, 97, 0.15) !important;
   outline: 2px solid var(--elal-blue) !important;
   outline-offset: 2px;
 }
 
 html.big-cursor,
 html.big-cursor * {
-  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 24 24' fill='%230066CC' stroke='white' stroke-width='1'%3E%3Cpath d='M4 4l16 12-6 2-4 6-2-8-4-2z'/%3E%3C/svg%3E") 0 0, auto !important;
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 24 24' fill='%23C9A961' stroke='white' stroke-width='1'%3E%3Cpath d='M4 4l16 12-6 2-4 6-2-8-4-2z'/%3E%3C/svg%3E") 0 0, auto !important;
 }
 
 /* ===== SweetAlert2 - El Al Style ===== */
@@ -516,7 +566,7 @@ html.big-cursor * {
 }
 
 .swal-confirm-gold {
-  background: linear-gradient(135deg, #0066CC 0%, #004499 100%) !important;
+  background: linear-gradient(135deg, #C9A961 0%, #8B6F3A 100%) !important;
   color: white !important;
   font-family: var(--font-assistant), sans-serif !important;
   font-weight: 600 !important;
@@ -525,12 +575,12 @@ html.big-cursor * {
   font-size: 1rem !important;
   transition: all 0.3s ease !important;
   border: none !important;
-  box-shadow: 0 4px 15px rgba(0, 102, 204, 0.3) !important;
+  box-shadow: 0 4px 15px rgba(139, 111, 58, 0.3) !important;
 }
 
 .swal-confirm-gold:hover {
   transform: translateY(-2px) !important;
-  box-shadow: 0 8px 25px rgba(0, 102, 204, 0.4) !important;
+  box-shadow: 0 8px 25px rgba(139, 111, 58, 0.4) !important;
 }
 
 .swal2-icon.swal2-success {
@@ -555,12 +605,12 @@ html.big-cursor * {
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(0, 102, 204, 0.15);
+  background: rgba(201, 169, 97, 0.15);
   border-radius: 3px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 102, 204, 0.25);
+  background: rgba(201, 169, 97, 0.25);
 }
 
 /* ===== Hide Scrollbar ===== */
@@ -599,13 +649,114 @@ html.big-cursor * {
   bottom: 0;
   left: 0;
   right: 0;
-  background: white;
-  padding: 12px 24px;
-  padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
-  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
-  border-top-left-radius: 24px;
-  border-top-right-radius: 24px;
+  background: linear-gradient(180deg, #1f2024, #141518);
+  padding: 10px 24px;
+  padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+  box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.30);
+  border-top-left-radius: 26px;
+  border-top-right-radius: 26px;
   z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.bottom-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 11px;
+  font-weight: 600;
+  transition: color 0.2s ease;
+  padding: 4px 8px;
+}
+
+.bottom-nav-item:hover,
+.bottom-nav-item.active {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.bottom-nav-home {
+  width: 62px;
+  height: 62px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #d8ba72, #9f7645);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: -28px;
+  box-shadow: 0 10px 25px rgba(201, 155, 74, 0.45), 0 0 0 5px #141518;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.bottom-nav-home:hover {
+  transform: scale(1.08);
+  box-shadow: 0 14px 30px rgba(201, 155, 74, 0.55), 0 0 0 5px #141518;
+}
+
+/* ===== Stat Card Active/Hover Effects ===== */
+.stat-card-premium {
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+
+.stat-card-premium:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px rgba(139, 111, 58, 0.2), 0 4px 12px rgba(139, 111, 58, 0.1);
+}
+
+.stat-card-premium:active {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(139, 111, 58, 0.15);
+}
+
+/* ===== Premium Button Effects ===== */
+.btn-premium-gold {
+  background: linear-gradient(135deg, #f5d27a, #b8893b);
+  color: #2a2116;
+  font-weight: 700;
+  border-radius: 14px;
+  padding: 12px 24px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(184, 137, 59, 0.35);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-premium-gold:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(184, 137, 59, 0.45);
+}
+
+.btn-premium-dark {
+  background: #222;
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  padding: 12px 24px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-premium-dark:hover {
+  background: #333;
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* ===== Quick Action Button ===== */
+.quick-action-btn {
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.quick-action-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(139, 111, 58, 0.18);
+}
+
+.quick-action-btn:active {
+  transform: translateY(0);
 }
 
 /* ===== Flight Route Style ===== */

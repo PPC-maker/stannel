@@ -128,7 +128,7 @@ export default function Navbar() {
           : 'bg-transparent'
         : 'bg-[#FEFCF7]/95 backdrop-blur-md shadow-sm border-b border-[#C9A961]/20'
     }`} style={{ paddingTop: 'env(safe-area-inset-top, 0px)', WebkitBackdropFilter: isScrolled || !isDarkPage ? 'blur(16px)' : undefined }}>
-      <div className={`w-full px-4 sm:px-6 lg:px-8 flex items-center justify-center relative ${isDarkPage ? 'h-14 sm:h-16' : 'h-12 sm:h-14'}`}>
+      <div className={`w-full px-5 sm:px-8 lg:px-10 flex items-center justify-center relative ${isDarkPage ? 'h-[80px] sm:h-[92px]' : 'h-[68px] sm:h-[82px]'}`}>
         {/* Back/Forward Navigation - Left side (RTL: appears on left) */}
         {pathname !== '/' && pathname !== '/login' && pathname !== '/register' && (
         <div className="absolute left-6 top-1/2 -translate-y-1/2 flex items-center gap-1" suppressHydrationWarning>
@@ -171,7 +171,7 @@ export default function Navbar() {
             <img
               src={isLightPage ? "/logo_black1.png" : "/logo1.png"}
               alt="Stannel"
-              className={isDarkPage ? "h-10 sm:h-14 w-auto" : "h-9 sm:h-11 w-auto"}
+              className={isDarkPage ? "h-[57px] sm:h-[82px] w-auto" : "h-[53px] sm:h-[64px] w-auto"}
             />
           )}
         </Link>
