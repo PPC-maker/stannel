@@ -71,7 +71,10 @@ async function registerPlugins() {
     origin: [
       'https://stannel.app',
       'https://www.stannel.app',
+      'https://stannelclub.co.il',
+      'https://www.stannelclub.co.il',
       /\.stannel\.app$/,
+      /\.stannelclub\.co\.il$/,
       /\.run\.app$/,
       /^http:\/\/localhost/,
     ],
