@@ -356,14 +356,7 @@ export default function WalletPage() {
               </div>
 
               {/* Bottom row */}
-              <div className="flex items-center justify-between">
-                <button
-                  className="relative rounded-xl overflow-hidden px-6 py-3 transition-all hover:scale-105 active:scale-100"
-                  style={{ background: metalGradient, boxShadow: '0 4px 16px rgba(201,155,74,0.4)' }}
-                >
-                  <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, transparent, rgba(255,250,220,0.35), transparent)' }} />
-                  <span className="relative text-[#2a2116] text-sm font-bold">כניסה לארנק</span>
-                </button>
+              <div className="flex items-center justify-end">
                 <span className="text-[#e6cc8d]/80 text-xs flex items-center gap-1.5">
                   <Sparkles size={12} className="text-[#e6cc8d]" />
                   Admin כניסה מהירה
