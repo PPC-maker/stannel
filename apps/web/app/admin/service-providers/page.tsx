@@ -9,6 +9,7 @@ import {
   useCreateServiceProvider,
   useUpdateServiceProvider,
   useDeleteServiceProvider,
+  useSuppliersDirectory,
 } from '@/lib/api-hooks';
 import Swal from 'sweetalert2';
 import {
@@ -61,12 +62,33 @@ export default function ManageServiceProvidersPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterCategory, setFilterCategory] = useState('');
 
-  const { data: providersData, isLoading } = useAdminServiceProviders();
+  // Load from both sources: ServiceProvider table + Suppliers (registered supplier users)
+  const { data: providersData, isLoading: spLoading } = useAdminServiceProviders();
+  const { data: suppliersData, isLoading: suppLoading } = useSuppliersDirectory({ pageSize: 100 });
   const createMutation = useCreateServiceProvider();
   const updateMutation = useUpdateServiceProvider();
   const deleteMutation = useDeleteServiceProvider();
 
-  const providers = (providersData?.data || []) as ServiceProvider[];
+  const isLoading = spLoading || suppLoading;
+
+  // Merge: service providers + suppliers (mapped to same interface)
+  const serviceProviders = (providersData?.data || []) as ServiceProvider[];
+  const suppliers = ((suppliersData as any)?.data || []).map((s: any) => ({
+    id: `supplier-${s.id}`,
+    name: s.companyName || s.user?.name || 'ספק',
+    phone: s.phone || s.user?.phone || '',
+    email: s.user?.email || '',
+    category: 'OTHER',
+    description: s.description || '',
+    website: s.website || '',
+    address: s.address || '',
+    isActive: true,
+    isVerified: true,
+    createdAt: s.createdAt || new Date().toISOString(),
+    _isSupplier: true,
+    _profileImage: s.profileImage,
+  }));
+  const providers = [...suppliers, ...serviceProviders];
 
   const filteredProviders = providers.filter(p => {
     const matchesSearch = !searchTerm ||
