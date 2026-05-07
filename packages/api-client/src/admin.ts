@@ -586,6 +586,8 @@ export const adminApi = {
     feePercent: number;
     validFrom: string;
     validTo: string;
+    documentUrl?: string;
+    notes?: string;
   }): Promise<any> {
     const res = await fetchWithAuth(`${config.baseUrl}/admin/contracts`, {
       method: 'POST',

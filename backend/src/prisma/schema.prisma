@@ -204,15 +204,17 @@ model InvoiceStatusHistory {
 }
 
 model Contract {
-  id          String        @id @default(cuid())
-  supplierId  String
-  supplier    SupplierProfile @relation(fields: [supplierId], references: [id], onDelete: Cascade)
-  type        ContractType
-  feePercent  Float
-  validFrom   DateTime
-  validTo     DateTime
-  isActive    Boolean       @default(true)
-  createdAt   DateTime      @default(now())
+  id           String        @id @default(cuid())
+  supplierId   String
+  supplier     SupplierProfile @relation(fields: [supplierId], references: [id], onDelete: Cascade)
+  type         ContractType
+  feePercent   Float
+  validFrom    DateTime
+  validTo      DateTime
+  isActive     Boolean       @default(true)
+  documentUrl  String?
+  notes        String?
+  createdAt    DateTime      @default(now())
 
   @@index([supplierId])
   @@index([isActive])

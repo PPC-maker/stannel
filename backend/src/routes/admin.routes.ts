@@ -27,6 +27,8 @@ const createContractSchema = z.object({
   feePercent: z.number().min(0).max(100),
   validFrom: z.string().transform(s => new Date(s)),
   validTo: z.string().transform(s => new Date(s)),
+  documentUrl: z.string().optional(),
+  notes: z.string().optional(),
 });
 
 const createGoalSchema = z.object({
@@ -846,6 +848,8 @@ export async function adminRoutes(server: FastifyInstance) {
         feePercent: body.feePercent,
         validFrom: body.validFrom,
         validTo: body.validTo,
+        documentUrl: body.documentUrl,
+        notes: body.notes,
       },
     });
 
