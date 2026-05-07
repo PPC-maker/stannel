@@ -691,7 +691,7 @@ export const adminApi = {
   async deleteProduct(id: string): Promise<{ success: boolean }> {
     const res = await fetchWithAuth(`${config.baseUrl}/admin/products/${id}`, {
       method: 'DELETE',
-      headers: getHeaders(),
+      headers: getHeadersNoBody(),
     });
 
     if (!res.ok) {

@@ -1,6 +1,6 @@
 // Meetings API Client
 
-import { config, getHeaders, getMultipartHeaders, fetchWithAuth } from './config';
+import { config, getHeaders, getHeadersNoBody, getMultipartHeaders, fetchWithAuth } from './config';
 
 export const meetingsApi = {
   async create(data: {
@@ -73,7 +73,7 @@ export const meetingsApi = {
   async cancel(meetingId: string): Promise<any> {
     const res = await fetchWithAuth(`${config.baseUrl}/meetings/${meetingId}`, {
       method: 'DELETE',
-      headers: getHeaders(),
+      headers: getHeadersNoBody(),
     });
 
     if (!res.ok) {

@@ -1,6 +1,6 @@
 // Service Providers API Client
 
-import { config, getHeaders, fetchWithAuth } from './config';
+import { config, getHeaders, getHeadersNoBody, fetchWithAuth } from './config';
 
 export interface ServiceProvider {
   id: string;
@@ -137,7 +137,7 @@ export const serviceProvidersApi = {
     async delete(id: string): Promise<{ success: boolean }> {
       const response = await fetchWithAuth(`${config.baseUrl}/service-providers/admin/${id}`, {
         method: 'DELETE',
-        headers: getHeaders(),
+        headers: getHeadersNoBody(),
       });
 
       if (!response.ok) {

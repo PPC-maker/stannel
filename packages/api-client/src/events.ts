@@ -1,6 +1,6 @@
 // Events API Client
 
-import { config, getHeaders, fetchWithAuth } from './config';
+import { config, getHeaders, getHeadersNoBody, fetchWithAuth } from './config';
 import type {
   Event,
   EventWithRegistration,
@@ -77,7 +77,7 @@ export const eventsApi = {
   async cancelRegistration(eventId: string): Promise<SuccessResponse> {
     const response = await fetchWithAuth(`${config.baseUrl}/events/${eventId}/cancel`, {
       method: 'DELETE',
-      headers: getHeaders(),
+      headers: getHeadersNoBody(),
     });
 
     if (response.status === 401) {
@@ -178,7 +178,7 @@ export const eventsApi = {
     async deleteEvent(id: string): Promise<{ success: boolean }> {
       const response = await fetchWithAuth(`${config.baseUrl}/admin/events/${id}`, {
         method: 'DELETE',
-        headers: getHeaders(),
+        headers: getHeadersNoBody(),
       });
 
       if (!response.ok) {
