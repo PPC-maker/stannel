@@ -255,6 +255,50 @@ select:focus {
   box-shadow: 0 0 0 3px rgba(201, 169, 97, 0.15);
 }
 
+/* ===== Fix select/option dropdown text color (white-on-white bug) ===== */
+/* All select options must have dark bg + white text to avoid white-on-white */
+select option {
+  background: #1a2e2a !important;
+  color: #fff !important;
+}
+
+select optgroup {
+  background: #1a2e2a !important;
+  color: #fff !important;
+}
+
+/* When select has text-white class, ensure options are readable */
+select[class*="text-white"] option {
+  background: #1a2e2a !important;
+  color: #fff !important;
+}
+
+/* SweetAlert2 inputs inside dark modals */
+.swal2-popup .swal2-input,
+.swal2-popup .swal2-textarea,
+.swal2-popup .swal2-select {
+  color: #1e293b !important;
+  background: #fff !important;
+}
+
+.swal2-popup .swal2-input::placeholder,
+.swal2-popup .swal2-textarea::placeholder {
+  color: #94a3b8 !important;
+}
+
+/* SweetAlert2 custom HTML inputs (admin forms) */
+.swal2-popup input.swal2-input,
+.swal2-popup textarea.swal2-textarea,
+.swal2-popup select.swal2-input {
+  color: #1e293b !important;
+  background: #fff !important;
+}
+
+.swal2-popup select.swal2-input option {
+  background: #fff !important;
+  color: #1e293b !important;
+}
+
 /* ===== Buttons - El Al Style ===== */
 .btn-primary {
   background: linear-gradient(135deg, #C9A961 0%, #8B6F3A 100%);
