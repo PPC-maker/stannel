@@ -1213,7 +1213,7 @@ Please analyze this error and provide a fix.
         </motion.div>
 
         {/* Tabs - Horizontal scroll on mobile */}
-        <div className="flex gap-2 mb-6 overflow-x-auto -mx-2 px-2 scrollbar-hide">
+        <div className="flex gap-2 mb-6 overflow-x-auto -mx-2 px-2 scrollbar-hide snap-x snap-mandatory" style={{ WebkitOverflowScrolling: 'touch', scrollBehavior: 'smooth' }}>
           <button
             type="button"
             onClick={() => setActiveTab('users')}
