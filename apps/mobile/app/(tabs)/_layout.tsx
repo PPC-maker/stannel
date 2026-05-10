@@ -15,38 +15,40 @@ export default function TabLayout() {
       }}
     >
       <Tabs.Screen
-        name="index"
+        name="rewards"
         options={{
-          title: 'ראשי',
+          title: 'הטבות',
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="home" color={color} size={size} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="wallet"
-        options={{
-          title: 'ארנק',
-          tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="wallet" color={color} size={size} />
+            <MaterialCommunityIcons name="gift" color={color} size={size} />
           ),
         }}
       />
       <Tabs.Screen
         name="invoices"
         options={{
-          title: 'חשבוניות',
+          title: 'גלו',
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="file-upload" color={color} size={size} />
+            <MaterialCommunityIcons name="magnify" color={color} size={size} />
           ),
         }}
       />
       <Tabs.Screen
-        name="rewards"
+        name="index"
         options={{
-          title: 'הטבות',
+          title: 'בית',
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="gift" color={color} size={size} />
+            <View style={{ width: 52, height: 52, borderRadius: 26, backgroundColor: '#C9A961', justifyContent: 'center', alignItems: 'center', marginBottom: 20, borderWidth: 3, borderColor: 'rgba(6,15,31,0.95)' }}>
+              <MaterialCommunityIcons name="home" color="#fff" size={26} />
+            </View>
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="wallet"
+        options={{
+          title: 'פרויקטים',
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons name="view-grid-outline" color={color} size={size} />
           ),
         }}
       />
