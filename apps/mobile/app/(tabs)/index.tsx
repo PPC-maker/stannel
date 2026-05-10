@@ -39,9 +39,10 @@ export default function HomeScreen() {
     rank: 'PLATINUM',
   };
 
-  const handleQuickAction = (action: 'rules' | 'tools' | 'events' | 'accounts') => {
+  const handleQuickAction = (action: 'service' | 'projects' | 'tools' | 'events' | 'accounts') => {
     const routes = {
-      rules: '/terms',
+      service: '/profile',
+      projects: '/suppliers',
       tools: '/tools',
       events: '/events',
       accounts: '/(tabs)/invoices',
