@@ -125,15 +125,19 @@ const magazineArticles = [
 function MagazineCarousel({ metalGradient, goldShadowLight }: { metalGradient: string; goldShadowLight: string }) {
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  // Auto-scroll every 3 seconds
+  // Auto-scroll every 3 seconds (RTL-aware)
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
+    const step = el.clientWidth * 0.85;
     const timer = setInterval(() => {
-      if (el.scrollLeft + el.clientWidth >= el.scrollWidth - 10) {
+      const maxScroll = el.scrollWidth - el.clientWidth;
+      const currentScroll = Math.abs(el.scrollLeft);
+      if (currentScroll >= maxScroll - 10) {
         el.scrollTo({ left: 0, behavior: 'smooth' });
       } else {
-        el.scrollBy({ left: el.clientWidth * 0.85, behavior: 'smooth' });
+        // RTL uses negative scrollLeft
+        el.scrollBy({ left: -step, behavior: 'smooth' });
       }
     }, 3000);
     return () => clearInterval(timer);

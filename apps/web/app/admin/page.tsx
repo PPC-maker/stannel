@@ -192,15 +192,17 @@ export default function AdminPage() {
   const [activeTab, setActiveTab] = useState<TabType>('users');
   const tabsScrollRef = useRef<HTMLDivElement>(null);
 
-  // Auto-scroll tabs carousel every 3 seconds
+  // Auto-scroll tabs carousel every 3 seconds (RTL-aware)
   useEffect(() => {
     const el = tabsScrollRef.current;
     if (!el) return;
     const timer = setInterval(() => {
-      if (el.scrollLeft + el.clientWidth >= el.scrollWidth - 10) {
+      const maxScroll = el.scrollWidth - el.clientWidth;
+      const currentScroll = Math.abs(el.scrollLeft);
+      if (currentScroll >= maxScroll - 10) {
         el.scrollTo({ left: 0, behavior: 'smooth' });
       } else {
-        el.scrollBy({ left: 120, behavior: 'smooth' });
+        el.scrollBy({ left: -120, behavior: 'smooth' });
       }
     }, 3000);
     return () => clearInterval(timer);
