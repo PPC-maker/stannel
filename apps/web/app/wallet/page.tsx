@@ -73,7 +73,7 @@ const quickActionCategories = [
   },
   {
     id: 'tools',
-    label: 'מרקטפלייס',
+    label: 'כלי עבודה',
     icon: Wrench,
     color: 'bg-orange-500',
     iconColor: 'text-orange-500',
@@ -84,7 +84,7 @@ const quickActionCategories = [
   },
   {
     id: 'suppliers',
-    label: 'כל העובדים',
+    label: 'פרויקטים',
     icon: Users,
     color: 'bg-blue-500',
     iconColor: 'text-blue-500',
