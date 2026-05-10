@@ -17,7 +17,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="rewards"
         options={{
-          title: 'מוצרים',
+          title: 'הטבות',
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="gift" color={color} size={size} />
           ),
@@ -26,9 +26,9 @@ export default function TabLayout() {
       <Tabs.Screen
         name="invoices"
         options={{
-          title: 'סטיילסט',
+          title: 'גלו',
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="file-document-outline" color={color} size={size} />
+            <MaterialCommunityIcons name="magnify" color={color} size={size} />
           ),
         }}
       />
@@ -46,9 +46,9 @@ export default function TabLayout() {
       <Tabs.Screen
         name="wallet"
         options={{
-          title: 'חי.י',
+          title: 'פרויקטים',
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="newspaper-variant-outline" color={color} size={size} />
+            <MaterialCommunityIcons name="view-grid-outline" color={color} size={size} />
           ),
         }}
       />
