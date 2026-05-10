@@ -122,8 +122,8 @@ const magazineArticles = [
 
 function MagazineCarousel({ metalGradient, goldShadowLight }: { metalGradient: string; goldShadowLight: string }) {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const touchStartX = useRef(0);
-  const touchEndX = useRef(0);
+  const startX = useRef(0);
+  const isDragging = useRef(false);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -132,26 +132,25 @@ function MagazineCarousel({ metalGradient, goldShadowLight }: { metalGradient: s
     return () => clearInterval(timer);
   }, [currentIndex]);
 
-  const handleTouchStart = (e: React.TouchEvent) => {
-    touchStartX.current = e.touches[0].clientX;
-  };
+  const goNext = () => setCurrentIndex((prev) => (prev + 1) % magazineArticles.length);
+  const goPrev = () => setCurrentIndex((prev) => (prev - 1 + magazineArticles.length) % magazineArticles.length);
 
-  const handleTouchMove = (e: React.TouchEvent) => {
-    touchEndX.current = e.touches[0].clientX;
-  };
-
-  const handleTouchEnd = () => {
-    const diff = touchStartX.current - touchEndX.current;
+  const handleSwipeEnd = (endX: number) => {
+    const diff = startX.current - endX;
     if (Math.abs(diff) > 50) {
-      if (diff > 0) {
-        // Swipe left -> next
-        setCurrentIndex((prev) => (prev + 1) % magazineArticles.length);
-      } else {
-        // Swipe right -> prev
-        setCurrentIndex((prev) => (prev - 1 + magazineArticles.length) % magazineArticles.length);
-      }
+      diff > 0 ? goNext() : goPrev();
     }
+    isDragging.current = false;
   };
+
+  // Touch
+  const handleTouchStart = (e: React.TouchEvent) => { startX.current = e.touches[0].clientX; };
+  const handleTouchEnd = (e: React.TouchEvent) => { handleSwipeEnd(e.changedTouches[0].clientX); };
+
+  // Mouse drag
+  const handleMouseDown = (e: React.MouseEvent) => { isDragging.current = true; startX.current = e.clientX; };
+  const handleMouseUp = (e: React.MouseEvent) => { if (isDragging.current) handleSwipeEnd(e.clientX); };
+  const handleMouseLeave = (e: React.MouseEvent) => { if (isDragging.current) handleSwipeEnd(e.clientX); };
 
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55 }} className="mt-4">
@@ -171,7 +170,7 @@ function MagazineCarousel({ metalGradient, goldShadowLight }: { metalGradient: s
         </a>
       </div>
 
-      <div className="overflow-hidden rounded-2xl" style={{ boxShadow: goldShadowLight }} onTouchStart={handleTouchStart} onTouchMove={handleTouchMove} onTouchEnd={handleTouchEnd}>
+      <div className="overflow-hidden rounded-2xl" style={{ boxShadow: goldShadowLight, cursor: 'grab' }} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} onMouseDown={handleMouseDown} onMouseUp={handleMouseUp} onMouseLeave={handleMouseLeave}>
         <AnimatePresence mode="wait">
           <motion.div key={currentIndex} initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 30 }} transition={{ duration: 0.4 }}>
             <a href={magazineArticles[currentIndex].url} target="_blank" rel="noopener noreferrer" className="group block rounded-2xl overflow-hidden">
