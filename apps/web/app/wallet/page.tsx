@@ -136,7 +136,6 @@ function MagazineCarousel({ metalGradient, goldShadowLight }: { metalGradient: s
       if (currentScroll >= maxScroll - 10) {
         el.scrollTo({ left: 0, behavior: 'smooth' });
       } else {
-        // RTL uses negative scrollLeft
         el.scrollBy({ left: -step, behavior: 'smooth' });
       }
     }, 3000);
