@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { adminApi, setAuthToken } from '@stannel/api-client';
@@ -190,6 +190,21 @@ export default function AdminPage() {
   const { isReady } = useAdminGuard();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<TabType>('users');
+  const tabsScrollRef = useRef<HTMLDivElement>(null);
+
+  // Auto-scroll tabs carousel every 3 seconds
+  useEffect(() => {
+    const el = tabsScrollRef.current;
+    if (!el) return;
+    const timer = setInterval(() => {
+      if (el.scrollLeft + el.clientWidth >= el.scrollWidth - 10) {
+        el.scrollTo({ left: 0, behavior: 'smooth' });
+      } else {
+        el.scrollBy({ left: 120, behavior: 'smooth' });
+      }
+    }, 3000);
+    return () => clearInterval(timer);
+  }, []);
   const [logs, setLogs] = useState<SystemLog[]>([]);
   const [stats, setStats] = useState<SystemLogStats | null>(null);
   const [allUsers, setAllUsers] = useState<AdminUser[]>([]);
@@ -1213,7 +1228,7 @@ Please analyze this error and provide a fix.
         </motion.div>
 
         {/* Tabs - Horizontal scroll on mobile */}
-        <div className="flex gap-2 mb-6 overflow-x-auto -mx-2 px-2 scrollbar-hide snap-x snap-mandatory" style={{ WebkitOverflowScrolling: 'touch', scrollBehavior: 'smooth' }}>
+        <div ref={tabsScrollRef} className="flex gap-2 mb-6 overflow-x-auto -mx-2 px-2 scrollbar-hide" style={{ WebkitOverflowScrolling: 'touch', scrollBehavior: 'smooth' }}>
           <button
             type="button"
             onClick={() => setActiveTab('users')}

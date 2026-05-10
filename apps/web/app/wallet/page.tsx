@@ -24,6 +24,7 @@ import {
   CheckCircle,
   Sparkles,
   ChevronLeft,
+  ChevronRight,
   Star,
   BarChart3,
   Receipt,
@@ -121,36 +122,21 @@ const magazineArticles = [
 ];
 
 function MagazineCarousel({ metalGradient, goldShadowLight }: { metalGradient: string; goldShadowLight: string }) {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const startX = useRef(0);
-  const isDragging = useRef(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
+  // Auto-scroll every 3 seconds
   useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
     const timer = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % magazineArticles.length);
-    }, 5000);
+      if (el.scrollLeft + el.clientWidth >= el.scrollWidth - 10) {
+        el.scrollTo({ left: 0, behavior: 'smooth' });
+      } else {
+        el.scrollBy({ left: el.clientWidth * 0.85, behavior: 'smooth' });
+      }
+    }, 3000);
     return () => clearInterval(timer);
-  }, [currentIndex]);
-
-  const goNext = () => setCurrentIndex((prev) => (prev + 1) % magazineArticles.length);
-  const goPrev = () => setCurrentIndex((prev) => (prev - 1 + magazineArticles.length) % magazineArticles.length);
-
-  const handleSwipeEnd = (endX: number) => {
-    const diff = startX.current - endX;
-    if (Math.abs(diff) > 50) {
-      diff > 0 ? goNext() : goPrev();
-    }
-    isDragging.current = false;
-  };
-
-  // Touch
-  const handleTouchStart = (e: React.TouchEvent) => { startX.current = e.touches[0].clientX; };
-  const handleTouchEnd = (e: React.TouchEvent) => { handleSwipeEnd(e.changedTouches[0].clientX); };
-
-  // Mouse drag
-  const handleMouseDown = (e: React.MouseEvent) => { isDragging.current = true; startX.current = e.clientX; };
-  const handleMouseUp = (e: React.MouseEvent) => { if (isDragging.current) handleSwipeEnd(e.clientX); };
-  const handleMouseLeave = (e: React.MouseEvent) => { if (isDragging.current) handleSwipeEnd(e.clientX); };
+  }, []);
 
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55 }} className="mt-4">
@@ -170,34 +156,35 @@ function MagazineCarousel({ metalGradient, goldShadowLight }: { metalGradient: s
         </a>
       </div>
 
-      <div className="overflow-hidden rounded-2xl" style={{ boxShadow: goldShadowLight, cursor: 'grab' }} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd} onMouseDown={handleMouseDown} onMouseUp={handleMouseUp} onMouseLeave={handleMouseLeave}>
-        <AnimatePresence mode="wait">
-          <motion.div key={currentIndex} initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 30 }} transition={{ duration: 0.4 }}>
-            <a href={magazineArticles[currentIndex].url} target="_blank" rel="noopener noreferrer" className="group block rounded-2xl overflow-hidden">
-              <div className="relative" style={{ aspectRatio: '3/4' }}>
-                <img src={magazineArticles[currentIndex].image} alt={magazineArticles[currentIndex].title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+      <div
+        ref={scrollRef}
+        className="flex gap-3 overflow-x-auto scrollbar-hide rounded-2xl"
+        style={{ WebkitOverflowScrolling: 'touch', scrollBehavior: 'smooth', scrollSnapType: 'x mandatory' }}
+      >
+        {magazineArticles.map((article, i) => (
+          <a
+            key={i}
+            href={article.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex-shrink-0 block rounded-2xl overflow-hidden group"
+            style={{ width: '85%', scrollSnapAlign: 'start', boxShadow: goldShadowLight }}
+          >
+            <div className="relative" style={{ aspectRatio: '3/4' }}>
+              <img src={article.image} alt={article.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" draggable={false} />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+              {i === 0 && (
                 <div className="absolute top-3 left-3 px-3 py-1.5 rounded-lg text-[11px] font-bold text-white/90" style={{ background: metalGradient }}>
                   stannel magazine
                 </div>
-                <div className="absolute bottom-0 left-0 right-0 p-5">
-                  <h4 className="text-white font-bold text-lg sm:text-xl leading-snug mb-2 line-clamp-2">{magazineArticles[currentIndex].title}</h4>
-                  <p className="text-white/60 text-[13px] line-clamp-2 leading-relaxed">{magazineArticles[currentIndex].excerpt}</p>
-                </div>
+              )}
+              <div className="absolute bottom-0 left-0 right-0 p-5">
+                <h4 className="text-white font-bold text-lg leading-snug mb-2 line-clamp-2">{article.title}</h4>
+                <p className="text-white/60 text-[13px] line-clamp-2 leading-relaxed">{article.excerpt}</p>
               </div>
-            </a>
-          </motion.div>
-        </AnimatePresence>
-        <div className="flex justify-center gap-1.5 py-3">
-          {magazineArticles.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => setCurrentIndex(i)}
-              className={`h-1.5 rounded-full transition-all duration-300 ${i === currentIndex ? 'w-6' : 'w-1.5'}`}
-              style={{ background: i === currentIndex ? '#c99b4a' : '#d6c8a8' }}
-            />
-          ))}
-        </div>
+            </div>
+          </a>
+        ))}
       </div>
     </motion.div>
   );
