@@ -3,7 +3,7 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import ImageWithLoader from '@/components/ui/ImageWithLoader';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import {
   Wallet,
   CreditCard,
@@ -122,13 +122,36 @@ const magazineArticles = [
 
 function MagazineCarousel({ metalGradient, goldShadowLight }: { metalGradient: string; goldShadowLight: string }) {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const touchStartX = useRef(0);
+  const touchEndX = useRef(0);
 
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % magazineArticles.length);
-    }, 3000);
+    }, 5000);
     return () => clearInterval(timer);
-  }, []);
+  }, [currentIndex]);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    touchEndX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = () => {
+    const diff = touchStartX.current - touchEndX.current;
+    if (Math.abs(diff) > 50) {
+      if (diff > 0) {
+        // Swipe left -> next
+        setCurrentIndex((prev) => (prev + 1) % magazineArticles.length);
+      } else {
+        // Swipe right -> prev
+        setCurrentIndex((prev) => (prev - 1 + magazineArticles.length) % magazineArticles.length);
+      }
+    }
+  };
 
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55 }} className="mt-4">
@@ -148,7 +171,7 @@ function MagazineCarousel({ metalGradient, goldShadowLight }: { metalGradient: s
         </a>
       </div>
 
-      <div className="overflow-hidden rounded-2xl" style={{ boxShadow: goldShadowLight }}>
+      <div className="overflow-hidden rounded-2xl" style={{ boxShadow: goldShadowLight }} onTouchStart={handleTouchStart} onTouchMove={handleTouchMove} onTouchEnd={handleTouchEnd}>
         <AnimatePresence mode="wait">
           <motion.div key={currentIndex} initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 30 }} transition={{ duration: 0.4 }}>
             <a href={magazineArticles[currentIndex].url} target="_blank" rel="noopener noreferrer" className="group block rounded-2xl overflow-hidden">
