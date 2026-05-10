@@ -220,6 +220,7 @@ export default function WalletPage() {
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const [transactionsOpen, setTransactionsOpen] = useState(false);
   const isAdmin = user?.role === 'ADMIN';
   const isArchitect = user?.role === 'ARCHITECT';
   const isSupplier = user?.role === 'SUPPLIER';
@@ -554,51 +555,70 @@ export default function WalletPage() {
           </AnimatePresence>
         </motion.div>
 
-        {/* ── Recent Transactions ── */}
+        {/* ── Recent Transactions (Collapsible) ── */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}>
-          <div className="rounded-[20px] p-5" style={{ background: 'rgba(255,255,255,0.85)', backdropFilter: 'blur(10px)', boxShadow: goldShadowLight, border: '1px solid rgba(201,155,74,0.08)' }}>
-            <h2 className="text-base font-bold text-[#2b241d] mb-4 flex items-center gap-2">
+          <button
+            onClick={() => setTransactionsOpen(!transactionsOpen)}
+            className="w-full rounded-[20px] p-4 flex items-center justify-between transition-all"
+            style={{ background: 'rgba(255,255,255,0.85)', backdropFilter: 'blur(10px)', boxShadow: goldShadowLight, border: '1px solid rgba(201,155,74,0.08)' }}
+          >
+            <ChevronLeft size={18} className={`text-[#c99b4a] transition-transform duration-300 ${transactionsOpen ? '-rotate-90' : ''}`} />
+            <div className="flex items-center gap-2">
+              <span className="text-base font-bold text-[#2b241d]">תנועות אחרונות</span>
               <Clock size={18} className="text-[#c99b4a]" />
-              תנועות אחרונות
-            </h2>
-            <div className="space-y-1">
-              {transactionsLoading ? (
-                [...Array(3)].map((_, i) => (
-                  <div key={i} className="flex items-center gap-3 py-3 border-b border-[#F2EAD8] animate-pulse">
-                    <div className="w-9 h-9 bg-[#F2EAD8] rounded-xl" />
-                    <div className="flex-1"><div className="h-3 w-28 bg-[#F2EAD8] rounded mb-1" /><div className="h-2.5 w-16 bg-[#F2EAD8]/60 rounded" /></div>
-                    <div className="h-3 w-14 bg-[#F2EAD8] rounded" />
-                  </div>
-                ))
-              ) : transactions && transactions.length > 0 ? (
-                transactions.slice(0, 5).map((tx: any, index: number) => {
-                  const isCredit = tx.type === 'CREDIT';
-                  const txDate = new Date(tx.createdAt);
-                  return (
-                    <motion.div key={tx.id} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: index * 0.05 }} className="flex items-center gap-3 py-3 border-b border-[#F2EAD8] last:border-0">
-                      <div className={`p-2 rounded-xl ${isCredit ? 'bg-green-50' : 'bg-red-50'}`}>
-                        {isCredit ? <ArrowUpRight className="text-green-600" size={16} /> : <ArrowDownRight className="text-red-500" size={16} />}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-[#2b241d] font-semibold text-[15px] truncate">{tx.description || (isCredit ? 'זיכוי' : 'חיוב')}</p>
-                        <p className="text-[#8b7c69] text-[13px]">{txDate.toLocaleDateString('he-IL')} {txDate.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' })}</p>
-                      </div>
-                      <div className={`font-bold text-[15px] ${isCredit ? 'text-green-600' : 'text-red-500'}`}>
-                        {isCredit ? '+' : '-'}{Math.abs(tx.amount || 0).toLocaleString()} {tx.currency === 'ILS' ? '₪' : 'נק׳'}
-                      </div>
-                    </motion.div>
-                  );
-                })
-              ) : (
-                <div className="text-center py-6">
-                  <div className="w-12 h-12 mx-auto mb-2 rounded-full bg-[#F2EAD8] flex items-center justify-center">
-                    <Wallet size={24} className="text-[#C9A961]" />
-                  </div>
-                  <p className="text-[#8B6F3A] text-sm">אין תנועות להצגה</p>
-                </div>
-              )}
             </div>
-          </div>
+          </button>
+          <AnimatePresence>
+            {transactionsOpen && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.3 }}
+                className="overflow-hidden"
+              >
+                <div className="rounded-[20px] p-5 mt-2" style={{ background: 'rgba(255,255,255,0.85)', backdropFilter: 'blur(10px)', boxShadow: goldShadowLight, border: '1px solid rgba(201,155,74,0.08)' }}>
+                  <div className="space-y-1">
+                    {transactionsLoading ? (
+                      [...Array(3)].map((_, i) => (
+                        <div key={i} className="flex items-center gap-3 py-3 border-b border-[#F2EAD8] animate-pulse">
+                          <div className="w-9 h-9 bg-[#F2EAD8] rounded-xl" />
+                          <div className="flex-1"><div className="h-3 w-28 bg-[#F2EAD8] rounded mb-1" /><div className="h-2.5 w-16 bg-[#F2EAD8]/60 rounded" /></div>
+                          <div className="h-3 w-14 bg-[#F2EAD8] rounded" />
+                        </div>
+                      ))
+                    ) : transactions && transactions.length > 0 ? (
+                      transactions.slice(0, 5).map((tx: any, index: number) => {
+                        const isCredit = tx.type === 'CREDIT';
+                        const txDate = new Date(tx.createdAt);
+                        return (
+                          <motion.div key={tx.id} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: index * 0.05 }} className="flex items-center gap-3 py-3 border-b border-[#F2EAD8] last:border-0">
+                            <div className={`p-2 rounded-xl ${isCredit ? 'bg-green-50' : 'bg-red-50'}`}>
+                              {isCredit ? <ArrowUpRight className="text-green-600" size={16} /> : <ArrowDownRight className="text-red-500" size={16} />}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className="text-[#2b241d] font-semibold text-[15px] truncate">{tx.description || (isCredit ? 'זיכוי' : 'חיוב')}</p>
+                              <p className="text-[#8b7c69] text-[13px]">{txDate.toLocaleDateString('he-IL')} {txDate.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' })}</p>
+                            </div>
+                            <div className={`font-bold text-[15px] ${isCredit ? 'text-green-600' : 'text-red-500'}`}>
+                              {isCredit ? '+' : '-'}{Math.abs(tx.amount || 0).toLocaleString()} {tx.currency === 'ILS' ? '₪' : 'נק׳'}
+                            </div>
+                          </motion.div>
+                        );
+                      })
+                    ) : (
+                      <div className="text-center py-6">
+                        <div className="w-12 h-12 mx-auto mb-2 rounded-full bg-[#F2EAD8] flex items-center justify-center">
+                          <Wallet size={24} className="text-[#C9A961]" />
+                        </div>
+                        <p className="text-[#8B6F3A] text-sm">אין תנועות להצגה</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </motion.div>
 
         {/* ── Magazine Carousel ── */}
