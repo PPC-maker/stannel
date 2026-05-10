@@ -30,6 +30,7 @@ import {
   Receipt,
   Settings,
   Headphones,
+  Search,
 } from 'lucide-react';
 import { useWalletBalance, useWalletCard, useWalletTransactions, useSuppliersDirectory } from '@/lib/api-hooks';
 import { useQueryClient } from '@tanstack/react-query';
@@ -641,11 +642,11 @@ export default function WalletPage() {
       <div className="bottom-nav">
         <Link href="/rewards" className="bottom-nav-item">
           <Gift size={20} />
-          <span>מוצרים</span>
+          <span>הטבות</span>
         </Link>
         <Link href="/suppliers" className="bottom-nav-item">
-          <Building2 size={20} />
-          <span>סטייליסט</span>
+          <Search size={20} />
+          <span>גלו</span>
         </Link>
         <Link href="/wallet" className="bottom-nav-home">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -654,8 +655,8 @@ export default function WalletPage() {
           </svg>
         </Link>
         <Link href="/invoices" className="bottom-nav-item">
-          <FileText size={20} />
-          <span>חיו</span>
+          <Building2 size={20} />
+          <span>פרויקטים</span>
         </Link>
         <Link href="/profile" className="bottom-nav-item">
           <Users size={20} />
