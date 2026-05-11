@@ -572,12 +572,12 @@ export default function WalletPage() {
                     style={{
                       width: 48,
                       height: 48,
-                      background: isActive ? metalGradient : 'linear-gradient(180deg, #f0e6d2, #e4d6bc)',
-                      boxShadow: isActive ? '0 6px 20px rgba(201,155,74,0.4)' : '0 8px 18px rgba(60,40,20,0.08)',
+                      background: isActive ? metalGradient : '#ffffff',
+                      boxShadow: isActive ? '0 6px 20px rgba(201,155,74,0.4)' : '0 2px 8px rgba(64,38,18,0.08)',
                       borderRadius: 18,
                     }}
                   >
-                    <IconComponent size={20} className={isActive ? 'text-white' : 'text-[#9e7746]'} strokeWidth={1.6} />
+                    <IconComponent size={20} className={isActive ? 'text-white' : 'text-[#7a5a44]'} strokeWidth={1.6} />
                   </div>
                   <span className="text-[11px] text-[#2b241d] font-bold">{category.label}</span>
                 </button>
