@@ -450,6 +450,108 @@ export async function adminRoutes(server: FastifyInstance) {
     }
   });
 
+  // Create supplier (admin)
+  server.post('/users/create-supplier', async (request: FastifyRequest, reply: FastifyReply) => {
+    const body = request.body as {
+      email: string;
+      password: string;
+      name: string;
+      phone?: string;
+      company?: string;
+      address?: string;
+      supplierProfile: {
+        companyName: string;
+        description?: string;
+        phone?: string;
+        address?: string;
+        website?: string;
+        facebook?: string;
+        instagram?: string;
+        linkedin?: string;
+        commissionRate?: number;
+      };
+    };
+
+    if (!body.email || !body.password || !body.name || !body.supplierProfile?.companyName) {
+      return reply.code(400).send({ error: 'חסרים שדות חובה: אימייל, סיסמה, שם, שם חברה' });
+    }
+
+    if (body.password.length < 6) {
+      return reply.code(400).send({ error: 'הסיסמה חייבת להכיל לפחות 6 תווים' });
+    }
+
+    // Check if email already exists
+    const existingUser = await prisma.user.findUnique({ where: { email: body.email } });
+    if (existingUser) {
+      return reply.code(400).send({ error: 'כתובת אימייל כבר קיימת במערכת' });
+    }
+
+    try {
+      // Create Firebase user
+      const { getAuth } = await import('firebase-admin/auth');
+      const firebaseUser = await getAuth().createUser({
+        email: body.email,
+        password: body.password,
+        displayName: body.name,
+      });
+
+      // Create User + SupplierProfile in a transaction
+      const user = await prisma.$transaction(async (tx) => {
+        const newUser = await tx.user.create({
+          data: {
+            email: body.email,
+            name: body.name,
+            phone: body.phone,
+            company: body.company,
+            address: body.address,
+            role: 'SUPPLIER',
+            isActive: true,
+            activatedAt: new Date(),
+            firebaseUid: firebaseUser.uid,
+          },
+        });
+
+        await tx.supplierProfile.create({
+          data: {
+            userId: newUser.id,
+            companyName: body.supplierProfile.companyName,
+            description: body.supplierProfile.description,
+            phone: body.supplierProfile.phone,
+            address: body.supplierProfile.address,
+            website: body.supplierProfile.website,
+            facebook: body.supplierProfile.facebook,
+            instagram: body.supplierProfile.instagram,
+            linkedin: body.supplierProfile.linkedin,
+            commissionRate: body.supplierProfile.commissionRate,
+          },
+        });
+
+        return tx.user.findUnique({
+          where: { id: newUser.id },
+          include: { supplierProfile: true },
+        });
+      });
+
+      // Audit log
+      await prisma.auditLog.create({
+        data: {
+          userId: request.user!.id,
+          action: 'SUPPLIER_CREATED',
+          entityId: user!.id,
+          metadata: { email: body.email, companyName: body.supplierProfile.companyName },
+        },
+      });
+
+      return user;
+    } catch (err: any) {
+      // If Firebase user was created but Prisma failed, try to clean up
+      if (err.code !== 'auth/email-already-exists') {
+        console.error('Error creating supplier:', err);
+      }
+      return reply.code(500).send({ error: err.message || 'שגיאה ביצירת הספק' });
+    }
+  });
+
   // Get all invoices (admin view) - excludes deleted by default
   server.get('/invoices', async (request: FastifyRequest) => {
     const query = request.query as { page?: string; pageSize?: string; status?: string; includeDeleted?: string };

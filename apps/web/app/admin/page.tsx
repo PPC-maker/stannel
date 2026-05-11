@@ -961,6 +961,190 @@ export default function AdminPage() {
     }
   };
 
+  const handleCreateSupplier = async () => {
+    // Step 1: Basic info
+    const step1 = await Swal.fire({
+      title: 'הוספת ספק חדש (1/3)',
+      html: `
+        <div style="text-align: right; direction: rtl;">
+          <div style="margin-bottom: 12px;">
+            <label style="display: block; margin-bottom: 4px; font-size: 14px; color: #ccc;">אימייל *</label>
+            <input id="swal-email" type="email" class="swal2-input" placeholder="email@example.com" style="text-align: left; direction: ltr;" />
+          </div>
+          <div style="margin-bottom: 12px;">
+            <label style="display: block; margin-bottom: 4px; font-size: 14px; color: #ccc;">סיסמה *</label>
+            <input id="swal-password" type="text" class="swal2-input" placeholder="מינימום 6 תווים" style="text-align: left; direction: ltr;" />
+          </div>
+          <div style="margin-bottom: 12px;">
+            <label style="display: block; margin-bottom: 4px; font-size: 14px; color: #ccc;">שם איש קשר *</label>
+            <input id="swal-name" type="text" class="swal2-input" placeholder="שם מלא" />
+          </div>
+          <div style="margin-bottom: 12px;">
+            <label style="display: block; margin-bottom: 4px; font-size: 14px; color: #ccc;">טלפון</label>
+            <input id="swal-phone" type="text" class="swal2-input" placeholder="050-0000000" style="text-align: left; direction: ltr;" />
+          </div>
+        </div>
+      `,
+      showCancelButton: true,
+      confirmButtonText: 'הבא &larr;',
+      cancelButtonText: 'ביטול',
+      confirmButtonColor: '#10B981',
+      background: '#1a2e2a',
+      color: '#fff',
+      preConfirm: () => {
+        const email = (document.getElementById('swal-email') as HTMLInputElement)?.value?.trim();
+        const password = (document.getElementById('swal-password') as HTMLInputElement)?.value;
+        const name = (document.getElementById('swal-name') as HTMLInputElement)?.value?.trim();
+        const phone = (document.getElementById('swal-phone') as HTMLInputElement)?.value?.trim();
+        if (!email || !password || !name) {
+          Swal.showValidationMessage('אימייל, סיסמה ושם הם שדות חובה');
+          return false;
+        }
+        if (password.length < 6) {
+          Swal.showValidationMessage('הסיסמה חייבת להכיל לפחות 6 תווים');
+          return false;
+        }
+        return { email, password, name, phone };
+      },
+    });
+
+    if (!step1.isConfirmed || !step1.value) return;
+
+    // Step 2: Business info
+    const step2 = await Swal.fire({
+      title: 'פרטי עסק (2/3)',
+      html: `
+        <div style="text-align: right; direction: rtl;">
+          <div style="margin-bottom: 12px;">
+            <label style="display: block; margin-bottom: 4px; font-size: 14px; color: #ccc;">שם חברה *</label>
+            <input id="swal-companyName" type="text" class="swal2-input" placeholder="שם החברה" />
+          </div>
+          <div style="margin-bottom: 12px;">
+            <label style="display: block; margin-bottom: 4px; font-size: 14px; color: #ccc;">תיאור</label>
+            <textarea id="swal-description" class="swal2-textarea" placeholder="תיאור קצר של העסק" style="direction: rtl;"></textarea>
+          </div>
+          <div style="margin-bottom: 12px;">
+            <label style="display: block; margin-bottom: 4px; font-size: 14px; color: #ccc;">כתובת</label>
+            <input id="swal-address" type="text" class="swal2-input" placeholder="כתובת העסק" />
+          </div>
+          <div style="margin-bottom: 12px;">
+            <label style="display: block; margin-bottom: 4px; font-size: 14px; color: #ccc;">אתר אינטרנט</label>
+            <input id="swal-website" type="text" class="swal2-input" placeholder="https://example.com" style="text-align: left; direction: ltr;" />
+          </div>
+        </div>
+      `,
+      showCancelButton: true,
+      confirmButtonText: 'הבא &larr;',
+      cancelButtonText: '&rarr; חזרה',
+      confirmButtonColor: '#10B981',
+      background: '#1a2e2a',
+      color: '#fff',
+      preConfirm: () => {
+        const companyName = (document.getElementById('swal-companyName') as HTMLInputElement)?.value?.trim();
+        const description = (document.getElementById('swal-description') as HTMLTextAreaElement)?.value?.trim();
+        const address = (document.getElementById('swal-address') as HTMLInputElement)?.value?.trim();
+        const website = (document.getElementById('swal-website') as HTMLInputElement)?.value?.trim();
+        if (!companyName) {
+          Swal.showValidationMessage('שם חברה הוא שדה חובה');
+          return false;
+        }
+        return { companyName, description, address, website };
+      },
+    });
+
+    if (!step2.isConfirmed || !step2.value) return;
+
+    // Step 3: Social + Commission
+    const step3 = await Swal.fire({
+      title: 'רשתות חברתיות ועמלה (3/3)',
+      html: `
+        <div style="text-align: right; direction: rtl;">
+          <div style="margin-bottom: 12px;">
+            <label style="display: block; margin-bottom: 4px; font-size: 14px; color: #ccc;">Facebook</label>
+            <input id="swal-facebook" type="text" class="swal2-input" placeholder="קישור לפייסבוק" style="text-align: left; direction: ltr;" />
+          </div>
+          <div style="margin-bottom: 12px;">
+            <label style="display: block; margin-bottom: 4px; font-size: 14px; color: #ccc;">Instagram</label>
+            <input id="swal-instagram" type="text" class="swal2-input" placeholder="קישור לאינסטגרם" style="text-align: left; direction: ltr;" />
+          </div>
+          <div style="margin-bottom: 12px;">
+            <label style="display: block; margin-bottom: 4px; font-size: 14px; color: #ccc;">LinkedIn</label>
+            <input id="swal-linkedin" type="text" class="swal2-input" placeholder="קישור ללינקדאין" style="text-align: left; direction: ltr;" />
+          </div>
+          <div style="margin-bottom: 12px;">
+            <label style="display: block; margin-bottom: 4px; font-size: 14px; color: #ccc;">אחוז עמלה</label>
+            <input id="swal-commission" type="number" class="swal2-input" placeholder="4" min="0" max="100" step="0.5" style="text-align: left; direction: ltr;" />
+          </div>
+        </div>
+      `,
+      showCancelButton: true,
+      confirmButtonText: 'צור ספק',
+      cancelButtonText: '&rarr; חזרה',
+      confirmButtonColor: '#10B981',
+      background: '#1a2e2a',
+      color: '#fff',
+      preConfirm: () => {
+        const facebook = (document.getElementById('swal-facebook') as HTMLInputElement)?.value?.trim();
+        const instagram = (document.getElementById('swal-instagram') as HTMLInputElement)?.value?.trim();
+        const linkedin = (document.getElementById('swal-linkedin') as HTMLInputElement)?.value?.trim();
+        const commissionStr = (document.getElementById('swal-commission') as HTMLInputElement)?.value?.trim();
+        const commissionRate = commissionStr ? parseFloat(commissionStr) : undefined;
+        return { facebook, instagram, linkedin, commissionRate };
+      },
+    });
+
+    if (!step3.isConfirmed || !step3.value) return;
+
+    try {
+      Swal.fire({
+        title: 'יוצר ספק...',
+        allowOutsideClick: false,
+        didOpen: () => Swal.showLoading(),
+        background: '#1a2e2a',
+        color: '#fff',
+      });
+
+      await adminApi.createSupplier({
+        email: step1.value.email,
+        password: step1.value.password,
+        name: step1.value.name,
+        phone: step1.value.phone || undefined,
+        supplierProfile: {
+          companyName: step2.value.companyName,
+          description: step2.value.description || undefined,
+          address: step2.value.address || undefined,
+          website: step2.value.website || undefined,
+          facebook: step3.value.facebook || undefined,
+          instagram: step3.value.instagram || undefined,
+          linkedin: step3.value.linkedin || undefined,
+          commissionRate: step3.value.commissionRate,
+        },
+      });
+
+      await fetchAllUsers();
+
+      Swal.fire({
+        title: 'הספק נוצר בהצלחה!',
+        text: `${step2.value.companyName} נוסף למערכת`,
+        icon: 'success',
+        confirmButtonText: 'אישור',
+        confirmButtonColor: '#10B981',
+        background: '#1a2e2a',
+        color: '#fff',
+      });
+    } catch (error: any) {
+      console.error('Error creating supplier:', error);
+      Swal.fire({
+        title: 'שגיאה',
+        text: error.message || 'שגיאה ביצירת הספק. נסה שוב.',
+        icon: 'error',
+        confirmButtonText: 'אישור',
+        background: '#1a2e2a',
+        color: '#fff',
+      });
+    }
+  };
+
   const handleVerifyInvoice = async (invoiceId: string, status: 'APPROVED' | 'REJECTED', note?: string) => {
     setProcessingInvoice(invoiceId);
     try {
@@ -1330,16 +1514,25 @@ Please analyze this error and provide a fix.
                     </span>
                   )}
                 </h2>
-                {pendingUsers.length > 0 && selectedUsers.size > 0 && (
+                <div className="flex items-center gap-2">
+                  {pendingUsers.length > 0 && selectedUsers.size > 0 && (
+                    <button
+                      onClick={handleBulkApprove}
+                      disabled={refreshing}
+                      className="px-4 py-2 bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 rounded-xl hover:bg-emerald-500/30 transition-colors flex items-center gap-2 disabled:opacity-50"
+                    >
+                      <CheckCircle2 size={18} />
+                      אשר נבחרים ({selectedUsers.size})
+                    </button>
+                  )}
                   <button
-                    onClick={handleBulkApprove}
-                    disabled={refreshing}
-                    className="px-4 py-2 bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 rounded-xl hover:bg-emerald-500/30 transition-colors flex items-center gap-2 disabled:opacity-50"
+                    onClick={handleCreateSupplier}
+                    className="px-4 py-2 bg-blue-500/20 border border-blue-500/30 text-blue-400 rounded-xl hover:bg-blue-500/30 transition-colors flex items-center gap-2"
                   >
-                    <CheckCircle2 size={18} />
-                    אשר נבחרים ({selectedUsers.size})
+                    <Building2 size={18} />
+                    + הוספת ספק חדש
                   </button>
-                )}
+                </div>
               </div>
 
               {allUsers.length === 0 ? (

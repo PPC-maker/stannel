@@ -274,6 +274,37 @@ export const adminApi = {
     return res.json();
   },
 
+  async createSupplier(data: {
+    email: string;
+    password: string;
+    name: string;
+    phone?: string;
+    company?: string;
+    address?: string;
+    supplierProfile: {
+      companyName: string;
+      description?: string;
+      phone?: string;
+      address?: string;
+      website?: string;
+      facebook?: string;
+      instagram?: string;
+      linkedin?: string;
+      commissionRate?: number;
+    };
+  }): Promise<any> {
+    const res = await fetchWithAuth(`${config.baseUrl}/admin/users/create-supplier`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) {
+      const error = await res.json().catch(() => ({ message: 'שגיאה ביצירת הספק. נסה שוב.' }));
+      throw new Error(error.message || 'שגיאה ביצירת הספק. נסה שוב.');
+    }
+    return res.json();
+  },
+
   // Invoices (Admin View)
   async getInvoices(params?: { page?: number; pageSize?: number; status?: string; includeDeleted?: boolean }): Promise<{
     data: any[];
