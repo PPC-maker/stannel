@@ -79,10 +79,8 @@ const quickActionCategories = [
     icon: Wrench,
     color: 'bg-orange-500',
     iconColor: 'text-orange-500',
-    items: [
-      { label: 'דוחות חשבוניות', href: '/invoices', icon: FileText },
-      { label: 'הגדרות', href: '/settings', icon: Wrench },
-    ],
+    directHref: '/tools',
+    items: [],
   },
   {
     id: 'suppliers',
@@ -470,7 +468,7 @@ export default function WalletPage() {
               const IconComponent = category.icon;
               const isActive = activeCategory === category.id;
               return (
-                <button key={category.id} onClick={() => setActiveCategory(isActive ? null : category.id)} className="flex flex-col items-center gap-2 quick-action-btn">
+                <button key={category.id} onClick={() => (category as any).directHref ? window.location.assign((category as any).directHref) : setActiveCategory(isActive ? null : category.id)} className="flex flex-col items-center gap-2 quick-action-btn">
                   <div
                     className={`flex items-center justify-center border transition-all duration-300 ${
                       isActive ? 'border-[#c99b4a] scale-110' : 'border-[#d6c8a8] hover:border-[#c99b4a]'
