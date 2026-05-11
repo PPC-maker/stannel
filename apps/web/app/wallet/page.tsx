@@ -465,8 +465,8 @@ export default function WalletPage() {
               { label: 'הטבות', icon: Gift, href: '/rewards' },
             ].map((item) => (
               <Link key={item.href} href={item.href} className="flex-1 flex flex-col items-center gap-2 py-3 rounded-2xl hover:bg-white/50 transition-all group">
-                <div className="w-11 h-11 rounded-[14px] flex items-center justify-center" style={{ background: 'linear-gradient(180deg, #f5edd8, #e8dcc4)' }}>
-                  <item.icon size={20} className="text-[#9e7746] group-hover:text-[#7c5a40] transition-colors" strokeWidth={1.6} />
+                <div className="w-11 h-11 rounded-[14px] flex items-center justify-center bg-white" style={{ boxShadow: '0 2px 8px rgba(64,38,18,0.08)' }}>
+                  <item.icon size={20} className="text-[#7a5a44] group-hover:text-[#5a3d2a] transition-colors" strokeWidth={1.6} />
                 </div>
                 <span className="text-[11px] font-bold text-[#2b241d]">{item.label}</span>
               </Link>
