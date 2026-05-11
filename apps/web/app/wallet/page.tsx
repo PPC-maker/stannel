@@ -32,7 +32,7 @@ import {
   Headphones,
   Search,
 } from 'lucide-react';
-import { useWalletBalance, useWalletCard, useWalletTransactions, useSuppliersDirectory } from '@/lib/api-hooks';
+import { useWalletBalance, useWalletCard, useWalletTransactions, useSuppliersDirectory, useRewardProducts } from '@/lib/api-hooks';
 import { useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '@/lib/auth-context';
 import { useAuthGuard, AuthGuardLoader } from '@/lib/useAuthGuard';
@@ -192,6 +192,81 @@ function MagazineCarousel({ metalGradient, goldShadowLight }: { metalGradient: s
   );
 }
 
+// ── Rewards Carousel ──
+function RewardsCarousel({ products, metalGradient, goldShadowLight }: { products: any[]; metalGradient: string; goldShadowLight: string }) {
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  // Auto-scroll every 3 seconds (RTL-aware)
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const step = el.clientWidth * 0.65;
+    const timer = setInterval(() => {
+      const maxScroll = el.scrollWidth - el.clientWidth;
+      const currentScroll = Math.abs(el.scrollLeft);
+      if (currentScroll >= maxScroll - 10) {
+        el.scrollTo({ left: 0, behavior: 'smooth' });
+      } else {
+        el.scrollBy({ left: -step, behavior: 'smooth' });
+      }
+    }, 3000);
+    return () => clearInterval(timer);
+  }, []);
+
+  return (
+    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }} className="mt-4">
+      <div className="flex items-center justify-between mb-3 px-1">
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: metalGradient }}>
+            <Gift size={16} className="text-white" />
+          </div>
+          <div>
+            <h3 className="text-[#2b241d] font-bold text-base tracking-tight">חנות הטבות</h3>
+            <p className="text-[#c99b4a] text-xs">ממשו נקודות להטבות</p>
+          </div>
+        </div>
+        <Link href="/rewards" className="text-[#c99b4a] text-sm font-medium hover:text-[#7c5a40] transition-colors flex items-center gap-1">
+          כל ההטבות
+          <ChevronLeft size={14} />
+        </Link>
+      </div>
+
+      <div
+        ref={scrollRef}
+        className="flex gap-3 overflow-x-auto scrollbar-hide rounded-2xl"
+        style={{ WebkitOverflowScrolling: 'touch', scrollBehavior: 'smooth', scrollSnapType: 'x mandatory' }}
+      >
+        {products.map((product: any, i: number) => (
+          <Link
+            key={product.id || i}
+            href="/rewards"
+            className="flex-shrink-0 block rounded-2xl overflow-hidden group bg-white"
+            style={{ width: '60%', scrollSnapAlign: 'start', boxShadow: goldShadowLight }}
+          >
+            <div className="relative h-40 overflow-hidden">
+              {product.imageUrl ? (
+                <img src={product.imageUrl} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" draggable={false} />
+              ) : (
+                <div className="w-full h-full bg-[#f0e6d2] flex items-center justify-center">
+                  <Gift size={40} className="text-[#c99b4a]/30" />
+                </div>
+              )}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+              <div className="absolute bottom-2 left-2 px-2 py-0.5 rounded-full text-[10px] font-bold text-white" style={{ background: metalGradient }}>
+                {product.pointCost?.toLocaleString('he-IL')} נק׳
+              </div>
+            </div>
+            <div className="p-3">
+              <h4 className="text-[#2b241d] font-bold text-sm leading-snug mb-1 line-clamp-1">{product.name}</h4>
+              <p className="text-[#8b7c69] text-[11px] line-clamp-2">{product.description}</p>
+            </div>
+          </Link>
+        ))}
+      </div>
+    </motion.div>
+  );
+}
+
 // ── Circular Progress SVG ──
 function CircularProgress({ percent, nextTier }: { percent: number; nextTier: string }) {
   const size = 120;
@@ -240,6 +315,8 @@ export default function WalletPage() {
   const { data: balance, isLoading: balanceLoading } = useWalletBalance(hasWallet);
   const { data: card, isLoading: cardLoading } = useWalletCard(hasWallet);
   const { data: transactions, isLoading: transactionsLoading } = useWalletTransactions(hasWallet);
+  const { data: productsResponse } = useRewardProducts();
+  const rewardProducts = (productsResponse as any)?.data || productsResponse || [];
   const [adminStats, setAdminStats] = useState<any>(null);
 
   const { data: allSuppliers, isLoading: suppliersLoading } = useSuppliersDirectory({}, activeCategory === 'suppliers' && (isAdmin || isArchitect));
@@ -653,6 +730,11 @@ export default function WalletPage() {
 
         {/* ── Magazine Carousel ── */}
         <MagazineCarousel metalGradient={metalGradient} goldShadowLight={goldShadowLight} />
+
+        {/* ── Rewards Carousel ── */}
+        {rewardProducts.length > 0 && (
+          <RewardsCarousel products={rewardProducts} metalGradient={metalGradient} goldShadowLight={goldShadowLight} />
+        )}
 
         {/* Spacer for bottom nav */}
         <div className="h-24" />
