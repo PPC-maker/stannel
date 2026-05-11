@@ -572,8 +572,8 @@ export default function WalletPage() {
                     style={{
                       width: 48,
                       height: 48,
-                      background: isActive ? metalGradient : '#ffffff',
-                      boxShadow: isActive ? '0 6px 20px rgba(201,155,74,0.4)' : '0 2px 8px rgba(64,38,18,0.08)',
+                      background: isActive ? metalGradient : 'transparent',
+                      boxShadow: isActive ? '0 6px 20px rgba(201,155,74,0.4)' : 'none',
                       borderRadius: 18,
                     }}
                   >
