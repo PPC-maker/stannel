@@ -378,6 +378,25 @@ export default function WalletPage() {
           </div>
         </motion.div>
 
+        {/* ── Quick Actions Row (below card) ── */}
+        <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.12 }} className="mb-3">
+          <div className="flex justify-between gap-2">
+            {[
+              { label: 'שירות אישי', icon: Headphones, href: '/profile' },
+              { label: 'פרויקטים', icon: Building2, href: '/suppliers' },
+              { label: 'אירועים', icon: Calendar, href: '/events' },
+              { label: 'הטבות', icon: Gift, href: '/rewards' },
+            ].map((item) => (
+              <Link key={item.href} href={item.href} className="flex-1 flex flex-col items-center gap-2 py-3 rounded-2xl bg-white border border-[#f0e6d2] hover:border-[#c99b4a]/40 transition-all group" style={{ boxShadow: '0 4px 12px rgba(64,38,18,0.06)' }}>
+                <div className="w-11 h-11 rounded-[14px] flex items-center justify-center" style={{ background: 'linear-gradient(180deg, #f5edd8, #e8dcc4)' }}>
+                  <item.icon size={20} className="text-[#9e7746] group-hover:text-[#7c5a40] transition-colors" strokeWidth={1.6} />
+                </div>
+                <span className="text-[11px] font-bold text-[#2b241d]">{item.label}</span>
+              </Link>
+            ))}
+          </div>
+        </motion.div>
+
         {/* ── Benefits Banner ── */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="mb-3">
           <div className="relative rounded-[20px] overflow-hidden h-[200px]" style={{ boxShadow: '0 16px 40px rgba(64,38,18,0.22)' }}>
