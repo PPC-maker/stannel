@@ -14,7 +14,7 @@ export async function suppliersDirectoryRoutes(server: FastifyInstance) {
       console.log('Fetching suppliers...');
 
       const suppliers = await prisma.user.findMany({
-        where: { role: 'SUPPLIER' },
+        where: { role: 'SUPPLIER', isDeleted: false },
         include: { supplierProfile: true },
       });
 

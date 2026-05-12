@@ -243,6 +243,29 @@ export const adminApi = {
     return res.json();
   },
 
+  async getDeletedUsers(): Promise<{ data: any[] }> {
+    const res = await fetchWithAuth(`${config.baseUrl}/admin/users/deleted`, {
+      headers: getHeaders(),
+    });
+    if (!res.ok) {
+      const error = await res.json().catch(() => ({ message: 'שגיאה בטעינת משתמשים שנמחקו.' }));
+      throw new Error(error.message);
+    }
+    return res.json();
+  },
+
+  async restoreUser(userId: string): Promise<{ success: boolean }> {
+    const res = await fetchWithAuth(`${config.baseUrl}/admin/users/${userId}/restore`, {
+      method: 'PATCH',
+      headers: getHeaders(),
+    });
+    if (!res.ok) {
+      const error = await res.json().catch(() => ({ message: 'שגיאה בשחזור המשתמש.' }));
+      throw new Error(error.message);
+    }
+    return res.json();
+  },
+
   async updateUser(userId: string, data: {
     name?: string;
     phone?: string;

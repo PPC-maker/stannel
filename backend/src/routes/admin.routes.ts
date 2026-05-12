@@ -73,6 +73,7 @@ export async function adminRoutes(server: FastifyInstance) {
     const pageSize = parseInt(query.pageSize || '20');
 
     const where = {
+      isDeleted: false,
       ...(query.role && { role: query.role as any }),
       ...(query.isActive !== undefined && { isActive: query.isActive === 'true' }),
     };
@@ -322,96 +323,97 @@ export async function adminRoutes(server: FastifyInstance) {
     return result;
   });
 
-  // Delete user
+  // Soft-delete user (move to recycle bin)
   server.delete('/users/:id', async (request: FastifyRequest, reply: FastifyReply) => {
     const { id } = request.params as { id: string };
 
-    // Check if user exists
     const user = await prisma.user.findUnique({ where: { id } });
     if (!user) {
       return reply.code(404).send({ error: 'User not found' });
     }
 
-    // Don't allow deleting admins
     if (user.role === 'ADMIN') {
       return reply.code(403).send({ error: 'Cannot delete admin users' });
     }
 
-    // Delete from Firebase Auth first
+    // Soft delete - mark as deleted, deactivate, disable Firebase
+    await prisma.user.update({
+      where: { id },
+      data: { isDeleted: true, deletedAt: new Date(), isActive: false },
+    });
+
+    // Disable Firebase account (don't delete - keep for audit)
     if (user.firebaseUid) {
       try {
         const auth = getFirebaseAuth();
         if (auth) {
-          await auth.deleteUser(user.firebaseUid);
+          await auth.updateUser(user.firebaseUid, { disabled: true });
         }
-      } catch (firebaseError: any) {
-        // If user doesn't exist in Firebase, continue with DB deletion
-        if (firebaseError.code !== 'auth/user-not-found') {
-          console.error('Error deleting user from Firebase:', firebaseError);
+      } catch (e: any) {
+        if (e.code !== 'auth/user-not-found') {
+          console.error('Error disabling Firebase user:', e);
         }
       }
     }
 
-    // Delete ALL related records first (cascade)
-    await prisma.$transaction(async (tx) => {
-      // Get profiles first
-      const ap = await tx.architectProfile.findFirst({ where: { userId: id } });
-      const sp = await tx.supplierProfile.findFirst({ where: { userId: id } });
-
-      // Delete architect-related records
-      if (ap) {
-        await tx.invoiceStatusHistory.deleteMany({ where: { invoice: { architectId: ap.id } } });
-        await tx.invoice.deleteMany({ where: { architectId: ap.id } });
-        await tx.cardTransaction.deleteMany({ where: { architectId: ap.id } });
-        await tx.bonusTransaction.deleteMany({ where: { architectId: ap.id } });
-        await tx.meeting.deleteMany({ where: { architectId: ap.id } });
-        await tx.architectGoal.deleteMany({ where: { architectId: ap.id } });
-        await tx.redemption.deleteMany({ where: { architectId: ap.id } });
-      }
-
-      // Delete supplier-related records
-      if (sp) {
-        // Delete invoices linked to this supplier (and their status history)
-        const supplierInvoices = await tx.invoice.findMany({ where: { supplierId: sp.id }, select: { id: true } });
-        if (supplierInvoices.length > 0) {
-          const invoiceIds = supplierInvoices.map(inv => inv.id);
-          await tx.invoiceStatusHistory.deleteMany({ where: { invoiceId: { in: invoiceIds } } });
-          await tx.invoice.deleteMany({ where: { supplierId: sp.id } });
-        }
-        await tx.meeting.deleteMany({ where: { supplierId: sp.id } });
-        await tx.supplierGoal.deleteMany({ where: { supplierId: sp.id } });
-        await tx.supplierPayment.deleteMany({ where: { supplierId: sp.id } });
-        await tx.supplierCardTransaction.deleteMany({ where: { supplierId: sp.id } });
-        await tx.supplierProject.deleteMany({ where: { supplierId: sp.id } });
-        await tx.contract.deleteMany({ where: { supplierId: sp.id } });
-      }
-
-      // Delete user-level records
-      await tx.eventRegistration.deleteMany({ where: { userId: id } });
-      await tx.notification.deleteMany({ where: { recipientId: id } });
-      await tx.profileView.deleteMany({ where: { viewedUserId: id } });
-      await tx.profileView.deleteMany({ where: { viewerId: id } });
-      await tx.auditLog.deleteMany({ where: { userId: id } });
-
-      // Delete profiles
-      if (ap) await tx.architectProfile.delete({ where: { id: ap.id } });
-      if (sp) await tx.supplierProfile.delete({ where: { id: sp.id } });
-
-      // Delete the user
-      await tx.user.delete({ where: { id } });
-    });
-
-    // Audit log
     await prisma.auditLog.create({
       data: {
         userId: request.user!.id,
-        action: 'USER_DELETED',
+        action: 'USER_SOFT_DELETED',
         entityId: id,
         metadata: { deletedUserEmail: user.email },
       },
     });
 
     return { success: true };
+  });
+
+  // Restore soft-deleted user
+  server.patch('/users/:id/restore', async (request: FastifyRequest, reply: FastifyReply) => {
+    const { id } = request.params as { id: string };
+
+    const user = await prisma.user.findUnique({ where: { id } });
+    if (!user) {
+      return reply.code(404).send({ error: 'User not found' });
+    }
+
+    await prisma.user.update({
+      where: { id },
+      data: { isDeleted: false, deletedAt: null, isActive: true },
+    });
+
+    // Re-enable Firebase account
+    if (user.firebaseUid) {
+      try {
+        const auth = getFirebaseAuth();
+        if (auth) {
+          await auth.updateUser(user.firebaseUid, { disabled: false });
+        }
+      } catch (e: any) {
+        console.error('Error re-enabling Firebase user:', e);
+      }
+    }
+
+    await prisma.auditLog.create({
+      data: {
+        userId: request.user!.id,
+        action: 'USER_RESTORED',
+        entityId: id,
+        metadata: { restoredUserEmail: user.email },
+      },
+    });
+
+    return { success: true };
+  });
+
+  // Get soft-deleted users (recycle bin)
+  server.get('/users/deleted', async (request: FastifyRequest, reply: FastifyReply) => {
+    const users = await prisma.user.findMany({
+      where: { isDeleted: true },
+      include: { architectProfile: true, supplierProfile: true },
+      orderBy: { deletedAt: 'desc' },
+    });
+    return { data: users };
   });
 
   // Login as user (admin impersonation)
