@@ -567,12 +567,8 @@ export default function WalletPage() {
             {/* Top label */}
             <p className="absolute top-4 right-4 text-white/50 text-xs font-medium tracking-wide">הטבות שמחכות לחבר</p>
 
-            {/* Content */}
+            {/* CTA only */}
             <div className="absolute bottom-0 right-0 p-5">
-              <h3 className="text-white text-[28px] font-bold leading-tight mb-2 drop-shadow-lg">הטבות<br />בלעדיות</h3>
-              <p className="text-white/60 text-[13px] leading-relaxed mb-3">
-                גישה לשלושות השירות,<br />הזדמנויות ותוכניות<br />הטבות ביוחד.
-              </p>
               <Link href="/rewards" className="text-[#e6cc8d] text-[15px] font-bold hover:text-white transition-colors">
                 ← לכל ההטבות
               </Link>
