@@ -267,6 +267,77 @@ function RewardsCarousel({ products, metalGradient, goldShadowLight }: { product
   );
 }
 
+// ── Suppliers Carousel ──
+function SuppliersCarousel({ metalGradient, goldShadowLight, allSuppliers, suppliersLoading }: { metalGradient: string; goldShadowLight: string; allSuppliers: any; suppliersLoading: boolean }) {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const suppliers = allSuppliers?.data || [];
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el || suppliers.length === 0) return;
+    const step = 100;
+    const timer = setInterval(() => {
+      const maxScroll = el.scrollWidth - el.clientWidth;
+      const currentScroll = Math.abs(el.scrollLeft);
+      if (currentScroll >= maxScroll - 10) {
+        el.scrollTo({ left: 0, behavior: 'smooth' });
+      } else {
+        el.scrollBy({ left: -step, behavior: 'smooth' });
+      }
+    }, 3000);
+    return () => clearInterval(timer);
+  }, [suppliers.length]);
+
+  if (suppliersLoading || suppliers.length === 0) return null;
+
+  return (
+    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }} className="mt-4">
+      <div className="flex items-center justify-between mb-3 px-1">
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: metalGradient }}>
+            <Building2 size={16} className="text-white" />
+          </div>
+          <div>
+            <h3 className="text-[#2b241d] font-bold text-base tracking-tight">הספקים שלנו</h3>
+            <p className="text-[#c99b4a] text-xs">ספקים מובילים בתעשייה</p>
+          </div>
+        </div>
+        <Link href="/suppliers" className="text-[#c99b4a] text-sm font-medium hover:text-[#7c5a40] transition-colors flex items-center gap-1">
+          כל הספקים
+          <ChevronLeft size={14} />
+        </Link>
+      </div>
+
+      <div
+        ref={scrollRef}
+        className="flex gap-3 overflow-x-auto scrollbar-hide"
+        style={{ WebkitOverflowScrolling: 'touch', scrollBehavior: 'smooth', scrollSnapType: 'x mandatory' }}
+      >
+        {suppliers.map((supplier: any) => {
+          const logo = supplier.profileImage || supplier.businessImages?.[0];
+          return (
+            <Link
+              key={supplier.id}
+              href={`/suppliers/${supplier.id}`}
+              className="flex-shrink-0 flex flex-col items-center gap-2 p-3 rounded-2xl bg-white group hover:shadow-md transition-all"
+              style={{ width: 100, scrollSnapAlign: 'start', boxShadow: goldShadowLight }}
+            >
+              <div className="w-16 h-16 rounded-xl overflow-hidden bg-[#f0e6d2] flex items-center justify-center">
+                {logo ? (
+                  <img src={logo} alt={supplier.companyName || ''} className="w-full h-full object-cover" />
+                ) : (
+                  <Building2 size={24} className="text-[#c99b4a]" />
+                )}
+              </div>
+              <span className="text-[10px] font-bold text-[#2b241d] text-center line-clamp-2 leading-tight">{supplier.companyName || supplier.name}</span>
+            </Link>
+          );
+        })}
+      </div>
+    </motion.div>
+  );
+}
+
 // ── Circular Progress SVG ──
 function CircularProgress({ percent, nextTier }: { percent: number; nextTier: string }) {
   const size = 120;
@@ -319,7 +390,7 @@ export default function WalletPage() {
   const rewardProducts = (productsResponse as any)?.data || productsResponse || [];
   const [adminStats, setAdminStats] = useState<any>(null);
 
-  const { data: allSuppliers, isLoading: suppliersLoading } = useSuppliersDirectory({}, activeCategory === 'suppliers' && (isAdmin || isArchitect));
+  const { data: allSuppliers, isLoading: suppliersLoading } = useSuppliersDirectory({});
 
   const fetchAdminStats = () => {
     if (!isAdmin) return;
@@ -727,6 +798,9 @@ export default function WalletPage() {
             )}
           </AnimatePresence>
         </motion.div>
+
+        {/* ── Suppliers Carousel ── */}
+        <SuppliersCarousel metalGradient={metalGradient} goldShadowLight={goldShadowLight} allSuppliers={allSuppliers} suppliersLoading={suppliersLoading} />
 
         {/* ── Magazine Carousel ── */}
         <MagazineCarousel metalGradient={metalGradient} goldShadowLight={goldShadowLight} />
