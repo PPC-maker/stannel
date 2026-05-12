@@ -12,7 +12,27 @@ export default function Error({
 }) {
   const [dots, setDots] = useState('');
 
+  const isAuthError = error.message?.includes('401') || error.message?.includes('Unauthorized') || error.message?.includes('Missing authorization');
+
   useEffect(() => {
+    // If auth error, redirect to login
+    if (isAuthError) {
+      const Swal = require('sweetalert2').default;
+      Swal.fire({
+        title: 'שים לב',
+        text: 'אתה לא מחובר למערכת. התחבר כדי לצפות בדף זה.',
+        icon: 'info',
+        confirmButtonText: 'להתחברות',
+        confirmButtonColor: '#d4af37',
+        background: '#1a2e2a',
+        color: '#fff',
+        allowOutsideClick: false,
+      }).then(() => {
+        window.location.href = '/login';
+      });
+      return;
+    }
+
     console.error('Application error:', error);
 
     // Report error via email
