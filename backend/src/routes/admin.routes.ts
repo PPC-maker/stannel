@@ -354,41 +354,42 @@ export async function adminRoutes(server: FastifyInstance) {
 
     // Delete ALL related records first (cascade)
     await prisma.$transaction(async (tx) => {
-      // Delete invoices
-      await tx.invoice.deleteMany({ where: { architectId: id } });
-      await tx.invoiceStatusHistory.deleteMany({ where: { invoice: { architectId: id } } }).catch(() => {});
-      // Delete notifications
-      await tx.notification.deleteMany({ where: { recipientId: id } });
-      // Delete card transactions
-      await tx.cardTransaction.deleteMany({ where: { architectProfileId: id } }).catch(() => {});
-      // Delete bonus transactions
-      await tx.bonusTransaction.deleteMany({ where: { architectProfileId: id } }).catch(() => {});
-      // Delete event registrations
-      await tx.eventRegistration.deleteMany({ where: { userId: id } }).catch(() => {});
-      // Delete redemptions
-      await tx.redemption.deleteMany({ where: { userId: id } }).catch(() => {});
-      // Delete goals
-      await tx.architectGoal.deleteMany({ where: { architectProfileId: id } }).catch(() => {});
-      await tx.supplierGoal.deleteMany({ where: { supplierProfileId: id } }).catch(() => {});
-      // Delete meetings
-      await tx.meeting.deleteMany({ where: { OR: [{ architectId: id }, { supplierId: id }] } }).catch(() => {});
-      // Delete profile views
-      await tx.profileView.deleteMany({ where: { OR: [{ viewerUserId: id }, { viewedUserId: id }] } }).catch(() => {});
-      // Delete audit logs for this user
-      await tx.auditLog.deleteMany({ where: { userId: id } }).catch(() => {});
-      // Delete system logs
-      await tx.systemLog.deleteMany({ where: { userId: id } }).catch(() => {});
-      // Delete architect profile if exists
-      await tx.architectProfile.deleteMany({ where: { userId: id } });
-      // Delete supplier profile (and related)
+      // Get profiles first
+      const ap = await tx.architectProfile.findFirst({ where: { userId: id } });
       const sp = await tx.supplierProfile.findFirst({ where: { userId: id } });
-      if (sp) {
-        await tx.supplierPayment.deleteMany({ where: { supplierProfileId: sp.id } }).catch(() => {});
-        await tx.supplierCardTransaction.deleteMany({ where: { supplierProfileId: sp.id } }).catch(() => {});
-        await tx.supplierProject.deleteMany({ where: { supplierProfileId: sp.id } }).catch(() => {});
-        await tx.contract.deleteMany({ where: { supplierProfileId: sp.id } }).catch(() => {});
-        await tx.supplierProfile.delete({ where: { id: sp.id } });
+
+      // Delete architect-related records
+      if (ap) {
+        await tx.invoiceStatusHistory.deleteMany({ where: { invoice: { architectId: ap.id } } });
+        await tx.invoice.deleteMany({ where: { architectId: ap.id } });
+        await tx.cardTransaction.deleteMany({ where: { architectId: ap.id } });
+        await tx.bonusTransaction.deleteMany({ where: { architectId: ap.id } });
+        await tx.meeting.deleteMany({ where: { architectId: ap.id } });
+        await tx.architectGoal.deleteMany({ where: { architectId: ap.id } });
+        await tx.redemption.deleteMany({ where: { architectId: ap.id } });
       }
+
+      // Delete supplier-related records
+      if (sp) {
+        await tx.meeting.deleteMany({ where: { supplierId: sp.id } });
+        await tx.supplierGoal.deleteMany({ where: { supplierId: sp.id } });
+        await tx.supplierPayment.deleteMany({ where: { supplierId: sp.id } });
+        await tx.supplierCardTransaction.deleteMany({ where: { supplierId: sp.id } });
+        await tx.supplierProject.deleteMany({ where: { supplierId: sp.id } });
+        await tx.contract.deleteMany({ where: { supplierId: sp.id } });
+      }
+
+      // Delete user-level records
+      await tx.eventRegistration.deleteMany({ where: { userId: id } });
+      await tx.notification.deleteMany({ where: { recipientId: id } });
+      await tx.profileView.deleteMany({ where: { viewedUserId: id } });
+      await tx.profileView.deleteMany({ where: { viewerId: id } });
+      await tx.auditLog.deleteMany({ where: { userId: id } });
+
+      // Delete profiles
+      if (ap) await tx.architectProfile.delete({ where: { id: ap.id } });
+      if (sp) await tx.supplierProfile.delete({ where: { id: sp.id } });
+
       // Delete the user
       await tx.user.delete({ where: { id } });
     });
