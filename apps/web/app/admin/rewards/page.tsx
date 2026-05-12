@@ -344,7 +344,7 @@ export default function AdminRewardsPage() {
                 <div key={product.id} className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 overflow-hidden group">
                   {/* Product Image - Click to view */}
                   <div
-                    className="relative h-48 -mx-6 -mt-6 mb-4 bg-gradient-to-br from-white/5 to-white/10 cursor-pointer"
+                    className="relative h-56 -mx-6 -mt-6 mb-4 bg-white cursor-pointer"
                     onClick={() => handleView(product)}
                   >
                     {product.imageUrl ? (
@@ -352,7 +352,7 @@ export default function AdminRewardsPage() {
                         src={product.imageUrl}
                         alt={product.name}
                         fill
-                        className="object-cover"
+                        className="object-contain p-4"
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                       />
                     ) : (
