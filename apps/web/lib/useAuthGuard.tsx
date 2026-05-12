@@ -1,21 +1,35 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from './auth-context';
+import Swal from 'sweetalert2';
 
 /**
  * Hook to protect pages from unauthenticated access.
- * Redirects to login page if user is not authenticated.
+ * Shows SweetAlert and redirects to login page if user is not authenticated.
  * Returns { isReady } - true when auth check is complete and user is authenticated.
  */
 export function useAuthGuard() {
   const router = useRouter();
   const { user, loading } = useAuth();
+  const alertShown = useRef(false);
 
   useEffect(() => {
-    if (!loading && !user) {
-      router.replace('/login');
+    if (!loading && !user && !alertShown.current) {
+      alertShown.current = true;
+      Swal.fire({
+        title: 'שים לב',
+        text: 'אתה לא מחובר למערכת. התחבר כדי לצפות בדף זה.',
+        icon: 'info',
+        confirmButtonText: 'להתחברות',
+        confirmButtonColor: '#d4af37',
+        background: '#1a2e2a',
+        color: '#fff',
+        allowOutsideClick: false,
+      }).then(() => {
+        router.replace('/login');
+      });
     }
   }, [user, loading, router]);
 
