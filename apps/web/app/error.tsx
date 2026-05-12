@@ -16,21 +16,9 @@ export default function Error({
   const isAuthError = errorMsg.includes('401') || errorMsg.includes('403') || errorMsg.includes('Unauthorized') || errorMsg.includes('Forbidden') || errorMsg.includes('Missing authorization') || errorMsg.includes('not authenticated') || errorMsg.includes('#310');
 
   useEffect(() => {
-    // If auth error, redirect to login
+    // If auth error, redirect to login immediately
     if (isAuthError) {
-      const Swal = require('sweetalert2').default;
-      Swal.fire({
-        title: 'שים לב',
-        text: 'אתה לא מחובר למערכת. התחבר כדי לצפות בדף זה.',
-        icon: 'info',
-        confirmButtonText: 'להתחברות',
-        confirmButtonColor: '#d4af37',
-        background: '#1a2e2a',
-        color: '#fff',
-        allowOutsideClick: false,
-      }).then(() => {
-        window.location.href = '/login';
-      });
+      window.location.href = '/login?reason=auth';
       return;
     }
 

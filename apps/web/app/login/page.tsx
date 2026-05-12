@@ -5,11 +5,13 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/lib/auth-context';
+import Swal from 'sweetalert2';
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { login, loginWithGoogle, user, loading: authLoading } = useAuth();
 
   const [email, setEmail] = useState('');
@@ -21,6 +23,18 @@ export default function LoginPage() {
 
   useEffect(() => {
     setMounted(true);
+    // Show auth alert if redirected from protected page
+    if (searchParams.get('reason') === 'auth') {
+      Swal.fire({
+        title: 'שים לב',
+        text: 'אתה לא מחובר למערכת. התחבר כדי לצפות בדף.',
+        icon: 'info',
+        confirmButtonText: 'הבנתי',
+        confirmButtonColor: '#d4af37',
+        background: '#0f2620',
+        color: '#fff',
+      });
+    }
   }, []);
 
   // Redirect if already logged in
@@ -80,12 +94,12 @@ export default function LoginPage() {
   };
 
   if (!mounted) {
-    return <div className="min-h-screen bg-[#0f2620]" />;
+    return <div className="min-h-screen bg-[#0a0f0d]" />;
   }
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-[#0f2620] -mt-16">
-      {/* Background Image - positioned at top */}
+    <div className="min-h-screen relative overflow-hidden bg-[#0a0f0d] -mt-16">
+      {/* Background Image */}
       <div className="absolute inset-x-0 top-0 h-[42vh]">
         <Image
           src="/bg_top.jpg"
@@ -94,13 +108,12 @@ export default function LoginPage() {
           className="object-cover object-top"
           priority
         />
-        {/* Gradient fade to dark green */}
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#0f2620]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#0a0f0d]" />
       </div>
 
       {/* Content */}
       <div className="relative z-10 min-h-screen flex flex-col items-center justify-center px-6 py-6 pt-[40vh]">
-        {/* Logo + Tagline */}
+        {/* Tagline */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -113,7 +126,7 @@ export default function LoginPage() {
           <h2 className="text-2xl md:text-3xl text-white font-semibold leading-snug tracking-wide" style={{ fontFamily: "'Playfair Display', serif" }}>
             for architects & designers
           </h2>
-          <p className="text-white/60 mt-3 text-base font-medium tracking-widest">
+          <p className="text-[#C9A961]/70 mt-3 text-base font-medium tracking-widest">
             Connect. Create. Be part of the industry.
           </p>
         </motion.div>
@@ -125,7 +138,6 @@ export default function LoginPage() {
           transition={{ duration: 0.6, delay: 0.4 }}
           className="w-full max-w-md"
         >
-          {/* Error Message */}
           {error && (
             <div className="mb-4 p-3 bg-red-500/20 border border-red-500/30 rounded-xl text-red-200 text-sm text-center">
               {error}
@@ -133,10 +145,9 @@ export default function LoginPage() {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-3">
-            {/* Email Input */}
-            <label className="block text-white/60 text-sm font-medium mb-1">אימייל <span className="text-red-400/70 text-xs font-normal">(שדה חובה)</span></label>
+            <label className="block text-[#C9A961]/70 text-sm font-medium mb-1">אימייל <span className="text-red-400/70 text-xs font-normal">(שדה חובה)</span></label>
             <div className="relative">
-              <Mail className="absolute right-5 top-1/2 -translate-y-1/2 text-white/70 z-10" size={24} />
+              <Mail className="absolute right-5 top-1/2 -translate-y-1/2 text-[#C9A961]/60 z-10" size={24} />
               <input
                 type="email"
                 placeholder="אימייל / טלפון"
@@ -144,14 +155,13 @@ export default function LoginPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 disabled={isLoading}
-                className="w-full bg-white/10 backdrop-blur border border-white/20 rounded-2xl px-5 py-5 pr-14 text-white placeholder:text-white/40 focus:border-white/40 focus:outline-none focus:ring-2 focus:ring-white/20 transition-all text-lg font-medium text-right"
+                className="w-full bg-white/8 backdrop-blur border border-[#C9A961]/25 rounded-2xl px-5 py-5 pr-14 text-white placeholder:text-white/30 focus:border-[#C9A961]/60 focus:outline-none focus:ring-2 focus:ring-[#C9A961]/15 transition-all text-lg font-medium text-right"
               />
             </div>
 
-            {/* Password Input */}
-            <label className="block text-white/60 text-sm font-medium mb-1">סיסמה <span className="text-red-400/70 text-xs font-normal">(שדה חובה)</span></label>
+            <label className="block text-[#C9A961]/70 text-sm font-medium mb-1">סיסמה <span className="text-red-400/70 text-xs font-normal">(שדה חובה)</span></label>
             <div className="relative">
-              <Lock className="absolute right-5 top-1/2 -translate-y-1/2 text-white/70 z-10" size={24} />
+              <Lock className="absolute right-5 top-1/2 -translate-y-1/2 text-[#C9A961]/60 z-10" size={24} />
               <input
                 type={showPassword ? 'text' : 'password'}
                 placeholder="סיסמה"
@@ -159,29 +169,28 @@ export default function LoginPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 disabled={isLoading}
-                className="w-full bg-white/10 backdrop-blur border border-white/20 rounded-2xl px-5 py-5 pr-14 pl-14 text-white placeholder:text-white/40 focus:border-white/40 focus:outline-none focus:ring-2 focus:ring-white/20 transition-all text-lg font-medium text-right"
+                className="w-full bg-white/8 backdrop-blur border border-[#C9A961]/25 rounded-2xl px-5 py-5 pr-14 pl-14 text-white placeholder:text-white/30 focus:border-[#C9A961]/60 focus:outline-none focus:ring-2 focus:ring-[#C9A961]/15 transition-all text-lg font-medium text-right"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute left-5 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-colors"
+                className="absolute left-5 top-1/2 -translate-y-1/2 text-white/40 hover:text-[#C9A961] transition-colors"
               >
                 {showPassword ? <EyeOff size={22} /> : <Eye size={22} />}
               </button>
             </div>
 
-            {/* Forgot Password */}
             <div className="text-right">
-              <Link href="/forgot-password" className="text-white/70 hover:text-white text-base font-medium transition-colors">
+              <Link href="/forgot-password" className="text-[#C9A961]/60 hover:text-[#C9A961] text-base font-medium transition-colors">
                 שכחתם סיסמה?
               </Link>
             </div>
 
-            {/* Login Button */}
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-[#1d5a45] hover:bg-[#2d6a55] text-white font-bold py-5 rounded-2xl transition-colors disabled:opacity-50 text-xl tracking-wide"
+              className="w-full text-white font-bold py-5 rounded-2xl transition-all disabled:opacity-50 text-xl tracking-wide hover:translate-y-[-2px]"
+              style={{ background: 'linear-gradient(135deg, #E8C97D 0%, #C9A961 40%, #8B6F3A 100%)', boxShadow: '0 6px 24px rgba(201,169,97,0.25)' }}
             >
               {isLoading ? (
                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin mx-auto" />
@@ -191,19 +200,17 @@ export default function LoginPage() {
             </button>
           </form>
 
-          {/* Divider */}
           <div className="flex items-center gap-4 my-4">
-            <div className="flex-1 h-px bg-white/20" />
-            <span className="text-white/50 text-base font-medium">או</span>
-            <div className="flex-1 h-px bg-white/20" />
+            <div className="flex-1 h-px bg-[#C9A961]/20" />
+            <span className="text-[#C9A961]/50 text-base font-medium">או</span>
+            <div className="flex-1 h-px bg-[#C9A961]/20" />
           </div>
 
-          {/* Google Login */}
           <button
             type="button"
             onClick={handleGoogleLogin}
             disabled={isLoading}
-            className="w-full bg-white/10 backdrop-blur border border-white/20 hover:bg-white/20 text-white py-5 rounded-2xl transition-all flex items-center justify-center gap-3 disabled:opacity-50 text-lg font-semibold"
+            className="w-full bg-white/8 backdrop-blur border border-[#C9A961]/25 hover:border-[#C9A961]/50 text-white py-5 rounded-2xl transition-all flex items-center justify-center gap-3 disabled:opacity-50 text-lg font-semibold"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24">
               <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -214,17 +221,15 @@ export default function LoginPage() {
             <span>המשך עם Google</span>
           </button>
 
-          {/* Sign Up Link */}
-          <p className="text-center mt-5 text-white/70 text-base font-medium">
+          <p className="text-center mt-5 text-white/50 text-base font-medium">
             אין לכם חשבון?{' '}
-            <Link href="/register" className="text-white hover:underline font-bold">
+            <Link href="/register" className="text-[#C9A961] hover:underline font-bold">
               הירשמו כאן
             </Link>
           </p>
 
-          {/* Terms Link */}
           <p className="text-center mt-3">
-            <Link href="/terms" className="text-white/40 hover:text-white/60 text-xs transition-colors">
+            <Link href="/terms" className="text-white/30 hover:text-[#C9A961]/60 text-xs transition-colors">
               תקנון ותנאי שימוש
             </Link>
           </p>
