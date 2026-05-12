@@ -229,6 +229,8 @@ export default function AdminPage() {
   const [loggingInAs, setLoggingInAs] = useState<string | null>(null);
   const [deletingUser, setDeletingUser] = useState<string | null>(null);
   const [deletedInvoices, setDeletedInvoices] = useState<AdminInvoice[]>([]);
+  const [deletedUsers, setDeletedUsers] = useState<AdminUser[]>([]);
+  const [restoringUser, setRestoringUser] = useState<string | null>(null);
   const [expandedArchitects, setExpandedArchitects] = useState<Set<string>>(new Set());
   const [expandedUserId, setExpandedUserId] = useState<string | null>(null);
   const [editingUserId, setEditingUserId] = useState<string | null>(null);
@@ -299,6 +301,41 @@ export default function AdminPage() {
       setDeletedInvoices(response.data as AdminInvoice[]);
     } catch (error) {
       console.error('Error fetching deleted invoices:', error);
+    }
+  };
+
+  const fetchDeletedUsers = async () => {
+    try {
+      const response = await adminApi.getDeletedUsers();
+      setDeletedUsers(response.data as AdminUser[]);
+    } catch (error) {
+      console.error('Error fetching deleted users:', error);
+    }
+  };
+
+  const handleRestoreUser = async (userId: string, userName: string) => {
+    const result = await Swal.fire({
+      title: 'שחזור משתמש',
+      text: `האם לשחזר את "${userName}"?`,
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonText: 'שחזר',
+      cancelButtonText: 'ביטול',
+      confirmButtonColor: '#10B981',
+      background: '#1a2e2a',
+      color: '#fff',
+    });
+    if (!result.isConfirmed) return;
+    setRestoringUser(userId);
+    try {
+      await adminApi.restoreUser(userId);
+      await fetchDeletedUsers();
+      await fetchAllUsers();
+      Swal.fire({ title: 'שוחזר!', text: `${userName} שוחזר בהצלחה`, icon: 'success', timer: 2000, showConfirmButton: false, background: '#1a2e2a', color: '#fff' });
+    } catch (error: any) {
+      Swal.fire({ title: 'שגיאה', text: error.message, icon: 'error', background: '#1a2e2a', color: '#fff' });
+    } finally {
+      setRestoringUser(null);
     }
   };
 
@@ -412,9 +449,11 @@ export default function AdminPage() {
   useEffect(() => {
     if (!isReady || activeTab !== 'recycle-bin') return;
 
+    fetchDeletedUsers();
     const interval = setInterval(() => {
       fetchDeletedInvoices();
-    }, 10000); // 10 seconds
+      fetchDeletedUsers();
+    }, 10000);
 
     return () => clearInterval(interval);
   }, [isReady, activeTab]);
@@ -2831,6 +2870,59 @@ Please analyze this error and provide a fix.
                   })}
                 </div>
               )}
+
+              {/* ── Deleted Users Section ── */}
+              <div className="mt-8 pt-6 border-t border-white/10">
+                <h2 className="text-xl font-semibold text-white flex items-center gap-2 mb-4">
+                  <Users className="text-orange-400" />
+                  משתמשים שנמחקו ({deletedUsers.length})
+                </h2>
+                <p className="text-white/50 text-sm mb-4">
+                  משתמשים שנמחקו נשמרים כאן לצמיתות. ניתן לשחזר בכל עת. החשבוניות שלהם נשמרות במערכת.
+                </p>
+
+                {deletedUsers.length === 0 ? (
+                  <div className="text-center py-8">
+                    <Users className="w-12 h-12 mx-auto text-white/20 mb-2" />
+                    <p className="text-white/40 text-sm">אין משתמשים מחוקים</p>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {deletedUsers.map((user) => {
+                      const deletedDate = (user as any).deletedAt ? new Date((user as any).deletedAt) : new Date();
+                      return (
+                        <div key={user.id} className="p-4 rounded-lg border border-white/10 bg-white/5 flex items-center justify-between">
+                          <div className="flex items-center gap-4">
+                            <div className="p-2 rounded-lg bg-orange-500/20">
+                              {user.role === 'SUPPLIER' ? <Building2 size={20} className="text-orange-400" /> : <Users size={20} className="text-orange-400" />}
+                            </div>
+                            <div>
+                              <p className="text-white font-medium">{user.name}</p>
+                              <p className="text-white/70 text-sm">{user.email}</p>
+                              <p className="text-white/50 text-xs">
+                                {user.role === 'SUPPLIER' ? 'ספק' : user.role === 'ARCHITECT' ? 'אדריכל' : user.role} •
+                                נמחק: {deletedDate.toLocaleDateString('he-IL')}
+                              </p>
+                            </div>
+                          </div>
+                          <button
+                            onClick={() => handleRestoreUser(user.id, user.name)}
+                            disabled={restoringUser === user.id}
+                            className="px-4 py-2 bg-green-500/20 border border-green-500/30 text-green-400 rounded-lg hover:bg-green-500/30 transition-colors flex items-center gap-2 disabled:opacity-50"
+                          >
+                            {restoringUser === user.id ? (
+                              <Loader2 size={16} className="animate-spin" />
+                            ) : (
+                              <RotateCcw size={16} />
+                            )}
+                            שחזר
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
             </div>
           </motion.div>
         )}
