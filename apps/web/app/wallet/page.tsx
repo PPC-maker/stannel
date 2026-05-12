@@ -319,10 +319,10 @@ function SuppliersCarousel({ metalGradient, goldShadowLight, allSuppliers, suppl
             <Link
               key={supplier.id}
               href={`/suppliers/${supplier.id}`}
-              className="flex-shrink-0 flex flex-col items-center gap-2 p-3 rounded-2xl bg-white group hover:shadow-md transition-all"
-              style={{ width: 100, scrollSnapAlign: 'start', boxShadow: goldShadowLight }}
+              className="flex-shrink-0 flex flex-col items-center gap-2 p-3 rounded-2xl group hover:bg-white/50 transition-all"
+              style={{ width: 100, scrollSnapAlign: 'start' }}
             >
-              <div className="w-16 h-16 rounded-xl overflow-hidden bg-[#f0e6d2] flex items-center justify-center">
+              <div className="w-16 h-16 rounded-xl overflow-hidden flex items-center justify-center">
                 {logo ? (
                   <img src={logo} alt={supplier.companyName || ''} className="w-full h-full object-cover" />
                 ) : (
