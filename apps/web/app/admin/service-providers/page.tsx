@@ -390,33 +390,43 @@ export default function ManageServiceProvidersPage() {
                       </div>
                       <div className="flex items-center gap-2">
                         {/* Active toggle */}
-                        <button
-                          onClick={() => handleToggleActive(provider)}
-                          className={`inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                            provider.isActive
-                              ? 'bg-green-500/20 text-green-400 hover:bg-green-500/30'
-                              : 'bg-red-500/20 text-red-400 hover:bg-red-500/30'
-                          }`}
-                        >
-                          {provider.isActive ? <CheckCircle size={14} /> : <XCircle size={14} />}
-                          {provider.isActive ? 'פעיל' : 'לא פעיל'}
-                        </button>
-                        {/* Edit */}
-                        <button
-                          onClick={() => handleEdit(provider)}
-                          className="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-white/60 hover:text-white transition-colors"
-                          title="עריכה"
-                        >
-                          <Pencil size={16} />
-                        </button>
-                        {/* Delete */}
-                        <button
-                          onClick={() => handleDelete(provider)}
-                          className="p-2 rounded-lg bg-white/5 hover:bg-red-500/20 text-white/60 hover:text-red-400 transition-colors"
-                          title="מחיקה"
-                        >
-                          <Trash2 size={16} />
-                        </button>
+                        {(provider as any)._isSupplier ? (
+                          <span className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium bg-blue-500/20 text-blue-400">
+                            <Building2 size={14} />
+                            ספק רשום
+                          </span>
+                        ) : (
+                          <>
+                            <button
+                              onClick={() => handleToggleActive(provider)}
+                              className={`inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                                provider.isActive
+                                  ? 'bg-green-500/20 text-green-400 hover:bg-green-500/30'
+                                  : 'bg-red-500/20 text-red-400 hover:bg-red-500/30'
+                              }`}
+                            >
+                              {provider.isActive ? <CheckCircle size={14} /> : <XCircle size={14} />}
+                              {provider.isActive ? 'פעיל' : 'לא פעיל'}
+                            </button>
+                            <button
+                              onClick={() => handleEdit(provider)}
+                              className="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-white/60 hover:text-white transition-colors"
+                              title="עריכה"
+                            >
+                              <Pencil size={16} />
+                            </button>
+                          </>
+                        )}
+                        {/* Delete - only for real service providers, not mapped suppliers */}
+                        {!(provider as any)._isSupplier && (
+                          <button
+                            onClick={() => handleDelete(provider)}
+                            className="p-2 rounded-lg bg-white/5 hover:bg-red-500/20 text-white/60 hover:text-red-400 transition-colors"
+                            title="מחיקה"
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        )}
                       </div>
                     </div>
 

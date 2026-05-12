@@ -84,7 +84,7 @@ const quickActionCategories = [
   },
   {
     id: 'suppliers',
-    label: 'פרויקטים',
+    label: 'ספקים',
     icon: Users,
     color: 'bg-blue-500',
     iconColor: 'text-blue-500',
@@ -243,9 +243,9 @@ function RewardsCarousel({ products, metalGradient, goldShadowLight }: { product
             className="flex-shrink-0 block rounded-2xl overflow-hidden group bg-white"
             style={{ width: '60%', scrollSnapAlign: 'start', boxShadow: goldShadowLight }}
           >
-            <div className="relative h-40 overflow-hidden">
+            <div className="relative h-48 overflow-hidden">
               {product.imageUrl ? (
-                <img src={product.imageUrl} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" draggable={false} />
+                <img src={product.imageUrl} alt={product.name} className="w-full h-full object-contain p-2 group-hover:scale-105 transition-transform duration-500" draggable={false} />
               ) : (
                 <div className="w-full h-full bg-[#f0e6d2] flex items-center justify-center">
                   <Gift size={40} className="text-[#c99b4a]/30" />
@@ -460,12 +460,12 @@ export default function WalletPage() {
           <div className="flex justify-between gap-2">
             {[
               { label: 'שירות אישי', icon: Headphones, href: '/profile' },
-              { label: 'פרויקטים', icon: Building2, href: '/suppliers' },
+              { label: 'ספקים', icon: Building2, href: '/suppliers' },
               { label: 'אירועים', icon: Calendar, href: '/events' },
               { label: 'הטבות', icon: Gift, href: '/rewards' },
             ].map((item) => (
               <Link key={item.href} href={item.href} className="flex-1 flex flex-col items-center gap-2 py-3 rounded-2xl hover:bg-white/50 transition-all group">
-                <div className="w-11 h-11 rounded-[14px] flex items-center justify-center">
+                <div className="w-11 h-11 rounded-[14px] flex items-center justify-center bg-white" style={{ boxShadow: '0 2px 8px rgba(64,38,18,0.06)' }}>
                   <item.icon size={20} className="text-[#7a5a44] group-hover:text-[#5a3d2a] transition-colors" strokeWidth={1.6} />
                 </div>
                 <span className="text-[11px] font-bold text-[#2b241d]">{item.label}</span>
@@ -509,22 +509,22 @@ export default function WalletPage() {
           </div>
         </motion.div>
 
-        {/* ── Stats Grid (4 dark premium cards) ── */}
+        {/* ── Stats Grid (4 bronze/white cards) ── */}
         <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="grid grid-cols-4 gap-2.5 mb-4">
           {[
-            { icon: Wallet, value: isLoading ? '...' : `₪${cash.toLocaleString()}`, label: 'ליתרה' },
+            { icon: Wallet, value: isLoading ? '...' : `₪${cash.toLocaleString()}`, label: 'יתרה' },
             { icon: Receipt, value: isLoading ? '...' : (transactions?.length || 0).toString(), label: 'קבלות' },
             { icon: Star, value: isLoading ? '...' : points.toLocaleString(), label: 'נקודות' },
             { icon: BarChart3, value: isLoading ? '...' : `₪${totalEarned.toLocaleString()}`, label: 'מחזור המכירות' },
           ].map((stat, i) => {
             const IconComp = stat.icon;
             return (
-              <div key={i} className="rounded-[16px] py-3.5 px-2 flex flex-col items-center gap-2 stat-card-premium" style={{ background: darkStatBg, boxShadow: darkStatShadow, border: '1px solid rgba(255,255,255,0.05)' }}>
-                <div className="w-10 h-10 rounded-lg flex items-center justify-center overflow-hidden relative" style={{ background: goldIconBg, boxShadow: goldIconShadow }}>
-                  <IconComp size={19} className="text-white drop-shadow-sm" />
+              <div key={i} className="rounded-[16px] py-3.5 px-2 flex flex-col items-center gap-2 bg-white" style={{ boxShadow: '0 4px 12px rgba(64,38,18,0.08)', border: '1px solid #f0e6d2' }}>
+                <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ background: metalGradient }}>
+                  <IconComp size={19} className="text-white" />
                 </div>
-                <p className="text-white text-[13px] font-bold text-center leading-tight">{stat.value}</p>
-                <p className="text-[11px] text-center" style={{ color: 'rgba(255,255,255,0.55)' }}>{stat.label}</p>
+                <p className="text-[#2b241d] text-[13px] font-bold text-center leading-tight">{stat.value}</p>
+                <p className="text-[11px] text-center text-[#8b7c69]">{stat.label}</p>
               </div>
             );
           })}
@@ -748,7 +748,7 @@ export default function WalletPage() {
         </Link>
         <Link href="/suppliers" className="bottom-nav-item">
           <Search size={20} />
-          <span>גלו</span>
+          <span>ספקים</span>
         </Link>
         <Link href="/wallet" className="bottom-nav-home">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -757,8 +757,8 @@ export default function WalletPage() {
           </svg>
         </Link>
         <Link href="/invoices" className="bottom-nav-item">
-          <Building2 size={20} />
-          <span>פרויקטים</span>
+          <FileText size={20} />
+          <span>חשבוניות</span>
         </Link>
         <Link href="/profile" className="bottom-nav-item">
           <Users size={20} />
