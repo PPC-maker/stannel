@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
+import ImageWithLoader from '@/components/ui/ImageWithLoader';
 import { useAdminGuard, AuthGuardLoader } from '@/lib/useAuthGuard';
 import { adminApi } from '@stannel/api-client';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -347,11 +348,11 @@ export default function AdminRewardsPage() {
                     onClick={() => handleView(product)}
                   >
                     {product.imageUrl ? (
-                      <Image
+                      <ImageWithLoader
                         src={product.imageUrl}
                         alt={product.name}
                         fill
-                        className="object-contain p-2"
+                        className="object-cover"
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                       />
                     ) : (
@@ -643,11 +644,11 @@ export default function AdminRewardsPage() {
               {/* Image Header */}
               <div className="relative h-64 bg-gradient-to-br from-white/5 to-white/10">
                 {viewingProduct.imageUrl ? (
-                  <Image
+                  <ImageWithLoader
                     src={viewingProduct.imageUrl}
                     alt={viewingProduct.name}
                     fill
-                    className="object-contain p-4"
+                    className="object-cover"
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center">
