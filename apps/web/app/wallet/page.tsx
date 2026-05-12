@@ -245,7 +245,7 @@ function RewardsCarousel({ products, metalGradient, goldShadowLight }: { product
           >
             <div className="relative h-48 overflow-hidden">
               {product.imageUrl ? (
-                <img src={product.imageUrl} alt={product.name} className="w-full h-full object-contain p-2 group-hover:scale-105 transition-transform duration-500" draggable={false} />
+                <img src={product.imageUrl} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" draggable={false} />
               ) : (
                 <div className="w-full h-full bg-[#f0e6d2] flex items-center justify-center">
                   <Gift size={40} className="text-[#c99b4a]/30" />
