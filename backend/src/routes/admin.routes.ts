@@ -371,6 +371,13 @@ export async function adminRoutes(server: FastifyInstance) {
 
       // Delete supplier-related records
       if (sp) {
+        // Delete invoices linked to this supplier (and their status history)
+        const supplierInvoices = await tx.invoice.findMany({ where: { supplierId: sp.id }, select: { id: true } });
+        if (supplierInvoices.length > 0) {
+          const invoiceIds = supplierInvoices.map(inv => inv.id);
+          await tx.invoiceStatusHistory.deleteMany({ where: { invoiceId: { in: invoiceIds } } });
+          await tx.invoice.deleteMany({ where: { supplierId: sp.id } });
+        }
         await tx.meeting.deleteMany({ where: { supplierId: sp.id } });
         await tx.supplierGoal.deleteMany({ where: { supplierId: sp.id } });
         await tx.supplierPayment.deleteMany({ where: { supplierId: sp.id } });
