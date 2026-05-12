@@ -341,10 +341,10 @@ export default function AdminRewardsPage() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {products.map((product: Product) => (
-                <div key={product.id} className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 overflow-hidden group">
+                <div key={product.id} className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl overflow-hidden group">
                   {/* Product Image - Click to view */}
                   <div
-                    className="relative h-56 -mx-6 -mt-6 mb-4 bg-white cursor-pointer"
+                    className="relative w-full bg-white cursor-pointer" style={{ aspectRatio: '3/4' }}
                     onClick={() => handleView(product)}
                   >
                     {product.imageUrl ? (
@@ -352,7 +352,7 @@ export default function AdminRewardsPage() {
                         src={product.imageUrl}
                         alt={product.name}
                         fill
-                        className="object-contain p-4"
+                        className="object-cover"
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                       />
                     ) : (
@@ -372,6 +372,7 @@ export default function AdminRewardsPage() {
                   </div>
 
                   {/* Product Info */}
+                  <div className="p-5">
                   <h3 className="text-white font-semibold text-lg mb-1">{product.name}</h3>
                   {product.category && (
                     <span className="inline-block text-xs px-2 py-0.5 bg-emerald-500/20 text-emerald-400 rounded-full mb-2">{product.category}</span>
@@ -418,6 +419,7 @@ export default function AdminRewardsPage() {
                     >
                       {deleteMutation.isPending ? <Loader2 size={16} className="animate-spin" /> : <Trash2 size={16} />}
                     </button>
+                  </div>
                   </div>
                 </div>
               ))}
