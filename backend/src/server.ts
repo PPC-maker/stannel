@@ -90,10 +90,11 @@ async function registerPlugins() {
     },
   });
 
-  // Rate limiting
+  // Rate limiting - global
   await server.register(rateLimit, {
-    max: 100,
+    max: 80,
     timeWindow: '1 minute',
+    keyGenerator: (request) => request.ip,
   });
 
   // Response compression (gzip/brotli)

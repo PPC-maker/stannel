@@ -9,7 +9,11 @@ type WebSocketMessage = {
   timestamp: string;
 };
 
-const WS_URL = process.env.NEXT_PUBLIC_API_URL?.replace('http', 'ws') || 'ws://localhost:7070';
+const WS_URL = (() => {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:7070';
+  if (apiUrl.startsWith('https://')) return apiUrl.replace('https://', 'wss://');
+  return apiUrl.replace('http://', 'ws://');
+})();
 
 export function useWebSocket() {
   const queryClient = useQueryClient();

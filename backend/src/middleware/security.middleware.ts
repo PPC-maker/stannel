@@ -67,9 +67,10 @@ export function securityHeadersMiddleware(
   reply.header('X-XSS-Protection', '1; mode=block');
   reply.header('Referrer-Policy', 'strict-origin-when-cross-origin');
   reply.header('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+  reply.header('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://apis.google.com https://*.firebaseapp.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https: http:; connect-src 'self' https: wss:; frame-src https://*.firebaseapp.com https://accounts.google.com;");
 
   if (process.env.NODE_ENV === 'production') {
-    reply.header('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+    reply.header('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
   }
 
   done();

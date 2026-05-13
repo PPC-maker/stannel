@@ -25,7 +25,7 @@ export function initializeFirebase(): void {
     if (privateKey.includes('\\n')) {
       privateKey = privateKey.replace(/\\n/g, '\n');
     }
-    console.log('[Firebase] Private key loaded, length:', privateKey.length);
+    console.log('[Firebase] Private key loaded');
   }
 
   if (!projectId || !clientEmail || !privateKey) {

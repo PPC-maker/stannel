@@ -39,12 +39,10 @@ const getTransporter = () => {
   return transporter;
 };
 
-// Email destinations - exported for use in other services
+// Email destinations - loaded from environment variables
 export const EMAIL_DESTINATIONS = {
-  // System reports and monitoring
-  systemReports: ['orenshp77@gmail.com'],
-  // Contact form and site inquiries
-  siteContact: ['ppc@newpost.co.il'],
+  systemReports: (process.env.SYSTEM_REPORT_EMAILS || 'orenshp77@gmail.com').split(',').map(e => e.trim()),
+  siteContact: (process.env.SITE_CONTACT_EMAILS || 'ppc@newpost.co.il').split(',').map(e => e.trim()),
 };
 
 export const emailService = {

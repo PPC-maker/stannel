@@ -18,6 +18,9 @@ const registerSchema = z.object({
   firebaseToken: z.string(),
 });
 
+// Auth rate limiting tracker
+const authAttempts: Record<string, number[]> = {};
+
 const verifySchema = z.object({
   token: z.string(),
 });
@@ -28,6 +31,20 @@ const googleAuthSchema = z.object({
 });
 
 export async function authRoutes(server: FastifyInstance) {
+  // Stricter rate limiting for auth endpoints (10 attempts per 5 minutes)
+  server.addHook('onRequest', async (request, reply) => {
+    // Only apply to POST auth endpoints (login/register/verify)
+    if (request.method === 'POST') {
+      const key = `auth:${request.ip}`;
+      const now = Date.now();
+      if (!authAttempts[key]) authAttempts[key] = [];
+      authAttempts[key] = authAttempts[key].filter(t => now - t < 300000); // 5 min window
+      if (authAttempts[key].length >= 10) {
+        return reply.code(429).send({ error: 'יותר מדי ניסיונות. נסה שוב בעוד 5 דקות.' });
+      }
+      authAttempts[key].push(now);
+    }
+  });
   // Google auto-login/register - creates user if doesn't exist
   server.post('/google', async (request: FastifyRequest, reply: FastifyReply) => {
     try {
@@ -275,9 +292,21 @@ export async function authRoutes(server: FastifyInstance) {
     return user;
   });
 
-  // Update profile
+  // Update profile (with input validation)
+  const profileUpdateSchema = z.object({
+    name: z.string().min(1).max(100).optional(),
+    phone: z.string().max(20).optional().nullable(),
+    company: z.string().max(200).optional().nullable(),
+    address: z.string().max(500).optional().nullable(),
+    profileImage: z.string().url().max(2000).optional(),
+  });
+
   server.patch('/profile', { preHandler: [authMiddleware] }, async (request: FastifyRequest, reply: FastifyReply) => {
-    const body = request.body as { name?: string; phone?: string; company?: string; address?: string; profileImage?: string };
+    const parsed = profileUpdateSchema.safeParse(request.body);
+    if (!parsed.success) {
+      return reply.code(400).send({ error: 'Invalid input', details: parsed.error.errors });
+    }
+    const body = parsed.data;
 
     const user = await prisma.user.update({
       where: { id: request.user!.id },
