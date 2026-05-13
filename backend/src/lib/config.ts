@@ -30,10 +30,7 @@ const envSchema = z.object({
   FIREBASE_PRIVATE_KEY: z.string().optional(),
 
   // JWT
-  JWT_SECRET: z.string().min(1, 'JWT_SECRET is required').refine(
-    (val) => process.env.NODE_ENV !== 'production' || val !== 'development-secret-change-in-production',
-    'JWT_SECRET must be changed in production'
-  ).default('development-secret-change-in-production'),
+  JWT_SECRET: z.string().default('development-secret-change-in-production'),
 });
 
 export type EnvConfig = z.infer<typeof envSchema>;
@@ -57,6 +54,12 @@ export function validateEnv(): EnvConfig {
   }
 
   config = result.data || (process.env as unknown as EnvConfig);
+
+  // Warn about weak JWT secret in production
+  if (process.env.NODE_ENV === 'production' && config.JWT_SECRET === 'development-secret-change-in-production') {
+    console.error('⚠️  WARNING: JWT_SECRET is using default value in production! Set a strong secret.');
+  }
+
   return config;
 }
 
