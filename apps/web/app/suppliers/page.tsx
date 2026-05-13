@@ -104,8 +104,8 @@ function SupplierCard({ supplier, index }: { supplier: any; index: number }) {
     >
       <Link href={`/suppliers/${supplier.id}`}>
         <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl sm:rounded-3xl overflow-hidden hover:border-emerald-500/30 hover:bg-white/10 transition-all group cursor-pointer">
-          {/* Cover Image */}
-          <div className="relative h-40 sm:h-48">
+          {/* Cover Image - Large */}
+          <div className="relative" style={{ aspectRatio: '3/4' }}>
             <ImageWithLoader
               src={coverImage}
               alt={supplier.companyName}
@@ -114,50 +114,32 @@ function SupplierCard({ supplier, index }: { supplier: any; index: number }) {
               className="object-cover group-hover:scale-105 transition-transform duration-500"
               unoptimized={coverImage.includes('localhost')}
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
 
             {/* Company Name Overlay */}
             <div className="absolute bottom-0 left-0 right-0 p-4">
-              <h2 className="text-2xl font-bold text-white">{supplier.companyName}</h2>
-            </div>
-          </div>
-
-          {/* Content */}
-          <div className="p-4 sm:p-5">
-            {/* Description */}
-            {supplier.description && (
-              <p className="text-white/70 text-sm mb-4 line-clamp-2">
-                {supplier.description}
-              </p>
-            )}
-
-            {/* Info Grid */}
-            <div className="space-y-2 mb-4">
-              {supplier.address && (
-                <div className="flex items-center gap-2 text-white/60 text-sm">
-                  <MapPin size={14} className="text-emerald-400" />
-                  <span className="truncate">{supplier.address}</span>
+              <h2 className="text-2xl font-bold text-white mb-2">{supplier.companyName}</h2>
+              {/* Icons only */}
+              <div className="flex items-center gap-3">
+                {supplier.phone && (
+                  <div className="w-8 h-8 rounded-full bg-white/15 backdrop-blur-sm flex items-center justify-center">
+                    <Phone size={14} className="text-white" />
+                  </div>
+                )}
+                {supplier.website && (
+                  <div className="w-8 h-8 rounded-full bg-white/15 backdrop-blur-sm flex items-center justify-center">
+                    <Globe size={14} className="text-white" />
+                  </div>
+                )}
+                {supplier.address && (
+                  <div className="w-8 h-8 rounded-full bg-white/15 backdrop-blur-sm flex items-center justify-center">
+                    <MapPin size={14} className="text-white" />
+                  </div>
+                )}
+                <div className="mr-auto">
+                  <ChevronLeft size={18} className="text-emerald-400 group-hover:-translate-x-1 transition-transform" />
                 </div>
-              )}
-              {supplier.phone && (
-                <div className="flex items-center gap-2 text-white/60 text-sm">
-                  <Phone size={14} className="text-emerald-400" />
-                  <span dir="ltr">{supplier.phone}</span>
-                </div>
-              )}
-              {supplier.website && (
-                <div className="flex items-center gap-2 text-white/60 text-sm">
-                  <Globe size={14} className="text-emerald-400" />
-                  <span className="truncate">{supplier.website}</span>
-                </div>
-              )}
-            </div>
-
-            {/* View More */}
-            <div className="flex items-center justify-between pt-3 border-t border-white/10">
-              <span className="text-emerald-400 text-sm font-medium">צפה בפרופיל</span>
-              <ChevronLeft size={18} className="text-emerald-400 group-hover:-translate-x-1 transition-transform" />
+              </div>
             </div>
           </div>
         </div>
