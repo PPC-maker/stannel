@@ -105,7 +105,7 @@ function SupplierCard({ supplier, index }: { supplier: any; index: number }) {
       <Link href={`/suppliers/${supplier.id}`}>
         <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl sm:rounded-3xl overflow-hidden hover:border-emerald-500/30 hover:bg-white/10 transition-all group cursor-pointer">
           {/* Cover Image - Large */}
-          <div className="relative" style={{ aspectRatio: '3/4' }}>
+          <div className="relative" style={{ aspectRatio: '3/4.4' }}>
             <ImageWithLoader
               src={coverImage}
               alt={supplier.companyName}
