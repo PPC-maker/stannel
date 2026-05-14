@@ -130,9 +130,9 @@ export default function ProjectsManagementPage() {
       Swal.fire({
         title: 'הפרויקט נוצר!',
         icon: 'success',
-        background: '#1a1a1a',
-        color: '#fff',
-        confirmButtonColor: '#0d7a5f',
+        background: '#f7f3f2',
+        color: '#2b241d',
+        confirmButtonColor: '#c99b4a',
       });
     },
     onError: () => {
@@ -140,8 +140,8 @@ export default function ProjectsManagementPage() {
         title: 'שגיאה',
         text: 'לא ניתן ליצור את הפרויקט',
         icon: 'error',
-        background: '#1a1a1a',
-        color: '#fff',
+        background: '#f7f3f2',
+        color: '#2b241d',
       });
     },
   });
@@ -155,9 +155,9 @@ export default function ProjectsManagementPage() {
       Swal.fire({
         title: 'הפרויקט עודכן!',
         icon: 'success',
-        background: '#1a1a1a',
-        color: '#fff',
-        confirmButtonColor: '#0d7a5f',
+        background: '#f7f3f2',
+        color: '#2b241d',
+        confirmButtonColor: '#c99b4a',
       });
     },
     onError: () => {
@@ -165,8 +165,8 @@ export default function ProjectsManagementPage() {
         title: 'שגיאה',
         text: 'לא ניתן לעדכן את הפרויקט',
         icon: 'error',
-        background: '#1a1a1a',
-        color: '#fff',
+        background: '#f7f3f2',
+        color: '#2b241d',
       });
     },
   });
@@ -178,9 +178,9 @@ export default function ProjectsManagementPage() {
       Swal.fire({
         title: 'הפרויקט נמחק!',
         icon: 'success',
-        background: '#1a1a1a',
-        color: '#fff',
-        confirmButtonColor: '#0d7a5f',
+        background: '#f7f3f2',
+        color: '#2b241d',
+        confirmButtonColor: '#c99b4a',
       });
     },
   });
@@ -236,8 +236,8 @@ export default function ProjectsManagementPage() {
       Swal.fire({
         title: 'שגיאה בהעלאת תמונה',
         icon: 'error',
-        background: '#1a1a1a',
-        color: '#fff',
+        background: '#f7f3f2',
+        color: '#2b241d',
       });
     } finally {
       setIsUploading(false);
@@ -257,8 +257,8 @@ export default function ProjectsManagementPage() {
         title: 'שדות חובה',
         text: 'יש למלא כותרת ותיאור',
         icon: 'warning',
-        background: '#1a1a1a',
-        color: '#fff',
+        background: '#f7f3f2',
+        color: '#2b241d',
       });
       return;
     }
@@ -297,10 +297,10 @@ export default function ProjectsManagementPage() {
 
   if (user?.role !== 'SUPPLIER') {
     return (
-      <div className="min-h-screen bg-[#0f2620] flex flex-col items-center justify-center">
-        <FolderOpen size={64} className="text-white/20 mb-4" />
-        <p className="text-white/60 text-lg mb-4">עמוד זה זמין לספקים בלבד</p>
-        <Link href="/profile" className="text-emerald-400 hover:underline">
+      <div className="min-h-screen flex flex-col items-center justify-center">
+        <FolderOpen size={64} className="text-[#a89b8a] mb-4" />
+        <p className="text-[#8b7c69] text-lg mb-4">עמוד זה זמין לספקים בלבד</p>
+        <Link href="/profile" className="text-[#c99b4a] hover:underline">
           חזרה לפרופיל
         </Link>
       </div>
@@ -308,7 +308,7 @@ export default function ProjectsManagementPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0f2620] -mt-16">
+    <div className="min-h-screen -mt-16">
       {/* Header */}
       <div className="relative h-48 overflow-hidden">
         <Image
@@ -318,7 +318,7 @@ export default function ProjectsManagementPage() {
           className="object-cover"
           priority
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-[#0f2620]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-[#f7f3f2]" />
 
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6 pt-16">
           <motion.div
@@ -326,14 +326,14 @@ export default function ProjectsManagementPage() {
             animate={{ opacity: 1, y: 0 }}
           >
             <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">הפרויקטים שלי</h1>
-            <p className="text-white/70">ניהול תיק העבודות שלך</p>
+            <p className="text-white/80">ניהול תיק העבודות שלך</p>
           </motion.div>
         </div>
 
         {/* Back Button */}
         <Link
           href="/profile"
-          className="absolute top-20 right-4 w-10 h-10 bg-white/10 backdrop-blur rounded-full flex items-center justify-center"
+          className="absolute top-20 right-4 w-10 h-10 bg-white/20 backdrop-blur rounded-full flex items-center justify-center"
         >
           <ArrowRight size={20} className="text-white" />
         </Link>
@@ -346,7 +346,7 @@ export default function ProjectsManagementPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           onClick={openCreateModal}
-          className="w-full mb-6 py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-2xl transition-colors flex items-center justify-center gap-2"
+          className="w-full mb-6 py-4 bg-[#c99b4a] hover:bg-[#9e7746] text-white font-semibold rounded-2xl transition-colors flex items-center justify-center gap-2"
         >
           <Plus size={24} />
           הוספת פרויקט חדש
@@ -355,7 +355,7 @@ export default function ProjectsManagementPage() {
         {/* Projects List */}
         {isLoading ? (
           <div className="flex items-center justify-center py-20">
-            <Loader2 size={40} className="text-emerald-400 animate-spin" />
+            <Loader2 size={40} className="text-[#c99b4a] animate-spin" />
           </div>
         ) : projects.length === 0 ? (
           <motion.div
@@ -363,9 +363,9 @@ export default function ProjectsManagementPage() {
             animate={{ opacity: 1 }}
             className="text-center py-20"
           >
-            <FolderOpen size={64} className="mx-auto text-white/20 mb-4" />
-            <p className="text-white/60 text-lg mb-2">עדיין אין פרויקטים</p>
-            <p className="text-white/40 text-sm">לחץ על "הוספת פרויקט חדש" להתחיל</p>
+            <FolderOpen size={64} className="mx-auto text-[#a89b8a] mb-4" />
+            <p className="text-[#8b7c69] text-lg mb-2">עדיין אין פרויקטים</p>
+            <p className="text-[#a89b8a] text-sm">לחץ על "הוספת פרויקט חדש" להתחיל</p>
           </motion.div>
         ) : (
           <div className="space-y-4">
@@ -375,7 +375,7 @@ export default function ProjectsManagementPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.05 }}
-                className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl overflow-hidden"
+                className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl overflow-hidden"
               >
                 <div className="flex">
                   {/* Project Image */}
@@ -388,8 +388,8 @@ export default function ProjectsManagementPage() {
                         className="object-cover"
                       />
                     ) : (
-                      <div className="w-full h-full bg-white/5 flex items-center justify-center">
-                        <ImagePlus size={32} className="text-white/20" />
+                      <div className="w-full h-full bg-[#f7f3f2] flex items-center justify-center">
+                        <ImagePlus size={32} className="text-[#a89b8a]" />
                       </div>
                     )}
                   </div>
@@ -398,8 +398,8 @@ export default function ProjectsManagementPage() {
                   <div className="flex-1 p-4">
                     <div className="flex items-start justify-between">
                       <div>
-                        <h3 className="text-white font-semibold text-lg">{project.title}</h3>
-                        <p className="text-white/50 text-sm mt-1">
+                        <h3 className="text-[#2b241d] font-semibold text-lg">{project.title}</h3>
+                        <p className="text-[#a89b8a] text-sm mt-1">
                           {project.location && `${project.location} • `}
                           {project.year}
                         </p>
@@ -407,9 +407,9 @@ export default function ProjectsManagementPage() {
                       <div className="flex gap-2">
                         <button
                           onClick={() => openEditModal(project)}
-                          className="w-8 h-8 bg-white/10 rounded-lg flex items-center justify-center hover:bg-white/20 transition-colors"
+                          className="w-8 h-8 bg-[#f7f3f2] rounded-lg flex items-center justify-center hover:bg-[#f0ebe6] transition-colors"
                         >
-                          <Pencil size={16} className="text-white" />
+                          <Pencil size={16} className="text-[#2b241d]" />
                         </button>
                         <button
                           onClick={() => handleDelete(project)}
@@ -419,10 +419,10 @@ export default function ProjectsManagementPage() {
                         </button>
                       </div>
                     </div>
-                    <p className="text-white/60 text-sm mt-2 line-clamp-2">
+                    <p className="text-[#8b7c69] text-sm mt-2 line-clamp-2">
                       {project.description}
                     </p>
-                    <div className="flex gap-3 mt-3 text-xs text-white/40">
+                    <div className="flex gap-3 mt-3 text-xs text-[#a89b8a]">
                       {project.area && <span>{project.area}</span>}
                       {project.duration && <span>{project.duration}</span>}
                       <span>{project.images?.length || 0} תמונות</span>
@@ -449,19 +449,19 @@ export default function ProjectsManagementPage() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-[#1a1a1a] rounded-3xl w-full max-w-lg max-h-[90vh] overflow-y-auto"
+              className="bg-white rounded-3xl w-full max-w-lg max-h-[90vh] overflow-y-auto"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Modal Header */}
-              <div className="sticky top-0 bg-[#1a1a1a] px-6 py-4 border-b border-white/10 flex items-center justify-between">
-                <h2 className="text-xl font-bold text-white">
+              <div className="sticky top-0 bg-white px-6 py-4 border-b border-[rgba(201,155,74,0.08)] flex items-center justify-between">
+                <h2 className="text-xl font-bold text-[#2b241d]">
                   {editingProject ? 'עריכת פרויקט' : 'פרויקט חדש'}
                 </h2>
                 <button
                   onClick={closeModal}
-                  className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center"
+                  className="w-10 h-10 bg-[#f7f3f2] rounded-full flex items-center justify-center"
                 >
-                  <X size={20} className="text-white" />
+                  <X size={20} className="text-[#2b241d]" />
                 </button>
               </div>
 
@@ -469,47 +469,47 @@ export default function ProjectsManagementPage() {
               <div className="p-6 space-y-5">
                 {/* Title */}
                 <div>
-                  <label className="block text-white/70 text-sm mb-2">כותרת הפרויקט *</label>
+                  <label className="block text-[#8b7c69] text-sm mb-2">כותרת הפרויקט *</label>
                   <input
                     type="text"
                     value={formData.title}
                     onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                     placeholder="למשל: פנטהאוז מודרני"
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-white/30 focus:border-emerald-500/50 focus:outline-none"
+                    className="w-full bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-xl px-4 py-3 text-[#2b241d] placeholder:text-[#a89b8a] focus:border-[#c99b4a]/50 focus:outline-none"
                   />
                 </div>
 
                 {/* Description */}
                 <div>
-                  <label className="block text-white/70 text-sm mb-2">תיאור הפרויקט *</label>
+                  <label className="block text-[#8b7c69] text-sm mb-2">תיאור הפרויקט *</label>
                   <textarea
                     value={formData.description}
                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                     placeholder="ספר על הפרויקט, האתגרים והפתרונות..."
                     rows={4}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-white/30 focus:border-emerald-500/50 focus:outline-none resize-none"
+                    className="w-full bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-xl px-4 py-3 text-[#2b241d] placeholder:text-[#a89b8a] focus:border-[#c99b4a]/50 focus:outline-none resize-none"
                   />
                 </div>
 
                 {/* Location & Year */}
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-white/70 text-sm mb-2">מיקום</label>
+                    <label className="block text-[#8b7c69] text-sm mb-2">מיקום</label>
                     <input
                       type="text"
                       value={formData.location}
                       onChange={(e) => setFormData({ ...formData, location: e.target.value })}
                       placeholder="תל אביב"
-                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-white/30 focus:border-emerald-500/50 focus:outline-none"
+                      className="w-full bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-xl px-4 py-3 text-[#2b241d] placeholder:text-[#a89b8a] focus:border-[#c99b4a]/50 focus:outline-none"
                     />
                   </div>
                   <div>
-                    <label className="block text-white/70 text-sm mb-2">שנה</label>
+                    <label className="block text-[#8b7c69] text-sm mb-2">שנה</label>
                     <input
                       type="number"
                       value={formData.year}
                       onChange={(e) => setFormData({ ...formData, year: parseInt(e.target.value) })}
-                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-white/30 focus:border-emerald-500/50 focus:outline-none"
+                      className="w-full bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-xl px-4 py-3 text-[#2b241d] placeholder:text-[#a89b8a] focus:border-[#c99b4a]/50 focus:outline-none"
                     />
                   </div>
                 </div>
@@ -517,30 +517,30 @@ export default function ProjectsManagementPage() {
                 {/* Area & Duration */}
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-white/70 text-sm mb-2">שטח</label>
+                    <label className="block text-[#8b7c69] text-sm mb-2">שטח</label>
                     <input
                       type="text"
                       value={formData.area}
                       onChange={(e) => setFormData({ ...formData, area: e.target.value })}
                       placeholder='350 מ"ר'
-                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-white/30 focus:border-emerald-500/50 focus:outline-none"
+                      className="w-full bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-xl px-4 py-3 text-[#2b241d] placeholder:text-[#a89b8a] focus:border-[#c99b4a]/50 focus:outline-none"
                     />
                   </div>
                   <div>
-                    <label className="block text-white/70 text-sm mb-2">משך הפרויקט</label>
+                    <label className="block text-[#8b7c69] text-sm mb-2">משך הפרויקט</label>
                     <input
                       type="text"
                       value={formData.duration}
                       onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
                       placeholder="8 חודשים"
-                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-white/30 focus:border-emerald-500/50 focus:outline-none"
+                      className="w-full bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-xl px-4 py-3 text-[#2b241d] placeholder:text-[#a89b8a] focus:border-[#c99b4a]/50 focus:outline-none"
                     />
                   </div>
                 </div>
 
                 {/* Images */}
                 <div>
-                  <label className="block text-white/70 text-sm mb-2">תמונות</label>
+                  <label className="block text-[#8b7c69] text-sm mb-2">תמונות</label>
                   <div className="grid grid-cols-3 gap-3">
                     {formData.images.map((image, index) => (
                       <div key={index} className="relative aspect-square rounded-xl overflow-hidden group">
@@ -561,14 +561,14 @@ export default function ProjectsManagementPage() {
                     <button
                       onClick={() => fileInputRef.current?.click()}
                       disabled={isUploading}
-                      className="aspect-square rounded-xl border-2 border-dashed border-white/20 flex flex-col items-center justify-center gap-2 hover:border-emerald-500/50 transition-colors"
+                      className="aspect-square rounded-xl border-2 border-dashed border-[rgba(201,155,74,0.15)] flex flex-col items-center justify-center gap-2 hover:border-[#c99b4a]/50 transition-colors"
                     >
                       {isUploading ? (
-                        <Loader2 size={24} className="text-white/40 animate-spin" />
+                        <Loader2 size={24} className="text-[#a89b8a] animate-spin" />
                       ) : (
                         <>
-                          <Upload size={24} className="text-white/40" />
-                          <span className="text-white/40 text-xs">העלאה</span>
+                          <Upload size={24} className="text-[#a89b8a]" />
+                          <span className="text-[#a89b8a] text-xs">העלאה</span>
                         </>
                       )}
                     </button>
@@ -581,22 +581,22 @@ export default function ProjectsManagementPage() {
                     onChange={handleImageUpload}
                     className="hidden"
                   />
-                  <p className="text-white/30 text-xs mt-2">התמונה הראשונה תשמש כתמונת שער</p>
+                  <p className="text-[#a89b8a] text-xs mt-2">התמונה הראשונה תשמש כתמונת שער</p>
                 </div>
               </div>
 
               {/* Modal Footer */}
-              <div className="sticky bottom-0 bg-[#1a1a1a] px-6 py-4 border-t border-white/10 flex gap-3">
+              <div className="sticky bottom-0 bg-white px-6 py-4 border-t border-[rgba(201,155,74,0.08)] flex gap-3">
                 <button
                   onClick={closeModal}
-                  className="flex-1 py-3 bg-white/10 text-white rounded-xl font-medium hover:bg-white/20 transition-colors"
+                  className="flex-1 py-3 bg-[#f7f3f2] text-[#2b241d] rounded-xl font-medium hover:bg-[#f0ebe6] transition-colors"
                 >
                   ביטול
                 </button>
                 <button
                   onClick={handleSubmit}
                   disabled={createMutation.isPending || updateMutation.isPending}
-                  className="flex-1 py-3 bg-emerald-600 text-white rounded-xl font-semibold hover:bg-emerald-700 transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+                  className="flex-1 py-3 bg-[#c99b4a] text-white rounded-xl font-semibold hover:bg-[#9e7746] transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
                 >
                   {(createMutation.isPending || updateMutation.isPending) ? (
                     <Loader2 size={20} className="animate-spin" />

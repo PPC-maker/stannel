@@ -49,7 +49,7 @@ export default function InvoicesPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0f2620] -mt-16">
+    <div className="min-h-screen -mt-16">
       {/* Hero Background */}
       <div className="absolute inset-x-0 top-0 h-[40vh]">
         <Image
@@ -60,23 +60,23 @@ export default function InvoicesPage() {
           priority
         />
         <div className="absolute inset-0 bg-black/50" />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0f2620]/30 via-transparent to-[#0f2620]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#f7f3f2]/30 via-transparent to-[#f7f3f2]" />
       </div>
 
-      <div className="relative z-10 px-4 sm:px-6 pt-24 sm:pt-28 pb-6 max-w-7xl mx-auto">
+      <div className="relative z-10 px-4 sm:px-6 pt-24 sm:pt-28 pb-24 max-w-7xl mx-auto">
         {/* Header */}
-        <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-4 sm:p-6 mb-6">
+        <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-4 sm:p-6 mb-6">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-white">חשבוניות</h1>
-              <p className="text-white/60 mt-1">
+              <h1 className="text-2xl sm:text-3xl font-bold text-[#2b241d]">חשבוניות</h1>
+              <p className="text-[#8b7c69] mt-1">
                 {isArchitect ? 'ניהול והעלאת חשבוניות לצבירת נקודות' : 'צפייה בחשבוניות שהועלו'}
               </p>
             </div>
             {isArchitect && (
               <Link
                 href="/invoices/upload"
-                className="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 rounded-xl font-semibold flex items-center gap-2 justify-center transition-colors"
+                className="bg-[#c99b4a] hover:bg-[#9e7746] text-white px-6 py-3 rounded-xl font-semibold flex items-center gap-2 justify-center transition-colors"
               >
                 <Upload size={20} />
                 <span>העלאת חשבונית</span>
@@ -88,7 +88,7 @@ export default function InvoicesPage() {
         {/* Stats Cards */}
         <div className="grid grid-cols-4 gap-2 sm:gap-4 mb-4 sm:mb-6">
           {[
-            { label: 'סה״כ', value: stats.total, color: 'text-emerald-400', borderColor: 'border-emerald-500/30' },
+            { label: 'סה״כ', value: stats.total, color: 'text-[#c99b4a]', borderColor: 'border-[rgba(201,155,74,0.08)]' },
             { label: 'ממתינות', value: stats.pending, color: 'text-yellow-400', borderColor: 'border-yellow-500/30' },
             { label: 'אושרו', value: stats.approved, color: 'text-green-400', borderColor: 'border-green-500/30' },
             { label: 'נדחו', value: stats.rejected, color: 'text-red-400', borderColor: 'border-red-500/30' },
@@ -98,25 +98,25 @@ export default function InvoicesPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.05 }}
-              className={`bg-white/5 backdrop-blur-md border ${stat.borderColor} rounded-xl sm:rounded-2xl p-2 sm:p-4 text-center`}
+              className={`bg-white border ${stat.borderColor} rounded-xl sm:rounded-2xl p-2 sm:p-4 text-center`}
             >
               <p className={`text-lg sm:text-2xl font-bold ${stat.color}`}>{stat.value}</p>
-              <p className="text-white/60 text-[10px] sm:text-sm">{stat.label}</p>
+              <p className="text-[#8b7c69] text-[10px] sm:text-sm">{stat.label}</p>
             </motion.div>
           ))}
         </div>
 
         {/* Filters */}
-        <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-3 sm:p-4 mb-4 sm:mb-6">
+        <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-3 sm:p-4 mb-4 sm:mb-6">
           <div className="flex flex-col gap-3">
             <div className="relative">
-              <Search className="absolute right-3 top-1/2 -translate-y-1/2 text-white/50" size={18} />
+              <Search className="absolute right-3 top-1/2 -translate-y-1/2 text-[#a89b8a]" size={18} />
               <input
                 type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="חיפוש לפי שם, ספק או מספר..."
-                className="w-full bg-white/10 border border-white/20 rounded-xl px-3 py-2.5 pr-10 text-sm text-white placeholder:text-white/50 focus:border-emerald-500/50 focus:outline-none transition-all"
+                className="w-full bg-white border border-[rgba(201,155,74,0.12)] rounded-xl px-3 py-2.5 pr-10 text-sm text-[#2b241d] placeholder:text-[#a89b8a] focus:border-[#c99b4a]/50 focus:outline-none transition-all"
               />
             </div>
             <div className="flex gap-2 overflow-x-auto" style={{ scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}>
@@ -131,8 +131,8 @@ export default function InvoicesPage() {
                   onClick={() => setFilter(btn.key)}
                   className={`px-3 py-1.5 rounded-xl text-sm whitespace-nowrap transition-all flex-shrink-0 ${
                     filter === btn.key
-                      ? 'bg-emerald-500 text-white'
-                      : 'bg-white/10 text-white/70 hover:bg-white/20 border border-white/10'
+                      ? 'bg-[#c99b4a] text-white'
+                      : 'bg-white/90 text-[#8b7c69] hover:bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)]'
                   }`}
                 >
                   {btn.label}
@@ -146,14 +146,14 @@ export default function InvoicesPage() {
         <div className="space-y-3">
           {isLoading ? (
             [...Array(5)].map((_, i) => (
-              <div key={i} className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-3 sm:p-4 animate-pulse">
+              <div key={i} className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-3 sm:p-4 animate-pulse">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-white/10 rounded-xl flex-shrink-0" />
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#f7f3f2] rounded-xl flex-shrink-0" />
                   <div className="flex-1 min-w-0">
-                    <div className="h-4 w-24 bg-white/10 rounded mb-1.5" />
-                    <div className="h-3 w-20 bg-white/5 rounded" />
+                    <div className="h-4 w-24 bg-[#f7f3f2] rounded mb-1.5" />
+                    <div className="h-3 w-20 bg-[#f7f3f2]/50 rounded" />
                   </div>
-                  <div className="h-5 w-16 bg-white/10 rounded" />
+                  <div className="h-5 w-16 bg-[#f7f3f2] rounded" />
                 </div>
               </div>
             ))
@@ -172,21 +172,21 @@ export default function InvoicesPage() {
                 transition={{ delay: Math.min(i * 0.03, 0.3) }}
               >
                 <Link href={`/invoices/${invoice.id}`}>
-                  <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-3 sm:p-4 hover:bg-white/10 transition-all cursor-pointer">
+                  <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-3 sm:p-4 hover:bg-[#f7f3f2] transition-all cursor-pointer">
                     {/* Top row: icon + name + amount */}
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-white/10 flex items-center justify-center flex-shrink-0">
-                        <FileText size={20} className="text-white/70 sm:hidden" />
-                        <FileText size={24} className="text-white/70 hidden sm:block" />
+                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-[#f7f3f2] flex items-center justify-center flex-shrink-0">
+                        <FileText size={20} className="text-[#8b7c69] sm:hidden" />
+                        <FileText size={24} className="text-[#8b7c69] hidden sm:block" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h3 className="text-white font-semibold text-sm sm:text-base truncate">{supplierName}</h3>
-                        <p className="text-white/50 text-xs sm:text-sm">
+                        <h3 className="text-[#2b241d] font-semibold text-sm sm:text-base truncate">{supplierName}</h3>
+                        <p className="text-[#a89b8a] text-xs sm:text-sm">
                           {invoiceDate.toLocaleDateString('he-IL')} • #{invoice.id.slice(-6)}
                         </p>
                       </div>
                       <div className="text-left flex-shrink-0">
-                        <p className="text-white font-bold text-base sm:text-lg">₪{(invoice.amount || 0).toLocaleString()}</p>
+                        <p className="text-[#2b241d] font-bold text-base sm:text-lg">₪{(invoice.amount || 0).toLocaleString()}</p>
                       </div>
                     </div>
                     {/* Bottom row: status + AI badge */}
@@ -209,9 +209,9 @@ export default function InvoicesPage() {
           })}
 
           {filteredInvoices.length === 0 && !isLoading && (
-            <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-12 text-center">
-              <FileText size={48} className="mx-auto text-white/30 mb-4" />
-              <p className="text-white/60">לא נמצאו חשבוניות</p>
+            <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-12 text-center">
+              <FileText size={48} className="mx-auto text-[#a89b8a] mb-4" />
+              <p className="text-[#8b7c69]">לא נמצאו חשבוניות</p>
             </div>
           )}
         </div>

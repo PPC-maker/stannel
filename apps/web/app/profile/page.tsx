@@ -131,7 +131,7 @@ export default function ProfilePage() {
       case 'GOLD': return 'text-yellow-400';
       case 'SILVER': return 'text-gray-300';
       case 'BRONZE': return 'text-amber-600';
-      default: return 'text-white';
+      default: return 'text-[#2b241d]';
     }
   };
 
@@ -140,7 +140,7 @@ export default function ProfilePage() {
       case 'GOLD': return 'from-yellow-500/20 to-amber-500/20 border-yellow-500/30';
       case 'SILVER': return 'from-gray-400/20 to-slate-400/20 border-gray-400/30';
       case 'BRONZE': return 'from-amber-600/20 to-orange-600/20 border-amber-600/30';
-      default: return 'from-emerald-500/20 to-teal-500/20 border-emerald-500/30';
+      default: return 'from-[#c99b4a]/20 to-[#9e7746]/20 border-[#c99b4a]/30';
     }
   };
 
@@ -195,15 +195,15 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0f2620] -mt-16">
+    <div className="min-h-screen -mt-16">
       {/* Hero Background - Gradient */}
       <div className="relative h-48 sm:h-72 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#0f2620] via-[#1a4a3a] to-[#0f2620]" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(16,185,129,0.2),transparent_50%)]" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#f7f3f2] via-[#ede6e0] to-[#f7f3f2]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(201,155,74,0.12),transparent_50%)]" />
       </div>
 
       {/* Content */}
-      <div className="px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto -mt-20 sm:-mt-32 relative z-10 pb-12">
+      <div className="px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto -mt-20 sm:-mt-32 relative z-10 pb-24">
         {/* Profile Header */}
         <motion.div
           ref={profileRef}
@@ -211,16 +211,16 @@ export default function ProfilePage() {
           animate={{
             opacity: 1,
             y: 0,
-            boxShadow: highlightProfile ? '0 0 0 3px #10b981, 0 0 30px rgba(16, 185, 129, 0.5)' : 'none'
+            boxShadow: highlightProfile ? '0 0 0 3px #c99b4a, 0 0 30px rgba(201, 155, 74, 0.5)' : 'none'
           }}
           transition={{ duration: 0.3 }}
-          className={`mb-8 rounded-2xl ${highlightProfile ? 'ring-2 ring-emerald-400 ring-offset-2 ring-offset-transparent' : ''}`}
+          className={`mb-8 rounded-2xl ${highlightProfile ? 'ring-2 ring-[#c99b4a] ring-offset-2 ring-offset-transparent' : ''}`}
         >
-          <div className={`bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-4 sm:p-6 relative overflow-visible transition-all duration-300 ${highlightProfile ? 'border-emerald-400 border-2' : ''}`}>
+          <div className={`bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-4 sm:p-6 relative overflow-visible transition-all duration-300 ${highlightProfile ? 'border-[#c99b4a] border-2' : ''}`}>
             <div className="flex flex-col md:flex-row items-center md:items-start gap-4 sm:gap-6">
               {/* Avatar */}
               <div className="relative group">
-                <div className={`w-24 h-24 sm:w-32 sm:h-32 rounded-2xl overflow-hidden ring-4 ring-emerald-500/30 bg-gradient-to-br ${getTierBg(currentUser.tier)}`}>
+                <div className={`w-24 h-24 sm:w-32 sm:h-32 rounded-2xl overflow-hidden ring-4 ring-[#c99b4a]/30 bg-gradient-to-br ${getTierBg(currentUser.tier)}`}>
                   {currentUser.avatar ? (
                     <img
                       src={currentUser.avatar}
@@ -228,7 +228,7 @@ export default function ProfilePage() {
                       className="w-full h-full object-cover"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-emerald-500 to-teal-600">
+                    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-[#c99b4a] to-[#9e7746]">
                       <span className="text-4xl font-bold text-white">
                         {currentUser.name.charAt(0)}
                       </span>
@@ -237,7 +237,7 @@ export default function ProfilePage() {
                 </div>
                 <button
                   onClick={() => setShowPhotoModal(true)}
-                  className="absolute bottom-2 right-2 w-8 h-8 bg-emerald-500 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-emerald-600"
+                  className="absolute bottom-2 right-2 w-8 h-8 bg-[#c99b4a] rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-[#9e7746]"
                 >
                   <Camera size={16} className="text-white" />
                 </button>
@@ -251,63 +251,63 @@ export default function ProfilePage() {
                 {isEditing ? (
                   <div className="space-y-4">
                     <div>
-                      <label className="block text-white/60 text-sm mb-1">שם מלא</label>
+                      <label className="block text-[#8b7c69] text-sm mb-1">שם מלא</label>
                       <input
                         type="text"
                         value={editData.name}
                         onChange={(e) => setEditData({ ...editData, name: e.target.value })}
-                        className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-2 text-white placeholder-white/40 focus:border-emerald-500 focus:bg-white/15 transition-all"
+                        className="w-full bg-[#f7f3f2] border border-[rgba(201,155,74,0.15)] rounded-xl px-4 py-2 text-[#2b241d] placeholder:text-[#a89b8a] focus:border-[#c99b4a] focus:bg-white transition-all"
                       />
                     </div>
                     <div>
-                      <label className="block text-white/60 text-sm mb-1">טלפון</label>
+                      <label className="block text-[#8b7c69] text-sm mb-1">טלפון</label>
                       <input
                         type="tel"
                         value={editData.phone}
                         onChange={(e) => setEditData({ ...editData, phone: e.target.value })}
-                        className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-2 text-white placeholder-white/40 focus:border-emerald-500 focus:bg-white/15 transition-all"
+                        className="w-full bg-[#f7f3f2] border border-[rgba(201,155,74,0.15)] rounded-xl px-4 py-2 text-[#2b241d] placeholder:text-[#a89b8a] focus:border-[#c99b4a] focus:bg-white transition-all"
                       />
                     </div>
                     <div>
-                      <label className="block text-white/60 text-sm mb-1">חברה</label>
+                      <label className="block text-[#8b7c69] text-sm mb-1">חברה</label>
                       <input
                         type="text"
                         value={editData.company}
                         onChange={(e) => setEditData({ ...editData, company: e.target.value })}
-                        className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-2 text-white placeholder-white/40 focus:border-emerald-500 focus:bg-white/15 transition-all"
+                        className="w-full bg-[#f7f3f2] border border-[rgba(201,155,74,0.15)] rounded-xl px-4 py-2 text-[#2b241d] placeholder:text-[#a89b8a] focus:border-[#c99b4a] focus:bg-white transition-all"
                       />
                     </div>
                     <div>
-                      <label className="block text-white/60 text-sm mb-1">כתובת</label>
+                      <label className="block text-[#8b7c69] text-sm mb-1">כתובת</label>
                       <input
                         type="text"
                         value={editData.address}
                         onChange={(e) => setEditData({ ...editData, address: e.target.value })}
-                        className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-2 text-white placeholder-white/40 focus:border-emerald-500 focus:bg-white/15 transition-all"
+                        className="w-full bg-[#f7f3f2] border border-[rgba(201,155,74,0.15)] rounded-xl px-4 py-2 text-[#2b241d] placeholder:text-[#a89b8a] focus:border-[#c99b4a] focus:bg-white transition-all"
                       />
                     </div>
                   </div>
                 ) : (
                   <>
                     <div className="flex items-center justify-center md:justify-start gap-3 mb-2">
-                      <h1 className="text-2xl sm:text-3xl font-bold text-white">{currentUser.name}</h1>
+                      <h1 className="text-2xl sm:text-3xl font-bold text-[#2b241d]">{currentUser.name}</h1>
                     </div>
-                    <p className="text-white/60 mb-4">{currentUser.company || 'לא צוין עסק'}</p>
+                    <p className="text-[#8b7c69] mb-4">{currentUser.company || 'לא צוין עסק'}</p>
 
-                    <div className="flex flex-wrap justify-center md:justify-start gap-4 text-sm text-white/60">
+                    <div className="flex flex-wrap justify-center md:justify-start gap-4 text-sm text-[#8b7c69]">
                       <div className="flex items-center gap-2">
-                        <Mail size={14} className="text-emerald-400" />
+                        <Mail size={14} className="text-[#c99b4a]" />
                         <span>{currentUser.email}</span>
                       </div>
                       {currentUser.phone && (
                         <div className="flex items-center gap-2">
-                          <Phone size={14} className="text-emerald-400" />
+                          <Phone size={14} className="text-[#c99b4a]" />
                           <span>{currentUser.phone}</span>
                         </div>
                       )}
                       {currentUser.address && (
                         <div className="flex items-center gap-2">
-                          <MapPin size={14} className="text-emerald-400" />
+                          <MapPin size={14} className="text-[#c99b4a]" />
                           <span>{currentUser.address}</span>
                         </div>
                       )}
@@ -324,13 +324,13 @@ export default function ProfilePage() {
                       setIsEditing(false);
                       router.replace('/profile');
                     }}
-                    className="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors"
+                    className="p-2 rounded-lg bg-[#f7f3f2] hover:bg-[#ede6e0] transition-colors"
                   >
-                    <X size={18} className="text-white/60" />
+                    <X size={18} className="text-[#8b7c69]" />
                   </button>
                   <button
                     onClick={handleSaveProfile}
-                    className="p-2 rounded-lg bg-emerald-500 hover:bg-emerald-600 transition-colors"
+                    className="p-2 rounded-lg bg-[#c99b4a] hover:bg-[#9e7746] transition-colors"
                   >
                     <Save size={18} className="text-white" />
                   </button>
@@ -338,9 +338,9 @@ export default function ProfilePage() {
               ) : (
                 <button
                   onClick={() => setIsEditing(true)}
-                  className="absolute top-4 left-4 p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors"
+                  className="absolute top-4 left-4 p-2 rounded-lg bg-[#f7f3f2] hover:bg-[#ede6e0] transition-colors"
                 >
-                  <Edit3 size={18} className="text-white/60" />
+                  <Edit3 size={18} className="text-[#8b7c69]" />
                 </button>
               )}
             </div>
@@ -351,7 +351,7 @@ export default function ProfilePage() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           {[
             { icon: Award, label: 'נקודות נוכחיות', value: stats.currentPoints.toLocaleString(), color: 'text-yellow-400', borderColor: 'border-yellow-500/30' },
-            { icon: TrendingUp, label: 'סה"כ נצבר', value: stats.totalPoints.toLocaleString(), color: 'text-emerald-400', borderColor: 'border-emerald-500/30' },
+            { icon: TrendingUp, label: 'סה"כ נצבר', value: stats.totalPoints.toLocaleString(), color: 'text-[#c99b4a]', borderColor: 'border-[#c99b4a]/30' },
             { icon: CreditCard, label: 'חשבוניות', value: stats.totalTransactions.toString(), color: 'text-blue-400', borderColor: 'border-blue-500/30' },
             { icon: Calendar, label: 'חבר מאז', value: formatDate(currentUser.joinDate), color: 'text-purple-400', borderColor: 'border-purple-500/30' },
           ].map((stat, index) => (
@@ -360,11 +360,11 @@ export default function ProfilePage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
-              className={`bg-white/5 backdrop-blur-md border-l-4 ${stat.borderColor} border border-white/10 rounded-2xl p-4 text-center`}
+              className={`bg-white border-l-4 ${stat.borderColor} border border-[rgba(201,155,74,0.08)] rounded-2xl p-4 text-center`}
             >
               <stat.icon size={24} className={`mx-auto mb-2 ${stat.color}`} />
-              <p className="text-2xl font-bold text-white mb-1">{stat.value}</p>
-              <p className="text-white/50 text-sm">{stat.label}</p>
+              <p className="text-2xl font-bold text-[#2b241d] mb-1">{stat.value}</p>
+              <p className="text-[#a89b8a] text-sm">{stat.label}</p>
             </motion.div>
           ))}
         </div>
@@ -376,9 +376,9 @@ export default function ProfilePage() {
             animate={{ opacity: 1, x: 0 }}
             className="md:col-span-2"
           >
-            <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6">
-              <h2 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
-                <TrendingUp size={20} className="text-emerald-400" />
+            <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
+              <h2 className="text-xl font-semibold text-[#2b241d] mb-4 flex items-center gap-2">
+                <TrendingUp size={20} className="text-[#c99b4a]" />
                 פעילות אחרונה
               </h2>
               <div className="space-y-3">
@@ -386,21 +386,21 @@ export default function ProfilePage() {
                   recentActivity.map((activity: any) => (
                     <div
                       key={activity.id}
-                      className="flex items-center justify-between p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/5"
+                      className="flex items-center justify-between p-3 rounded-xl bg-[#f7f3f2] hover:bg-[#ede6e0] transition-colors border border-[rgba(201,155,74,0.08)]"
                     >
                       <div>
-                        <p className="text-white">{activity.description}</p>
-                        <p className="text-white/50 text-sm">{formatDate(activity.date)}</p>
+                        <p className="text-[#2b241d]">{activity.description}</p>
+                        <p className="text-[#a89b8a] text-sm">{formatDate(activity.date)}</p>
                       </div>
                       {activity.points !== 0 && (
-                        <span className={`font-bold ${activity.points > 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+                        <span className={`font-bold ${activity.points > 0 ? 'text-[#c99b4a]' : 'text-red-400'}`}>
                           {activity.points > 0 ? '+' : ''}{activity.points.toLocaleString()} נק׳
                         </span>
                       )}
                     </div>
                   ))
                 ) : (
-                  <div className="text-center py-8 text-white/50">
+                  <div className="text-center py-8 text-[#a89b8a]">
                     <TrendingUp size={48} className="mx-auto mb-4 opacity-30" />
                     <p>אין פעילות אחרונה להצגה</p>
                   </div>
@@ -414,72 +414,72 @@ export default function ProfilePage() {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
           >
-            <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6">
-              <h2 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
-                <Shield size={20} className="text-emerald-400" />
+            <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
+              <h2 className="text-xl font-semibold text-[#2b241d] mb-4 flex items-center gap-2">
+                <Shield size={20} className="text-[#c99b4a]" />
                 הגדרות מהירות
               </h2>
               <div className="space-y-2">
                 <button
                   onClick={scrollToEditProfile}
-                  className="w-full flex items-center justify-between gap-3 p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors text-white/70 hover:text-white border border-white/5"
+                  className="w-full flex items-center justify-between gap-3 p-3 rounded-xl bg-[#f7f3f2] hover:bg-[#ede6e0] transition-colors text-[#8b7c69] hover:text-[#2b241d] border border-[rgba(201,155,74,0.08)]"
                 >
                   <div className="flex items-center gap-3">
-                    <User size={18} className="text-emerald-400" />
+                    <User size={18} className="text-[#c99b4a]" />
                     <span>עריכת פרטים אישיים</span>
                   </div>
-                  <ChevronLeft size={16} className="text-white/40" />
+                  <ChevronLeft size={16} className="text-[#a89b8a]" />
                 </button>
                 <button
                   onClick={() => router.push('/settings#notifications')}
-                  className="w-full flex items-center justify-between gap-3 p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors text-white/70 hover:text-white border border-white/5"
+                  className="w-full flex items-center justify-between gap-3 p-3 rounded-xl bg-[#f7f3f2] hover:bg-[#ede6e0] transition-colors text-[#8b7c69] hover:text-[#2b241d] border border-[rgba(201,155,74,0.08)]"
                 >
                   <div className="flex items-center gap-3">
-                    <Bell size={18} className="text-emerald-400" />
+                    <Bell size={18} className="text-[#c99b4a]" />
                     <span>הגדרות התראות</span>
                   </div>
-                  <ChevronLeft size={16} className="text-white/40" />
+                  <ChevronLeft size={16} className="text-[#a89b8a]" />
                 </button>
                 <button
                   onClick={() => router.push('/settings#security')}
-                  className="w-full flex items-center justify-between gap-3 p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors text-white/70 hover:text-white border border-white/5"
+                  className="w-full flex items-center justify-between gap-3 p-3 rounded-xl bg-[#f7f3f2] hover:bg-[#ede6e0] transition-colors text-[#8b7c69] hover:text-[#2b241d] border border-[rgba(201,155,74,0.08)]"
                 >
                   <div className="flex items-center gap-3">
-                    <Shield size={18} className="text-emerald-400" />
+                    <Shield size={18} className="text-[#c99b4a]" />
                     <span>אבטחה ופרטיות</span>
                   </div>
-                  <ChevronLeft size={16} className="text-white/40" />
+                  <ChevronLeft size={16} className="text-[#a89b8a]" />
                 </button>
                 <button
                   onClick={() => router.push('/wallet')}
-                  className="w-full flex items-center justify-between gap-3 p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors text-white/70 hover:text-white border border-white/5"
+                  className="w-full flex items-center justify-between gap-3 p-3 rounded-xl bg-[#f7f3f2] hover:bg-[#ede6e0] transition-colors text-[#8b7c69] hover:text-[#2b241d] border border-[rgba(201,155,74,0.08)]"
                 >
                   <div className="flex items-center gap-3">
-                    <CreditCard size={18} className="text-emerald-400" />
+                    <CreditCard size={18} className="text-[#c99b4a]" />
                     <span>הארנק שלי</span>
                   </div>
-                  <ChevronLeft size={16} className="text-white/40" />
+                  <ChevronLeft size={16} className="text-[#a89b8a]" />
                 </button>
                 <button
                   onClick={() => router.push('/invoices')}
-                  className="w-full flex items-center justify-between gap-3 p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors text-white/70 hover:text-white border border-white/5"
+                  className="w-full flex items-center justify-between gap-3 p-3 rounded-xl bg-[#f7f3f2] hover:bg-[#ede6e0] transition-colors text-[#8b7c69] hover:text-[#2b241d] border border-[rgba(201,155,74,0.08)]"
                 >
                   <div className="flex items-center gap-3">
-                    <Building2 size={18} className="text-emerald-400" />
+                    <Building2 size={18} className="text-[#c99b4a]" />
                     <span>החשבוניות שלי</span>
                   </div>
-                  <ChevronLeft size={16} className="text-white/40" />
+                  <ChevronLeft size={16} className="text-[#a89b8a]" />
                 </button>
                 {user?.role === 'SUPPLIER' && (
                   <button
                     onClick={() => router.push('/supplier/profile')}
-                    className="w-full flex items-center justify-between gap-3 p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors text-white/70 hover:text-white border border-white/5"
+                    className="w-full flex items-center justify-between gap-3 p-3 rounded-xl bg-[#f7f3f2] hover:bg-[#ede6e0] transition-colors text-[#8b7c69] hover:text-[#2b241d] border border-[rgba(201,155,74,0.08)]"
                   >
                     <div className="flex items-center gap-3">
-                      <Building2 size={18} className="text-emerald-400" />
+                      <Building2 size={18} className="text-[#c99b4a]" />
                       <span>עריכת פרופיל ספק</span>
                     </div>
-                    <ChevronLeft size={16} className="text-white/40" />
+                    <ChevronLeft size={16} className="text-[#a89b8a]" />
                   </button>
                 )}
               </div>
@@ -502,18 +502,18 @@ export default function ProfilePage() {
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              className="bg-[#0a1f18] border border-white/10 rounded-2xl p-6 max-w-sm w-full"
+              className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6 max-w-sm w-full"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-semibold text-white">עדכון תמונת פרופיל</h3>
-                <button onClick={() => setShowPhotoModal(false)} className="text-white/60 hover:text-white">
+                <h3 className="text-xl font-semibold text-[#2b241d]">עדכון תמונת פרופיל</h3>
+                <button onClick={() => setShowPhotoModal(false)} className="text-[#8b7c69] hover:text-[#2b241d]">
                   <X size={20} />
                 </button>
               </div>
 
               <div className="text-center">
-                <div className="w-32 h-32 mx-auto rounded-2xl overflow-hidden ring-4 ring-emerald-500/30 bg-gradient-to-br from-emerald-500 to-teal-600 mb-6">
+                <div className="w-32 h-32 mx-auto rounded-2xl overflow-hidden ring-4 ring-[#c99b4a]/30 bg-gradient-to-br from-[#c99b4a] to-[#9e7746] mb-6">
                   {currentUser.avatar ? (
                     <img
                       src={currentUser.avatar}
@@ -547,7 +547,7 @@ export default function ProfilePage() {
                 <button
                   onClick={() => fileInputRef.current?.click()}
                   disabled={isUploading}
-                  className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white py-3 px-6 rounded-xl font-semibold hover:from-emerald-600 hover:to-teal-700 transition-all disabled:opacity-50 mb-3"
+                  className="w-full bg-gradient-to-r from-[#c99b4a] to-[#9e7746] text-white py-3 px-6 rounded-xl font-semibold hover:from-[#9e7746] hover:to-[#86643a] transition-all disabled:opacity-50 mb-3"
                 >
                   {isUploading ? (
                     <>
@@ -562,7 +562,7 @@ export default function ProfilePage() {
                   )}
                 </button>
 
-                <p className="text-white/50 text-sm">
+                <p className="text-[#a89b8a] text-sm">
                   JPG, PNG או GIF. מקסימום 5MB.
                 </p>
               </div>

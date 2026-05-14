@@ -96,11 +96,11 @@ export default function SupplierDashboardPage() {
         icon: status === 'approved' ? 'success' : 'info',
         timer: 2000,
         showConfirmButton: false,
-        background: '#0a1f18',
-        color: '#fff',
+        background: '#f7f3f2',
+        color: '#2b241d',
       });
     } catch {
-      Swal.fire({ title: 'שגיאה', icon: 'error', background: '#0a1f18', color: '#fff' });
+      Swal.fire({ title: 'שגיאה', icon: 'error', background: '#f7f3f2', color: '#2b241d' });
     }
   };
 
@@ -137,22 +137,22 @@ export default function SupplierDashboardPage() {
 
       await Swal.fire({
         title: 'התשלום אושר בהצלחה!',
-        html: '<p style="color: rgba(255,255,255,0.7);">הנקודות זוכו לארנק האדריכל</p>',
+        html: '<p style="color: #8b7c69;">הנקודות זוכו לארנק האדריכל</p>',
         icon: 'success',
-        iconColor: '#10b981',
+        iconColor: '#c99b4a',
         confirmButtonText: 'סגור',
-        confirmButtonColor: '#10b981',
-        background: '#0a1f18',
-        color: '#ffffff',
+        confirmButtonColor: '#c99b4a',
+        background: '#f7f3f2',
+        color: '#2b241d',
       });
     } catch (error: any) {
       Swal.fire({
         title: 'שגיאה',
         text: error.message || 'לא ניתן לאשר את התשלום',
         icon: 'error',
-        confirmButtonColor: '#10b981',
-        background: '#0a1f18',
-        color: '#ffffff',
+        confirmButtonColor: '#c99b4a',
+        background: '#f7f3f2',
+        color: '#2b241d',
       });
     } finally {
       setIsUploading(false);
@@ -178,7 +178,7 @@ export default function SupplierDashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0f2620] -mt-16">
+    <div className="min-h-screen -mt-16">
       {/* Hero Section with Image */}
       <div className="relative h-[420px] md:h-[480px] overflow-hidden">
         {/* Background Image */}
@@ -190,17 +190,17 @@ export default function SupplierDashboardPage() {
           priority
         />
         {/* Dark Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0f2620]/70 via-[#0f2620]/80 to-[#0f2620]" />
-        {/* Emerald Glow */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(16,185,129,0.2),transparent_60%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,rgba(16,185,129,0.15),transparent_50%)]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/40 to-[#f7f3f2]" />
+        {/* Gold Glow */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(201,155,74,0.15),transparent_60%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,rgba(201,155,74,0.1),transparent_50%)]" />
 
         {/* Animated Particles */}
         <div className="absolute inset-0 overflow-hidden">
           {[...Array(6)].map((_, i) => (
             <motion.div
               key={i}
-              className="absolute w-1 h-1 bg-emerald-400/30 rounded-full"
+              className="absolute w-1 h-1 bg-[#c99b4a]/30 rounded-full"
               initial={{
                 x: Math.random() * 100 + '%',
                 y: '100%',
@@ -232,26 +232,26 @@ export default function SupplierDashboardPage() {
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ delay: 0.2 }}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-500/20 border border-emerald-500/30 rounded-full mb-5"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-[#c99b4a]/20 border border-[#c99b4a]/30 rounded-full mb-5"
             >
-              <Sparkles size={16} className="text-emerald-400" />
-              <span className="text-emerald-300 text-sm font-medium">פורטל ספקים</span>
+              <Sparkles size={16} className="text-[#c99b4a]" />
+              <span className="text-[#c99b4a] text-sm font-medium">פורטל ספקים</span>
             </motion.div>
 
             <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-              שלום, <span className="text-emerald-400">{user?.name || 'ספק'}</span>
+              שלום, <span className="text-[#c99b4a]">{user?.name || 'ספק'}</span>
             </h1>
 
-            <p className="text-white/60 text-lg mb-8">{user?.email}</p>
+            <p className="text-white/70 text-lg mb-8">{user?.email}</p>
 
             <div className="flex items-center justify-center gap-3 flex-wrap">
               <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ delay: 0.4, type: 'spring' }}
-                className="flex items-center gap-2 px-5 py-2.5 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full"
+                className="flex items-center gap-2 px-5 py-2.5 bg-white/20 backdrop-blur-sm border border-white/30 rounded-full"
               >
-                <Shield size={16} className="text-emerald-400" />
+                <Shield size={16} className="text-[#c99b4a]" />
                 <span className="text-white text-sm">ספק מאושר</span>
               </motion.div>
             </div>
@@ -265,7 +265,7 @@ export default function SupplierDashboardPage() {
             >
               <Link
                 href={`/suppliers/${user?.id}`}
-                className="inline-flex items-center gap-2 px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-full transition-colors"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-[#c99b4a] hover:bg-[#9e7746] text-white font-medium rounded-full transition-colors"
               >
                 <Eye size={18} />
                 צפה בפרופיל הציבורי
@@ -276,7 +276,7 @@ export default function SupplierDashboardPage() {
       </div>
 
       {/* Content */}
-      <div className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto mt-8 relative z-10 pb-12">
+      <div className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto mt-8 relative z-10 pb-24">
         {/* Stats Cards */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -288,26 +288,26 @@ export default function SupplierDashboardPage() {
           <Link href="/supplier/invoices?filter=paid">
           <motion.div
             whileHover={{ scale: 1.02, y: -2 }}
-            className="bg-gradient-to-br from-emerald-500/20 to-emerald-600/10 backdrop-blur-md border border-emerald-500/30 rounded-2xl p-5 relative overflow-hidden group cursor-pointer"
+            className="bg-white border border-green-100 rounded-2xl p-5 relative overflow-hidden group cursor-pointer"
           >
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-400 to-teal-500" />
-            <div className="absolute -left-4 -bottom-4 w-20 h-20 bg-emerald-500/10 rounded-full blur-xl group-hover:bg-emerald-500/20 transition-colors" />
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-green-400 to-teal-500" />
+            <div className="absolute -left-4 -bottom-4 w-20 h-20 bg-green-50 rounded-full blur-xl group-hover:bg-green-100 transition-colors" />
             <div className="relative">
               <div className="flex items-center justify-between mb-3">
-                <div className="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center">
-                  <CheckCircle className="text-emerald-400" size={22} />
+                <div className="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center">
+                  <CheckCircle className="text-green-600" size={22} />
                 </div>
                 <TrendingUp size={16} className="text-emerald-400" />
               </div>
-              <p className="text-white/60 text-sm mb-1 flex items-center gap-1">חשבוניות ששולמו <ChevronDown size={12} className="rotate-[-90deg] text-emerald-400 opacity-0 group-hover:opacity-100 transition-opacity" /></p>
+              <p className="text-[#8b7c69] text-sm mb-1 flex items-center gap-1">חשבוניות ששולמו <ChevronDown size={12} className="rotate-[-90deg] text-emerald-400 opacity-0 group-hover:opacity-100 transition-opacity" /></p>
               {statsLoading ? (
-                <Loader2 className="w-6 h-6 animate-spin text-emerald-400" />
+                <Loader2 className="w-6 h-6 animate-spin text-[#c99b4a]" />
               ) : (
                 <>
-                  <p className="text-3xl font-bold text-white">
+                  <p className="text-3xl font-bold text-[#2b241d]">
                     {stats?.paidThisMonth?.count || paidInvoices.length}
                   </p>
-                  <p className="text-emerald-400 text-sm font-medium">
+                  <p className="text-[#c99b4a] text-sm font-medium">
                     ₪{(stats?.paidThisMonth?.amount || totalPaid).toLocaleString()}
                   </p>
                 </>
@@ -320,17 +320,17 @@ export default function SupplierDashboardPage() {
           <Link href="/supplier/invoices?filter=pending">
           <motion.div
             whileHover={{ scale: 1.02, y: -2 }}
-            className={`bg-gradient-to-br from-amber-500/20 to-orange-600/10 backdrop-blur-md border rounded-2xl p-5 relative overflow-hidden group cursor-pointer ${
+            className={`bg-white border rounded-2xl p-5 relative overflow-hidden group cursor-pointer ${
               (stats?.pendingPayments?.count || pendingInvoices.length) > 0
-                ? 'border-amber-400/50 ring-1 ring-amber-400/20'
-                : 'border-amber-500/30'
+                ? 'border-amber-300 ring-1 ring-amber-200'
+                : 'border-amber-100'
             }`}
           >
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-400 to-orange-500" />
-            <div className="absolute -left-4 -bottom-4 w-20 h-20 bg-amber-500/10 rounded-full blur-xl group-hover:bg-amber-500/20 transition-colors" />
+            <div className="absolute -left-4 -bottom-4 w-20 h-20 bg-amber-50 rounded-full blur-xl group-hover:bg-amber-100 transition-colors" />
             <div className="relative">
               <div className="flex items-center justify-between mb-3">
-                <div className="w-10 h-10 rounded-xl bg-amber-500/20 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-xl bg-amber-50 flex items-center justify-center">
                   <Clock className="text-amber-400" size={22} />
                 </div>
                 {(stats?.pendingPayments?.count || pendingInvoices.length) > 0 ? (
@@ -339,12 +339,12 @@ export default function SupplierDashboardPage() {
                   <span className="text-xs text-amber-400 font-medium">ממתין</span>
                 )}
               </div>
-              <p className="text-white/60 text-sm mb-1 flex items-center gap-1">ממתינות לתשלום <ChevronDown size={12} className="rotate-[-90deg] text-amber-400 opacity-0 group-hover:opacity-100 transition-opacity" /></p>
+              <p className="text-[#8b7c69] text-sm mb-1 flex items-center gap-1">ממתינות לתשלום <ChevronDown size={12} className="rotate-[-90deg] text-amber-400 opacity-0 group-hover:opacity-100 transition-opacity" /></p>
               {statsLoading ? (
                 <Loader2 className="w-6 h-6 animate-spin text-amber-400" />
               ) : (
                 <>
-                  <p className="text-3xl font-bold text-white">
+                  <p className="text-3xl font-bold text-[#2b241d]">
                     {stats?.pendingPayments?.count || pendingInvoices.length}
                   </p>
                   <p className="text-amber-400 text-sm font-medium">
@@ -359,19 +359,19 @@ export default function SupplierDashboardPage() {
           {/* Trust Score */}
           <motion.div
             whileHover={{ scale: 1.02, y: -2 }}
-            className="bg-gradient-to-br from-blue-500/20 to-indigo-600/10 backdrop-blur-md border border-blue-500/30 rounded-2xl p-5 relative overflow-hidden group"
+            className="bg-white border border-blue-100 rounded-2xl p-5 relative overflow-hidden group"
           >
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-400 to-indigo-500" />
-            <div className="absolute -left-4 -bottom-4 w-20 h-20 bg-blue-500/10 rounded-full blur-xl group-hover:bg-blue-500/20 transition-colors" />
+            <div className="absolute -left-4 -bottom-4 w-20 h-20 bg-blue-50 rounded-full blur-xl group-hover:bg-blue-100 transition-colors" />
             <div className="relative">
               <div className="flex items-center justify-between mb-3">
-                <div className="w-10 h-10 rounded-xl bg-blue-500/20 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
                   <Shield className="text-blue-400" size={22} />
                 </div>
                 <span className="text-xs text-blue-400 font-medium">מקסימלי</span>
               </div>
-              <p className="text-white/60 text-sm mb-1">ציון אמינות</p>
-              <p className="text-3xl font-bold text-white">100</p>
+              <p className="text-[#8b7c69] text-sm mb-1">ציון אמינות</p>
+              <p className="text-3xl font-bold text-[#2b241d]">100</p>
               <p className="text-blue-400 text-sm font-medium">מתוך 100</p>
             </div>
           </motion.div>
@@ -386,20 +386,20 @@ export default function SupplierDashboardPage() {
             transition={{ delay: 0.35 }}
             className="mb-8"
           >
-            <h3 className="text-white font-semibold text-lg mb-4 flex items-center gap-2">
+            <h3 className="text-[#2b241d] font-semibold text-lg mb-4 flex items-center gap-2">
               <Calendar className="text-amber-400" size={20} />
               בקשות פגישה ({pendingMeetings.length})
             </h3>
             <div className="space-y-3">
               {pendingMeetings.map((meeting: any) => (
-                <div key={meeting.id} className="bg-white/5 backdrop-blur-md border border-amber-500/20 rounded-2xl p-4">
+                <div key={meeting.id} className="bg-white border border-amber-200 rounded-2xl p-4">
                   <div className="flex items-start justify-between mb-3">
                     <div>
-                      <p className="text-white font-medium">{meeting.subject}</p>
-                      <p className="text-white/50 text-sm">
+                      <p className="text-[#2b241d] font-medium">{meeting.subject}</p>
+                      <p className="text-[#a89b8a] text-sm">
                         {meeting.architect?.user?.name || 'אדריכל'} • {new Date(meeting.date).toLocaleDateString('he-IL')} בשעה {meeting.time}
                       </p>
-                      {meeting.notes && <p className="text-white/40 text-xs mt-1">{meeting.notes}</p>}
+                      {meeting.notes && <p className="text-[#a89b8a] text-xs mt-1">{meeting.notes}</p>}
                       {meeting.documentUrl && (
                         <a href={meeting.documentUrl} target="_blank" rel="noopener noreferrer" className="text-blue-400 text-xs mt-1 inline-block hover:underline">
                           צפייה במסמך מצורף
@@ -437,45 +437,45 @@ export default function SupplierDashboardPage() {
           <Link href="/supplier/profile" className="group">
             <motion.div
               whileHover={{ scale: 1.02 }}
-              className="p-6 bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl hover:bg-white/10 hover:border-emerald-500/30 transition-all text-center relative overflow-hidden"
+              className="p-6 bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl hover:bg-[#f7f3f2] hover:border-[#c99b4a]/30 transition-all text-center relative overflow-hidden"
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/0 to-emerald-500/0 group-hover:from-emerald-500/5 group-hover:to-transparent transition-all" />
+              <div className="absolute inset-0 bg-gradient-to-br from-[#c99b4a]/0 to-[#c99b4a]/0 group-hover:from-[#c99b4a]/5 group-hover:to-transparent transition-all" />
               <div className="relative">
-                <div className="w-14 h-14 mx-auto bg-white/10 rounded-2xl flex items-center justify-center mb-3 group-hover:bg-emerald-500/20 transition-colors">
-                  <Building2 className="text-white/60 group-hover:text-emerald-400 transition-colors" size={28} />
+                <div className="w-14 h-14 mx-auto bg-[#f7f3f2] rounded-2xl flex items-center justify-center mb-3 group-hover:bg-[#c99b4a]/10 transition-colors">
+                  <Building2 className="text-[#8b7c69] group-hover:text-[#c99b4a] transition-colors" size={28} />
                 </div>
-                <span className="text-white/70 group-hover:text-white text-sm font-medium transition-colors">פרטי הספק</span>
-                <ArrowUpRight size={14} className="inline-block mr-1 text-transparent group-hover:text-emerald-400 transition-colors" />
+                <span className="text-[#8b7c69] group-hover:text-[#2b241d] text-sm font-medium transition-colors">פרטי הספק</span>
+                <ArrowUpRight size={14} className="inline-block mr-1 text-transparent group-hover:text-[#c99b4a] transition-colors" />
               </div>
             </motion.div>
           </Link>
           <Link href="/supplier/payments" className="group">
             <motion.div
               whileHover={{ scale: 1.02 }}
-              className="p-6 bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl hover:bg-white/10 hover:border-emerald-500/30 transition-all text-center relative overflow-hidden"
+              className="p-6 bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl hover:bg-[#f7f3f2] hover:border-[#c99b4a]/30 transition-all text-center relative overflow-hidden"
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/0 to-emerald-500/0 group-hover:from-emerald-500/5 group-hover:to-transparent transition-all" />
+              <div className="absolute inset-0 bg-gradient-to-br from-[#c99b4a]/0 to-[#c99b4a]/0 group-hover:from-[#c99b4a]/5 group-hover:to-transparent transition-all" />
               <div className="relative">
-                <div className="w-14 h-14 mx-auto bg-white/10 rounded-2xl flex items-center justify-center mb-3 group-hover:bg-emerald-500/20 transition-colors">
-                  <CreditCard className="text-white/60 group-hover:text-emerald-400 transition-colors" size={28} />
+                <div className="w-14 h-14 mx-auto bg-[#f7f3f2] rounded-2xl flex items-center justify-center mb-3 group-hover:bg-[#c99b4a]/10 transition-colors">
+                  <CreditCard className="text-[#8b7c69] group-hover:text-[#c99b4a] transition-colors" size={28} />
                 </div>
-                <span className="text-white/70 group-hover:text-white text-sm font-medium transition-colors">תשלומים</span>
-                <ArrowUpRight size={14} className="inline-block mr-1 text-transparent group-hover:text-emerald-400 transition-colors" />
+                <span className="text-[#8b7c69] group-hover:text-[#2b241d] text-sm font-medium transition-colors">תשלומים</span>
+                <ArrowUpRight size={14} className="inline-block mr-1 text-transparent group-hover:text-[#c99b4a] transition-colors" />
               </div>
             </motion.div>
           </Link>
           <Link href="/supplier/invoices" className="group">
             <motion.div
               whileHover={{ scale: 1.02 }}
-              className="p-6 bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl hover:bg-white/10 hover:border-emerald-500/30 transition-all text-center relative overflow-hidden"
+              className="p-6 bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl hover:bg-[#f7f3f2] hover:border-[#c99b4a]/30 transition-all text-center relative overflow-hidden"
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/0 to-emerald-500/0 group-hover:from-emerald-500/5 group-hover:to-transparent transition-all" />
+              <div className="absolute inset-0 bg-gradient-to-br from-[#c99b4a]/0 to-[#c99b4a]/0 group-hover:from-[#c99b4a]/5 group-hover:to-transparent transition-all" />
               <div className="relative">
-                <div className="w-14 h-14 mx-auto bg-white/10 rounded-2xl flex items-center justify-center mb-3 group-hover:bg-emerald-500/20 transition-colors">
-                  <FileText className="text-white/60 group-hover:text-emerald-400 transition-colors" size={28} />
+                <div className="w-14 h-14 mx-auto bg-[#f7f3f2] rounded-2xl flex items-center justify-center mb-3 group-hover:bg-[#c99b4a]/10 transition-colors">
+                  <FileText className="text-[#8b7c69] group-hover:text-[#c99b4a] transition-colors" size={28} />
                 </div>
-                <span className="text-white/70 group-hover:text-white text-sm font-medium transition-colors">חשבוניות</span>
-                <ArrowUpRight size={14} className="inline-block mr-1 text-transparent group-hover:text-emerald-400 transition-colors" />
+                <span className="text-[#8b7c69] group-hover:text-[#2b241d] text-sm font-medium transition-colors">חשבוניות</span>
+                <ArrowUpRight size={14} className="inline-block mr-1 text-transparent group-hover:text-[#c99b4a] transition-colors" />
               </div>
             </motion.div>
           </Link>
@@ -487,10 +487,10 @@ export default function SupplierDashboardPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
         >
-          <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6">
+          <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-semibold text-white flex items-center gap-2">
-                <Receipt className="text-emerald-400" size={20} />
+              <h2 className="text-xl font-semibold text-[#2b241d] flex items-center gap-2">
+                <Receipt className="text-[#c99b4a]" size={20} />
                 חשבוניות אחרונות
               </h2>
 
@@ -498,7 +498,7 @@ export default function SupplierDashboardPage() {
               <div className="relative">
                 <button
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                  className="flex items-center gap-2 px-4 py-2 bg-white/10 border border-white/20 rounded-xl text-white hover:bg-white/20 transition-colors min-w-[160px] justify-between"
+                  className="flex items-center gap-2 px-4 py-2 bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-xl text-[#2b241d] hover:bg-[#f0ebe6] transition-colors min-w-[160px] justify-between"
                 >
                   <span>{STATUS_OPTIONS.find(s => s.value === statusFilter)?.label || 'כל הסטטוסים'}</span>
                   <ChevronDown size={16} className={`transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
@@ -508,7 +508,7 @@ export default function SupplierDashboardPage() {
                   <motion.div
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="absolute top-full right-0 mt-1 w-full bg-[#0a1f18] border border-white/20 rounded-xl overflow-hidden z-10 shadow-xl"
+                    className="absolute top-full right-0 mt-1 w-full bg-white border border-[rgba(201,155,74,0.08)] rounded-xl overflow-hidden z-10 shadow-xl"
                   >
                     {STATUS_OPTIONS.map((option) => (
                       <button
@@ -517,8 +517,8 @@ export default function SupplierDashboardPage() {
                           setStatusFilter(option.value);
                           setIsDropdownOpen(false);
                         }}
-                        className={`w-full px-4 py-2 text-right hover:bg-white/10 transition-colors flex items-center justify-between ${
-                          statusFilter === option.value ? 'bg-white/10 text-emerald-400' : 'text-white/70'
+                        className={`w-full px-4 py-2 text-right hover:bg-[#f7f3f2] transition-colors flex items-center justify-between ${
+                          statusFilter === option.value ? 'bg-[#f7f3f2] text-[#c99b4a]' : 'text-[#8b7c69]'
                         }`}
                       >
                         <span>{option.label}</span>
@@ -536,11 +536,11 @@ export default function SupplierDashboardPage() {
               </div>
             ) : invoices.length === 0 ? (
               <div className="text-center py-12">
-                <div className="w-20 h-20 mx-auto bg-white/5 rounded-full flex items-center justify-center mb-4">
-                  <Receipt className="w-10 h-10 text-white/20" />
+                <div className="w-20 h-20 mx-auto bg-[#f7f3f2] rounded-full flex items-center justify-center mb-4">
+                  <Receipt className="w-10 h-10 text-[#a89b8a]" />
                 </div>
-                <p className="text-white/50 text-lg">אין חשבוניות</p>
-                <p className="text-white/30 text-sm mt-1">חשבוניות חדשות יופיעו כאן</p>
+                <p className="text-[#a89b8a] text-lg">אין חשבוניות</p>
+                <p className="text-[#a89b8a] text-sm mt-1">חשבוניות חדשות יופיעו כאן</p>
               </div>
             ) : (
               <div className="space-y-3 max-h-[500px] overflow-y-auto custom-scrollbar">
@@ -556,25 +556,25 @@ export default function SupplierDashboardPage() {
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: index * 0.03 }}
                       whileHover={{ scale: 1.01 }}
-                      className={`p-4 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition-all ${isOverdue ? 'border-red-500/30 bg-red-500/5' : ''}`}
+                      className={`p-4 bg-white border border-[rgba(201,155,74,0.08)] rounded-xl hover:bg-[#f7f3f2] transition-all ${isOverdue ? 'border-red-200 bg-red-50' : ''}`}
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4">
-                          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500/20 to-teal-500/20 flex items-center justify-center">
-                            <User size={22} className="text-emerald-400" />
+                          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#c99b4a]/10 to-[#c99b4a]/5 flex items-center justify-center">
+                            <User size={22} className="text-[#c99b4a]" />
                           </div>
                           <div>
-                            <p className="text-white font-medium">
+                            <p className="text-[#2b241d] font-medium">
                               {invoice.architect.user.name}
                             </p>
-                            <p className="text-white/50 text-sm">
+                            <p className="text-[#a89b8a] text-sm">
                               {new Date(invoice.createdAt).toLocaleDateString('he-IL')}
                             </p>
                           </div>
                         </div>
                         <div className="flex items-center gap-4">
                           <div className="text-left">
-                            <p className="text-white font-bold text-lg">
+                            <p className="text-[#2b241d] font-bold text-lg">
                               ₪{invoice.amount.toLocaleString()}
                             </p>
                             <span className={`inline-block px-2 py-0.5 rounded-full text-xs ${statusConfig.bg} ${statusConfig.color}`}>
@@ -621,35 +621,35 @@ export default function SupplierDashboardPage() {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="w-full max-w-md bg-gradient-to-br from-[#0a1f18] to-[#0f2620] border border-white/10 rounded-2xl p-6 shadow-2xl"
+              className="w-full max-w-md bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6 shadow-2xl"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-bold text-white flex items-center gap-2">
-                  <CreditCard className="text-emerald-400" size={24} />
+                <h3 className="text-xl font-bold text-[#2b241d] flex items-center gap-2">
+                  <CreditCard className="text-[#c99b4a]" size={24} />
                   אישור תשלום
                 </h3>
                 <button
                   onClick={() => setIsModalOpen(false)}
-                  className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+                  className="p-2 hover:bg-[#f7f3f2] rounded-lg transition-colors"
                 >
-                  <X size={20} className="text-white/60" />
+                  <X size={20} className="text-[#8b7c69]" />
                 </button>
               </div>
 
               {/* Invoice Details */}
-              <div className="bg-white/5 border border-white/10 rounded-xl p-4 mb-6">
+              <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-xl p-4 mb-6">
                 <div className="flex justify-between items-center mb-3">
-                  <span className="text-white/60">אדריכל:</span>
-                  <span className="text-white font-medium">{selectedInvoice.architect.user.name}</span>
+                  <span className="text-[#8b7c69]">אדריכל:</span>
+                  <span className="text-[#2b241d] font-medium">{selectedInvoice.architect.user.name}</span>
                 </div>
                 <div className="flex justify-between items-center mb-3">
-                  <span className="text-white/60">סכום חשבונית:</span>
-                  <span className="text-white font-bold text-lg">₪{selectedInvoice.amount.toLocaleString()}</span>
+                  <span className="text-[#8b7c69]">סכום חשבונית:</span>
+                  <span className="text-[#2b241d] font-bold text-lg">₪{selectedInvoice.amount.toLocaleString()}</span>
                 </div>
                 {selectedInvoice.slaDeadline && (
                   <div className="flex justify-between items-center">
-                    <span className="text-white/60">תאריך יעד:</span>
+                    <span className="text-[#8b7c69]">תאריך יעד:</span>
                     <span className={selectedInvoice.status === 'OVERDUE' ? 'text-red-400' : 'text-yellow-400'}>
                       {new Date(selectedInvoice.slaDeadline).toLocaleDateString('he-IL')}
                     </span>
@@ -659,7 +659,7 @@ export default function SupplierDashboardPage() {
 
               {/* Payment Reference Input */}
               <div className="mb-4">
-                <label className="block text-white/60 text-sm mb-2">
+                <label className="block text-[#8b7c69] text-sm mb-2">
                   אסמכתא / מספר אישור העברה
                 </label>
                 <input
@@ -667,39 +667,39 @@ export default function SupplierDashboardPage() {
                   value={paymentReference}
                   onChange={(e) => setPaymentReference(e.target.value)}
                   placeholder="הכנס מספר אסמכתא..."
-                  className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/40 focus:outline-none focus:border-emerald-500 focus:bg-white/15 transition-colors"
+                  className="w-full px-4 py-3 bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-xl text-[#2b241d] placeholder-[#a89b8a] focus:outline-none focus:border-[#c99b4a] focus:bg-white transition-colors"
                   dir="ltr"
                 />
               </div>
 
               {/* Payment Proof Upload */}
               <div className="mb-6">
-                <label className="block text-white/60 text-sm mb-2">
+                <label className="block text-[#8b7c69] text-sm mb-2">
                   העלאת מסמך אישור העברה <span className="text-red-400">*</span>
                 </label>
                 {paymentProofFile ? (
-                  <div className="flex items-center justify-between p-4 bg-emerald-500/10 border border-emerald-500/30 rounded-xl">
+                  <div className="flex items-center justify-between p-4 bg-[#c99b4a]/5 border border-[#c99b4a]/20 rounded-xl">
                     <div className="flex items-center gap-3">
-                      <File className="text-emerald-400" size={24} />
+                      <File className="text-[#c99b4a]" size={24} />
                       <div>
-                        <p className="text-white font-medium text-sm">{paymentProofFile.name}</p>
-                        <p className="text-emerald-400/70 text-xs">
+                        <p className="text-[#2b241d] font-medium text-sm">{paymentProofFile.name}</p>
+                        <p className="text-[#c99b4a]/70 text-xs">
                           {(paymentProofFile.size / 1024).toFixed(1)} KB
                         </p>
                       </div>
                     </div>
                     <button
                       onClick={() => setPaymentProofFile(null)}
-                      className="p-1 hover:bg-white/10 rounded transition-colors"
+                      className="p-1 hover:bg-[#f7f3f2] rounded transition-colors"
                     >
-                      <X size={18} className="text-white/60" />
+                      <X size={18} className="text-[#8b7c69]" />
                     </button>
                   </div>
                 ) : (
-                  <label className="flex flex-col items-center justify-center p-6 border-2 border-dashed border-white/20 rounded-xl cursor-pointer hover:border-emerald-500/50 hover:bg-white/5 transition-colors">
-                    <Upload className="text-white/40 mb-2" size={32} />
-                    <span className="text-white/60 text-sm">לחץ להעלאת קובץ</span>
-                    <span className="text-white/40 text-xs mt-1">PDF, תמונה או מסמך</span>
+                  <label className="flex flex-col items-center justify-center p-6 border-2 border-dashed border-[rgba(201,155,74,0.15)] rounded-xl cursor-pointer hover:border-[#c99b4a]/50 hover:bg-[#f7f3f2] transition-colors">
+                    <Upload className="text-[#a89b8a] mb-2" size={32} />
+                    <span className="text-[#8b7c69] text-sm">לחץ להעלאת קובץ</span>
+                    <span className="text-[#a89b8a] text-xs mt-1">PDF, תמונה או מסמך</span>
                     <input
                       type="file"
                       accept=".pdf,.png,.jpg,.jpeg,.doc,.docx"
@@ -714,7 +714,7 @@ export default function SupplierDashboardPage() {
               <div className="flex gap-3">
                 <button
                   onClick={() => setIsModalOpen(false)}
-                  className="flex-1 px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white hover:bg-white/20 transition-colors"
+                  className="flex-1 px-4 py-3 bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-xl text-[#2b241d] hover:bg-[#f0ebe6] transition-colors"
                 >
                   ביטול
                 </button>
@@ -723,7 +723,7 @@ export default function SupplierDashboardPage() {
                   whileTap={{ scale: 0.98 }}
                   onClick={handleConfirmPayment}
                   disabled={!paymentReference.trim() || !paymentProofFile || confirmPayment.isPending || isUploading}
-                  className="flex-1 px-4 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 rounded-xl text-white font-medium hover:from-emerald-600 hover:to-teal-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  className="flex-1 px-4 py-3 bg-gradient-to-r from-[#c99b4a] to-[#b08a3e] rounded-xl text-white font-medium hover:from-[#9e7746] hover:to-[#8a6938] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
                   {confirmPayment.isPending || isUploading ? (
                     <>

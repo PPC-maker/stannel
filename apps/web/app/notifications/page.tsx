@@ -71,7 +71,7 @@ function extractMessage(message: string): string | null {
 const statusConfig = {
   new: { bg: 'bg-red-500/15 border-red-500/30', dot: 'bg-red-500', label: 'חדש' },
   pending: { bg: 'bg-yellow-500/15 border-yellow-500/30', dot: 'bg-yellow-500', label: 'יטופל' },
-  handled: { bg: 'bg-emerald-500/15 border-emerald-500/30', dot: 'bg-emerald-500', label: 'טופל' },
+  handled: { bg: 'bg-[#c99b4a]/10 border-[#c99b4a]/20', dot: 'bg-[#c99b4a]', label: 'טופל' },
 };
 
 export default function NotificationsPage() {
@@ -105,8 +105,8 @@ export default function NotificationsPage() {
       confirmButtonText: 'מחק',
       cancelButtonText: 'ביטול',
       confirmButtonColor: '#ef4444',
-      background: '#0f2620',
-      color: '#fff',
+      background: '#f7f3f2',
+      color: '#2b241d',
     });
     if (!result.isConfirmed) return;
     try {
@@ -185,20 +185,20 @@ export default function NotificationsPage() {
         title: notif.title,
         html: `
           <div dir="rtl" style="text-align: right;">
-            <div style="background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.3); border-radius: 12px; padding: 16px; margin-bottom: 16px;">
+            <div style="background: rgba(201,155,74,0.08); border: 1px solid rgba(201,155,74,0.15); border-radius: 12px; padding: 16px; margin-bottom: 16px;">
               <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                <span style="color: rgba(255,255,255,0.5); font-size: 14px;">טלפון:</span>
-                <span style="color: #10b981; font-weight: bold; font-size: 16px;" dir="ltr">${phone}</span>
+                <span style="color: #a89b8a; font-size: 14px;">טלפון:</span>
+                <span style="color: #c99b4a; font-weight: bold; font-size: 16px;" dir="ltr">${phone}</span>
               </div>
-              ${msg ? `<div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.1);"><span style="color: rgba(255,255,255,0.5); font-size: 14px;">הודעה:</span><p style="color: white; margin-top: 4px; font-size: 14px;">${msg}</p></div>` : ''}
+              ${msg ? `<div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(201,155,74,0.1);"><span style="color: #a89b8a; font-size: 14px;">הודעה:</span><p style="color: #2b241d; margin-top: 4px; font-size: 14px;">${msg}</p></div>` : ''}
             </div>
-            <p style="color: rgba(255,255,255,0.4); font-size: 12px;">${new Date(notif.createdAt).toLocaleString('he-IL')}</p>
+            <p style="color: #a89b8a; font-size: 12px;">${new Date(notif.createdAt).toLocaleString('he-IL')}</p>
             <div style="display: flex; gap: 8px; margin-top: 16px;">
-              <button id="swal-call" style="flex: 1; padding: 12px; background: #10b981; color: white; border: none; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer;">📞 התקשר</button>
+              <button id="swal-call" style="flex: 1; padding: 12px; background: #c99b4a; color: white; border: none; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer;">📞 התקשר</button>
               <button id="swal-whatsapp" style="flex: 1; padding: 12px; background: #25D366; color: white; border: none; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer;">💬 WhatsApp</button>
             </div>
             <div style="display: flex; gap: 8px; margin-top: 8px;">
-              <button id="swal-handled" style="flex: 1; padding: 10px; background: rgba(16,185,129,0.2); border: 1px solid rgba(16,185,129,0.4); color: #10b981; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer;">✅ טופל</button>
+              <button id="swal-handled" style="flex: 1; padding: 10px; background: rgba(201,155,74,0.1); border: 1px solid rgba(201,155,74,0.3); color: #c99b4a; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer;">✅ טופל</button>
               <button id="swal-pending" style="flex: 1; padding: 10px; background: rgba(234,179,8,0.2); border: 1px solid rgba(234,179,8,0.4); color: #eab308; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer;">⏳ יטופל בהמשך</button>
             </div>
             <button id="swal-delete" style="width: 100%; padding: 10px; margin-top: 8px; background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.3); color: #ef4444; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer;">🗑️ מחק הודעה</button>
@@ -207,8 +207,8 @@ export default function NotificationsPage() {
         showConfirmButton: false,
         showCancelButton: true,
         cancelButtonText: 'סגור',
-        background: '#0f2620',
-        color: '#fff',
+        background: '#f7f3f2',
+        color: '#2b241d',
         customClass: { popup: 'rounded-2xl' },
         didOpen: () => {
           document.getElementById('swal-call')?.addEventListener('click', () => {
@@ -245,10 +245,10 @@ export default function NotificationsPage() {
         title: notif.title,
         html: `
           <div dir="rtl" style="text-align: right;">
-            <p style="color: rgba(255,255,255,0.7);">${notif.message}</p>
-            <p style="color: rgba(255,255,255,0.3); font-size: 12px; margin-top: 12px;">${new Date(notif.createdAt).toLocaleString('he-IL')}</p>
+            <p style="color: #8b7c69;">${notif.message}</p>
+            <p style="color: #a89b8a; font-size: 12px; margin-top: 12px;">${new Date(notif.createdAt).toLocaleString('he-IL')}</p>
             <div style="display: flex; gap: 8px; margin-top: 16px;">
-              <button id="swal-handled" style="flex: 1; padding: 10px; background: rgba(16,185,129,0.2); border: 1px solid rgba(16,185,129,0.4); color: #10b981; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer;">✅ טופל</button>
+              <button id="swal-handled" style="flex: 1; padding: 10px; background: rgba(201,155,74,0.1); border: 1px solid rgba(201,155,74,0.3); color: #c99b4a; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer;">✅ טופל</button>
               <button id="swal-pending" style="flex: 1; padding: 10px; background: rgba(234,179,8,0.2); border: 1px solid rgba(234,179,8,0.4); color: #eab308; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer;">⏳ יטופל בהמשך</button>
             </div>
             <button id="swal-delete" style="width: 100%; padding: 10px; margin-top: 8px; background: rgba(239,68,68,0.15); border: 1px solid rgba(239,68,68,0.3); color: #ef4444; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer;">🗑️ מחק הודעה</button>
@@ -257,8 +257,8 @@ export default function NotificationsPage() {
         showConfirmButton: false,
         showCancelButton: true,
         cancelButtonText: 'סגור',
-        background: '#0f2620',
-        color: '#fff',
+        background: '#f7f3f2',
+        color: '#2b241d',
         didOpen: () => {
           document.getElementById('swal-handled')?.addEventListener('click', () => {
             updateStatus(notif.id, 'handled');
@@ -290,8 +290,8 @@ export default function NotificationsPage() {
       confirmButtonText: 'מחק',
       cancelButtonText: 'ביטול',
       confirmButtonColor: '#ef4444',
-      background: '#0f2620',
-      color: '#fff',
+      background: '#f7f3f2',
+      color: '#2b241d',
     });
     if (!result.isConfirmed) return;
     try {
@@ -303,22 +303,22 @@ export default function NotificationsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0f2620] -mt-16">
+    <div className="min-h-screen -mt-16">
       <div className="absolute inset-x-0 top-0 h-[35vh]">
         <Image src="https://images.unsplash.com/photo-1557804506-669a67965ba0?w=1920&q=80" alt="Notifications" fill className="object-cover" priority />
-        <div className="absolute inset-0 bg-black/50" />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0f2620]/30 via-transparent to-[#0f2620]" />
+        <div className="absolute inset-0 bg-white/50" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#f7f3f2]/30 via-transparent to-[#f7f3f2]" />
       </div>
 
-      <div className="relative z-10 px-4 sm:px-6 pt-24 sm:pt-28 pb-6 max-w-4xl mx-auto">
+      <div className="relative z-10 px-4 sm:px-6 pt-24 sm:pt-28 pb-24 max-w-4xl mx-auto">
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-4 sm:mb-6">
           <div className="flex items-center justify-between gap-3">
             <div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-white flex items-center gap-2">
-                <Bell className="text-emerald-400" size={22} />
+              <h1 className="text-2xl sm:text-3xl font-bold text-[#2b241d] flex items-center gap-2">
+                <Bell className="text-[#c99b4a]" size={22} />
                 התראות
               </h1>
-              <p className="text-white/60 mt-1 text-sm">
+              <p className="text-[#8b7c69] mt-1 text-sm">
                 {unreadCount > 0 ? `${unreadCount} התראות שלא נקראו` : 'אין התראות חדשות'}
               </p>
             </div>
@@ -334,21 +334,21 @@ export default function NotificationsPage() {
           </div>
         </motion.div>
 
-        <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl overflow-hidden">
+        <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl overflow-hidden">
           {isLoading ? (
-            <div className="space-y-0 divide-y divide-white/10">
+            <div className="space-y-0 divide-y divide-[rgba(201,155,74,0.08)]">
               {[...Array(3)].map((_, i) => (
                 <div key={i} className="flex items-start gap-4 p-4 animate-pulse">
-                  <div className="w-10 h-10 bg-white/10 rounded-full" />
-                  <div className="flex-1"><div className="h-4 w-48 bg-white/10 rounded mb-2" /><div className="h-3 w-64 bg-white/5 rounded" /></div>
+                  <div className="w-10 h-10 bg-[#ede6e0] rounded-full" />
+                  <div className="flex-1"><div className="h-4 w-48 bg-[#ede6e0] rounded mb-2" /><div className="h-3 w-64 bg-[#f7f3f2] rounded" /></div>
                 </div>
               ))}
             </div>
           ) : notifications.length === 0 ? (
             <div className="text-center py-16">
-              <Bell size={48} className="mx-auto text-white/30 mb-4" />
-              <p className="text-white/70 text-lg">אין התראות</p>
-              <p className="text-white/50 text-sm mt-1">התראות חדשות יופיעו כאן</p>
+              <Bell size={48} className="mx-auto text-[#d4cdc4] mb-4" />
+              <p className="text-[#8b7c69] text-lg">אין התראות</p>
+              <p className="text-[#a89b8a] text-sm mt-1">התראות חדשות יופיעו כאן</p>
             </div>
           ) : (
             <div className="space-y-3 p-3">
@@ -365,7 +365,7 @@ export default function NotificationsPage() {
                     transition={{ delay: index * 0.03 }}
                     onClick={() => handleNotificationClick(notif)}
                     className={`p-3 sm:p-4 flex items-start gap-3 cursor-pointer transition-all border-r-4 rounded-xl ${config.bg}`}
-                    style={{ borderRightColor: status === 'new' ? '#ef4444' : status === 'pending' ? '#eab308' : '#10b981' }}
+                    style={{ borderRightColor: status === 'new' ? '#ef4444' : status === 'pending' ? '#eab308' : '#c99b4a' }}
                   >
                     {/* Checkbox */}
                     <input
@@ -373,20 +373,20 @@ export default function NotificationsPage() {
                       checked={selectedIds.has(notif.id)}
                       onClick={(e) => toggleSelect(e, notif.id)}
                       onChange={() => {}}
-                      className="w-4 h-4 rounded bg-white/10 border-white/30 text-emerald-500 mt-1 flex-shrink-0 cursor-pointer"
+                      className="w-4 h-4 rounded bg-[#f7f3f2] border-[rgba(201,155,74,0.15)] text-[#c99b4a] mt-1 flex-shrink-0 cursor-pointer"
                     />
 
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-0.5">
-                        <Icon size={14} className={status === 'new' ? 'text-red-400' : status === 'pending' ? 'text-yellow-400' : 'text-emerald-400'} />
-                        <p className={`text-sm font-medium ${status === 'new' ? 'text-white' : 'text-white/70'}`}>
+                        <Icon size={14} className={status === 'new' ? 'text-red-400' : status === 'pending' ? 'text-yellow-400' : 'text-[#c99b4a]'} />
+                        <p className={`text-sm font-medium ${status === 'new' ? 'text-[#2b241d]' : 'text-[#8b7c69]'}`}>
                           {notif.title}
                         </p>
                       </div>
-                      <p className="text-white/50 text-xs line-clamp-1">{notif.message}</p>
+                      <p className="text-[#a89b8a] text-xs line-clamp-1">{notif.message}</p>
                       <div className="flex items-center gap-2 mt-1">
-                        <span className="text-white/30 text-[10px]">{new Date(notif.createdAt).toLocaleString('he-IL')}</span>
-                        <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${status === 'new' ? 'bg-red-500/20 text-red-400' : status === 'pending' ? 'bg-yellow-500/20 text-yellow-400' : 'bg-emerald-500/20 text-emerald-400'}`}>
+                        <span className="text-[#b8ad9e] text-[10px]">{new Date(notif.createdAt).toLocaleString('he-IL')}</span>
+                        <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${status === 'new' ? 'bg-red-500/20 text-red-400' : status === 'pending' ? 'bg-yellow-500/20 text-yellow-400' : 'bg-[#c99b4a]/15 text-[#c99b4a]'}`}>
                           {config.label}
                         </span>
                       </div>
@@ -394,7 +394,7 @@ export default function NotificationsPage() {
 
                     <button
                       onClick={(e) => { e.stopPropagation(); handleNotificationClick(notif); }}
-                      className="px-3 py-1.5 bg-white/10 border border-white/20 text-white/70 rounded-lg text-xs hover:bg-white/20 transition-colors flex-shrink-0 flex items-center gap-1"
+                      className="px-3 py-1.5 bg-[#f7f3f2] border border-[rgba(201,155,74,0.15)] text-[#8b7c69] rounded-lg text-xs hover:bg-[#ede6e0] transition-colors flex-shrink-0 flex items-center gap-1"
                     >
                       <MessageSquare size={12} />
                       צפה

@@ -67,9 +67,9 @@ export default function EventsPage() {
         text: 'ההרשמה לאירוע בוצעה בהצלחה',
         icon: 'success',
         confirmButtonText: 'אישור',
-        background: '#0f2620',
-        color: '#fff',
-        confirmButtonColor: '#10b981',
+        background: '#f7f3f2',
+        color: '#2b241d',
+        confirmButtonColor: '#c99b4a',
       });
     } catch (error: any) {
       Swal.fire({
@@ -77,8 +77,8 @@ export default function EventsPage() {
         text: error.message || 'שגיאה בהרשמה לאירוע',
         icon: 'error',
         confirmButtonText: 'אישור',
-        background: '#0f2620',
-        color: '#fff',
+        background: '#f7f3f2',
+        color: '#2b241d',
       });
     } finally {
       setRegisteringId(null);
@@ -89,7 +89,7 @@ export default function EventsPage() {
   const isFull = (event: any) => event.registered >= event.capacity;
 
   return (
-    <div className="min-h-screen bg-[#0f2620] -mt-16">
+    <div className="min-h-screen -mt-16">
       {/* Hero Background */}
       <div className="absolute inset-x-0 top-0 h-[45vh]">
         <Image
@@ -100,18 +100,18 @@ export default function EventsPage() {
           priority
         />
         <div className="absolute inset-0 bg-black/50" />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0f2620]/30 via-transparent to-[#0f2620]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#f7f3f2]/30 via-transparent to-[#f7f3f2]" />
       </div>
 
-      <div className="relative z-10 px-4 sm:px-6 pt-24 sm:pt-28 pb-6 max-w-7xl mx-auto">
+      <div className="relative z-10 px-4 sm:px-6 pt-24 sm:pt-28 pb-24 max-w-7xl mx-auto">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="mb-4 sm:mb-8"
         >
-          <h1 className="text-2xl sm:text-3xl font-bold text-white">אירועים</h1>
-          <p className="text-white/60 mt-1 text-sm sm:text-base">הצטרפו לאירועים בלעדיים וצברו נקודות</p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-[#2b241d]">אירועים</h1>
+          <p className="text-[#8b7c69] mt-1 text-sm sm:text-base">הצטרפו לאירועים בלעדיים וצברו נקודות</p>
         </motion.div>
 
         {/* Stats Banner */}
@@ -119,24 +119,24 @@ export default function EventsPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="bg-gradient-to-br from-emerald-600/30 to-emerald-800/30 backdrop-blur-md border border-emerald-500/30 rounded-2xl sm:rounded-3xl p-4 sm:p-6 mb-4 sm:mb-8"
+          className="bg-gradient-to-br from-[#c99b4a]/10 to-[#c99b4a]/20 border border-[rgba(201,155,74,0.15)] rounded-2xl sm:rounded-3xl p-4 sm:p-6 mb-4 sm:mb-8"
         >
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-3 sm:gap-4">
-              <div className="w-10 h-10 sm:w-14 sm:h-14 rounded-xl bg-emerald-500/30 flex items-center justify-center flex-shrink-0">
-                <Calendar size={20} className="text-emerald-400 sm:hidden" />
-                <Calendar size={28} className="text-emerald-400 hidden sm:block" />
+              <div className="w-10 h-10 sm:w-14 sm:h-14 rounded-xl bg-[#c99b4a]/20 flex items-center justify-center flex-shrink-0">
+                <Calendar size={20} className="text-[#c99b4a] sm:hidden" />
+                <Calendar size={28} className="text-[#c99b4a] hidden sm:block" />
               </div>
               <div>
-                <p className="text-white/70 text-xs sm:text-sm">אירועים קרובים</p>
-                <p className="text-2xl sm:text-4xl font-bold text-white">
+                <p className="text-[#8b7c69] text-xs sm:text-sm">אירועים קרובים</p>
+                <p className="text-2xl sm:text-4xl font-bold text-[#2b241d]">
                   {events.length} <span className="text-sm sm:text-lg">אירועים</span>
                 </p>
               </div>
             </div>
             <div className="text-center flex-shrink-0">
-              <p className="text-white/70 text-xs sm:text-sm">נרשמתם ל</p>
-              <p className="text-lg sm:text-2xl font-semibold text-white">{registeredEvents.length} אירועים</p>
+              <p className="text-[#8b7c69] text-xs sm:text-sm">נרשמתם ל</p>
+              <p className="text-lg sm:text-2xl font-semibold text-[#2b241d]">{registeredEvents.length} אירועים</p>
             </div>
           </div>
         </motion.div>
@@ -149,7 +149,7 @@ export default function EventsPage() {
             transition={{ delay: 0.15 }}
             className="mb-6"
           >
-            <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+            <h2 className="text-xl font-bold text-[#2b241d] mb-4 flex items-center gap-2">
               <Building2 size={22} className="text-amber-400" />
               הפגישות שלי עם ספקים
             </h2>
@@ -167,12 +167,12 @@ export default function EventsPage() {
                     key={meeting.id}
                     initial={{ opacity: 0, x: -10 }}
                     animate={{ opacity: 1, x: 0 }}
-                    className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-4 hover:bg-white/8 transition-colors"
+                    className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-4 hover:bg-[#f7f3f2] transition-colors"
                   >
                     <div className="flex items-start justify-between mb-2">
                       <div className="flex-1">
-                        <h3 className="text-white font-semibold text-base">{meeting.subject}</h3>
-                        <p className="text-white/50 text-sm">
+                        <h3 className="text-[#2b241d] font-semibold text-base">{meeting.subject}</h3>
+                        <p className="text-[#a89b8a] text-sm">
                           {meeting.supplier?.companyName || 'ספק'}
                         </p>
                       </div>
@@ -180,7 +180,7 @@ export default function EventsPage() {
                         {st.label}
                       </span>
                     </div>
-                    <div className="flex items-center gap-4 text-white/50 text-sm">
+                    <div className="flex items-center gap-4 text-[#a89b8a] text-sm">
                       <div className="flex items-center gap-1">
                         <Calendar size={14} />
                         <span>{new Date(meeting.date).toLocaleDateString('he-IL')}</span>
@@ -197,7 +197,7 @@ export default function EventsPage() {
                       )}
                     </div>
                     {meeting.notes && (
-                      <p className="text-white/40 text-xs mt-2">{meeting.notes}</p>
+                      <p className="text-[#a89b8a] text-xs mt-2">{meeting.notes}</p>
                     )}
                   </motion.div>
                 );
@@ -211,11 +211,11 @@ export default function EventsPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.15 }}
-            className="mb-6 bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 text-center"
+            className="mb-6 bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6 text-center"
           >
-            <Building2 size={32} className="mx-auto text-white/20 mb-2" />
-            <p className="text-white/50 text-sm">אין פגישות מתוכננות</p>
-            <p className="text-white/30 text-xs mt-1">קבעו פגישה עם ספק מעמוד הספקים</p>
+            <Building2 size={32} className="mx-auto text-[#a89b8a]/40 mb-2" />
+            <p className="text-[#a89b8a] text-sm">אין פגישות מתוכננות</p>
+            <p className="text-[#a89b8a] text-xs mt-1">קבעו פגישה עם ספק מעמוד הספקים</p>
           </motion.div>
         )}
 
@@ -223,18 +223,18 @@ export default function EventsPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {isLoading ? (
             [...Array(6)].map((_, i) => (
-              <div key={i} className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl overflow-hidden animate-pulse">
-                <div className="h-48 bg-white/10" />
+              <div key={i} className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl overflow-hidden animate-pulse">
+                <div className="h-48 bg-[#f7f3f2]" />
                 <div className="p-6">
-                  <div className="h-6 w-3/4 bg-white/10 rounded mb-2" />
-                  <div className="h-4 w-full bg-white/5 rounded mb-4" />
+                  <div className="h-6 w-3/4 bg-[#f7f3f2] rounded mb-2" />
+                  <div className="h-4 w-full bg-[#f7f3f2] rounded mb-4" />
                   <div className="space-y-2 mb-4">
-                    <div className="h-3 w-24 bg-white/5 rounded" />
-                    <div className="h-3 w-32 bg-white/5 rounded" />
+                    <div className="h-3 w-24 bg-[#f7f3f2] rounded" />
+                    <div className="h-3 w-32 bg-[#f7f3f2] rounded" />
                   </div>
-                  <div className="flex justify-between pt-4 border-t border-white/10">
-                    <div className="h-5 w-16 bg-emerald-500/20 rounded" />
-                    <div className="h-8 w-20 bg-white/10 rounded-lg" />
+                  <div className="flex justify-between pt-4 border-t border-[rgba(201,155,74,0.08)]">
+                    <div className="h-5 w-16 bg-[#c99b4a]/20 rounded" />
+                    <div className="h-8 w-20 bg-[#f7f3f2] rounded-lg" />
                   </div>
                 </div>
               </div>
@@ -253,12 +253,12 @@ export default function EventsPage() {
                 transition={{ delay: index * 0.08 }}
               >
                 <div
-                  className={`bg-white/5 backdrop-blur-md border rounded-2xl overflow-hidden group hover:bg-white/10 transition-all ${
-                    registered ? 'border-green-500/50 ring-1 ring-green-500/30' : 'border-white/10'
+                  className={`bg-white border rounded-2xl overflow-hidden group hover:bg-[#f7f3f2] transition-all ${
+                    registered ? 'border-green-500/50 ring-1 ring-green-500/30' : 'border-[rgba(201,155,74,0.08)]'
                   }`}
                 >
                   {/* Event Image */}
-                  <div className="relative h-48 overflow-hidden bg-white/5">
+                  <div className="relative h-48 overflow-hidden bg-[#f7f3f2]">
                     {event.imageUrl && isValidImageUrl(event.imageUrl) ? (
                       <ImgWithLoader
                         src={event.imageUrl}
@@ -266,11 +266,11 @@ export default function EventsPage() {
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 relative z-[2]"
                       />
                     ) : null}
-                    <div className={`w-full h-full bg-white/5 flex items-center justify-center absolute inset-0 ${event.imageUrl && isValidImageUrl(event.imageUrl) ? 'hidden' : ''}`}>
-                      <Calendar size={48} className="text-white/30" />
+                    <div className={`w-full h-full bg-[#f7f3f2] flex items-center justify-center absolute inset-0 ${event.imageUrl && isValidImageUrl(event.imageUrl) ? 'hidden' : ''}`}>
+                      <Calendar size={48} className="text-[#a89b8a]/40" />
                     </div>
                     {event.isVip && (
-                      <div className="absolute top-3 right-3 bg-emerald-500 text-white text-xs font-bold px-3 py-1 rounded-full">
+                      <div className="absolute top-3 right-3 bg-[#c99b4a] text-white text-xs font-bold px-3 py-1 rounded-full">
                         VIP
                       </div>
                     )}
@@ -294,32 +294,32 @@ export default function EventsPage() {
 
                   {/* Event Info */}
                   <div className="p-4 sm:p-6">
-                    <h3 className="text-white font-semibold text-base sm:text-lg mb-1 sm:mb-2">{event.title}</h3>
-                    <p className="text-white/60 text-sm mb-4 line-clamp-2">{event.description}</p>
+                    <h3 className="text-[#2b241d] font-semibold text-base sm:text-lg mb-1 sm:mb-2">{event.title}</h3>
+                    <p className="text-[#8b7c69] text-sm mb-4 line-clamp-2">{event.description}</p>
 
                     {/* Event Details */}
                     <div className="space-y-2 mb-4">
                       {event.time && (
-                        <div className="flex items-center gap-2 text-white/60 text-sm">
+                        <div className="flex items-center gap-2 text-[#8b7c69] text-sm">
                           <Clock size={14} />
                           <span>{event.time}</span>
                         </div>
                       )}
                       {event.location && (
-                        <div className="flex items-center gap-2 text-white/60 text-sm">
+                        <div className="flex items-center gap-2 text-[#8b7c69] text-sm">
                           <MapPin size={14} />
                           <span>{event.location}</span>
                         </div>
                       )}
-                      <div className="flex items-center gap-2 text-white/60 text-sm">
+                      <div className="flex items-center gap-2 text-[#8b7c69] text-sm">
                         <Users size={14} />
                         <span>{event.registered || 0} / {event.capacity || '∞'} משתתפים</span>
                       </div>
                     </div>
 
                     {/* Points & Action */}
-                    <div className="flex items-center justify-between pt-4 border-t border-white/10">
-                      <div className="text-emerald-400 font-bold">
+                    <div className="flex items-center justify-between pt-4 border-t border-[rgba(201,155,74,0.08)]">
+                      <div className="text-[#c99b4a] font-bold">
                         +{event.pointsReward || 0} נק׳
                       </div>
                       <button
@@ -327,10 +327,10 @@ export default function EventsPage() {
                         disabled={full || registered || isRegistering}
                         className={`px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${
                           registered
-                            ? 'bg-green-500/20 text-green-400 cursor-default'
+                            ? 'bg-green-500/20 text-green-600 cursor-default'
                             : full
-                            ? 'bg-white/10 text-white/40 cursor-not-allowed'
-                            : 'bg-emerald-500 text-white hover:bg-emerald-600'
+                            ? 'bg-[#f7f3f2] text-[#a89b8a] cursor-not-allowed'
+                            : 'bg-[#c99b4a] text-white hover:bg-[#9e7746]'
                         }`}
                       >
                         {isRegistering ? (
@@ -356,9 +356,9 @@ export default function EventsPage() {
 
         {/* Empty State */}
         {!isLoading && events.length === 0 && (
-          <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-12 text-center">
-            <Calendar size={48} className="mx-auto text-white/30 mb-4" />
-            <p className="text-white/60">אין אירועים קרובים כרגע</p>
+          <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-12 text-center">
+            <Calendar size={48} className="mx-auto text-[#a89b8a]/40 mb-4" />
+            <p className="text-[#8b7c69]">אין אירועים קרובים כרגע</p>
           </div>
         )}
       </div>

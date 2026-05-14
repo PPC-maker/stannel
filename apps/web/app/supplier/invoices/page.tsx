@@ -80,22 +80,22 @@ export default function SupplierInvoicesPage() {
 
       await Swal.fire({
         title: 'התשלום אושר בהצלחה!',
-        html: '<p style="color: rgba(255,255,255,0.7);">הנקודות זוכו לארנק האדריכל</p>',
+        html: '<p style="color: #8b7c69;">הנקודות זוכו לארנק האדריכל</p>',
         icon: 'success',
-        iconColor: '#10b981',
+        iconColor: '#c99b4a',
         confirmButtonText: 'סגור',
-        confirmButtonColor: '#10b981',
-        background: '#0a1f18',
-        color: '#ffffff',
+        confirmButtonColor: '#c99b4a',
+        background: '#f7f3f2',
+        color: '#2b241d',
       });
     } catch (error: any) {
       Swal.fire({
         title: 'שגיאה',
         text: error.message || 'לא ניתן לאשר את התשלום',
         icon: 'error',
-        confirmButtonColor: '#10b981',
-        background: '#0a1f18',
-        color: '#ffffff',
+        confirmButtonColor: '#c99b4a',
+        background: '#f7f3f2',
+        color: '#2b241d',
       });
     }
   };
@@ -111,7 +111,7 @@ export default function SupplierInvoicesPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0f2620] -mt-16">
+    <div className="min-h-screen -mt-16">
       {/* Hero Section with Image */}
       <div className="relative h-80 overflow-hidden">
         {/* Background Image */}
@@ -122,13 +122,13 @@ export default function SupplierInvoicesPage() {
           className="object-cover"
           priority
         />
-        {/* Dark Overlay with Fade */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0f2620]/60 via-[#0f2620]/70 to-[#0f2620]" />
-        {/* Emerald Glow */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(16,185,129,0.15),transparent_60%)]" />
+        {/* Overlay with Fade */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/40 to-[#f7f3f2]" />
+        {/* Gold Glow */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(201,155,74,0.15),transparent_60%)]" />
       </div>
 
-      <div className="px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto -mt-48 relative z-10 pb-12">
+      <div className="px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto -mt-48 relative z-10 pb-24">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
@@ -137,16 +137,16 @@ export default function SupplierInvoicesPage() {
         >
           <Link
             href="/supplier"
-            className="inline-flex items-center gap-2 text-white/60 hover:text-emerald-400 mb-4 transition-colors font-medium"
+            className="inline-flex items-center gap-2 text-white/70 hover:text-[#c99b4a] mb-4 transition-colors font-medium"
           >
             <ArrowRight size={16} />
             חזרה לדשבורד
           </Link>
           <h1 className="text-3xl font-display font-bold text-white flex items-center gap-3">
-            <FileText className="text-emerald-400" />
+            <FileText className="text-[#c99b4a]" />
             חשבוניות
           </h1>
-          <p className="text-white/60 mt-1 font-medium">כל החשבוניות שהוגשו על ידי אדריכלים</p>
+          <p className="text-white/70 mt-1 font-medium">כל החשבוניות שהוגשו על ידי אדריכלים</p>
         </motion.div>
 
         {/* Filter & Stats */}
@@ -154,10 +154,10 @@ export default function SupplierInvoicesPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="flex items-center justify-between mb-6 bg-white/5 backdrop-blur-md border border-white/10 rounded-xl p-4"
+          className="flex items-center justify-between mb-6 bg-white border border-[rgba(201,155,74,0.08)] rounded-xl p-4"
         >
           <div className="flex items-center gap-4">
-            <span className="text-white/70 text-sm font-semibold">
+            <span className="text-[#8b7c69] text-sm font-semibold">
               {invoices.length} חשבוניות
             </span>
           </div>
@@ -166,7 +166,7 @@ export default function SupplierInvoicesPage() {
           <div className="relative">
             <button
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-              className="flex items-center gap-2 px-4 py-2 bg-white/10 border border-white/20 rounded-lg text-white font-medium hover:bg-white/20 transition-colors min-w-[180px] justify-between"
+              className="flex items-center gap-2 px-4 py-2 bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-lg text-[#2b241d] font-medium hover:bg-[#f0ebe6] transition-colors min-w-[180px] justify-between"
             >
               <span>{STATUS_OPTIONS.find(s => s.value === statusFilter)?.label || 'כל הסטטוסים'}</span>
               <ChevronDown size={16} className={`transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
@@ -176,7 +176,7 @@ export default function SupplierInvoicesPage() {
               <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="absolute top-full right-0 mt-1 w-full bg-[#0a1f18] border border-white/20 rounded-lg overflow-hidden z-10 shadow-xl"
+                className="absolute top-full right-0 mt-1 w-full bg-white border border-[rgba(201,155,74,0.08)] rounded-lg overflow-hidden z-10 shadow-xl"
               >
                 {STATUS_OPTIONS.map((option) => (
                   <button
@@ -185,8 +185,8 @@ export default function SupplierInvoicesPage() {
                       setStatusFilter(option.value);
                       setIsDropdownOpen(false);
                     }}
-                    className={`w-full px-4 py-2 text-right hover:bg-white/10 transition-colors flex items-center justify-between ${
-                      statusFilter === option.value ? 'bg-emerald-500/20 text-emerald-400 font-semibold' : 'text-white/80'
+                    className={`w-full px-4 py-2 text-right hover:bg-[#f7f3f2] transition-colors flex items-center justify-between ${
+                      statusFilter === option.value ? 'bg-[#f7f3f2] text-[#c99b4a] font-semibold' : 'text-[#8b7c69]'
                     }`}
                   >
                     <span>{option.label}</span>
@@ -204,21 +204,21 @@ export default function SupplierInvoicesPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
         >
-          <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6">
+          <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
             {isLoading ? (
               <div className="text-center py-12">
-                <Loader2 className="w-8 h-8 mx-auto text-emerald-400 animate-spin" />
+                <Loader2 className="w-8 h-8 mx-auto text-[#c99b4a] animate-spin" />
               </div>
             ) : invoices.length === 0 ? (
               <div className="text-center py-12">
-                <Receipt className="w-12 h-12 mx-auto text-white/20 mb-4" />
-                <p className="text-white/60 font-medium">אין חשבוניות</p>
+                <Receipt className="w-12 h-12 mx-auto text-[#a89b8a] mb-4" />
+                <p className="text-[#8b7c69] font-medium">אין חשבוניות</p>
               </div>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
-                    <tr className="text-white/60 text-sm font-semibold border-b border-white/10">
+                    <tr className="text-[#8b7c69] text-sm font-semibold border-b border-[rgba(201,155,74,0.08)]">
                       <th className="text-right py-3 px-4">אדריכל</th>
                       <th className="text-right py-3 px-4">תאריך</th>
                       <th className="text-right py-3 px-4">SLA</th>
@@ -227,7 +227,7 @@ export default function SupplierInvoicesPage() {
                       <th className="text-right py-3 px-4">פעולות</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-white/5">
+                  <tbody className="divide-y divide-[rgba(201,155,74,0.05)]">
                     {invoices.map((invoice: Invoice, index: number) => {
                       const statusConfig = STATUS_CONFIG[invoice.status] || STATUS_CONFIG.PENDING_SUPPLIER_PAY;
                       const canConfirm = invoice.status === 'PENDING_SUPPLIER_PAY' || invoice.status === 'OVERDUE';
@@ -239,22 +239,22 @@ export default function SupplierInvoicesPage() {
                           initial={{ opacity: 0, x: -20 }}
                           animate={{ opacity: 1, x: 0 }}
                           transition={{ delay: index * 0.02 }}
-                          className={`hover:bg-white/5 transition-colors ${isOverdue ? 'bg-red-500/10' : ''}`}
+                          className={`hover:bg-[#f7f3f2] transition-colors ${isOverdue ? 'bg-red-50' : ''}`}
                         >
                           <td className="py-4 px-4">
                             <div className="flex items-center gap-3">
-                              <div className="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center">
-                                <User size={18} className="text-emerald-400" />
+                              <div className="w-10 h-10 rounded-full bg-[#c99b4a]/10 flex items-center justify-center">
+                                <User size={18} className="text-[#c99b4a]" />
                               </div>
                               <div>
-                                <p className="text-white font-semibold">{invoice.architect.user.name}</p>
-                                <p className="text-white/40 text-xs">{invoice.architect.user.email}</p>
+                                <p className="text-[#2b241d] font-semibold">{invoice.architect.user.name}</p>
+                                <p className="text-[#a89b8a] text-xs">{invoice.architect.user.email}</p>
                               </div>
                             </div>
                           </td>
                           <td className="py-4 px-4">
-                            <div className="flex items-center gap-2 text-white/70 font-medium">
-                              <Calendar size={14} className="text-white/40" />
+                            <div className="flex items-center gap-2 text-[#8b7c69] font-medium">
+                              <Calendar size={14} className="text-[#a89b8a]" />
                               {new Date(invoice.createdAt).toLocaleDateString('he-IL')}
                             </div>
                           </td>
@@ -265,11 +265,11 @@ export default function SupplierInvoicesPage() {
                                 {new Date(invoice.slaDeadline).toLocaleDateString('he-IL')}
                               </div>
                             ) : (
-                              <span className="text-white/30">-</span>
+                              <span className="text-[#a89b8a]">-</span>
                             )}
                           </td>
                           <td className="py-4 px-4">
-                            <p className="text-white font-bold text-lg">₪{invoice.amount.toLocaleString()}</p>
+                            <p className="text-[#2b241d] font-bold text-lg">₪{invoice.amount.toLocaleString()}</p>
                           </td>
                           <td className="py-4 px-4">
                             <span className={`inline-block px-3 py-1.5 rounded-full text-xs font-bold ${statusConfig.bg} ${statusConfig.color}`}>
@@ -295,7 +295,7 @@ export default function SupplierInvoicesPage() {
                                 שולם
                               </span>
                             ) : (
-                              <span className="text-white/30 text-sm">-</span>
+                              <span className="text-[#a89b8a] text-sm">-</span>
                             )}
                           </td>
                         </motion.tr>
@@ -323,35 +323,35 @@ export default function SupplierInvoicesPage() {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="w-full max-w-md bg-[#0a1f18] border border-white/20 rounded-2xl p-6 shadow-2xl"
+              className="w-full max-w-md bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6 shadow-2xl"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-bold text-white flex items-center gap-2">
-                  <CreditCard className="text-emerald-400" size={24} />
+                <h3 className="text-xl font-bold text-[#2b241d] flex items-center gap-2">
+                  <CreditCard className="text-[#c99b4a]" size={24} />
                   אישור תשלום
                 </h3>
                 <button
                   onClick={() => setIsModalOpen(false)}
-                  className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+                  className="p-2 hover:bg-[#f7f3f2] rounded-lg transition-colors"
                 >
-                  <X size={20} className="text-white/50" />
+                  <X size={20} className="text-[#a89b8a]" />
                 </button>
               </div>
 
               {/* Invoice Details */}
-              <div className="bg-white/5 border border-white/10 rounded-xl p-4 mb-6">
+              <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-xl p-4 mb-6">
                 <div className="flex justify-between items-center mb-3">
-                  <span className="text-white/50">אדריכל:</span>
-                  <span className="text-white font-medium">{selectedInvoice.architect.user.name}</span>
+                  <span className="text-[#a89b8a]">אדריכל:</span>
+                  <span className="text-[#2b241d] font-medium">{selectedInvoice.architect.user.name}</span>
                 </div>
                 <div className="flex justify-between items-center mb-3">
-                  <span className="text-white/50">סכום חשבונית:</span>
-                  <span className="text-white font-bold text-lg">₪{selectedInvoice.amount.toLocaleString()}</span>
+                  <span className="text-[#a89b8a]">סכום חשבונית:</span>
+                  <span className="text-[#2b241d] font-bold text-lg">₪{selectedInvoice.amount.toLocaleString()}</span>
                 </div>
                 {selectedInvoice.slaDeadline && (
                   <div className="flex justify-between items-center">
-                    <span className="text-white/50">תאריך יעד:</span>
+                    <span className="text-[#a89b8a]">תאריך יעד:</span>
                     <span className={selectedInvoice.status === 'OVERDUE' ? 'text-red-400' : 'text-yellow-400'}>
                       {new Date(selectedInvoice.slaDeadline).toLocaleDateString('he-IL')}
                     </span>
@@ -361,7 +361,7 @@ export default function SupplierInvoicesPage() {
 
               {/* Payment Reference Input */}
               <div className="mb-6">
-                <label className="block text-white/60 text-sm mb-2">
+                <label className="block text-[#8b7c69] text-sm mb-2">
                   אסמכתא / מספר אישור העברה
                 </label>
                 <input
@@ -369,7 +369,7 @@ export default function SupplierInvoicesPage() {
                   value={paymentReference}
                   onChange={(e) => setPaymentReference(e.target.value)}
                   placeholder="הכנס מספר אסמכתא..."
-                  className="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/40 focus:outline-none focus:border-emerald-500 transition-colors"
+                  className="w-full px-4 py-3 bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-xl text-[#2b241d] placeholder-[#a89b8a] focus:outline-none focus:border-[#c99b4a] transition-colors"
                   dir="ltr"
                 />
               </div>
@@ -378,14 +378,14 @@ export default function SupplierInvoicesPage() {
               <div className="flex gap-3">
                 <button
                   onClick={() => setIsModalOpen(false)}
-                  className="flex-1 px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white/70 hover:bg-white/20 transition-colors"
+                  className="flex-1 px-4 py-3 bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-xl text-[#8b7c69] hover:bg-[#f0ebe6] transition-colors"
                 >
                   ביטול
                 </button>
                 <button
                   onClick={handleConfirmPayment}
                   disabled={!paymentReference.trim() || confirmPayment.isPending}
-                  className="flex-1 px-4 py-3 bg-emerald-500 rounded-xl text-white font-medium hover:bg-emerald-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  className="flex-1 px-4 py-3 bg-[#c99b4a] rounded-xl text-white font-medium hover:bg-[#9e7746] transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
                   {confirmPayment.isPending ? (
                     <Loader2 size={18} className="animate-spin" />

@@ -370,11 +370,11 @@ export default function ToolsPage() {
 
   if (user?.role !== 'ARCHITECT' && user?.role !== 'ADMIN') {
     return (
-      <div className="min-h-screen bg-[#0f2620] -mt-16 flex items-center justify-center">
+      <div className="min-h-screen -mt-16 flex items-center justify-center">
         <div className="text-center">
-          <Wrench size={64} className="mx-auto text-white/30 mb-4" />
-          <h1 className="text-2xl font-bold text-white mb-2">גישה מוגבלת</h1>
-          <p className="text-white/60">עמוד זה זמין לאדריכלים בלבד</p>
+          <Wrench size={64} className="mx-auto text-[#a89b8a] mb-4" />
+          <h1 className="text-2xl font-bold text-[#2b241d] mb-2">גישה מוגבלת</h1>
+          <p className="text-[#8b7c69]">עמוד זה זמין לאדריכלים בלבד</p>
         </div>
       </div>
     );
@@ -386,7 +386,7 @@ export default function ToolsPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#0f2620] -mt-16">
+    <div className="min-h-screen -mt-16">
       {/* Hero Background */}
       <div className="absolute inset-x-0 top-0 h-[35vh]">
         <Image
@@ -397,21 +397,21 @@ export default function ToolsPage() {
           priority
         />
         <div className="absolute inset-0 bg-black/50" />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0f2620]/30 via-transparent to-[#0f2620]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#f7f3f2]/30 via-transparent to-[#f7f3f2]" />
       </div>
 
-      <div className="relative z-10 px-4 sm:px-6 pt-24 sm:pt-28 pb-6 max-w-6xl mx-auto">
+      <div className="relative z-10 px-4 sm:px-6 pt-24 sm:pt-28 pb-24 max-w-6xl mx-auto">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           className="mb-8"
         >
-          <h1 className="text-3xl font-bold text-white flex items-center gap-3">
-            <Wrench className="text-emerald-400" />
+          <h1 className="text-3xl font-bold text-[#2b241d] flex items-center gap-3">
+            <Wrench className="text-[#c99b4a]" />
             כלים לאדריכלים
           </h1>
-          <p className="text-white/60 mt-1">מניפות צבעים ונותני שירות</p>
+          <p className="text-[#8b7c69] mt-1">מניפות צבעים ונותני שירות</p>
         </motion.div>
 
         {/* Tabs */}
@@ -428,8 +428,8 @@ export default function ToolsPage() {
                 onClick={() => setActiveTab(tab.key)}
                 className={`flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-medium transition-all ${
                   activeTab === tab.key
-                    ? 'bg-emerald-500 text-white'
-                    : 'bg-white/10 text-white/70 hover:bg-white/20 border border-white/10'
+                    ? 'bg-[#c99b4a] text-white'
+                    : 'bg-white text-[#8b7c69] hover:bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)]'
                 }`}
               >
                 <tab.icon size={18} />
@@ -446,18 +446,18 @@ export default function ToolsPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
           >
-            <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6">
+            <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
               {/* Color System Title */}
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-semibold text-white flex items-center gap-2">
-                  <Palette size={20} className="text-emerald-400" />
+                <h2 className="text-xl font-semibold text-[#2b241d] flex items-center gap-2">
+                  <Palette size={20} className="text-[#c99b4a]" />
                   מניפת צבעים
                 </h2>
                 <a
                   href="https://nirlat.com/fan/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 text-sm text-white/60 hover:text-emerald-400 transition-colors"
+                  className="flex items-center gap-2 text-sm text-[#8b7c69] hover:text-[#c99b4a] transition-colors"
                 >
                   <ExternalLink size={16} />
                   מניפה מלאה באתר נירלאט
@@ -465,13 +465,13 @@ export default function ToolsPage() {
               </div>
 
               {/* Color System Tabs */}
-              <div className="flex flex-wrap gap-2 mb-6 pb-4 border-b border-white/10">
+              <div className="flex flex-wrap gap-2 mb-6 pb-4 border-b border-[rgba(201,155,74,0.08)]">
                 <button
                   onClick={() => { setColorSystem('nirlat'); setSelectedColor(null); }}
                   className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
                     colorSystem === 'nirlat'
-                      ? 'bg-emerald-500 text-white'
-                      : 'bg-white/10 text-white/70 hover:bg-white/20 border border-white/10'
+                      ? 'bg-[#c99b4a] text-white'
+                      : 'bg-white text-[#8b7c69] hover:bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)]'
                   }`}
                 >
                   צבעי נירלאט
@@ -481,7 +481,7 @@ export default function ToolsPage() {
                   className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
                     colorSystem === 'ral'
                       ? 'bg-blue-500 text-white'
-                      : 'bg-white/10 text-white/70 hover:bg-white/20 border border-white/10'
+                      : 'bg-white text-[#8b7c69] hover:bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)]'
                   }`}
                 >
                   צבעי מתכת לפי טבלת RAL
@@ -491,7 +491,7 @@ export default function ToolsPage() {
                   className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
                     colorSystem === 'wood'
                       ? 'bg-amber-600 text-white'
-                      : 'bg-white/10 text-white/70 hover:bg-white/20 border border-white/10'
+                      : 'bg-white text-[#8b7c69] hover:bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)]'
                   }`}
                 >
                   צבע עץ חצי שקוף
@@ -500,35 +500,35 @@ export default function ToolsPage() {
 
               {/* Subtitle for RAL */}
               {colorSystem === 'ral' && (
-                <p className="text-white/60 text-sm mb-4">
+                <p className="text-[#8b7c69] text-sm mb-4">
                   לבחירת צבעי מתכת השתמשו בטבלת RAL, לצבעי עץ גלגלו למטה
                 </p>
               )}
 
               {/* Subtitle for Wood */}
               {colorSystem === 'wood' && (
-                <p className="text-white/60 text-sm mb-4">
+                <p className="text-[#8b7c69] text-sm mb-4">
                   צבעים אפשריים:
                 </p>
               )}
 
               {/* Selected Color Display */}
               {selectedColor && (
-                <div className="mb-6 p-4 bg-white/10 rounded-xl flex items-center gap-4">
+                <div className="mb-6 p-4 bg-[#f7f3f2] rounded-xl flex items-center gap-4">
                   <div
-                    className="w-16 h-16 rounded-lg border-2 border-white/20"
+                    className="w-16 h-16 rounded-lg border-2 border-[rgba(201,155,74,0.15)]"
                     style={{ backgroundColor: selectedColor.hex }}
                   />
                   <div>
                     {selectedColor.code && (
-                      <p className="text-emerald-400 text-sm font-mono">{selectedColor.code}</p>
+                      <p className="text-[#c99b4a] text-sm font-mono">{selectedColor.code}</p>
                     )}
-                    <p className="text-white font-medium">{selectedColor.name}</p>
-                    <p className="text-white/60 text-sm">HEX: {selectedColor.hex}</p>
+                    <p className="text-[#2b241d] font-medium">{selectedColor.name}</p>
+                    <p className="text-[#8b7c69] text-sm">HEX: {selectedColor.hex}</p>
                   </div>
                   <button
                     onClick={() => setSelectedColor(null)}
-                    className="mr-auto text-white/50 hover:text-white text-sm"
+                    className="mr-auto text-[#a89b8a] hover:text-[#2b241d] text-sm"
                   >
                     סגור
                   </button>
@@ -544,9 +544,9 @@ export default function ToolsPage() {
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: familyIndex * 0.05 }}
-                      className="bg-white/5 rounded-xl p-4"
+                      className="bg-[#f7f3f2] rounded-xl p-4"
                     >
-                      <p className="text-white/60 text-sm uppercase tracking-wider mb-3 font-medium">
+                      <p className="text-[#8b7c69] text-sm uppercase tracking-wider mb-3 font-medium">
                         {family.name}
                       </p>
                       <div className="flex flex-wrap gap-2">
@@ -555,12 +555,12 @@ export default function ToolsPage() {
                             key={color.name}
                             onClick={() => setSelectedColor(color)}
                             className={`group relative transition-transform hover:scale-110 ${
-                              selectedColor?.hex === color.hex ? 'ring-2 ring-emerald-400 ring-offset-2 ring-offset-[#0f2620]' : ''
+                              selectedColor?.hex === color.hex ? 'ring-2 ring-[#c99b4a] ring-offset-2 ring-offset-white' : ''
                             }`}
                             title={`${color.name} — ${color.hex}`}
                           >
                             <div
-                              className="w-12 h-12 rounded-lg border border-white/20"
+                              className="w-12 h-12 rounded-lg border border-gray-200"
                               style={{ backgroundColor: color.hex }}
                             />
                           </button>
@@ -580,7 +580,7 @@ export default function ToolsPage() {
                         key={color.code}
                         onClick={() => setSelectedColor({ name: color.name, hex: color.hex, code: color.code })}
                         className={`group relative transition-all hover:scale-105 hover:z-10 ${
-                          selectedColor?.code === color.code ? 'ring-2 ring-emerald-500 ring-offset-1' : ''
+                          selectedColor?.code === color.code ? 'ring-2 ring-[#c99b4a] ring-offset-1' : ''
                         }`}
                         title={`${color.code} — ${color.name}`}
                       >
@@ -606,8 +606,8 @@ export default function ToolsPage() {
                     if (categoryColors.length === 0) return null;
 
                     return (
-                      <div key={category} className="bg-white/5 rounded-xl p-4">
-                        <p className="text-white/60 text-sm uppercase tracking-wider mb-4 font-medium">
+                      <div key={category} className="bg-[#f7f3f2] rounded-xl p-4">
+                        <p className="text-[#8b7c69] text-sm uppercase tracking-wider mb-4 font-medium">
                           {category}
                         </p>
                         <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-3">
@@ -616,18 +616,18 @@ export default function ToolsPage() {
                               key={color.code}
                               onClick={() => setSelectedColor({ name: color.name, hex: color.hex, code: color.code })}
                               className={`group relative transition-all hover:scale-105 ${
-                                selectedColor?.code === color.code ? 'ring-2 ring-emerald-400 ring-offset-2 ring-offset-[#0f2620]' : ''
+                                selectedColor?.code === color.code ? 'ring-2 ring-[#c99b4a] ring-offset-2 ring-offset-white' : ''
                               }`}
                               title={`${color.code} — ${color.name}`}
                             >
                               <div
-                                className="w-full aspect-square rounded-lg border border-white/20"
+                                className="w-full aspect-square rounded-lg border border-gray-200"
                                 style={{ backgroundColor: color.hex }}
                               />
-                              <p className="text-[10px] text-white/60 text-center mt-1 truncate">
+                              <p className="text-[10px] text-[#8b7c69] text-center mt-1 truncate">
                                 {color.name}
                               </p>
-                              <p className="text-[8px] text-white/40 text-center font-mono">
+                              <p className="text-[8px] text-[#a89b8a] text-center font-mono">
                                 {color.code}
                               </p>
                             </button>
@@ -649,10 +649,10 @@ export default function ToolsPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
           >
-            <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6">
+            <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-semibold text-white flex items-center gap-2">
-                  <Users size={20} className="text-emerald-400" />
+                <h2 className="text-xl font-semibold text-[#2b241d] flex items-center gap-2">
+                  <Users size={20} className="text-[#c99b4a]" />
                   נותני שירות
                 </h2>
               </div>
@@ -663,8 +663,8 @@ export default function ToolsPage() {
                   onClick={() => setSelectedCategory(undefined)}
                   className={`px-4 py-2 rounded-xl text-sm transition-colors ${
                     !selectedCategory
-                      ? 'bg-emerald-500 text-white'
-                      : 'bg-white/10 text-white/70 hover:bg-white/20 border border-white/10'
+                      ? 'bg-[#c99b4a] text-white'
+                      : 'bg-white text-[#8b7c69] hover:bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)]'
                   }`}
                 >
                   הכל
@@ -675,8 +675,8 @@ export default function ToolsPage() {
                     onClick={() => setSelectedCategory(cat.value)}
                     className={`px-4 py-2 rounded-xl text-sm transition-colors ${
                       selectedCategory === cat.value
-                        ? 'bg-emerald-500 text-white'
-                        : 'bg-white/10 text-white/70 hover:bg-white/20 border border-white/10'
+                        ? 'bg-[#c99b4a] text-white'
+                        : 'bg-white text-[#8b7c69] hover:bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)]'
                     }`}
                   >
                     {cat.label}
@@ -687,17 +687,17 @@ export default function ToolsPage() {
               {providersLoading ? (
                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {[...Array(6)].map((_, i) => (
-                    <div key={i} className="bg-white/5 rounded-xl p-4 animate-pulse">
-                      <div className="h-5 w-32 bg-white/10 rounded mb-3" />
-                      <div className="h-4 w-48 bg-white/5 rounded mb-2" />
-                      <div className="h-3 w-24 bg-white/5 rounded" />
+                    <div key={i} className="bg-[#f7f3f2] rounded-xl p-4 animate-pulse">
+                      <div className="h-5 w-32 bg-[#f0ebe6] rounded mb-3" />
+                      <div className="h-4 w-48 bg-[#f7f3f2] rounded mb-2" />
+                      <div className="h-3 w-24 bg-[#f7f3f2] rounded" />
                     </div>
                   ))}
                 </div>
               ) : providers.length === 0 ? (
                 <div className="text-center py-12">
-                  <Briefcase size={48} className="mx-auto text-white/30 mb-4" />
-                  <p className="text-white/70">אין נותני שירות בקטגוריה זו</p>
+                  <Briefcase size={48} className="mx-auto text-[#a89b8a] mb-4" />
+                  <p className="text-[#8b7c69]">אין נותני שירות בקטגוריה זו</p>
                 </div>
               ) : (
                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -707,27 +707,27 @@ export default function ToolsPage() {
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: index * 0.03 }}
-                      className="bg-white/5 rounded-xl p-4 hover:bg-white/10 transition-colors"
+                      className="bg-[#f7f3f2] rounded-xl p-4 hover:bg-[#f0ebe6] transition-colors"
                     >
                       <div className="flex items-start justify-between mb-2">
-                        <p className="text-white font-medium">{provider.name}</p>
+                        <p className="text-[#2b241d] font-medium">{provider.name}</p>
                         {provider.isVerified && (
                           <span className="text-xs bg-green-500/20 text-green-400 px-2 py-0.5 rounded">
                             מאומת
                           </span>
                         )}
                       </div>
-                      <p className="text-white/50 text-xs mb-2">
+                      <p className="text-[#a89b8a] text-xs mb-2">
                         {CATEGORY_LABELS[provider.category] || provider.category}
                       </p>
                       {provider.description && (
-                        <p className="text-white/60 text-sm mb-3">{provider.description}</p>
+                        <p className="text-[#8b7c69] text-sm mb-3">{provider.description}</p>
                       )}
                       <div className="space-y-1.5">
                         {provider.phone && (
                           <a
                             href={`tel:${provider.phone}`}
-                            className="flex items-center gap-2 text-sm text-white/60 hover:text-emerald-400 transition-colors"
+                            className="flex items-center gap-2 text-sm text-[#8b7c69] hover:text-[#c99b4a] transition-colors"
                           >
                             <Phone size={14} /> {provider.phone}
                           </a>
@@ -735,7 +735,7 @@ export default function ToolsPage() {
                         {provider.email && (
                           <a
                             href={`mailto:${provider.email}`}
-                            className="flex items-center gap-2 text-sm text-white/60 hover:text-emerald-400 transition-colors"
+                            className="flex items-center gap-2 text-sm text-[#8b7c69] hover:text-[#c99b4a] transition-colors"
                           >
                             <Mail size={14} /> {provider.email}
                           </a>
@@ -745,7 +745,7 @@ export default function ToolsPage() {
                             href={provider.website}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center gap-2 text-sm text-white/60 hover:text-emerald-400 transition-colors"
+                            className="flex items-center gap-2 text-sm text-[#8b7c69] hover:text-[#c99b4a] transition-colors"
                           >
                             <Globe size={14} /> אתר
                           </a>

@@ -38,7 +38,7 @@ export default function SupplierPaymentsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0f2620] -mt-16">
+    <div className="min-h-screen -mt-16">
       {/* Hero Section with Image */}
       <div className="relative h-80 overflow-hidden">
         {/* Background Image */}
@@ -50,12 +50,12 @@ export default function SupplierPaymentsPage() {
           priority
         />
         {/* Dark Overlay with Fade */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0f2620]/60 via-[#0f2620]/70 to-[#0f2620]" />
-        {/* Emerald Glow */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(16,185,129,0.15),transparent_60%)]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#f7f3f2]/60 via-[#f7f3f2]/70 to-[#f7f3f2]" />
+        {/* Gold Glow */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(201,155,74,0.15),transparent_60%)]" />
       </div>
 
-      <div className="px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto -mt-48 relative z-10 pb-12">
+      <div className="px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto -mt-48 relative z-10 pb-24">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
@@ -64,16 +64,16 @@ export default function SupplierPaymentsPage() {
         >
           <Link
             href="/supplier"
-            className="inline-flex items-center gap-2 text-white/60 hover:text-emerald-400 mb-4 transition-colors font-medium"
+            className="inline-flex items-center gap-2 text-[#8b7c69] hover:text-[#c99b4a] mb-4 transition-colors font-medium"
           >
             <ArrowRight size={16} />
             חזרה לדשבורד
           </Link>
-          <h1 className="text-3xl font-display font-bold text-white flex items-center gap-3">
-            <CreditCard className="text-emerald-400" />
+          <h1 className="text-3xl font-display font-bold text-[#2b241d] flex items-center gap-3">
+            <CreditCard className="text-[#c99b4a]" />
             תשלומים
           </h1>
-          <p className="text-white/60 mt-1 font-medium">היסטוריית העברות שביצעת</p>
+          <p className="text-[#8b7c69] mt-1 font-medium">היסטוריית העברות שביצעת</p>
         </motion.div>
 
         {/* Summary Stats */}
@@ -83,18 +83,18 @@ export default function SupplierPaymentsPage() {
           transition={{ delay: 0.1 }}
           className="grid grid-cols-2 gap-4 mb-8"
         >
-          <div className="bg-gradient-to-br from-emerald-500/20 to-emerald-600/10 backdrop-blur-md border border-emerald-500/30 rounded-2xl p-6">
+          <div className="bg-gradient-to-br from-[#c99b4a]/10 to-[#c99b4a]/5 border border-[rgba(201,155,74,0.15)] rounded-2xl p-6">
             <div className="text-center">
-              <p className="text-emerald-400 text-sm font-semibold mb-1">סה"כ שולם</p>
-              <p className="text-3xl font-bold text-white">
+              <p className="text-[#c99b4a] text-sm font-semibold mb-1">סה"כ שולם</p>
+              <p className="text-3xl font-bold text-[#2b241d]">
                 ₪{totalPaid.toLocaleString()}
               </p>
             </div>
           </div>
-          <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6">
+          <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
             <div className="text-center">
-              <p className="text-white/60 text-sm font-semibold mb-1">מספר תשלומים</p>
-              <p className="text-3xl font-bold text-white">
+              <p className="text-[#8b7c69] text-sm font-semibold mb-1">מספר תשלומים</p>
+              <p className="text-3xl font-bold text-[#2b241d]">
                 {payments.length}
               </p>
             </div>
@@ -107,21 +107,21 @@ export default function SupplierPaymentsPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
         >
-          <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6">
-            <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
-              <Receipt className="text-emerald-400" size={20} />
+          <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
+            <h2 className="text-xl font-bold text-[#2b241d] mb-6 flex items-center gap-2">
+              <Receipt className="text-[#c99b4a]" size={20} />
               היסטוריית תשלומים
             </h2>
 
             {isLoading ? (
               <div className="text-center py-12">
-                <Loader2 className="w-8 h-8 mx-auto text-emerald-400 animate-spin" />
+                <Loader2 className="w-8 h-8 mx-auto text-[#c99b4a] animate-spin" />
               </div>
             ) : payments.length === 0 ? (
               <div className="text-center py-12">
-                <CreditCard className="w-12 h-12 mx-auto text-white/20 mb-4" />
-                <p className="text-white/60 font-semibold">אין תשלומים</p>
-                <p className="text-white/40 text-sm mt-1">תשלומים יופיעו כאן לאחר ביצוע</p>
+                <CreditCard className="w-12 h-12 mx-auto text-[#a89b8a]/40 mb-4" />
+                <p className="text-[#8b7c69] font-semibold">אין תשלומים</p>
+                <p className="text-[#a89b8a] text-sm mt-1">תשלומים יופיעו כאן לאחר ביצוע</p>
               </div>
             ) : (
               <div className="space-y-4">
@@ -131,34 +131,34 @@ export default function SupplierPaymentsPage() {
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.03 }}
-                    className="p-4 bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition-colors"
+                    className="p-4 bg-white border border-[rgba(201,155,74,0.08)] rounded-xl hover:bg-[#f7f3f2] transition-colors"
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-full bg-emerald-500/20 flex items-center justify-center">
-                          <CheckCircle size={24} className="text-emerald-400" />
+                        <div className="w-12 h-12 rounded-full bg-[#c99b4a]/10 flex items-center justify-center">
+                          <CheckCircle size={24} className="text-[#c99b4a]" />
                         </div>
                         <div>
-                          <p className="text-white font-semibold">
+                          <p className="text-[#2b241d] font-semibold">
                             {payment.architect.user.name}
                           </p>
-                          <div className="flex items-center gap-2 text-white/50 text-sm mt-1">
+                          <div className="flex items-center gap-2 text-[#a89b8a] text-sm mt-1">
                             <Calendar size={12} />
                             {payment.paidAt
                               ? new Date(payment.paidAt).toLocaleDateString('he-IL')
                               : new Date(payment.createdAt).toLocaleDateString('he-IL')
                             }
                             {payment.reference && (
-                              <span className="text-white/40">| אסמכתא: {payment.reference}</span>
+                              <span className="text-[#a89b8a]">| אסמכתא: {payment.reference}</span>
                             )}
                           </div>
                         </div>
                       </div>
                       <div className="text-left">
-                        <p className="text-2xl font-bold text-emerald-400">
+                        <p className="text-2xl font-bold text-[#c99b4a]">
                           ₪{payment.amount.toLocaleString()}
                         </p>
-                        <span className="text-xs text-emerald-400 font-semibold">שולם</span>
+                        <span className="text-xs text-[#c99b4a] font-semibold">שולם</span>
                       </div>
                     </div>
                   </motion.div>

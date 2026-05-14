@@ -102,20 +102,20 @@ html {
 html, body {
   direction: rtl;
   font-family: var(--font-assistant), sans-serif;
-  background: var(--elal-gray);
-  color: var(--elal-text);
+  background: #f7f3f2;
+  color: #2b241d;
   overflow-x: hidden;
   min-height: 100vh;
   min-height: 100dvh;
   -webkit-text-size-adjust: 100%;
 }
 
-/* ===== El Al Style Cards ===== */
+/* ===== Premium Cards ===== */
 .glass-card {
-  background: var(--card-bg);
-  border: 1px solid var(--card-border);
-  border-radius: 24px;
-  box-shadow: var(--card-shadow);
+  background: #ffffff;
+  border: 1px solid rgba(201,155,74,0.08);
+  border-radius: 20px;
+  box-shadow: 0 8px 24px rgba(64,38,18,0.08), 0 2px 6px rgba(64,38,18,0.04);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   overflow: hidden;
   -webkit-transform: translateZ(0);
@@ -123,14 +123,37 @@ html, body {
 }
 
 .glass-card:hover {
-  box-shadow: var(--card-shadow-hover);
-  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(64,38,18,0.14), 0 4px 10px rgba(64,38,18,0.06);
+  transform: translateY(-3px);
 }
 
 .glass-card-gold {
   background: linear-gradient(135deg, #E8C97D 0%, #C9A961 18%, #DDB870 38%, #A88845 55%, #E5C580 72%, #B8945A 90%, #8B6F3A 100%);
   color: white;
   border: none;
+}
+
+/* ===== Dark premium card (for stat cards etc) ===== */
+.dark-card {
+  background: linear-gradient(180deg, #2b2d32, #1f2024);
+  border: 1px solid rgba(255,255,255,0.05);
+  border-radius: 18px;
+  box-shadow: 0 12px 25px rgba(0,0,0,0.22);
+  color: white;
+}
+
+/* ===== Light page card (replaces glass on light bg) ===== */
+.light-card {
+  background: #ffffff;
+  border: 1px solid rgba(201,155,74,0.08);
+  border-radius: 20px;
+  box-shadow: 0 8px 24px rgba(64,38,18,0.08), 0 2px 6px rgba(64,38,18,0.04);
+  transition: all 0.25s ease;
+}
+
+.light-card:hover {
+  box-shadow: 0 12px 32px rgba(64,38,18,0.14);
+  transform: translateY(-2px);
 }
 
 /* ===== Gold Shine Overlay (add to any card) ===== */
@@ -299,22 +322,23 @@ select[class*="text-white"] option {
   color: #1e293b !important;
 }
 
-/* ===== Buttons - El Al Style ===== */
+/* ===== Buttons - Premium Style ===== */
 .btn-primary {
-  background: linear-gradient(135deg, #C9A961 0%, #8B6F3A 100%);
-  color: white;
+  background: linear-gradient(135deg, #d8ba72 0%, #9f7645 100%);
+  color: #2a2116;
   padding: 14px 28px;
   border-radius: 14px;
-  font-weight: 600;
+  font-weight: 700;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   border: none;
   cursor: pointer;
   font-size: 15px;
+  box-shadow: 0 4px 16px rgba(201,155,74,0.3);
 }
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(139, 111, 58, 0.35);
+  box-shadow: 0 8px 24px rgba(201,155,74,0.4);
 }
 
 .btn-primary:disabled {
@@ -325,19 +349,19 @@ select[class*="text-white"] option {
 
 .btn-secondary {
   background: white;
-  color: #C9A961;
+  color: #7c5a40;
   padding: 14px 28px;
   border-radius: 14px;
   font-weight: 600;
   transition: all 0.3s ease;
-  border: 2px solid rgba(201, 169, 97, 0.15);
+  border: 2px solid rgba(201, 155, 74, 0.15);
   cursor: pointer;
   font-size: 15px;
 }
 
 .btn-secondary:hover {
-  background: #F2EAD8;
-  border-color: #C9A961;
+  background: #f7f3f2;
+  border-color: #c99b4a;
 }
 
 .btn-secondary:disabled {

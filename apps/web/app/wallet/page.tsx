@@ -810,31 +810,7 @@ export default function WalletPage() {
         <div className="h-24" />
       </div>
 
-      {/* ── Bottom Navigation ── */}
-      <div className="bottom-nav">
-        <Link href="/rewards" className="bottom-nav-item">
-          <Gift size={20} />
-          <span>הטבות</span>
-        </Link>
-        <Link href="/suppliers" className="bottom-nav-item">
-          <Search size={20} />
-          <span>ספקים</span>
-        </Link>
-        <Link href="/wallet" className="bottom-nav-home">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-            <polyline points="9 22 9 12 15 12 15 22" />
-          </svg>
-        </Link>
-        <Link href="/invoices" className="bottom-nav-item">
-          <FileText size={20} />
-          <span>חשבוניות</span>
-        </Link>
-        <Link href="/profile" className="bottom-nav-item">
-          <Users size={20} />
-          <span>פרופיל</span>
-        </Link>
-      </div>
+      {/* Bottom nav is now global via layout.tsx */}
     </div>
   );
 }

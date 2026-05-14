@@ -115,9 +115,10 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Pages with light backgrounds need dark navbar styling
-  const lightPages = ['/wallet'];
-  const isLightPage = lightPages.includes(pathname || '');
+  // All pages now use light background (wallet style) except login
+  const isLoginPage = pathname === '/login' || pathname === '/register';
+  const isAdminPage = (pathname || '').startsWith('/admin');
+  const isLightPage = !isLoginPage && !isAdminPage;
   const isDarkPage = !isLightPage;
 
   return (

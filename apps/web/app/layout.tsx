@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import { Assistant } from 'next/font/google';
 import './globals.css';
 import Navbar from '@/components/layout/Navbar';
+import BottomNav from '@/components/layout/BottomNav';
 import AccessibilityWidget from '@/components/layout/AccessibilityWidget';
 import SplashScreen from '@/components/layout/SplashScreen';
 import { Providers } from './providers';
@@ -37,7 +38,7 @@ export const metadata: Metadata = {
     google: 't24_wOD9p0neygB7Y0IhjQDYgN8TnkqPRme_hIGtswI',
   },
   other: {
-    'theme-color': '#0f2620',
+    'theme-color': '#f7f3f2',
     'mobile-web-app-capable': 'yes',
   },
   icons: {
@@ -69,6 +70,8 @@ export default function RootLayout({
             </main>
           </div>
 
+          {/* Bottom Navigation */}
+          <BottomNav />
           {/* Accessibility Widget - fixed button bottom left */}
           <AccessibilityWidget />
           {/* Splash Screen + Service Worker */}

@@ -110,7 +110,7 @@ export default function InvoiceUploadPage() {
 
   if (success) {
     return (
-      <div className="min-h-screen bg-[#0f2620] -mt-16">
+      <div className="min-h-screen -mt-16">
         {/* Hero Section */}
         <div className="relative h-80 overflow-hidden">
           <Image
@@ -120,29 +120,29 @@ export default function InvoiceUploadPage() {
             className="object-cover"
             priority
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#0f2620]/60 via-[#0f2620]/70 to-[#0f2620]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(16,185,129,0.15),transparent_60%)]" />
-          <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#0f2620] to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#f7f3f2]/60 via-[#f7f3f2]/70 to-[#f7f3f2]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(201,155,74,0.15),transparent_60%)]" />
+          <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#f7f3f2] to-transparent" />
         </div>
 
-        <div className="px-4 sm:px-6 lg:px-8 max-w-2xl mx-auto -mt-32 relative z-10 pb-12">
+        <div className="px-4 sm:px-6 lg:px-8 max-w-2xl mx-auto -mt-32 relative z-10 pb-24">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
           >
-            <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-8 text-center">
-              <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center">
+            <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-8 text-center">
+              <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-[#c99b4a] to-[#9e7746] flex items-center justify-center">
                 <CheckCircle size={40} className="text-white" />
               </div>
-              <h1 className="text-2xl font-bold text-white mb-2">החשבונית הועלתה בהצלחה!</h1>
-              <p className="text-white/60 mb-8">
+              <h1 className="text-2xl font-bold text-[#2b241d] mb-2">החשבונית הועלתה בהצלחה!</h1>
+              <p className="text-[#8b7c69] mb-8">
                 החשבונית נשלחה לאישור. נעדכן אותך ברגע שתאושר.
               </p>
               <div className="flex gap-4 justify-center">
-                <button onClick={resetForm} className="px-6 py-3 bg-emerald-500 text-white rounded-xl hover:bg-emerald-600 transition-colors font-medium">
+                <button onClick={resetForm} className="px-6 py-3 bg-[#c99b4a] text-white rounded-xl hover:bg-[#9e7746] transition-colors font-medium">
                   העלאת חשבונית נוספת
                 </button>
-                <Link href="/invoices" className="px-6 py-3 bg-white/10 border border-white/20 text-white rounded-xl hover:bg-white/20 transition-colors font-medium">
+                <Link href="/invoices" className="px-6 py-3 bg-white/90 border border-[rgba(201,155,74,0.12)] text-[#2b241d] rounded-xl hover:bg-[#f7f3f2] transition-colors font-medium">
                   צפייה בחשבוניות
                 </Link>
               </div>
@@ -157,7 +157,7 @@ export default function InvoiceUploadPage() {
   const noSuppliers = !suppliersLoading && suppliers.length === 0;
 
   return (
-    <div className="min-h-screen bg-[#0f2620] -mt-16">
+    <div className="min-h-screen -mt-16">
       {/* Hero Section */}
       <div className="relative h-52 sm:h-80 overflow-hidden">
         <Image
@@ -167,27 +167,27 @@ export default function InvoiceUploadPage() {
           className="object-cover"
           priority
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0f2620]/60 via-[#0f2620]/70 to-[#0f2620]" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(16,185,129,0.15),transparent_60%)]" />
-        <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#0f2620] to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#f7f3f2]/60 via-[#f7f3f2]/70 to-[#f7f3f2]" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(201,155,74,0.15),transparent_60%)]" />
+        <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#f7f3f2] to-transparent" />
       </div>
 
-      <div className="px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto -mt-24 sm:-mt-40 relative z-10 pb-12">
+      <div className="px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto -mt-24 sm:-mt-40 relative z-10 pb-24">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           className="mb-4 sm:mb-8"
         >
-          <Link href="/invoices" className="inline-flex items-center gap-2 text-white/60 hover:text-emerald-400 mb-3 transition-colors font-medium text-sm">
+          <Link href="/invoices" className="inline-flex items-center gap-2 text-[#8b7c69] hover:text-[#c99b4a] mb-3 transition-colors font-medium text-sm">
             <ArrowRight size={14} />
             חזרה לחשבוניות
           </Link>
-          <h1 className="text-2xl sm:text-3xl font-bold text-white flex items-center gap-2 sm:gap-3">
-            <Upload className="text-emerald-400" size={24} />
+          <h1 className="text-2xl sm:text-3xl font-bold text-[#2b241d] flex items-center gap-2 sm:gap-3">
+            <Upload className="text-[#c99b4a]" size={24} />
             העלאת חשבונית
           </h1>
-          <p className="text-white/60 mt-1 text-sm sm:text-base">העלו חשבונית לצבירת נקודות</p>
+          <p className="text-[#8b7c69] mt-1 text-sm sm:text-base">העלו חשבונית לצבירת נקודות</p>
         </motion.div>
 
         {/* No suppliers warning */}
@@ -197,13 +197,13 @@ export default function InvoiceUploadPage() {
             animate={{ opacity: 1, y: 0 }}
             className="mb-6"
           >
-            <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-8 text-center">
-              <Building2 size={48} className="mx-auto text-emerald-400 mb-4" />
-              <h2 className="text-xl font-semibold text-white mb-2">אין ספקים זמינים</h2>
-              <p className="text-white/60 mb-4">
+            <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-8 text-center">
+              <Building2 size={48} className="mx-auto text-[#c99b4a] mb-4" />
+              <h2 className="text-xl font-semibold text-[#2b241d] mb-2">אין ספקים זמינים</h2>
+              <p className="text-[#8b7c69] mb-4">
                 כרגע אין ספקים פעילים במערכת. צור קשר עם מנהל המערכת להוספת ספקים.
               </p>
-              <Link href="/invoices" className="inline-block px-6 py-3 bg-emerald-500 text-white rounded-xl hover:bg-emerald-600 transition-colors font-medium">
+              <Link href="/invoices" className="inline-block px-6 py-3 bg-[#c99b4a] text-white rounded-xl hover:bg-[#9e7746] transition-colors font-medium">
                 חזרה לחשבוניות
               </Link>
             </div>
@@ -224,7 +224,7 @@ export default function InvoiceUploadPage() {
             {error.includes('התחבר') && (
               <button
                 onClick={() => window.location.href = '/login'}
-                className="mt-3 w-full py-2 bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 rounded-lg text-sm hover:bg-emerald-500/30 transition-colors"
+                className="mt-3 w-full py-2 bg-[#c99b4a]/20 border border-[#c99b4a]/30 text-[#c99b4a] rounded-lg text-sm hover:bg-[#c99b4a]/30 transition-colors"
               >
                 התחבר מחדש
               </button>
@@ -238,18 +238,18 @@ export default function InvoiceUploadPage() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-4 sm:p-6"
+              className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-4 sm:p-6"
             >
-              <h2 className="text-base sm:text-lg font-semibold text-white mb-3 sm:mb-4">תמונת החשבונית</h2>
+              <h2 className="text-base sm:text-lg font-semibold text-[#2b241d] mb-3 sm:mb-4">תמונת החשבונית</h2>
 
               <div
                 {...getRootProps()}
                 className={`relative border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all duration-300 ${
                   isDragActive
-                    ? 'border-emerald-400 bg-emerald-400/10'
+                    ? 'border-[#c99b4a] bg-[#c99b4a]/10'
                     : (preview || isPdf)
-                    ? 'border-emerald-400/50 bg-emerald-400/5'
-                    : 'border-white/20 hover:border-emerald-400/50 hover:bg-white/5'
+                    ? 'border-[#c99b4a]/50 bg-[#c99b4a]/5'
+                    : 'border-[rgba(201,155,74,0.12)] hover:border-[#c99b4a]/50 hover:bg-[#f7f3f2]'
                 }`}
               >
                 <input {...getInputProps()} />
@@ -262,8 +262,8 @@ export default function InvoiceUploadPage() {
                         <div className="w-20 h-24 bg-red-500/20 border-2 border-red-500/50 rounded-lg flex items-center justify-center mb-3">
                           <FileIcon size={40} className="text-red-400" />
                         </div>
-                        <p className="text-white font-medium">{file?.name}</p>
-                        <p className="text-white/60 text-sm mt-1">קובץ PDF</p>
+                        <p className="text-[#2b241d] font-medium">{file?.name}</p>
+                        <p className="text-[#8b7c69] text-sm mt-1">קובץ PDF</p>
                       </div>
                     ) : (
                       // Image Preview
@@ -288,13 +288,13 @@ export default function InvoiceUploadPage() {
                   </div>
                 ) : (
                   <>
-                    <div className="w-16 h-16 mx-auto mb-4 rounded-xl bg-white/10 flex items-center justify-center">
-                      <Upload size={32} className="text-emerald-400" />
+                    <div className="w-16 h-16 mx-auto mb-4 rounded-xl bg-[#f7f3f2] flex items-center justify-center">
+                      <Upload size={32} className="text-[#c99b4a]" />
                     </div>
-                    <p className="text-white/60 mb-2">
+                    <p className="text-[#8b7c69] mb-2">
                       {isDragActive ? 'שחררו כאן...' : 'גררו חשבונית לכאן או לחצו לבחירה'}
                     </p>
-                    <p className="text-white/40 text-sm">JPG, PNG, PDF עד 10MB</p>
+                    <p className="text-[#a89b8a] text-sm">JPG, PNG, PDF עד 10MB</p>
                   </>
                 )}
               </div>
@@ -306,17 +306,17 @@ export default function InvoiceUploadPage() {
                   animate={{ opacity: 1, y: 0 }}
                   className={`mt-4 p-4 rounded-lg ${
                     aiResult.status === 'MATCH'
-                      ? 'bg-emerald-500/20 border border-emerald-500/40'
+                      ? 'bg-[#c99b4a]/10 border border-[#c99b4a]/30'
                       : 'bg-yellow-500/20 border border-yellow-500/40'
                   }`}
                 >
                   <div className="flex items-center gap-2">
                     {aiResult.status === 'MATCH' ? (
-                      <CheckCircle size={20} className="text-emerald-400" />
+                      <CheckCircle size={20} className="text-[#c99b4a]" />
                     ) : (
                       <AlertTriangle size={20} className="text-yellow-400" />
                     )}
-                    <p className={aiResult.status === 'MATCH' ? 'text-emerald-400' : 'text-yellow-400'}>
+                    <p className={aiResult.status === 'MATCH' ? 'text-[#c99b4a]' : 'text-yellow-400'}>
                       {aiResult.status === 'MATCH'
                         ? `הסכום תואם (ביטחון: ${Math.round(aiResult.confidence * 100)}%)`
                         : `אי-התאמה: ה-AI זיהה ₪${aiResult.extractedAmount.toLocaleString()}`
@@ -332,26 +332,26 @@ export default function InvoiceUploadPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-4 sm:p-6"
+              className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-4 sm:p-6"
             >
-              <h2 className="text-base sm:text-lg font-semibold text-white mb-3 sm:mb-4">פרטי העסקה</h2>
+              <h2 className="text-base sm:text-lg font-semibold text-[#2b241d] mb-3 sm:mb-4">פרטי העסקה</h2>
 
               <div className="space-y-5">
                 <div>
-                  <label className="block text-white/60 text-sm mb-2">ספק</label>
+                  <label className="block text-[#8b7c69] text-sm mb-2">ספק</label>
                   {suppliersLoading ? (
-                    <div className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white/40 animate-pulse">
+                    <div className="w-full bg-white border border-[rgba(201,155,74,0.12)] rounded-xl px-4 py-3 text-[#a89b8a] animate-pulse">
                       טוען ספקים...
                     </div>
                   ) : (
                     <select
                       value={supplierId}
                       onChange={(e) => setSupplierId(e.target.value)}
-                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white focus:border-emerald-400 transition-all appearance-none cursor-pointer"
+                      className="w-full bg-white border border-[rgba(201,155,74,0.12)] rounded-xl px-4 py-3 text-[#2b241d] focus:border-[#c99b4a] transition-all appearance-none cursor-pointer"
                     >
-                      <option value="" className="bg-[#0f2620]">בחרו ספק...</option>
+                      <option value="" className="bg-white">בחרו ספק...</option>
                       {suppliers.map(s => (
-                        <option key={s.id} value={s.id} className="bg-[#0f2620]">
+                        <option key={s.id} value={s.id} className="bg-white">
                           {s.companyName}
                         </option>
                       ))}
@@ -360,12 +360,12 @@ export default function InvoiceUploadPage() {
                 </div>
 
                 <div>
-                  <label className="block text-white/60 text-sm mb-2">סכום החשבונית (₪)</label>
+                  <label className="block text-[#8b7c69] text-sm mb-2">סכום החשבונית (₪)</label>
                   <input
                     type="number"
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-xl font-bold focus:border-emerald-400 transition-all"
+                    className="w-full bg-white border border-[rgba(201,155,74,0.12)] rounded-xl px-4 py-3 text-[#2b241d] text-xl font-bold focus:border-[#c99b4a] transition-all"
                     placeholder="0.00"
                     dir="ltr"
                   />
@@ -375,7 +375,7 @@ export default function InvoiceUploadPage() {
                   <button
                     onClick={handleSubmit}
                     disabled={!file || !amount || !supplierId || uploadMutation.isPending}
-                    className="w-full py-4 text-lg bg-emerald-500 text-white rounded-xl hover:bg-emerald-600 transition-colors font-medium flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full py-4 text-lg bg-[#c99b4a] text-white rounded-xl hover:bg-[#9e7746] transition-colors font-medium flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {uploadMutation.isPending ? (
                       <>
@@ -391,7 +391,7 @@ export default function InvoiceUploadPage() {
                   </button>
                 </div>
 
-                <p className="text-white/40 text-sm text-center">
+                <p className="text-[#a89b8a] text-sm text-center">
                   החשבונית תאושר על ידי מנהל המערכת
                 </p>
               </div>

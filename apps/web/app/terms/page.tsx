@@ -6,34 +6,34 @@ import { ArrowRight, Shield, FileText, Lock, Users, AlertTriangle, Phone, Mail }
 
 export default function TermsPage() {
   return (
-    <div className="min-h-screen bg-[#0f2620] -mt-16">
+    <div className="min-h-screen -mt-16">
       {/* Hero */}
       <div className="relative pt-24 pb-12 px-4">
-        <div className="absolute inset-0 bg-gradient-to-b from-emerald-900/20 to-[#0f2620]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#c99b4a]/5 to-[#f7f3f2]" />
         <div className="relative z-10 max-w-4xl mx-auto text-center">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-            <div className="w-16 h-16 mx-auto bg-emerald-500/20 rounded-2xl flex items-center justify-center mb-4">
-              <Shield size={32} className="text-emerald-400" />
+            <div className="w-16 h-16 mx-auto bg-[#c99b4a]/10 rounded-2xl flex items-center justify-center mb-4">
+              <Shield size={32} className="text-[#c99b4a]" />
             </div>
-            <h1 className="text-3xl font-bold text-white mb-2">תקנון ותנאי שימוש</h1>
-            <p className="text-white/60">מועדון סטאנל דיזיין קלאב</p>
+            <h1 className="text-3xl font-bold text-[#2b241d] mb-2">תקנון ותנאי שימוש</h1>
+            <p className="text-[#8b7c69]">מועדון סטאנל דיזיין קלאב</p>
           </motion.div>
         </div>
       </div>
 
       {/* Content */}
-      <div className="max-w-4xl mx-auto px-4 pb-16">
+      <div className="max-w-4xl mx-auto px-4 pb-24">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 sm:p-10"
+          className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6 sm:p-10"
         >
-          <div className="prose prose-invert prose-emerald max-w-none text-white/80 leading-relaxed text-sm sm:text-base" dir="rtl">
+          <div className="prose prose-stone max-w-none text-[#5a4e41] leading-relaxed text-sm sm:text-base" dir="rtl">
 
             {/* Intro */}
-            <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-4 mb-8">
-              <p className="text-white/90 font-medium text-sm leading-relaxed m-0">
+            <div className="bg-[#c99b4a]/5 border border-[#c99b4a]/10 rounded-xl p-4 mb-8">
+              <p className="text-[#2b241d] font-medium text-sm leading-relaxed m-0">
                 אישור תקנון זה על ידי המשתמש, לרבות באמצעות סימון ✓, השלמת הליך ההרשמה או שימוש בפועל באפליקציה, מהווה הסכמה מלאה, מדעת, סופית ובלתי חוזרת לכל הוראותיו, והוא תנאי מוקדם והכרחי לשימוש באפליקציה ולהצטרפות כחבר במועדון. מובהר כי השימוש בלשון זכר בתקנון זה נעשה מטעמי נוחות בלבד, והוא פונה במידה שווה לכל המגדרים ולכלל חברי המועדון והמשתמשים באפליקציה.
               </p>
             </div>
@@ -60,7 +60,7 @@ export default function TermsPage() {
               <TermDef term='רכיב נקודות זיכוי' def='סכום השווה לשני אחוזים (2%) מסכום התמורה הכוללת עפ"י עסקת היסוד, אשר על בסיסו יקצה המועדון נקודות זיכוי לאדריכל או למעצב. ההקצאה ביחס המרה של 1:1.' />
               <TermDef term='תכני משתמש' def='כל מידע, נתון או תוכן מכל סוג שהוא, המועלה, נשלח, נמסר, נכתב, נוצר, מופק, נשמר, משותף או מפורסם על ידי חבר מועדון באמצעות האפליקציה.' />
 
-              <h4 className="text-white font-semibold mt-6">1.2 כללי פרשנות וסדר קדימויות</h4>
+              <h4 className="text-[#2b241d] font-semibold mt-6">1.2 כללי פרשנות וסדר קדימויות</h4>
               <p><strong>1.2.1</strong> בכל מקום בתקנון זה שבו נעשה שימוש בלשון יחיד, הכוונה היא גם ללשון רבים, וכן להפך.</p>
               <p><strong>1.2.2</strong> כותרות הסעיפים נועדו לנוחות בלבד, ולא ישמשו לצורכי פרשנות.</p>
               <p><strong>1.2.3</strong> במקרה של סתירה בין הוראות תקנון זה לבין הוראות באפליקציה, יגברו הוראות תקנון זה.</p>
@@ -102,8 +102,8 @@ export default function TermsPage() {
               <p><strong>5.1</strong> בגין כל עסקת יסוד, ישלם הספק לסטאנל קלאב עמלת ספק כפי שנקבע בהסכם הספק.</p>
               <p><strong>5.2</strong> מתוך עמלת הספק, סטאנל קלאב תקצה נקודות זיכוי בסכום השווה ל-50% מעמלת הספק.</p>
               <p><strong>5.3</strong> יחס המרה 1:1 - כל שקל מרכיב נקודות הזיכוי מזכה בנקודת זיכוי אחת.</p>
-              <div className="bg-white/5 border border-white/10 rounded-lg p-4 my-4">
-                <p className="text-white/70 text-sm m-0"><strong>דוגמה:</strong> תמורה 100,000 ₪ → עמלת ספק (4%): 4,000 ₪ + מע&quot;מ → רכיב נקודות (50%): 2,000 ₪ → 2,000 נקודות זיכוי לאדריכל/מעצב.</p>
+              <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-lg p-4 my-4">
+                <p className="text-[#5a4e41] text-sm m-0"><strong>דוגמה:</strong> תמורה 100,000 ₪ → עמלת ספק (4%): 4,000 ₪ + מע&quot;מ → רכיב נקודות (50%): 2,000 ₪ → 2,000 נקודות זיכוי לאדריכל/מעצב.</p>
               </div>
             </Section>
 
@@ -117,19 +117,19 @@ export default function TermsPage() {
 
             {/* Section 7 */}
             <Section num="7" title="נקודות זיכוי – הקצאה, תוקף ומימוש" icon={<FileText size={20} />}>
-              <h4 className="text-white font-semibold">7.1 הקצאת נקודות זיכוי</h4>
+              <h4 className="text-[#2b241d] font-semibold">7.1 הקצאת נקודות זיכוי</h4>
               <p>נקודות יצברו רק לאחר אישור חשבונית עסקת יסוד, באופן אוטומטי תוך 7 ימי עסקים. הנקודות יוצגו בעמוד המשתמש האישי.</p>
 
-              <h4 className="text-white font-semibold mt-4">7.2 תוקף נקודות זיכוי</h4>
+              <h4 className="text-[#2b241d] font-semibold mt-4">7.2 תוקף נקודות זיכוי</h4>
               <p>תוקף הנקודות: <strong>24 חודשים</strong> מהקצאתן. נקודות שלא מומשו יימחקו ללא זכות לזיכוי או פיצוי. התראה תישלח 14 ימים לפני פקיעה.</p>
 
-              <h4 className="text-white font-semibold mt-4">7.3 מימוש נקודות זיכוי</h4>
+              <h4 className="text-[#2b241d] font-semibold mt-4">7.3 מימוש נקודות זיכוי</h4>
               <p>מימוש בבתי העסק המשתתפים בלבד. יחס המרה 1:1 (נקודה = 1 ₪). מימוש באמצעות הצגת כרטיס המועדון ואישור באפליקציה.</p>
 
-              <h4 className="text-white font-semibold mt-4">7.4 הסרת אחריות</h4>
+              <h4 className="text-[#2b241d] font-semibold mt-4">7.4 הסרת אחריות</h4>
               <p>נקודות הזיכוי הן זכות שימוש מותנית בלבד. במקרה של ביטול חברות, לא יינתן החזר כספי בגין נקודות שלא מומשו.</p>
 
-              <h4 className="text-white font-semibold mt-4">7.5 שינוי או ביטול מנגנון</h4>
+              <h4 className="text-[#2b241d] font-semibold mt-4">7.5 שינוי או ביטול מנגנון</h4>
               <p>סטאנל קלאב רשאית לשנות או לבטל את מנגנון הנקודות בהודעה של 30 יום מראש. נקודות שנצברו יישארו בתוקף עד תום תקופתן.</p>
             </Section>
 
@@ -142,7 +142,7 @@ export default function TermsPage() {
 
             {/* Section 9 */}
             <Section num="9" title="הצהרות והתחייבויות" icon={<AlertTriangle size={20} />}>
-              <h4 className="text-white font-semibold">9.1 הספק מתחייב:</h4>
+              <h4 className="text-[#2b241d] font-semibold">9.1 הספק מתחייב:</h4>
               <ul>
                 <li>אחריות מלאה למוצרים ולשירותים המסופקים ללקוח קצה</li>
                 <li>דיווחי אמת ושיתוף פעולה מלא</li>
@@ -150,7 +150,7 @@ export default function TermsPage() {
                 <li>הימנעות מדיווחים פיקטיביים או מטעים</li>
               </ul>
 
-              <h4 className="text-white font-semibold mt-4">9.2 האדריכל/מעצב מתחייב:</h4>
+              <h4 className="text-[#2b241d] font-semibold mt-4">9.2 האדריכל/מעצב מתחייב:</h4>
               <ul>
                 <li>שימוש בתום לב בכרטיס המועדון</li>
                 <li>הימנעות מפעולות מטעות או בלתי חוקיות</li>
@@ -159,7 +159,7 @@ export default function TermsPage() {
                 <li>עדכון פרטי התקשרות</li>
               </ul>
 
-              <h4 className="text-white font-semibold mt-4">9.3 סטאנל קלאב מתחייבת:</h4>
+              <h4 className="text-[#2b241d] font-semibold mt-4">9.3 סטאנל קלאב מתחייבת:</h4>
               <ul>
                 <li>ניהול הוגן, שקוף וסביר של מנגנוני השיוך והנקודות</li>
                 <li>שמירת סודיות המידע בכפוף לדין</li>
@@ -232,7 +232,7 @@ export default function TermsPage() {
             <Section num="17" title="יצירת קשר ותמיכה" icon={<Phone size={20} />}>
               <p>לשאלות, פניות, דיווח על תקלה או תמיכה טכנית, ניתן ליצור קשר:</p>
               <div className="flex flex-col gap-2 mt-3">
-                <div className="flex items-center gap-2 text-emerald-400">
+                <div className="flex items-center gap-2 text-[#c99b4a]">
                   <Mail size={16} />
                   <span>support@stannel.club</span>
                 </div>
@@ -250,15 +250,15 @@ export default function TermsPage() {
             </Section>
 
             {/* Footer */}
-            <div className="mt-12 pt-6 border-t border-white/10 text-center">
-              <p className="text-white/40 text-xs">STANNEL &copy; 2026 | כל הזכויות שמורות</p>
+            <div className="mt-12 pt-6 border-t border-[rgba(201,155,74,0.08)] text-center">
+              <p className="text-[#a89b8a] text-xs">STANNEL &copy; 2026 | כל הזכויות שמורות</p>
             </div>
           </div>
         </motion.div>
 
         {/* Back Link */}
         <div className="text-center mt-6">
-          <Link href="/" className="inline-flex items-center gap-2 text-white/50 hover:text-white transition-colors text-sm">
+          <Link href="/" className="inline-flex items-center gap-2 text-[#a89b8a] hover:text-[#2b241d] transition-colors text-sm">
             <ArrowRight size={16} />
             חזרה לדף הבית
           </Link>
@@ -271,8 +271,8 @@ export default function TermsPage() {
 function Section({ num, title, icon, children }: { num: string; title: string; icon: React.ReactNode; children: React.ReactNode }) {
   return (
     <div className="mb-10">
-      <h3 className="text-xl font-bold text-white flex items-center gap-2 mb-4 pb-2 border-b border-white/10">
-        <span className="w-8 h-8 rounded-lg bg-emerald-500/20 flex items-center justify-center flex-shrink-0">
+      <h3 className="text-xl font-bold text-[#2b241d] flex items-center gap-2 mb-4 pb-2 border-b border-[rgba(201,155,74,0.08)]">
+        <span className="w-8 h-8 rounded-lg bg-[#c99b4a]/10 flex items-center justify-center flex-shrink-0">
           {icon}
         </span>
         {num}. {title}
@@ -284,8 +284,8 @@ function Section({ num, title, icon, children }: { num: string; title: string; i
 
 function TermDef({ term, def }: { term: string; def: string }) {
   return (
-    <div className="bg-white/3 border-r-2 border-emerald-500/50 pr-4 py-2 my-3">
-      <p className="m-0"><strong className="text-emerald-400">&quot;{term}&quot;</strong>: {def}</p>
+    <div className="bg-[#f7f3f2] border-r-2 border-[#c99b4a]/50 pr-4 py-2 my-3">
+      <p className="m-0"><strong className="text-[#c99b4a]">&quot;{term}&quot;</strong>: {def}</p>
     </div>
   );
 }

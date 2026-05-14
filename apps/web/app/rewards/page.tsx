@@ -102,7 +102,7 @@ export default function RewardsPage() {
           <p>עלות המוצר: <strong>${product.pointCost.toLocaleString()} נק׳</strong></p>
           <p>נקודות חסרות: <strong>${completion.missingPoints.toLocaleString()}</strong></p>
           <hr style="margin: 10px 0; opacity: 0.3;">
-          <p style="color: #10b981; font-weight: bold;">תשלום להשלמה: ₪${completion.cashNeeded.toLocaleString()}</p>
+          <p style="color: #c99b4a; font-weight: bold;">תשלום להשלמה: ₪${completion.cashNeeded.toLocaleString()}</p>
         </div>
       `;
     }
@@ -114,9 +114,9 @@ export default function RewardsPage() {
       showCancelButton: true,
       confirmButtonText: useCash ? `מימוש עם ₪${completion.cashNeeded}` : 'מימוש',
       cancelButtonText: 'ביטול',
-      confirmButtonColor: '#10b981',
-      background: '#0f2620',
-      color: '#fff',
+      confirmButtonColor: '#c99b4a',
+      background: '#f7f3f2',
+      color: '#2b241d',
     });
 
     if (!result.isConfirmed) return;
@@ -129,9 +129,9 @@ export default function RewardsPage() {
         text: useCash ? `שילמת ₪${completion.cashNeeded} + ${points.toLocaleString()} נקודות` : 'המימוש בוצע בהצלחה',
         icon: 'success',
         confirmButtonText: 'אישור',
-        background: '#0f2620',
-        color: '#fff',
-        confirmButtonColor: '#10b981',
+        background: '#f7f3f2',
+        color: '#2b241d',
+        confirmButtonColor: '#c99b4a',
       });
     } catch (error: any) {
       Swal.fire({
@@ -139,8 +139,8 @@ export default function RewardsPage() {
         text: error.message || 'שגיאה במימוש המוצר',
         icon: 'error',
         confirmButtonText: 'אישור',
-        background: '#0f2620',
-        color: '#fff',
+        background: '#f7f3f2',
+        color: '#2b241d',
       });
     } finally {
       setRedeemingId(null);
@@ -148,7 +148,7 @@ export default function RewardsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0f2620] -mt-16">
+    <div className="min-h-screen -mt-16">
       {/* Hero Background */}
       <div className="absolute inset-x-0 top-0 h-[45vh]">
         <Image
@@ -159,40 +159,40 @@ export default function RewardsPage() {
           priority
         />
         <div className="absolute inset-0 bg-black/50" />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0f2620]/30 via-transparent to-[#0f2620]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#f7f3f2]/30 via-transparent to-[#f7f3f2]" />
       </div>
 
-      <div className="relative z-10 px-4 sm:px-6 pt-24 sm:pt-28 pb-6 max-w-7xl mx-auto">
+      <div className="relative z-10 px-4 sm:px-6 pt-24 sm:pt-28 pb-24 max-w-7xl mx-auto">
         {/* Balance Banner */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-gradient-to-br from-emerald-600/30 to-emerald-800/30 backdrop-blur-md border border-emerald-500/30 rounded-2xl sm:rounded-3xl p-4 sm:p-6 mb-4 sm:mb-8"
+          className="bg-gradient-to-br from-[#c99b4a]/15 to-[#c99b4a]/25 border border-[#c99b4a]/30 rounded-2xl sm:rounded-3xl p-4 sm:p-6 mb-4 sm:mb-8"
         >
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-3 sm:gap-4">
-              <div className="w-10 h-10 sm:w-14 sm:h-14 rounded-xl bg-emerald-500/30 flex items-center justify-center flex-shrink-0">
-                <Star size={20} className="text-emerald-400 sm:hidden" />
-                <Star size={28} className="text-emerald-400 hidden sm:block" />
+              <div className="w-10 h-10 sm:w-14 sm:h-14 rounded-xl bg-[#c99b4a]/20 flex items-center justify-center flex-shrink-0">
+                <Star size={20} className="text-[#c99b4a] sm:hidden" />
+                <Star size={28} className="text-[#c99b4a] hidden sm:block" />
               </div>
               <div>
-                <p className="text-white/70 text-xs sm:text-sm">יתרת נקודות זמינה</p>
-                <p className="text-2xl sm:text-4xl font-bold text-white">
+                <p className="text-[#8b7c69] text-xs sm:text-sm">יתרת נקודות זמינה</p>
+                <p className="text-2xl sm:text-4xl font-bold text-[#2b241d]">
                   {points.toLocaleString()} <span className="text-sm sm:text-lg">נק׳</span>
                 </p>
               </div>
             </div>
             <div className="text-center flex-shrink-0">
-              <p className="text-white/70 text-xs sm:text-sm">דרגה</p>
-              <p className="text-lg sm:text-2xl font-semibold text-white">{rankEmojis[rank]} {rank}</p>
+              <p className="text-[#8b7c69] text-xs sm:text-sm">דרגה</p>
+              <p className="text-lg sm:text-2xl font-semibold text-[#2b241d]">{rankEmojis[rank]} {rank}</p>
             </div>
           </div>
         </motion.div>
 
         {/* Header */}
-        <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-4 sm:p-6 mb-4 sm:mb-6">
-          <h1 className="text-2xl sm:text-3xl font-bold text-white">חנות ההטבות</h1>
-          <p className="text-white/60 mt-1 text-sm sm:text-base">ממשו את הנקודות שצברתם להטבות מגוונות</p>
+        <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-4 sm:p-6 mb-4 sm:mb-6">
+          <h1 className="text-2xl sm:text-3xl font-bold text-[#2b241d]">חנות ההטבות</h1>
+          <p className="text-[#8b7c69] mt-1 text-sm sm:text-base">ממשו את הנקודות שצברתם להטבות מגוונות</p>
         </div>
 
         {/* Category Tabs */}
@@ -211,15 +211,15 @@ export default function RewardsPage() {
                   whileTap={{ scale: 0.98 }}
                   className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-5 py-2 sm:py-3 rounded-xl border transition-all text-sm sm:text-base ${
                     isSelected
-                      ? 'bg-emerald-500/20 border-emerald-500/30 text-emerald-400'
-                      : 'bg-white/5 border-white/10 text-white/70 hover:bg-white/10 hover:text-white'
+                      ? 'bg-[#c99b4a]/15 border-[#c99b4a]/30 text-[#c99b4a]'
+                      : 'bg-white border-[rgba(201,155,74,0.08)] text-[#8b7c69] hover:bg-white/90 hover:text-[#2b241d]'
                   }`}
                 >
                   {cat === 'all' && <Gift size={20} />}
                   <span className="font-medium whitespace-nowrap">{label}</span>
                   {count > 0 && (
                     <span className={`px-2 py-0.5 rounded-full text-xs ${
-                      isSelected ? 'bg-emerald-500/10 text-emerald-400' : 'bg-white/10 text-white/50'
+                      isSelected ? 'bg-[#c99b4a]/10 text-[#c99b4a]' : 'bg-[#c99b4a]/10 text-[#a89b8a]'
                     }`}>
                       {count}
                     </span>
@@ -237,8 +237,8 @@ export default function RewardsPage() {
             animate={{ opacity: 1, y: 0 }}
             className="mb-6"
           >
-            <h2 className="text-xl font-semibold text-white flex items-center gap-2">
-              <Gift size={24} className="text-emerald-400" />
+            <h2 className="text-xl font-semibold text-[#2b241d] flex items-center gap-2">
+              <Gift size={24} className="text-[#c99b4a]" />
               {selectedCategory}
             </h2>
           </motion.div>
@@ -248,14 +248,14 @@ export default function RewardsPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {productsLoading ? (
             [...Array(6)].map((_, i) => (
-              <div key={i} className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl overflow-hidden animate-pulse">
-                <div className="h-48 bg-white/10" />
+              <div key={i} className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl overflow-hidden animate-pulse">
+                <div className="h-48 bg-[#c99b4a]/10" />
                 <div className="p-6">
-                  <div className="h-5 w-3/4 bg-white/10 rounded mb-2" />
-                  <div className="h-4 w-full bg-white/5 rounded mb-4" />
+                  <div className="h-5 w-3/4 bg-[#c99b4a]/10 rounded mb-2" />
+                  <div className="h-4 w-full bg-[#c99b4a]/5 rounded mb-4" />
                   <div className="flex justify-between">
-                    <div className="h-6 w-20 bg-emerald-500/20 rounded" />
-                    <div className="h-8 w-20 bg-white/10 rounded-lg" />
+                    <div className="h-6 w-20 bg-[#c99b4a]/15 rounded" />
+                    <div className="h-8 w-20 bg-[#c99b4a]/10 rounded-lg" />
                   </div>
                 </div>
               </div>
@@ -273,13 +273,13 @@ export default function RewardsPage() {
                 transition={{ delay: index * 0.08 }}
               >
                 <div
-                  className={`bg-white/5 backdrop-blur-md border rounded-2xl overflow-hidden group hover:bg-white/10 transition-all cursor-pointer ${
-                    selectedProduct === product.id ? 'border-emerald-500/50 ring-1 ring-emerald-500/30' : 'border-white/10'
+                  className={`bg-white border rounded-2xl overflow-hidden group hover:bg-white/90 transition-all cursor-pointer ${
+                    selectedProduct === product.id ? 'border-[#c99b4a]/50 ring-1 ring-[#c99b4a]/30' : 'border-[rgba(201,155,74,0.08)]'
                   }`}
                   onClick={() => setSelectedProduct(product.id)}
                 >
                   {/* Product Image */}
-                  <div className="relative h-48 overflow-hidden bg-white/5">
+                  <div className="relative h-48 overflow-hidden bg-[#c99b4a]/5">
                     {product.imageUrl ? (
                       <ImageWithLoader
                         src={product.imageUrl}
@@ -289,13 +289,13 @@ export default function RewardsPage() {
                         className="object-cover group-hover:scale-105 transition-transform duration-500"
                       />
                     ) : (
-                      <div className="w-full h-full bg-white/5 flex items-center justify-center">
-                        <Gift size={48} className="text-white/30" />
+                      <div className="w-full h-full bg-[#c99b4a]/5 flex items-center justify-center">
+                        <Gift size={48} className="text-[#a89b8a]" />
                       </div>
                     )}
                     {/* Category Badge */}
                     {selectedCategory === 'all' && product.category && (
-                      <div className="absolute top-3 right-3 px-2 py-1 rounded-full text-xs font-medium backdrop-blur-sm bg-emerald-500/80 text-white">
+                      <div className="absolute top-3 right-3 px-2 py-1 rounded-full text-xs font-medium backdrop-blur-sm bg-[#c99b4a] text-white">
                         {product.category}
                       </div>
                     )}
@@ -306,26 +306,26 @@ export default function RewardsPage() {
                     )}
                     {product.stock === 0 && (
                       <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
-                        <span className="text-white/80 text-sm">אזל מהמלאי</span>
+                        <span className="text-white text-sm">אזל מהמלאי</span>
                       </div>
                     )}
                   </div>
 
                   {/* Product Info */}
                   <div className="p-4 sm:p-6">
-                    <h3 className="text-white font-semibold text-base sm:text-lg mb-1 sm:mb-2">{product.name}</h3>
-                    <p className="text-white/80 text-sm mb-4 line-clamp-2">{product.description}</p>
+                    <h3 className="text-[#2b241d] font-semibold text-base sm:text-lg mb-1 sm:mb-2">{product.name}</h3>
+                    <p className="text-[#8b7c69] text-sm mb-4 line-clamp-2">{product.description}</p>
 
                     {/* Price & Action */}
                     <div className="flex flex-col gap-3">
                       <div className="flex items-center justify-between" dir="rtl">
-                        <span className="text-emerald-400 font-bold text-xl" dir="rtl">
+                        <span className="text-[#c99b4a] font-bold text-xl" dir="rtl">
                           {product.pointCost.toLocaleString('he-IL')} נק׳
                         </span>
                         {product.stock > 0 && (
                           <span className={`text-xs px-2 py-1 rounded ${
-                            product.stock > 5 ? 'bg-green-500/20 text-green-400' :
-                            'bg-yellow-500/20 text-yellow-400'
+                            product.stock > 5 ? 'bg-green-100 text-green-700' :
+                            'bg-yellow-100 text-yellow-700'
                           }`}>
                             מלאי: {product.stock}
                           </span>
@@ -334,12 +334,12 @@ export default function RewardsPage() {
 
                       {/* Cash completion info */}
                       {!affordable && product.stock > 0 && (
-                        <div className="bg-blue-500/20 border border-blue-400/40 rounded-xl p-4">
-                          <div className="flex items-center gap-2 text-blue-200 mb-2 font-semibold text-base">
+                        <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
+                          <div className="flex items-center gap-2 text-blue-700 mb-2 font-semibold text-base">
                             <Coins size={18} />
                             <span>חסרים {completion.missingPoints.toLocaleString()} נק׳</span>
                           </div>
-                          <div className="flex items-center gap-2 text-green-300 font-bold text-lg">
+                          <div className="flex items-center gap-2 text-green-700 font-bold text-lg">
                             <Banknote size={18} />
                             <span>השלם עם ₪{completion.cashNeeded.toLocaleString()}</span>
                           </div>
@@ -362,7 +362,7 @@ export default function RewardsPage() {
                         {!isArchitect ? (
                           <Link
                             href="/login"
-                            className="flex-1 px-4 py-2.5 rounded-lg text-sm font-bold text-center border-2 border-emerald-500 bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 transition-all flex items-center justify-center gap-2"
+                            className="flex-1 px-4 py-2.5 rounded-lg text-sm font-bold text-center border-2 border-[#c99b4a] bg-[#c99b4a]/15 text-[#c99b4a] hover:bg-[#c99b4a]/25 transition-all flex items-center justify-center gap-2"
                           >
                             <ShoppingCart size={16} />
                             להתחברות ומימוש ההטבה
@@ -374,7 +374,7 @@ export default function RewardsPage() {
                               e.stopPropagation();
                               handleRedeem(product.id, false);
                             }}
-                            className="flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center justify-center gap-2 bg-emerald-500 text-white hover:bg-emerald-600"
+                            className="flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center justify-center gap-2 bg-[#c99b4a] text-white hover:bg-[#9e7746]"
                           >
                             {isRedeeming ? (
                               <Loader2 size={16} className="animate-spin" />
@@ -406,7 +406,7 @@ export default function RewardsPage() {
                         ) : (
                           <button
                             disabled
-                            className="flex-1 px-4 py-2 rounded-lg text-sm font-medium bg-white/10 text-white/40 cursor-not-allowed"
+                            className="flex-1 px-4 py-2 rounded-lg text-sm font-medium bg-[#c99b4a]/10 text-[#a89b8a] cursor-not-allowed"
                           >
                             אזל מהמלאי
                           </button>
@@ -422,9 +422,9 @@ export default function RewardsPage() {
 
         {/* Empty State */}
         {!productsLoading && products.length === 0 && (
-          <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-12 text-center">
-            <Gift size={48} className="mx-auto text-white/30 mb-4" />
-            <p className="text-white/60">אין מוצרים זמינים כרגע</p>
+          <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-12 text-center">
+            <Gift size={48} className="mx-auto text-[#a89b8a] mb-4" />
+            <p className="text-[#8b7c69]">אין מוצרים זמינים כרגע</p>
           </div>
         )}
       </div>

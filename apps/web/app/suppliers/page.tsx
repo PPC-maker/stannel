@@ -28,7 +28,7 @@ export default function SuppliersDirectoryPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0f2620] -mt-16">
+    <div className="min-h-screen -mt-16">
       {/* Hero Section */}
       <div className="relative h-52 sm:h-72 overflow-hidden">
         <Image
@@ -38,7 +38,7 @@ export default function SuppliersDirectoryPage() {
           className="object-cover"
           priority
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-[#0f2620]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-[#f7f3f2]" />
 
         <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4 pt-16">
           <motion.div
@@ -46,13 +46,13 @@ export default function SuppliersDirectoryPage() {
             animate={{ opacity: 1, y: 0 }}
           >
             <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold text-white mb-2 sm:mb-3">ספקים מובחרים</h1>
-            <p className="text-white/70 text-sm sm:text-lg">גלו את הספקים המובילים בתעשייה</p>
+            <p className="text-white/80 text-sm sm:text-lg">גלו את הספקים המובילים בתעשייה</p>
           </motion.div>
         </div>
       </div>
 
       {/* Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-8 -mt-8 relative z-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-8 pb-24 -mt-8 relative z-10">
         {/* Search */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -60,13 +60,13 @@ export default function SuppliersDirectoryPage() {
           className="mb-4 sm:mb-8"
         >
           <div className="relative max-w-xl mx-auto">
-            <Search className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 text-white/50" size={18} />
+            <Search className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 text-[#a89b8a]" size={18} />
             <input
               type="text"
               placeholder="חיפוש ספקים..."
               value={search}
               onChange={(e) => handleSearch(e.target.value)}
-              className="w-full bg-white/10 backdrop-blur border border-white/20 rounded-xl sm:rounded-2xl px-4 py-3 sm:px-5 sm:py-4 pr-10 sm:pr-12 text-sm sm:text-base text-white placeholder:text-white/50 focus:border-emerald-500/50 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 transition-all text-right"
+              className="w-full bg-white border border-[rgba(201,155,74,0.15)] rounded-xl sm:rounded-2xl px-4 py-3 sm:px-5 sm:py-4 pr-10 sm:pr-12 text-sm sm:text-base text-[#2b241d] placeholder:text-[#a89b8a] focus:border-[#c99b4a]/50 focus:outline-none focus:ring-2 focus:ring-[#c99b4a]/20 transition-all text-right"
             />
           </div>
         </motion.div>
@@ -74,12 +74,12 @@ export default function SuppliersDirectoryPage() {
         {/* Suppliers Grid */}
         {isLoading ? (
           <div className="flex items-center justify-center py-20">
-            <Loader2 size={40} className="text-emerald-400 animate-spin" />
+            <Loader2 size={40} className="text-[#c99b4a] animate-spin" />
           </div>
         ) : suppliers.length === 0 ? (
           <div className="text-center py-20">
-            <Building2 size={48} className="mx-auto text-white/20 mb-4" />
-            <p className="text-white/60 text-base">לא נמצאו ספקים</p>
+            <Building2 size={48} className="mx-auto text-[#a89b8a]/40 mb-4" />
+            <p className="text-[#8b7c69] text-base">לא נמצאו ספקים</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
@@ -103,7 +103,7 @@ function SupplierCard({ supplier, index }: { supplier: any; index: number }) {
       transition={{ delay: index * 0.1 }}
     >
       <Link href={`/suppliers/${supplier.id}`}>
-        <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl sm:rounded-3xl overflow-hidden hover:border-emerald-500/30 hover:bg-white/10 transition-all group cursor-pointer">
+        <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl sm:rounded-3xl overflow-hidden hover:border-[#c99b4a]/30 hover:bg-[#f7f3f2] transition-all group cursor-pointer">
           {/* Cover Image - Large */}
           <div className="relative" style={{ aspectRatio: '3/4.4' }}>
             <ImageWithLoader
@@ -137,7 +137,7 @@ function SupplierCard({ supplier, index }: { supplier: any; index: number }) {
                   </div>
                 )}
                 <div className="mr-auto">
-                  <ChevronLeft size={18} className="text-emerald-400 group-hover:-translate-x-1 transition-transform" />
+                  <ChevronLeft size={18} className="text-[#c99b4a] group-hover:-translate-x-1 transition-transform" />
                 </div>
               </div>
             </div>
