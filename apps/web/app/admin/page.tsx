@@ -1483,7 +1483,7 @@ Please analyze this error and provide a fix.
             <Receipt size={18} />
             חשבוניות
             {invoices.filter(inv => ['PENDING_ADMIN', 'PENDING_SUPPLIER_PAY', 'OVERDUE'].includes(inv.status)).length > 0 && (
-              <span className="bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full animate-pulse">
+              <span className="bg-red-500 text-[#2b241d] text-xs font-bold px-2 py-0.5 rounded-full animate-pulse">
                 {invoices.filter(inv => ['PENDING_ADMIN', 'PENDING_SUPPLIER_PAY', 'OVERDUE'].includes(inv.status)).length}
               </span>
             )}
@@ -1500,7 +1500,7 @@ Please analyze this error and provide a fix.
             <Trash size={18} />
             סל מחזור
             {deletedInvoices.length > 0 && (
-              <span className="bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">
+              <span className="bg-red-500 text-[#2b241d] text-xs px-2 py-0.5 rounded-full">
                 {deletedInvoices.length}
               </span>
             )}
@@ -1529,7 +1529,7 @@ Please analyze this error and provide a fix.
             <FileText size={18} />
             לוגים
             {stats && stats.unresolved > 0 && (
-              <span className="bg-orange-500 text-white text-xs px-2 py-0.5 rounded-full">
+              <span className="bg-orange-500 text-[#2b241d] text-xs px-2 py-0.5 rounded-full">
                 {stats.unresolved}
               </span>
             )}
@@ -1576,7 +1576,7 @@ Please analyze this error and provide a fix.
 
               {allUsers.length === 0 ? (
                 <div className="text-center py-16">
-                  <Users className="w-20 h-20 mx-auto text-white/20 mb-4" />
+                  <Users className="w-20 h-20 mx-auto text-[#a89b8a]/30 mb-4" />
                   <p className="text-[#2b241d] text-xl font-medium">אין משתמשים במערכת</p>
                 </div>
               ) : (
@@ -1588,7 +1588,7 @@ Please analyze this error and provide a fix.
                       <tr className="border-b border-[rgba(201,155,74,0.08)]">
                         <th className="py-3 px-4 text-right">
                           {pendingUsers.length > 0 && (
-                            <input type="checkbox" checked={selectedUsers.size === pendingUsers.length && pendingUsers.length > 0} onChange={selectAllPendingUsers} className="w-4 h-4 rounded bg-white/10 border-white/20 text-emerald-500" />
+                            <input type="checkbox" checked={selectedUsers.size === pendingUsers.length && pendingUsers.length > 0} onChange={selectAllPendingUsers} className="w-4 h-4 rounded bg-[#f7f3f2] border-[rgba(201,155,74,0.12)] text-[#c99b4a]" />
                           )}
                         </th>
                         <th className="py-3 px-4 text-right text-[#8b7c69] font-medium">שם</th>
@@ -1610,7 +1610,7 @@ Please analyze this error and provide a fix.
                           <React.Fragment key={user.id}>
                             <tr className={`border-b border-[rgba(201,155,74,0.08)] hover:bg-[#f0ebe6] transition-colors cursor-pointer ${!user.isActive ? 'bg-yellow-500/5' : ''} ${isExpanded ? 'bg-[#f7f3f2]' : ''}`} onClick={() => setExpandedUserId(isExpanded ? null : user.id)}>
                               <td className="py-4 px-4" onClick={(e) => e.stopPropagation()}>
-                                {!user.isActive && <input type="checkbox" checked={selectedUsers.has(user.id)} onChange={() => toggleUserSelection(user.id)} className="w-4 h-4 rounded bg-white/10 border-white/20 text-emerald-500" />}
+                                {!user.isActive && <input type="checkbox" checked={selectedUsers.has(user.id)} onChange={() => toggleUserSelection(user.id)} className="w-4 h-4 rounded bg-[#f7f3f2] border-[rgba(201,155,74,0.12)] text-[#c99b4a]" />}
                               </td>
                               <td className="py-4 px-4">
                                 <div className="flex items-center gap-3">
@@ -1631,7 +1631,7 @@ Please analyze this error and provide a fix.
                               <td className="py-4 px-4">
                                 {user.isActive ? <span className="px-3 py-1 rounded-full text-sm bg-green-500/20 text-green-400 flex items-center gap-1 w-fit"><CheckCircle size={14} />מאושר</span> : <span className="px-3 py-1 rounded-full text-sm bg-yellow-500/20 text-yellow-400 flex items-center gap-1 w-fit"><Clock size={14} />ממתין</span>}
                               </td>
-                              <td className="py-4 px-4"><span className="text-white/60 flex items-center gap-2"><Calendar size={14} className="text-[#a89b8a]" />{new Date(user.createdAt).toLocaleDateString('he-IL')}</span></td>
+                              <td className="py-4 px-4"><span className="text-[#8b7c69] flex items-center gap-2"><Calendar size={14} className="text-[#a89b8a]" />{new Date(user.createdAt).toLocaleDateString('he-IL')}</span></td>
                               <td className="py-4 px-4" onClick={(e) => e.stopPropagation()}>
                                 <div className="flex items-center gap-2">
                                   {user.isActive && user.role !== 'ADMIN' ? (
@@ -1669,7 +1669,7 @@ Please analyze this error and provide a fix.
                                     {/* Profile Image Change */}
                                     <div className="flex items-center gap-4 pb-4 border-b border-[rgba(201,155,74,0.08)]">
                                       <div className="relative group">
-                                        <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-white/20">
+                                        <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-[rgba(201,155,74,0.12)]">
                                           {(user.profileImage || sp?.profileImage) ? (
                                             <Image src={user.profileImage || sp?.profileImage || ''} alt={user.name} fill className="object-cover" unoptimized />
                                           ) : (
@@ -1713,22 +1713,22 @@ Please analyze this error and provide a fix.
                                           </div>
                                         ) : (
                                           <div className="space-y-2 text-sm">
-                                            <div className="flex items-center gap-2 text-[#8b7c69]"><span className="text-white/40 min-w-[60px]">שם:</span><span className="text-[#2b241d]">{user.name}</span></div>
-                                            <div className="flex items-center gap-2 text-[#8b7c69]"><span className="text-white/40 min-w-[60px]">אימייל:</span><span className="text-[#2b241d]" dir="ltr">{user.email}</span></div>
-                                            <div className="flex items-center gap-2 text-[#8b7c69]"><span className="text-white/40 min-w-[60px]">טלפון:</span><span className="text-[#2b241d]" dir="ltr">{user.phone || 'לא צוין'}</span></div>
-                                            <div className="flex items-center gap-2 text-[#8b7c69]"><span className="text-white/40 min-w-[60px]">כתובת:</span><span className="text-[#2b241d]">{user.address || 'לא צוינה'}</span></div>
-                                            <div className="flex items-center gap-2 text-[#8b7c69]"><span className="text-white/40 min-w-[60px]">חברה:</span><span className="text-[#2b241d]">{user.company || sp?.companyName || 'לא צוינה'}</span></div>
+                                            <div className="flex items-center gap-2 text-[#8b7c69]"><span className="text-[#a89b8a] min-w-[60px]">שם:</span><span className="text-[#2b241d]">{user.name}</span></div>
+                                            <div className="flex items-center gap-2 text-[#8b7c69]"><span className="text-[#a89b8a] min-w-[60px]">אימייל:</span><span className="text-[#2b241d]" dir="ltr">{user.email}</span></div>
+                                            <div className="flex items-center gap-2 text-[#8b7c69]"><span className="text-[#a89b8a] min-w-[60px]">טלפון:</span><span className="text-[#2b241d]" dir="ltr">{user.phone || 'לא צוין'}</span></div>
+                                            <div className="flex items-center gap-2 text-[#8b7c69]"><span className="text-[#a89b8a] min-w-[60px]">כתובת:</span><span className="text-[#2b241d]">{user.address || 'לא צוינה'}</span></div>
+                                            <div className="flex items-center gap-2 text-[#8b7c69]"><span className="text-[#a89b8a] min-w-[60px]">חברה:</span><span className="text-[#2b241d]">{user.company || sp?.companyName || 'לא צוינה'}</span></div>
                                           </div>
                                         )}
                                       </div>
                                       <div className="space-y-4">
                                         <h4 className="text-[#2b241d] font-semibold flex items-center gap-2"><Calendar size={16} className="text-[#c99b4a]" />תאריכים וסטטוס</h4>
                                         <div className="space-y-2 text-sm">
-                                          <div className="flex items-center gap-2 text-[#8b7c69]"><span className="text-white/40 min-w-[80px]">נרשם:</span><span className="text-[#2b241d]">{new Date(user.createdAt).toLocaleString('he-IL')}</span></div>
-                                          {user.activatedAt && <div className="flex items-center gap-2 text-[#8b7c69]"><span className="text-white/40 min-w-[80px]">אושר:</span><span className="text-[#2b241d]">{new Date(user.activatedAt).toLocaleString('he-IL')}</span></div>}
-                                          {user.updatedAt && <div className="flex items-center gap-2 text-[#8b7c69]"><span className="text-white/40 min-w-[80px]">עודכן:</span><span className="text-[#2b241d]">{new Date(user.updatedAt).toLocaleString('he-IL')}</span></div>}
-                                          <div className="flex items-center gap-2 text-[#8b7c69]"><span className="text-white/40 min-w-[80px]">תפקיד:</span><span className={`px-2 py-0.5 rounded-full text-xs ${user.role === 'ARCHITECT' ? 'bg-blue-500/20 text-blue-400' : user.role === 'ADMIN' ? 'bg-red-500/20 text-red-400' : 'bg-purple-500/20 text-purple-400'}`}>{roleLabels[user.role] || user.role}</span></div>
-                                          <div className="flex items-center gap-2 text-[#8b7c69]"><span className="text-white/40 min-w-[80px]">מזהה:</span><span className="text-[#a89b8a] text-xs font-mono" dir="ltr">{user.id}</span></div>
+                                          <div className="flex items-center gap-2 text-[#8b7c69]"><span className="text-[#a89b8a] min-w-[80px]">נרשם:</span><span className="text-[#2b241d]">{new Date(user.createdAt).toLocaleString('he-IL')}</span></div>
+                                          {user.activatedAt && <div className="flex items-center gap-2 text-[#8b7c69]"><span className="text-[#a89b8a] min-w-[80px]">אושר:</span><span className="text-[#2b241d]">{new Date(user.activatedAt).toLocaleString('he-IL')}</span></div>}
+                                          {user.updatedAt && <div className="flex items-center gap-2 text-[#8b7c69]"><span className="text-[#a89b8a] min-w-[80px]">עודכן:</span><span className="text-[#2b241d]">{new Date(user.updatedAt).toLocaleString('he-IL')}</span></div>}
+                                          <div className="flex items-center gap-2 text-[#8b7c69]"><span className="text-[#a89b8a] min-w-[80px]">תפקיד:</span><span className={`px-2 py-0.5 rounded-full text-xs ${user.role === 'ARCHITECT' ? 'bg-blue-500/20 text-blue-400' : user.role === 'ADMIN' ? 'bg-red-500/20 text-red-400' : 'bg-purple-500/20 text-purple-400'}`}>{roleLabels[user.role] || user.role}</span></div>
+                                          <div className="flex items-center gap-2 text-[#8b7c69]"><span className="text-[#a89b8a] min-w-[80px]">מזהה:</span><span className="text-[#a89b8a] text-xs font-mono" dir="ltr">{user.id}</span></div>
                                         </div>
                                       </div>
                                       <div className="space-y-4">
@@ -1950,7 +1950,7 @@ Please analyze this error and provide a fix.
                                     </div>
                                     <div className="flex justify-between">
                                       <span className="text-[#a89b8a]">אימייל:</span>
-                                      <span className="text-white text-xs" dir="ltr">{user.email}</span>
+                                      <span className="text-[#2b241d] text-xs" dir="ltr">{user.email}</span>
                                     </div>
                                     <div className="flex justify-between">
                                       <span className="text-[#a89b8a]">טלפון:</span>
@@ -1977,18 +1977,18 @@ Please analyze this error and provide a fix.
                                 <div className="space-y-1.5 text-sm">
                                   <div className="flex justify-between">
                                     <span className="text-[#a89b8a]">נרשם:</span>
-                                    <span className="text-white text-xs">{new Date(user.createdAt).toLocaleString('he-IL')}</span>
+                                    <span className="text-[#2b241d] text-xs">{new Date(user.createdAt).toLocaleString('he-IL')}</span>
                                   </div>
                                   {user.activatedAt && (
                                     <div className="flex justify-between">
                                       <span className="text-[#a89b8a]">אושר:</span>
-                                      <span className="text-white text-xs">{new Date(user.activatedAt).toLocaleString('he-IL')}</span>
+                                      <span className="text-[#2b241d] text-xs">{new Date(user.activatedAt).toLocaleString('he-IL')}</span>
                                     </div>
                                   )}
                                   {user.updatedAt && (
                                     <div className="flex justify-between">
                                       <span className="text-[#a89b8a]">עודכן:</span>
-                                      <span className="text-white text-xs">{new Date(user.updatedAt).toLocaleString('he-IL')}</span>
+                                      <span className="text-[#2b241d] text-xs">{new Date(user.updatedAt).toLocaleString('he-IL')}</span>
                                     </div>
                                   )}
                                   <div className="flex justify-between items-center">
@@ -2115,7 +2115,7 @@ Please analyze this error and provide a fix.
                                   <button
                                     onClick={() => handleLoginAsUser(user.id)}
                                     disabled={loggingInAs === user.id}
-                                    className="flex-1 min-w-[120px] py-2.5 bg-white/10 border border-white/20 text-white/80 rounded-lg text-sm flex items-center justify-center gap-2 disabled:opacity-50"
+                                    className="flex-1 min-w-[120px] py-2.5 bg-[#f7f3f2] border border-[rgba(201,155,74,0.12)] text-[#8b7c69] rounded-lg text-sm flex items-center justify-center gap-2 disabled:opacity-50"
                                   >
                                     {loggingInAs === user.id ? <Loader2 size={14} className="animate-spin" /> : <ExternalLink size={14} />}
                                     כניסה לחשבון
@@ -2223,7 +2223,7 @@ Please analyze this error and provide a fix.
 
                 {groupedInvoices.length === 0 ? (
                   <div className="text-center py-16">
-                    <Receipt className="w-20 h-20 mx-auto text-white/20 mb-4" />
+                    <Receipt className="w-20 h-20 mx-auto text-[#a89b8a]/30 mb-4" />
                     <p className="text-[#2b241d] text-xl font-medium">אין חשבוניות במערכת</p>
                   </div>
                 ) : (
@@ -2242,8 +2242,8 @@ Please analyze this error and provide a fix.
                             }`}
                           >
                             <div className="flex items-center gap-3 min-w-0">
-                              <div className={`p-2 rounded-lg shrink-0 ${isExpanded ? 'bg-[#c99b4a]/15' : 'bg-white/10'}`}>
-                                <FolderOpen size={20} className={isExpanded ? 'text-[#c99b4a]' : 'text-white/60'} />
+                              <div className={`p-2 rounded-lg shrink-0 ${isExpanded ? 'bg-[#c99b4a]/15' : 'bg-[#f7f3f2]'}`}>
+                                <FolderOpen size={20} className={isExpanded ? 'text-[#c99b4a]' : 'text-[#8b7c69]'} />
                               </div>
                               <div className="min-w-0">
                                 <p className="text-[#2b241d] font-medium truncate">{group.architectName}</p>
@@ -2272,14 +2272,14 @@ Please analyze this error and provide a fix.
                               </button>
                               <ChevronRight
                                 size={20}
-                                className={`text-white/50 transition-transform shrink-0 ${isExpanded ? 'rotate-90' : ''}`}
+                                className={`text-[#a89b8a] transition-transform shrink-0 ${isExpanded ? 'rotate-90' : ''}`}
                               />
                             </div>
                           </div>
 
                           {/* Invoices List */}
                           {isExpanded && (
-                            <div className="p-2 space-y-2 bg-black/20">
+                            <div className="p-2 space-y-2 bg-[#f7f3f2]/50">
                               {group.invoices.map((invoice) => {
                                 const invoiceStatusConfig: Record<string, { bg: string; text: string; label: string }> = {
                                   PENDING_ADMIN: { bg: 'bg-yellow-500/20', text: 'text-yellow-400', label: 'ממתין לאישור' },
@@ -2289,7 +2289,7 @@ Please analyze this error and provide a fix.
                                   PENDING_SUPPLIER_PAY: { bg: 'bg-purple-500/20', text: 'text-purple-400', label: 'ממתין לתשלום' },
                                   OVERDUE: { bg: 'bg-orange-500/20', text: 'text-orange-400', label: 'באיחור' },
                                 };
-                                const status = invoiceStatusConfig[invoice.status] || { bg: 'bg-gray-500/20', text: 'text-white/60', label: invoice.status };
+                                const status = invoiceStatusConfig[invoice.status] || { bg: 'bg-gray-500/20', text: 'text-[#8b7c69]', label: invoice.status };
                                 const hasAmountMismatch = invoice.aiExtractedAmount && invoice.aiExtractedAmount > 0 && invoice.aiStatus !== 'MATCH' && Math.abs(invoice.amount - invoice.aiExtractedAmount) > 1;
                                 const isApprovedWithMismatch = hasAmountMismatch && invoice.status !== 'PENDING_ADMIN' && invoice.status !== 'REJECTED';
 
@@ -2400,7 +2400,7 @@ Please analyze this error and provide a fix.
                 {selectedInvoice ? (
                   <div className="space-y-4">
                     {/* Invoice Image */}
-                    <div className="relative aspect-video rounded-lg overflow-hidden bg-black/30">
+                    <div className="relative aspect-video rounded-lg overflow-hidden bg-[#f7f3f2]">
                       {selectedInvoice.imageUrl.toLowerCase().endsWith('.pdf') ? (
                         // PDF Display
                         <div className="w-full h-full flex flex-col items-center justify-center p-4">
@@ -2413,7 +2413,7 @@ Please analyze this error and provide a fix.
                               href={selectedInvoice.imageUrl}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="px-3 py-1.5 rounded-lg bg-white/10 text-white hover:bg-white/20 transition-colors flex items-center gap-1.5 text-sm"
+                              className="px-3 py-1.5 rounded-lg bg-[#f7f3f2] text-[#2b241d] hover:bg-[#f0ebe6] transition-colors flex items-center gap-1.5 text-sm"
                             >
                               <Eye size={14} />
                               פתח
@@ -2421,7 +2421,7 @@ Please analyze this error and provide a fix.
                             <a
                               href={selectedInvoice.imageUrl}
                               download
-                              className="px-3 py-1.5 rounded-lg bg-emerald-500 text-white hover:bg-emerald-400 transition-colors flex items-center gap-1.5 text-sm"
+                              className="px-3 py-1.5 rounded-lg bg-[#c99b4a] text-white hover:bg-[#9e7746] transition-colors flex items-center gap-1.5 text-sm"
                             >
                               <Download size={14} />
                               הורד
@@ -2459,7 +2459,7 @@ Please analyze this error and provide a fix.
                         <p className={`font-medium ${
                           selectedInvoice.status === 'PENDING_ADMIN' ? 'text-yellow-400' :
                           selectedInvoice.status === 'APPROVED' ? 'text-green-400' :
-                          selectedInvoice.status === 'REJECTED' ? 'text-red-400' : 'text-white'
+                          selectedInvoice.status === 'REJECTED' ? 'text-red-400' : 'text-[#2b241d]'
                         }`}>
                           {selectedInvoice.status === 'PENDING_ADMIN' ? 'ממתין לאישור' :
                            selectedInvoice.status === 'APPROVED' ? 'מאושר' :
@@ -2530,7 +2530,7 @@ Please analyze this error and provide a fix.
                       selectedInvoice.aiStatus === 'MISMATCH' ? 'bg-red-500/20 border border-red-500/30' :
                       'bg-yellow-500/20 border border-yellow-500/30'
                     }`}>
-                      <p className="text-sm text-white/60 mb-2">ניתוח AI</p>
+                      <p className="text-sm text-[#8b7c69] mb-2">ניתוח AI</p>
                       <div className="space-y-1.5">
                         <div className="flex items-center justify-between">
                           <span className="text-[#8b7c69] text-sm">סכום שהוצהר:</span>
@@ -2693,7 +2693,7 @@ Please analyze this error and provide a fix.
 
                     {selectedInvoice.adminNote && (
                       <div className="p-3 rounded-lg bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)]">
-                        <p className="text-sm text-white/60 mb-1 flex items-center gap-1">
+                        <p className="text-sm text-[#8b7c69] mb-1 flex items-center gap-1">
                           <MessageSquare size={14} />
                           הערת מנהל
                         </p>
@@ -2703,7 +2703,7 @@ Please analyze this error and provide a fix.
 
                     {/* Payment Info - shown for paid invoices */}
                     {(selectedInvoice.status === 'PAID' || selectedInvoice.supplierRef || selectedInvoice.paymentProofUrl) && (
-                      <div className="p-4 rounded-lg bg-green-500/10 border border-green-500/30">
+                      <div className="p-4 rounded-lg bg-green-50 border border-green-500/30">
                         <p className="text-sm text-green-400 mb-3 font-medium flex items-center gap-1">
                           <CheckCircle size={14} />
                           פרטי תשלום
@@ -2711,7 +2711,7 @@ Please analyze this error and provide a fix.
                         {selectedInvoice.supplierRef && (
                           <div className="mb-2">
                             <label className="text-[#8b7c69] text-xs">מספר אסמכתא</label>
-                            <p className="text-white font-mono">{selectedInvoice.supplierRef}</p>
+                            <p className="text-[#2b241d] font-mono">{selectedInvoice.supplierRef}</p>
                           </div>
                         )}
                         {selectedInvoice.paidAt && (
@@ -2729,7 +2729,7 @@ Please analyze this error and provide a fix.
                                   href={selectedInvoice.paymentProofUrl}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className="px-3 py-1.5 rounded-lg bg-white/10 text-white hover:bg-white/20 transition-colors flex items-center gap-1.5 text-sm"
+                                  className="px-3 py-1.5 rounded-lg bg-[#f7f3f2] text-[#2b241d] hover:bg-[#f0ebe6] transition-colors flex items-center gap-1.5 text-sm"
                                 >
                                   <Eye size={14} />
                                   פתח PDF
@@ -2744,7 +2744,7 @@ Please analyze this error and provide a fix.
                                 </a>
                               </div>
                             ) : (
-                              <div className="relative rounded-lg overflow-hidden bg-black/30">
+                              <div className="relative rounded-lg overflow-hidden bg-[#f7f3f2]">
                                 <img
                                   src={selectedInvoice.paymentProofUrl}
                                   alt="אישור העברה"
@@ -2767,7 +2767,7 @@ Please analyze this error and provide a fix.
                   </div>
                 ) : (
                   <div className="text-center py-12">
-                    <Receipt className="w-16 h-16 mx-auto text-white/20 mb-4" />
+                    <Receipt className="w-16 h-16 mx-auto text-[#a89b8a]/30 mb-4" />
                     <p className="text-[#a89b8a]">בחר חשבונית מהרשימה לצפייה בפרטים</p>
                   </div>
                 )}
@@ -2810,7 +2810,7 @@ Please analyze this error and provide a fix.
 
               {deletedInvoices.length === 0 ? (
                 <div className="text-center py-16">
-                  <Trash className="w-20 h-20 mx-auto text-white/20 mb-4" />
+                  <Trash className="w-20 h-20 mx-auto text-[#a89b8a]/30 mb-4" />
                   <p className="text-[#2b241d] text-xl font-medium">סל המחזור ריק</p>
                 </div>
               ) : (
@@ -2833,17 +2833,17 @@ Please analyze this error and provide a fix.
                             <p className="text-[#8b7c69] text-sm">{invoice.architect.user.name}</p>
                             <p className="text-[#a89b8a] text-xs">
                               נמחק: {deletedDate.toLocaleDateString('he-IL')} •
-                              <span className={daysUntilPermanentDelete <= 7 ? 'text-red-400' : 'text-white/50'}>
+                              <span className={daysUntilPermanentDelete <= 7 ? 'text-red-400' : 'text-[#a89b8a]'}>
                                 {' '}{daysUntilPermanentDelete} ימים למחיקה לצמיתות
                               </span>
                             </p>
                           </div>
                         </div>
-                        <div className="flex items-center gap-2">
+                        <div className="flex flex-col gap-2 min-w-[120px]">
                           <button
                             onClick={() => handleRestoreInvoice(invoice.id)}
                             disabled={restoringInvoice === invoice.id}
-                            className="px-3 py-1.5 bg-green-500/20 border border-green-500/30 text-green-400 rounded-lg hover:bg-green-500/30 transition-colors flex items-center gap-2 disabled:opacity-50"
+                            className="w-full px-3 py-2 bg-green-50 border border-green-200 text-green-600 rounded-lg hover:bg-green-100 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 text-sm font-medium"
                           >
                             {restoringInvoice === invoice.id ? (
                               <Loader2 size={16} className="animate-spin" />
@@ -2855,7 +2855,7 @@ Please analyze this error and provide a fix.
                           <button
                             onClick={() => handlePermanentDelete(invoice.id)}
                             disabled={deletingInvoice === invoice.id}
-                            className="px-3 py-1.5 bg-red-500/20 border border-red-500/30 text-red-400 rounded-lg hover:bg-red-500/30 transition-colors flex items-center gap-2 disabled:opacity-50"
+                            className="w-full px-3 py-2 bg-red-50 border border-red-200 text-red-500 rounded-lg hover:bg-red-100 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 text-sm font-medium"
                           >
                             {deletingInvoice === invoice.id ? (
                               <Loader2 size={16} className="animate-spin" />
@@ -2883,7 +2883,7 @@ Please analyze this error and provide a fix.
 
                 {deletedUsers.length === 0 ? (
                   <div className="text-center py-8">
-                    <Users className="w-12 h-12 mx-auto text-white/20 mb-2" />
+                    <Users className="w-12 h-12 mx-auto text-[#a89b8a]/30 mb-2" />
                     <p className="text-[#a89b8a] text-sm">אין משתמשים מחוקים</p>
                   </div>
                 ) : (
@@ -2990,10 +2990,10 @@ Please analyze this error and provide a fix.
                   <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-xl p-4">
                     <div className="text-center">
                       <p className="text-[#a89b8a] text-sm">בדיקות</p>
-                      <p className="text-3xl font-bold text-white">{latestScan.checksRun}</p>
+                      <p className="text-3xl font-bold text-[#2b241d]">{latestScan.checksRun}</p>
                     </div>
                   </div>
-                  <div className="bg-green-500/10 backdrop-blur border border-green-500/30 rounded-xl p-4">
+                  <div className="bg-green-50 backdrop-blur border border-green-500/30 rounded-xl p-4">
                     <div className="text-center">
                       <p className="text-green-400/70 text-sm">עברו</p>
                       <p className="text-3xl font-bold text-green-400">{latestScan.checksPassed}</p>
@@ -3053,7 +3053,7 @@ Please analyze this error and provide a fix.
             ) : (
               <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
                 <div className="text-center py-16">
-                  <Search className="w-16 h-16 mx-auto text-white/20 mb-4" />
+                  <Search className="w-16 h-16 mx-auto text-[#a89b8a]/30 mb-4" />
                   <p className="text-[#8b7c69]">אין דוחות סריקה</p>
                   <p className="text-[#a89b8a] text-sm mt-2">לחץ על "הפעל סריקה" להפעלת סריקת מערכת</p>
                 </div>
@@ -3080,7 +3080,7 @@ Please analyze this error and provide a fix.
                 ].map((stat, i) => (
                   <div key={i} className="bg-white border border-[rgba(201,155,74,0.08)] rounded-xl p-4">
                     <div className="flex items-center gap-3">
-                      <div className={`p-2 rounded-lg bg-white/10`}>
+                      <div className={`p-2 rounded-lg bg-[#f7f3f2]`}>
                         <stat.icon size={20} className={stat.color} />
                       </div>
                       <div>
@@ -3098,7 +3098,7 @@ Please analyze this error and provide a fix.
               <button
                 type="button"
                 onClick={() => setShowFilters(!showFilters)}
-                className="flex items-center justify-between w-full text-white"
+                className="flex items-center justify-between w-full text-[#2b241d]"
               >
                 <div className="flex items-center gap-2">
                   <Filter size={18} className="text-[#c99b4a]" />
@@ -3214,7 +3214,7 @@ Please analyze this error and provide a fix.
                                 <span className={`text-xs px-2 py-0.5 rounded ${severity.bg} ${severity.color}`}>
                                   {severity.label}
                                 </span>
-                                <span className="text-xs text-white/50 flex items-center gap-1">
+                                <span className="text-xs text-[#a89b8a] flex items-center gap-1">
                                   <CategoryIcon size={12} />
                                   {category.label}
                                 </span>
@@ -3277,13 +3277,13 @@ Please analyze this error and provide a fix.
 
                     <div>
                       <label className="text-[#8b7c69] text-sm">הודעה</label>
-                      <p className="text-white mt-1">{selectedLog.message}</p>
+                      <p className="text-[#2b241d] mt-1">{selectedLog.message}</p>
                     </div>
 
                     {selectedLog.details && (
                       <div>
                         <label className="text-[#8b7c69] text-sm">פרטים נוספים</label>
-                        <pre className="mt-1 p-3 bg-black/30 rounded-lg text-[#8b7c69] text-sm overflow-x-auto">
+                        <pre className="mt-1 p-3 bg-[#f7f3f2] rounded-lg text-[#8b7c69] text-sm overflow-x-auto">
                           {selectedLog.details}
                         </pre>
                       </div>
@@ -3292,7 +3292,7 @@ Please analyze this error and provide a fix.
                     {selectedLog.stackTrace && (
                       <div>
                         <label className="text-[#8b7c69] text-sm">Stack Trace</label>
-                        <pre className="mt-1 p-3 bg-black/30 rounded-lg text-red-400/80 text-xs overflow-x-auto max-h-48">
+                        <pre className="mt-1 p-3 bg-[#f7f3f2] rounded-lg text-red-400/80 text-xs overflow-x-auto max-h-48">
                           {selectedLog.stackTrace}
                         </pre>
                       </div>
@@ -3301,23 +3301,23 @@ Please analyze this error and provide a fix.
                     <div className="grid grid-cols-2 gap-4 pt-4 border-t border-[rgba(201,155,74,0.08)]">
                       <div>
                         <label className="text-[#8b7c69] text-sm">Endpoint</label>
-                        <p className="text-white font-mono text-sm">{selectedLog.endpoint || 'N/A'}</p>
+                        <p className="text-[#2b241d] font-mono text-sm">{selectedLog.endpoint || 'N/A'}</p>
                       </div>
                       <div>
                         <label className="text-[#8b7c69] text-sm">Response Time</label>
-                        <p className="text-white font-mono text-sm">
+                        <p className="text-[#2b241d] font-mono text-sm">
                           {selectedLog.responseTime ? `${selectedLog.responseTime}ms` : 'N/A'}
                         </p>
                       </div>
                       <div>
                         <label className="text-[#8b7c69] text-sm">תאריך יצירה</label>
-                        <p className="text-white text-sm">
+                        <p className="text-[#2b241d] text-sm">
                           {new Date(selectedLog.createdAt).toLocaleString('he-IL')}
                         </p>
                       </div>
                       <div>
                         <label className="text-[#8b7c69] text-sm">ID</label>
-                        <p className="text-white font-mono text-xs">{selectedLog.id}</p>
+                        <p className="text-[#2b241d] font-mono text-xs">{selectedLog.id}</p>
                       </div>
                     </div>
 
@@ -3331,7 +3331,7 @@ Please analyze this error and provide a fix.
                   </div>
                 ) : (
                   <div className="text-center py-12">
-                    <AlertCircle className="w-16 h-16 mx-auto text-white/20 mb-4" />
+                    <AlertCircle className="w-16 h-16 mx-auto text-[#a89b8a]/30 mb-4" />
                     <p className="text-[#a89b8a]">בחר לוג מהרשימה לצפייה בפרטים</p>
                   </div>
                 )}
