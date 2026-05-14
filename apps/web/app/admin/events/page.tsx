@@ -133,9 +133,9 @@ export default function ManageEventsPage() {
           title: 'האירוע עודכן בהצלחה!',
           icon: 'success',
           confirmButtonText: 'אישור',
-          background: '#0a1f18',
-          color: '#ffffff',
-          confirmButtonColor: '#10b981',
+          background: '#f7f3f2',
+          color: '#2b241d',
+          confirmButtonColor: '#c99b4a',
         });
       } else {
         await createEvent.mutateAsync(eventData);
@@ -143,9 +143,9 @@ export default function ManageEventsPage() {
           title: 'האירוע נוצר בהצלחה!',
           icon: 'success',
           confirmButtonText: 'אישור',
-          background: '#0a1f18',
-          color: '#ffffff',
-          confirmButtonColor: '#10b981',
+          background: '#f7f3f2',
+          color: '#2b241d',
+          confirmButtonColor: '#c99b4a',
         });
       }
       resetForm();
@@ -155,9 +155,9 @@ export default function ManageEventsPage() {
         text: 'אירעה שגיאה בשמירת האירוע',
         icon: 'error',
         confirmButtonText: 'אישור',
-        background: '#0a1f18',
-        color: '#ffffff',
-        confirmButtonColor: '#10b981',
+        background: '#f7f3f2',
+        color: '#2b241d',
+        confirmButtonColor: '#c99b4a',
       });
     } finally {
       setUploading(false);
@@ -176,9 +176,9 @@ export default function ManageEventsPage() {
         text: 'אירעה שגיאה בעדכון הנראות',
         icon: 'error',
         confirmButtonText: 'אישור',
-        background: '#0a1f18',
-        color: '#ffffff',
-        confirmButtonColor: '#10b981',
+        background: '#f7f3f2',
+        color: '#2b241d',
+        confirmButtonColor: '#c99b4a',
       });
     }
   };
@@ -192,8 +192,8 @@ export default function ManageEventsPage() {
       confirmButtonText: 'כן, מחק',
       cancelButtonText: 'ביטול',
       confirmButtonColor: '#dc2626',
-      background: '#0a1f18',
-      color: '#ffffff',
+      background: '#f7f3f2',
+      color: '#2b241d',
     });
 
     if (result.isConfirmed) {
@@ -204,9 +204,9 @@ export default function ManageEventsPage() {
           text: 'האירוע נמחק בהצלחה',
           icon: 'success',
           confirmButtonText: 'אישור',
-          background: '#0a1f18',
-          color: '#ffffff',
-          confirmButtonColor: '#10b981',
+          background: '#f7f3f2',
+          color: '#2b241d',
+          confirmButtonColor: '#c99b4a',
         });
       } catch (error) {
         Swal.fire({
@@ -214,9 +214,9 @@ export default function ManageEventsPage() {
           text: 'אירעה שגיאה במחיקת האירוע',
           icon: 'error',
           confirmButtonText: 'אישור',
-          background: '#0a1f18',
-          color: '#ffffff',
-          confirmButtonColor: '#10b981',
+          background: '#f7f3f2',
+          color: '#2b241d',
+          confirmButtonColor: '#c99b4a',
         });
       }
     }
@@ -231,22 +231,8 @@ export default function ManageEventsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0f2620] -mt-16">
-      {/* Hero Section */}
-      <div className="relative h-80 overflow-hidden">
-        <Image
-          src="https://images.unsplash.com/photo-1540575467063-178a50c2df87"
-          alt="Conference"
-          fill
-          className="object-cover"
-          priority
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0f2620]/60 via-[#0f2620]/70 to-[#0f2620]" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(16,185,129,0.15),transparent_60%)]" />
-        <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#0f2620] to-transparent" />
-      </div>
-
-      <div className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto -mt-40 relative z-10 pb-12">
+    <div className="min-h-screen pt-8 pb-24">
+      <div className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto relative z-10">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
@@ -255,22 +241,22 @@ export default function ManageEventsPage() {
         >
           <Link
             href="/admin"
-            className="inline-flex items-center gap-2 text-white/60 hover:text-white mb-4 transition-colors"
+            className="inline-flex items-center gap-2 text-[#8b7c69] hover:text-[#2b241d] mb-4 transition-colors"
           >
             <ArrowRight size={18} />
             חזרה לפאנל ניהול
           </Link>
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-display font-bold text-white flex items-center gap-3">
-                <Calendar className="text-emerald-400" />
+              <h1 className="text-3xl font-display font-bold text-[#2b241d] flex items-center gap-3">
+                <Calendar className="text-[#c99b4a]" />
                 ניהול אירועים
               </h1>
-              <p className="text-white/60 mt-1">יצירה וניהול אירועים לאדריכלים</p>
+              <p className="text-[#8b7c69] mt-1">יצירה וניהול אירועים לאדריכלים</p>
             </div>
             <button
               onClick={() => setShowForm(true)}
-              className="bg-emerald-500 text-white hover:bg-emerald-600 px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
+              className="bg-[#c99b4a] text-white hover:bg-[#9e7746] px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
             >
               <Plus size={18} />
               אירוע חדש
@@ -285,28 +271,28 @@ export default function ManageEventsPage() {
           transition={{ delay: 0.1 }}
           className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6"
         >
-          <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-3 sm:p-6">
+          <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-3 sm:p-6">
             <div className="text-center">
-              <p className="text-white/40 text-xs sm:text-sm">סה״כ אירועים</p>
-              <p className="text-2xl sm:text-3xl font-bold text-white">{events?.length || 0}</p>
+              <p className="text-[#a89b8a] text-xs sm:text-sm">סה״כ אירועים</p>
+              <p className="text-2xl sm:text-3xl font-bold text-[#2b241d]">{events?.length || 0}</p>
             </div>
           </div>
-          <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-3 sm:p-6 bg-green-500/10">
+          <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-3 sm:p-6 bg-green-50">
             <div className="text-center">
               <p className="text-green-400/70 text-xs sm:text-sm">אירועים קרובים</p>
               <p className="text-2xl sm:text-3xl font-bold text-green-400">{upcomingEvents.length}</p>
             </div>
           </div>
-          <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-3 sm:p-6 bg-blue-500/10">
+          <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-3 sm:p-6 bg-blue-50">
             <div className="text-center">
               <p className="text-blue-400/70 text-xs sm:text-sm">אירועים שעברו</p>
               <p className="text-2xl sm:text-3xl font-bold text-blue-400">{pastEvents.length}</p>
             </div>
           </div>
-          <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-3 sm:p-6 bg-emerald-500/10">
+          <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-3 sm:p-6 bg-[#c99b4a]/15">
             <div className="text-center">
-              <p className="text-emerald-400/70 text-xs sm:text-sm">סה״כ נרשמים</p>
-              <p className="text-2xl sm:text-3xl font-bold text-emerald-400">
+              <p className="text-[#c99b4a]/70 text-xs sm:text-sm">סה״כ נרשמים</p>
+              <p className="text-2xl sm:text-3xl font-bold text-[#c99b4a]">
                 {events?.reduce((sum: number, e: any) => sum + (e.registeredCount || 0), 0) || 0}
               </p>
             </div>
@@ -319,24 +305,24 @@ export default function ManageEventsPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
         >
-          <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6">
-            <h2 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
-              <Calendar className="text-emerald-400" size={20} />
+          <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
+            <h2 className="text-xl font-semibold text-[#2b241d] mb-4 flex items-center gap-2">
+              <Calendar className="text-[#c99b4a]" size={20} />
               רשימת אירועים
             </h2>
 
             {isLoading ? (
               <div className="text-center py-12">
-                <Loader2 className="w-10 h-10 mx-auto text-emerald-400 animate-spin" />
-                <p className="text-white/60 mt-4">טוען אירועים...</p>
+                <Loader2 className="w-10 h-10 mx-auto text-[#c99b4a] animate-spin" />
+                <p className="text-[#8b7c69] mt-4">טוען אירועים...</p>
               </div>
             ) : !events || events.length === 0 ? (
               <div className="text-center py-12">
-                <Calendar className="w-16 h-16 mx-auto text-white/20 mb-4" />
-                <p className="text-white/60">אין אירועים במערכת</p>
+                <Calendar className="w-16 h-16 mx-auto text-[#a89b8a]/40 mb-4" />
+                <p className="text-[#8b7c69]">אין אירועים במערכת</p>
                 <button
                   onClick={() => setShowForm(true)}
-                  className="bg-emerald-500 text-white hover:bg-emerald-600 px-4 py-2 rounded-lg mt-4 flex items-center gap-2 mx-auto transition-colors"
+                  className="bg-[#c99b4a] text-white hover:bg-[#9e7746] px-4 py-2 rounded-lg mt-4 flex items-center gap-2 mx-auto transition-colors"
                 >
                   <Plus size={18} />
                   צור אירוע ראשון
@@ -354,7 +340,7 @@ export default function ManageEventsPage() {
                         event.isHidden
                           ? 'border-red-500/30 bg-red-500/5'
                           : isPast
-                          ? 'border-white/10 bg-white/5 opacity-60'
+                          ? 'border-[rgba(201,155,74,0.08)] bg-[#f7f3f2] opacity-60'
                           : 'border-green-500/30 bg-green-500/5'
                       }`}
                     >
@@ -367,30 +353,30 @@ export default function ManageEventsPage() {
                             className="w-12 h-12 sm:w-16 sm:h-16 rounded-lg object-cover shrink-0"
                           />
                         ) : (
-                          <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-lg bg-white/10 flex items-center justify-center shrink-0">
-                            <Calendar size={20} className="text-white/40" />
+                          <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-lg bg-[#f7f3f2] flex items-center justify-center shrink-0">
+                            <Calendar size={20} className="text-[#a89b8a]" />
                           </div>
                         )}
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 flex-wrap">
-                            <p className="text-white font-bold text-sm sm:text-base truncate">{event.title}</p>
+                            <p className="text-[#2b241d] font-bold text-sm sm:text-base truncate">{event.title}</p>
                             {event.isHidden && (
                               <span className="px-2 py-0.5 rounded-full text-xs bg-red-500/20 text-red-400 shrink-0">
                                 מוסתר
                               </span>
                             )}
                             {isPast && (
-                              <span className="px-2 py-0.5 rounded-full text-xs bg-white/10 text-white/40 shrink-0">
+                              <span className="px-2 py-0.5 rounded-full text-xs bg-[#f7f3f2] text-[#a89b8a] shrink-0">
                                 עבר
                               </span>
                             )}
                           </div>
-                          <p className="text-white/40 text-sm line-clamp-1">{event.description}</p>
+                          <p className="text-[#a89b8a] text-sm line-clamp-1">{event.description}</p>
                         </div>
                         <div className="flex items-center gap-1 shrink-0">
                           <button
                             onClick={() => handleToggleVisibility(event)}
-                            className={`p-1.5 sm:p-2 rounded-lg hover:bg-white/10 transition-colors ${
+                            className={`p-1.5 sm:p-2 rounded-lg hover:bg-[#f0ebe6] transition-colors ${
                               event.isHidden ? 'text-red-400' : 'text-green-400'
                             }`}
                             title={event.isHidden ? 'הצג אירוע' : 'הסתר אירוע'}
@@ -399,7 +385,7 @@ export default function ManageEventsPage() {
                           </button>
                           <button
                             onClick={() => handleEdit(event)}
-                            className="p-1.5 sm:p-2 rounded-lg hover:bg-white/10 text-white/60 hover:text-white transition-colors"
+                            className="p-1.5 sm:p-2 rounded-lg hover:bg-[#f0ebe6] text-[#8b7c69] hover:text-[#2b241d] transition-colors"
                             title="ערוך"
                           >
                             <Edit2 size={16} />
@@ -414,7 +400,7 @@ export default function ManageEventsPage() {
                         </div>
                       </div>
                       {/* Metadata row */}
-                      <div className="flex items-center gap-3 sm:gap-4 mt-2 text-white/40 text-xs sm:text-sm flex-wrap">
+                      <div className="flex items-center gap-3 sm:gap-4 mt-2 text-[#a89b8a] text-xs sm:text-sm flex-wrap">
                         <span className="flex items-center gap-1">
                           <Calendar size={12} className="shrink-0" />
                           {new Date(event.date).toLocaleDateString('he-IL')}
@@ -428,7 +414,7 @@ export default function ManageEventsPage() {
                           {event.registeredCount}/{event.capacity}
                         </span>
                         {event.pointsCost > 0 && (
-                          <span className="flex items-center gap-1 text-emerald-400">
+                          <span className="flex items-center gap-1 text-[#c99b4a]">
                             <Coins size={12} className="shrink-0" />
                             {event.pointsCost} נקודות
                           </span>
@@ -450,14 +436,14 @@ export default function ManageEventsPage() {
               animate={{ opacity: 1, scale: 1 }}
               className="w-full max-w-lg max-h-[90vh] overflow-y-auto"
             >
-              <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6">
+              <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
                 <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-xl font-semibold text-white">
+                  <h2 className="text-xl font-semibold text-[#2b241d]">
                     {editingEvent ? 'עריכת אירוע' : 'יצירת אירוע חדש'}
                   </h2>
                   <button
                     onClick={resetForm}
-                    className="text-white/60 hover:text-white"
+                    className="text-[#8b7c69] hover:text-[#2b241d]"
                   >
                     <X size={24} />
                   </button>
@@ -465,48 +451,48 @@ export default function ManageEventsPage() {
 
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div>
-                    <label className="text-white/60 text-sm mb-2 block">כותרת</label>
+                    <label className="text-[#8b7c69] text-sm mb-2 block">כותרת</label>
                     <input
                       type="text"
                       value={formData.title}
                       onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                       required
-                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-white/40"
+                      className="w-full bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-xl px-4 py-3 text-[#2b241d] placeholder:text-[#a89b8a]"
                       placeholder="שם האירוע"
                     />
                   </div>
 
                   <div>
-                    <label className="text-white/60 text-sm mb-2 block">תיאור</label>
+                    <label className="text-[#8b7c69] text-sm mb-2 block">תיאור</label>
                     <textarea
                       value={formData.description}
                       onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                       required
                       rows={3}
-                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-white/40 resize-none"
+                      className="w-full bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-xl px-4 py-3 text-[#2b241d] placeholder:text-[#a89b8a] resize-none"
                       placeholder="תיאור האירוע"
                     />
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="text-white/60 text-sm mb-2 block">תאריך</label>
+                      <label className="text-[#8b7c69] text-sm mb-2 block">תאריך</label>
                       <input
                         type="date"
                         value={formData.date}
                         onChange={(e) => setFormData({ ...formData, date: e.target.value })}
                         required
-                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white"
+                        className="w-full bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-xl px-4 py-3 text-[#2b241d]"
                       />
                     </div>
                     <div>
-                      <label className="text-white/60 text-sm mb-2 block">מיקום</label>
+                      <label className="text-[#8b7c69] text-sm mb-2 block">מיקום</label>
                       <input
                         type="text"
                         value={formData.location}
                         onChange={(e) => setFormData({ ...formData, location: e.target.value })}
                         required
-                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-white/40"
+                        className="w-full bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-xl px-4 py-3 text-[#2b241d] placeholder:text-[#a89b8a]"
                         placeholder="כתובת האירוע"
                       />
                     </div>
@@ -514,30 +500,30 @@ export default function ManageEventsPage() {
 
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="text-white/60 text-sm mb-2 block">קיבולת</label>
+                      <label className="text-[#8b7c69] text-sm mb-2 block">קיבולת</label>
                       <input
                         type="number"
                         min="1"
                         value={formData.capacity}
                         onChange={(e) => setFormData({ ...formData, capacity: parseInt(e.target.value) })}
                         required
-                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white"
+                        className="w-full bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-xl px-4 py-3 text-[#2b241d]"
                       />
                     </div>
                     <div>
-                      <label className="text-white/60 text-sm mb-2 block">עלות בנקודות</label>
+                      <label className="text-[#8b7c69] text-sm mb-2 block">עלות בנקודות</label>
                       <input
                         type="number"
                         min="0"
                         value={formData.pointsCost}
                         onChange={(e) => setFormData({ ...formData, pointsCost: parseInt(e.target.value) })}
-                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white"
+                        className="w-full bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-xl px-4 py-3 text-[#2b241d]"
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className="text-white/60 text-sm mb-2 block">תמונת אירוע (אופציונלי)</label>
+                    <label className="text-[#8b7c69] text-sm mb-2 block">תמונת אירוע (אופציונלי)</label>
                     {imagePreview ? (
                       <div className="relative">
                         <img
@@ -554,10 +540,10 @@ export default function ManageEventsPage() {
                         </button>
                       </div>
                     ) : (
-                      <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-white/20 rounded-lg cursor-pointer hover:border-emerald-400 transition-colors">
-                        <Upload size={32} className="text-white/40 mb-2" />
-                        <span className="text-white/60 text-sm">לחץ להעלאת תמונה</span>
-                        <span className="text-white/40 text-xs mt-1">JPG, PNG, GIF, WebP עד 5MB</span>
+                      <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-[rgba(201,155,74,0.2)] rounded-lg cursor-pointer hover:border-[#c99b4a] transition-colors">
+                        <Upload size={32} className="text-[#a89b8a] mb-2" />
+                        <span className="text-[#8b7c69] text-sm">לחץ להעלאת תמונה</span>
+                        <span className="text-[#a89b8a] text-xs mt-1">JPG, PNG, GIF, WebP עד 5MB</span>
                         <input
                           type="file"
                           accept="image/jpeg,image/png,image/gif,image/webp"
@@ -572,14 +558,14 @@ export default function ManageEventsPage() {
                     <button
                       type="button"
                       onClick={resetForm}
-                      className="flex-1 bg-white/10 border border-white/10 text-white py-3 rounded-xl hover:bg-white/20 transition-colors"
+                      className="flex-1 bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] text-[#2b241d] py-3 rounded-xl hover:bg-[#f0ebe6] transition-colors"
                     >
                       ביטול
                     </button>
                     <button
                       type="submit"
                       disabled={createEvent.isPending || updateEvent.isPending || uploading}
-                      className="flex-1 bg-emerald-500 text-white hover:bg-emerald-600 py-3 rounded-xl flex items-center justify-center gap-2 transition-colors"
+                      className="flex-1 bg-[#c99b4a] text-white hover:bg-[#9e7746] py-3 rounded-xl flex items-center justify-center gap-2 transition-colors"
                     >
                       {(createEvent.isPending || updateEvent.isPending || uploading) ? (
                         <>

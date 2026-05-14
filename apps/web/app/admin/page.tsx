@@ -321,9 +321,9 @@ export default function AdminPage() {
       showCancelButton: true,
       confirmButtonText: 'שחזר',
       cancelButtonText: 'ביטול',
-      confirmButtonColor: '#10B981',
-      background: '#1a2e2a',
-      color: '#fff',
+      confirmButtonColor: '#c99b4a',
+      background: '#f7f3f2',
+      color: '#2b241d',
     });
     if (!result.isConfirmed) return;
     setRestoringUser(userId);
@@ -331,9 +331,9 @@ export default function AdminPage() {
       await adminApi.restoreUser(userId);
       await fetchDeletedUsers();
       await fetchAllUsers();
-      Swal.fire({ title: 'שוחזר!', text: `${userName} שוחזר בהצלחה`, icon: 'success', timer: 2000, showConfirmButton: false, background: '#1a2e2a', color: '#fff' });
+      Swal.fire({ title: 'שוחזר!', text: `${userName} שוחזר בהצלחה`, icon: 'success', timer: 2000, showConfirmButton: false, background: '#f7f3f2', color: '#2b241d' });
     } catch (error: any) {
-      Swal.fire({ title: 'שגיאה', text: error.message, icon: 'error', background: '#1a2e2a', color: '#fff' });
+      Swal.fire({ title: 'שגיאה', text: error.message, icon: 'error', background: '#f7f3f2', color: '#2b241d' });
     } finally {
       setRestoringUser(null);
     }
@@ -522,8 +522,8 @@ export default function AdminPage() {
       confirmButtonText: 'כן, מחק',
       cancelButtonText: 'ביטול',
       confirmButtonColor: '#dc2626',
-      background: '#0f2620',
-      color: '#fff',
+      background: '#f7f3f2',
+      color: '#2b241d',
     });
     if (!result.isConfirmed) return;
 
@@ -537,8 +537,8 @@ export default function AdminPage() {
         text: 'החשבונית הועברה לסל המחזור',
         icon: 'success',
         confirmButtonText: 'אישור',
-        background: '#0f2620',
-        color: '#fff',
+        background: '#f7f3f2',
+        color: '#2b241d',
       });
     } catch (error) {
       console.error('Error deleting invoice:', error);
@@ -547,8 +547,8 @@ export default function AdminPage() {
         text: 'שגיאה במחיקת החשבונית',
         icon: 'error',
         confirmButtonText: 'אישור',
-        background: '#0f2620',
-        color: '#fff',
+        background: '#f7f3f2',
+        color: '#2b241d',
       });
     } finally {
       setDeletingInvoice(null);
@@ -564,8 +564,8 @@ export default function AdminPage() {
       confirmButtonText: 'כן, מחק הכל',
       cancelButtonText: 'ביטול',
       confirmButtonColor: '#dc2626',
-      background: '#0f2620',
-      color: '#fff',
+      background: '#f7f3f2',
+      color: '#2b241d',
     });
     if (!result.isConfirmed) return;
 
@@ -579,8 +579,8 @@ export default function AdminPage() {
         text: `${count} חשבוניות הועברו לסל המחזור`,
         icon: 'success',
         confirmButtonText: 'אישור',
-        background: '#0f2620',
-        color: '#fff',
+        background: '#f7f3f2',
+        color: '#2b241d',
       });
     } catch (error) {
       console.error('Error bulk deleting invoices:', error);
@@ -589,8 +589,8 @@ export default function AdminPage() {
         text: 'שגיאה במחיקת החשבוניות',
         icon: 'error',
         confirmButtonText: 'אישור',
-        background: '#0f2620',
-        color: '#fff',
+        background: '#f7f3f2',
+        color: '#2b241d',
       });
     } finally {
       setRefreshing(false);
@@ -607,8 +607,8 @@ export default function AdminPage() {
         text: 'החשבונית שוחזרה בהצלחה',
         icon: 'success',
         confirmButtonText: 'אישור',
-        background: '#0f2620',
-        color: '#fff',
+        background: '#f7f3f2',
+        color: '#2b241d',
       });
     } catch (error) {
       console.error('Error restoring invoice:', error);
@@ -617,8 +617,8 @@ export default function AdminPage() {
         text: 'שגיאה בשחזור החשבונית',
         icon: 'error',
         confirmButtonText: 'אישור',
-        background: '#0f2620',
-        color: '#fff',
+        background: '#f7f3f2',
+        color: '#2b241d',
       });
     } finally {
       setRestoringInvoice(null);
@@ -634,8 +634,8 @@ export default function AdminPage() {
       confirmButtonText: 'כן, מחק לצמיתות',
       cancelButtonText: 'ביטול',
       confirmButtonColor: '#dc2626',
-      background: '#0f2620',
-      color: '#fff',
+      background: '#f7f3f2',
+      color: '#2b241d',
     });
     if (!result.isConfirmed) return;
 
@@ -648,8 +648,8 @@ export default function AdminPage() {
         text: 'החשבונית נמחקה לצמיתות',
         icon: 'success',
         confirmButtonText: 'אישור',
-        background: '#0f2620',
-        color: '#fff',
+        background: '#f7f3f2',
+        color: '#2b241d',
       });
     } catch (error) {
       console.error('Error permanently deleting invoice:', error);
@@ -658,8 +658,8 @@ export default function AdminPage() {
         text: 'שגיאה במחיקת החשבונית',
         icon: 'error',
         confirmButtonText: 'אישור',
-        background: '#0f2620',
-        color: '#fff',
+        background: '#f7f3f2',
+        color: '#2b241d',
       });
     } finally {
       setDeletingInvoice(null);
@@ -675,8 +675,8 @@ export default function AdminPage() {
       confirmButtonText: 'כן, נקה',
       cancelButtonText: 'ביטול',
       confirmButtonColor: '#dc2626',
-      background: '#0f2620',
-      color: '#fff',
+      background: '#f7f3f2',
+      color: '#2b241d',
     });
     if (!result.isConfirmed) return;
 
@@ -689,8 +689,8 @@ export default function AdminPage() {
         text: `${response.deletedCount} חשבוניות נמחקו לצמיתות`,
         icon: 'success',
         confirmButtonText: 'אישור',
-        background: '#0f2620',
-        color: '#fff',
+        background: '#f7f3f2',
+        color: '#2b241d',
       });
     } catch (error) {
       console.error('Error cleaning up recycle bin:', error);
@@ -699,8 +699,8 @@ export default function AdminPage() {
         text: 'שגיאה בניקוי סל המחזור',
         icon: 'error',
         confirmButtonText: 'אישור',
-        background: '#0f2620',
-        color: '#fff',
+        background: '#f7f3f2',
+        color: '#2b241d',
       });
     } finally {
       setRefreshing(false);
@@ -747,8 +747,8 @@ export default function AdminPage() {
         text: 'שגיאה בכניסה לחשבון',
         icon: 'error',
         confirmButtonText: 'אישור',
-        background: '#0f2620',
-        color: '#fff',
+        background: '#f7f3f2',
+        color: '#2b241d',
       });
     } finally {
       setLoggingInAs(null);
@@ -764,8 +764,8 @@ export default function AdminPage() {
       confirmButtonText: 'כן, מחק',
       cancelButtonText: 'ביטול',
       confirmButtonColor: '#dc2626',
-      background: '#0f2620',
-      color: '#fff',
+      background: '#f7f3f2',
+      color: '#2b241d',
     });
     if (!result.isConfirmed) {
       return;
@@ -779,8 +779,8 @@ export default function AdminPage() {
         text: 'המשתמש נמחק בהצלחה',
         icon: 'success',
         confirmButtonText: 'אישור',
-        background: '#0f2620',
-        color: '#fff',
+        background: '#f7f3f2',
+        color: '#2b241d',
       });
     } catch (error) {
       console.error('Error deleting user:', error);
@@ -789,8 +789,8 @@ export default function AdminPage() {
         text: 'שגיאה במחיקת המשתמש',
         icon: 'error',
         confirmButtonText: 'אישור',
-        background: '#0f2620',
-        color: '#fff',
+        background: '#f7f3f2',
+        color: '#2b241d',
       });
     } finally {
       setDeletingUser(null);
@@ -806,9 +806,9 @@ export default function AdminPage() {
       showCancelButton: true,
       confirmButtonText: 'אפס סיסמה',
       cancelButtonText: 'ביטול',
-      confirmButtonColor: '#0d7a5f',
-      background: '#0f2620',
-      color: '#fff',
+      confirmButtonColor: '#c99b4a',
+      background: '#f7f3f2',
+      color: '#2b241d',
       inputValidator: (value) => {
         if (!value || value.length < 6) {
           return 'הסיסמה חייבת להכיל לפחות 6 תווים';
@@ -839,16 +839,16 @@ export default function AdminPage() {
         text: `הסיסמה של ${userName} שונתה בהצלחה`,
         icon: 'success',
         confirmButtonText: 'אישור',
-        background: '#0f2620',
-        color: '#fff',
+        background: '#f7f3f2',
+        color: '#2b241d',
       });
     } catch (error: any) {
       Swal.fire({
         title: 'שגיאה',
         text: error.message || 'שגיאה באיפוס הסיסמה',
         icon: 'error',
-        background: '#0f2620',
-        color: '#fff',
+        background: '#f7f3f2',
+        color: '#2b241d',
       });
     }
   };
@@ -862,8 +862,8 @@ export default function AdminPage() {
       confirmButtonText: 'כן, נתק',
       cancelButtonText: 'ביטול',
       confirmButtonColor: '#f59e0b',
-      background: '#0f2620',
-      color: '#fff',
+      background: '#f7f3f2',
+      color: '#2b241d',
     });
     if (!result.isConfirmed) return;
 
@@ -877,8 +877,8 @@ export default function AdminPage() {
         icon: 'success',
         timer: 1500,
         showConfirmButton: false,
-        background: '#0f2620',
-        color: '#fff',
+        background: '#f7f3f2',
+        color: '#2b241d',
       });
     } catch (error) {
       console.error('Error deactivating user:', error);
@@ -886,8 +886,8 @@ export default function AdminPage() {
         title: 'שגיאה',
         text: 'לא ניתן לנתק את המשתמש',
         icon: 'error',
-        background: '#0f2620',
-        color: '#fff',
+        background: '#f7f3f2',
+        color: '#2b241d',
       });
     } finally {
       setDeactivatingUser(null);
@@ -946,8 +946,8 @@ export default function AdminPage() {
         icon: 'success',
         timer: 1500,
         showConfirmButton: false,
-        background: '#0f2620',
-        color: '#fff',
+        background: '#f7f3f2',
+        color: '#2b241d',
       });
     } catch (error) {
       console.error('Error saving user:', error);
@@ -955,8 +955,8 @@ export default function AdminPage() {
         title: 'שגיאה',
         text: 'לא ניתן לשמור את הפרטים',
         icon: 'error',
-        background: '#0f2620',
-        color: '#fff',
+        background: '#f7f3f2',
+        color: '#2b241d',
       });
     } finally {
       setSavingUser(false);
@@ -972,8 +972,8 @@ export default function AdminPage() {
       confirmButtonText: 'מחק',
       cancelButtonText: 'ביטול',
       confirmButtonColor: '#ef4444',
-      background: '#0f2620',
-      color: '#fff',
+      background: '#f7f3f2',
+      color: '#2b241d',
     });
     if (!result.isConfirmed) return;
 
@@ -993,10 +993,10 @@ export default function AdminPage() {
       });
 
       await fetchAllUsers();
-      Swal.fire({ title: 'נמחק!', icon: 'success', timer: 1500, showConfirmButton: false, background: '#0f2620', color: '#fff' });
+      Swal.fire({ title: 'נמחק!', icon: 'success', timer: 1500, showConfirmButton: false, background: '#f7f3f2', color: '#2b241d' });
     } catch (err) {
       console.error('Error deleting image:', err);
-      Swal.fire({ title: 'שגיאה', text: 'לא ניתן למחוק את התמונה', icon: 'error', background: '#0f2620', color: '#fff' });
+      Swal.fire({ title: 'שגיאה', text: 'לא ניתן למחוק את התמונה', icon: 'error', background: '#f7f3f2', color: '#2b241d' });
     }
   };
 
@@ -1027,9 +1027,9 @@ export default function AdminPage() {
       showCancelButton: true,
       confirmButtonText: 'הבא &larr;',
       cancelButtonText: 'ביטול',
-      confirmButtonColor: '#10B981',
-      background: '#1a2e2a',
-      color: '#fff',
+      confirmButtonColor: '#c99b4a',
+      background: '#f7f3f2',
+      color: '#2b241d',
       preConfirm: () => {
         const email = (document.getElementById('swal-email') as HTMLInputElement)?.value?.trim();
         const password = (document.getElementById('swal-password') as HTMLInputElement)?.value;
@@ -1075,9 +1075,9 @@ export default function AdminPage() {
       showCancelButton: true,
       confirmButtonText: 'הבא &larr;',
       cancelButtonText: '&rarr; חזרה',
-      confirmButtonColor: '#10B981',
-      background: '#1a2e2a',
-      color: '#fff',
+      confirmButtonColor: '#c99b4a',
+      background: '#f7f3f2',
+      color: '#2b241d',
       preConfirm: () => {
         const companyName = (document.getElementById('swal-companyName') as HTMLInputElement)?.value?.trim();
         const description = (document.getElementById('swal-description') as HTMLTextAreaElement)?.value?.trim();
@@ -1119,9 +1119,9 @@ export default function AdminPage() {
       showCancelButton: true,
       confirmButtonText: 'צור ספק',
       cancelButtonText: '&rarr; חזרה',
-      confirmButtonColor: '#10B981',
-      background: '#1a2e2a',
-      color: '#fff',
+      confirmButtonColor: '#c99b4a',
+      background: '#f7f3f2',
+      color: '#2b241d',
       preConfirm: () => {
         const facebook = (document.getElementById('swal-facebook') as HTMLInputElement)?.value?.trim();
         const instagram = (document.getElementById('swal-instagram') as HTMLInputElement)?.value?.trim();
@@ -1139,8 +1139,8 @@ export default function AdminPage() {
         title: 'יוצר ספק...',
         allowOutsideClick: false,
         didOpen: () => Swal.showLoading(),
-        background: '#1a2e2a',
-        color: '#fff',
+        background: '#f7f3f2',
+        color: '#2b241d',
       });
 
       await adminApi.createSupplier({
@@ -1167,9 +1167,9 @@ export default function AdminPage() {
         text: `${step2.value.companyName} נוסף למערכת`,
         icon: 'success',
         confirmButtonText: 'אישור',
-        confirmButtonColor: '#10B981',
-        background: '#1a2e2a',
-        color: '#fff',
+        confirmButtonColor: '#c99b4a',
+        background: '#f7f3f2',
+        color: '#2b241d',
       });
     } catch (error: any) {
       console.error('Error creating supplier:', error);
@@ -1178,8 +1178,8 @@ export default function AdminPage() {
         text: error.message || 'שגיאה ביצירת הספק. נסה שוב.',
         icon: 'error',
         confirmButtonText: 'אישור',
-        background: '#1a2e2a',
-        color: '#fff',
+        background: '#f7f3f2',
+        color: '#2b241d',
       });
     }
   };
@@ -1195,8 +1195,8 @@ export default function AdminPage() {
         text: status === 'APPROVED' ? 'החשבונית אושרה בהצלחה' : 'החשבונית נדחתה',
         icon: status === 'APPROVED' ? 'success' : 'info',
         confirmButtonText: 'אישור',
-        background: '#0f2620',
-        color: '#fff',
+        background: '#f7f3f2',
+        color: '#2b241d',
       });
     } catch (error) {
       console.error('Error verifying invoice:', error);
@@ -1205,8 +1205,8 @@ export default function AdminPage() {
         text: 'שגיאה בעדכון החשבונית',
         icon: 'error',
         confirmButtonText: 'אישור',
-        background: '#0f2620',
-        color: '#fff',
+        background: '#f7f3f2',
+        color: '#2b241d',
       });
     } finally {
       setProcessingInvoice(null);
@@ -1302,36 +1302,36 @@ Please analyze this error and provide a fix.
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#0f2620] -mt-16 flex items-center justify-center">
+      <div className="min-h-screen -mt-16 pt-8 flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
-          <Loader2 className="w-10 h-10 text-white animate-spin" />
-          <p className="text-white/60">טוען נתוני מערכת...</p>
+          <Loader2 className="w-10 h-10 text-[#c99b4a] animate-spin" />
+          <p className="text-[#8b7c69]">טוען נתוני מערכת...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#0f2620] -mt-16">
-      <div className="px-3 sm:px-6 pt-20 sm:pt-24 pb-6 max-w-7xl mx-auto">
+    <div className="min-h-screen -mt-16 pt-8">
+      <div className="px-3 sm:px-6 pt-20 sm:pt-24 pb-24 max-w-7xl mx-auto">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
-          className="mb-4 sm:mb-8 bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-4 sm:p-6"
+          className="mb-4 sm:mb-8 bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-4 sm:p-6"
         >
           <div className="flex items-center justify-between gap-3">
             <div>
-              <h1 className="text-xl sm:text-3xl font-display font-bold text-white flex items-center gap-2 sm:gap-3">
-                <Shield className="text-emerald-400" size={22} />
+              <h1 className="text-xl sm:text-3xl font-display font-bold text-[#2b241d] flex items-center gap-2 sm:gap-3">
+                <Shield className="text-[#c99b4a]" size={22} />
                 פאנל ניהול
               </h1>
-              <p className="text-white/60 mt-1 font-medium text-xs sm:text-base">ניהול משתמשים ומעקב אחרי תקלות המערכת</p>
+              <p className="text-[#8b7c69] mt-1 font-medium text-xs sm:text-base">ניהול משתמשים ומעקב אחרי תקלות המערכת</p>
             </div>
             <button
               onClick={fetchData}
               disabled={refreshing}
-              className="px-3 py-2 bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 rounded-xl hover:bg-emerald-500/30 transition-colors flex items-center gap-1.5 text-sm flex-shrink-0"
+              className="px-3 py-2 bg-[#c99b4a]/15 border border-[#c99b4a]/30 text-[#c99b4a] rounded-xl hover:bg-[#c99b4a]/25 transition-colors flex items-center gap-1.5 text-sm flex-shrink-0"
             >
               <RefreshCw size={16} className={refreshing ? 'animate-spin' : ''} />
               <span className="hidden sm:inline">רענון</span>
@@ -1347,105 +1347,105 @@ Please analyze this error and provide a fix.
           className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6"
         >
           <Link href="/admin/analytics" className="group">
-            <div className="p-4 bg-white/5 backdrop-blur border border-white/10 rounded-xl hover:bg-white/10 transition-all">
+            <div className="p-4 bg-white border border-[rgba(201,155,74,0.08)] rounded-xl hover:bg-[#f0ebe6] transition-all">
               <div className="flex items-center gap-3">
                 <div className="p-2 rounded-lg bg-purple-500/20">
                   <BarChart3 size={20} className="text-purple-400" />
                 </div>
                 <div>
-                  <p className="text-white font-medium group-hover:text-emerald-400 transition-colors">אנליטיקות</p>
-                  <p className="text-white/50 text-xs">דוחות וסטטיסטיקות</p>
+                  <p className="text-[#2b241d] font-medium group-hover:text-[#c99b4a] transition-colors">אנליטיקות</p>
+                  <p className="text-[#a89b8a] text-xs">דוחות וסטטיסטיקות</p>
                 </div>
               </div>
             </div>
           </Link>
           <Link href="/admin/architects" className="group">
-            <div className="p-4 bg-white/5 backdrop-blur border border-white/10 rounded-xl hover:bg-white/10 transition-all">
+            <div className="p-4 bg-white border border-[rgba(201,155,74,0.08)] rounded-xl hover:bg-[#f0ebe6] transition-all">
               <div className="flex items-center gap-3">
                 <div className="p-2 rounded-lg bg-blue-500/20">
                   <Users size={20} className="text-blue-400" />
                 </div>
                 <div>
-                  <p className="text-white font-medium group-hover:text-emerald-400 transition-colors">אדריכלים</p>
-                  <p className="text-white/50 text-xs">ניהול אדריכלים</p>
+                  <p className="text-[#2b241d] font-medium group-hover:text-[#c99b4a] transition-colors">אדריכלים</p>
+                  <p className="text-[#a89b8a] text-xs">ניהול אדריכלים</p>
                 </div>
               </div>
             </div>
           </Link>
           <Link href="/admin/service-providers" className="group">
-            <div className="p-4 bg-white/5 backdrop-blur border border-white/10 rounded-xl hover:bg-white/10 transition-all">
+            <div className="p-4 bg-white border border-[rgba(201,155,74,0.08)] rounded-xl hover:bg-[#f0ebe6] transition-all">
               <div className="flex items-center gap-3">
                 <div className="p-2 rounded-lg bg-green-500/20">
                   <Building2 size={20} className="text-green-400" />
                 </div>
                 <div>
-                  <p className="text-white font-medium group-hover:text-emerald-400 transition-colors">ספקי שירות</p>
-                  <p className="text-white/50 text-xs">ניהול ספקים</p>
+                  <p className="text-[#2b241d] font-medium group-hover:text-[#c99b4a] transition-colors">ספקי שירות</p>
+                  <p className="text-[#a89b8a] text-xs">ניהול ספקים</p>
                 </div>
               </div>
             </div>
           </Link>
           <Link href="/admin/goals" className="group">
-            <div className="p-4 bg-white/5 backdrop-blur border border-white/10 rounded-xl hover:bg-white/10 transition-all">
+            <div className="p-4 bg-white border border-[rgba(201,155,74,0.08)] rounded-xl hover:bg-[#f0ebe6] transition-all">
               <div className="flex items-center gap-3">
                 <div className="p-2 rounded-lg bg-amber-500/20">
                   <Target size={20} className="text-amber-400" />
                 </div>
                 <div>
-                  <p className="text-white font-medium group-hover:text-emerald-400 transition-colors">יעדים</p>
-                  <p className="text-white/50 text-xs">ניהול יעדי אדריכלים</p>
+                  <p className="text-[#2b241d] font-medium group-hover:text-[#c99b4a] transition-colors">יעדים</p>
+                  <p className="text-[#a89b8a] text-xs">ניהול יעדי אדריכלים</p>
                 </div>
               </div>
             </div>
           </Link>
           <Link href="/admin/contracts" className="group">
-            <div className="p-4 bg-white/5 backdrop-blur border border-white/10 rounded-xl hover:bg-white/10 transition-all">
+            <div className="p-4 bg-white border border-[rgba(201,155,74,0.08)] rounded-xl hover:bg-[#f0ebe6] transition-all">
               <div className="flex items-center gap-3">
                 <div className="p-2 rounded-lg bg-cyan-500/20">
                   <FileText size={20} className="text-cyan-400" />
                 </div>
                 <div>
-                  <p className="text-white font-medium group-hover:text-emerald-400 transition-colors">חוזים</p>
-                  <p className="text-white/50 text-xs">ניהול חוזי ספקים</p>
+                  <p className="text-[#2b241d] font-medium group-hover:text-[#c99b4a] transition-colors">חוזים</p>
+                  <p className="text-[#a89b8a] text-xs">ניהול חוזי ספקים</p>
                 </div>
               </div>
             </div>
           </Link>
           <Link href="/admin/audit-logs" className="group">
-            <div className="p-4 bg-white/5 backdrop-blur border border-white/10 rounded-xl hover:bg-white/10 transition-all">
+            <div className="p-4 bg-white border border-[rgba(201,155,74,0.08)] rounded-xl hover:bg-[#f0ebe6] transition-all">
               <div className="flex items-center gap-3">
                 <div className="p-2 rounded-lg bg-orange-500/20">
                   <Clock size={20} className="text-orange-400" />
                 </div>
                 <div>
-                  <p className="text-white font-medium group-hover:text-emerald-400 transition-colors">יומן פעולות</p>
-                  <p className="text-white/50 text-xs">מעקב פעולות מערכת</p>
+                  <p className="text-[#2b241d] font-medium group-hover:text-[#c99b4a] transition-colors">יומן פעולות</p>
+                  <p className="text-[#a89b8a] text-xs">מעקב פעולות מערכת</p>
                 </div>
               </div>
             </div>
           </Link>
           <Link href="/admin/rewards" className="group">
-            <div className="p-4 bg-white/5 backdrop-blur border border-white/10 rounded-xl hover:bg-white/10 transition-all">
+            <div className="p-4 bg-white border border-[rgba(201,155,74,0.08)] rounded-xl hover:bg-[#f0ebe6] transition-all">
               <div className="flex items-center gap-3">
                 <div className="p-2 rounded-lg bg-amber-500/20">
                   <Gift size={20} className="text-amber-400" />
                 </div>
                 <div>
-                  <p className="text-white font-medium group-hover:text-emerald-400 transition-colors">חנות הטבות</p>
-                  <p className="text-white/50 text-xs">ניהול מוצרים</p>
+                  <p className="text-[#2b241d] font-medium group-hover:text-[#c99b4a] transition-colors">חנות הטבות</p>
+                  <p className="text-[#a89b8a] text-xs">ניהול מוצרים</p>
                 </div>
               </div>
             </div>
           </Link>
           <Link href="/admin/events" className="group">
-            <div className="p-4 bg-white/5 backdrop-blur border border-white/10 rounded-xl hover:bg-white/10 transition-all">
+            <div className="p-4 bg-white border border-[rgba(201,155,74,0.08)] rounded-xl hover:bg-[#f0ebe6] transition-all">
               <div className="flex items-center gap-3">
                 <div className="p-2 rounded-lg bg-pink-500/20">
                   <Calendar size={20} className="text-pink-400" />
                 </div>
                 <div>
-                  <p className="text-white font-medium group-hover:text-emerald-400 transition-colors">אירועים</p>
-                  <p className="text-white/50 text-xs">ניהול אירועים</p>
+                  <p className="text-[#2b241d] font-medium group-hover:text-[#c99b4a] transition-colors">אירועים</p>
+                  <p className="text-[#a89b8a] text-xs">ניהול אירועים</p>
                 </div>
               </div>
             </div>
@@ -1459,8 +1459,8 @@ Please analyze this error and provide a fix.
             onClick={() => setActiveTab('users')}
             className={`px-6 py-3 rounded-xl font-medium transition-all flex items-center gap-2 whitespace-nowrap flex-shrink-0 ${
               activeTab === 'users'
-                ? 'bg-emerald-500 text-white'
-                : 'bg-white/10 text-white/70 hover:bg-white/20 border border-white/10'
+                ? 'bg-[#c99b4a] text-white'
+                : 'bg-[#f7f3f2] text-[#8b7c69] hover:bg-[#f0ebe6] border border-[rgba(201,155,74,0.08)]'
             }`}
           >
             <Users size={18} />
@@ -1476,8 +1476,8 @@ Please analyze this error and provide a fix.
             onClick={() => setActiveTab('invoices')}
             className={`px-6 py-3 rounded-xl font-medium transition-all flex items-center gap-2 whitespace-nowrap flex-shrink-0 ${
               activeTab === 'invoices'
-                ? 'bg-emerald-500 text-white'
-                : 'bg-white/10 text-white/70 hover:bg-white/20 border border-white/10'
+                ? 'bg-[#c99b4a] text-white'
+                : 'bg-[#f7f3f2] text-[#8b7c69] hover:bg-[#f0ebe6] border border-[rgba(201,155,74,0.08)]'
             }`}
           >
             <Receipt size={18} />
@@ -1493,8 +1493,8 @@ Please analyze this error and provide a fix.
             onClick={() => setActiveTab('recycle-bin')}
             className={`px-6 py-3 rounded-xl font-medium transition-all flex items-center gap-2 whitespace-nowrap flex-shrink-0 ${
               activeTab === 'recycle-bin'
-                ? 'bg-emerald-500 text-white'
-                : 'bg-white/10 text-white/70 hover:bg-white/20 border border-white/10'
+                ? 'bg-[#c99b4a] text-white'
+                : 'bg-[#f7f3f2] text-[#8b7c69] hover:bg-[#f0ebe6] border border-[rgba(201,155,74,0.08)]'
             }`}
           >
             <Trash size={18} />
@@ -1510,8 +1510,8 @@ Please analyze this error and provide a fix.
             onClick={() => setActiveTab('scan')}
             className={`px-6 py-3 rounded-xl font-medium transition-all flex items-center gap-2 whitespace-nowrap flex-shrink-0 ${
               activeTab === 'scan'
-                ? 'bg-emerald-500 text-white'
-                : 'bg-white/10 text-white/70 hover:bg-white/20 border border-white/10'
+                ? 'bg-[#c99b4a] text-white'
+                : 'bg-[#f7f3f2] text-[#8b7c69] hover:bg-[#f0ebe6] border border-[rgba(201,155,74,0.08)]'
             }`}
           >
             <Activity size={18} />
@@ -1522,8 +1522,8 @@ Please analyze this error and provide a fix.
             onClick={() => setActiveTab('logs')}
             className={`px-6 py-3 rounded-xl font-medium transition-all flex items-center gap-2 whitespace-nowrap flex-shrink-0 ${
               activeTab === 'logs'
-                ? 'bg-emerald-500 text-white'
-                : 'bg-white/10 text-white/70 hover:bg-white/20 border border-white/10'
+                ? 'bg-[#c99b4a] text-white'
+                : 'bg-[#f7f3f2] text-[#8b7c69] hover:bg-[#f0ebe6] border border-[rgba(201,155,74,0.08)]'
             }`}
           >
             <FileText size={18} />
@@ -1542,10 +1542,10 @@ Please analyze this error and provide a fix.
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
           >
-            <div className="bg-white/5 backdrop-blur border border-white/10 rounded-2xl p-6">
+            <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-semibold text-white flex items-center gap-2">
-                  <Users className="text-emerald-400" />
+                <h2 className="text-xl font-semibold text-[#2b241d] flex items-center gap-2">
+                  <Users className="text-[#c99b4a]" />
                   ניהול משתמשים ({allUsers.length})
                   {pendingUsers.length > 0 && (
                     <span className="bg-yellow-500/20 text-yellow-400 text-sm px-2 py-0.5 rounded-full mr-2">
@@ -1558,7 +1558,7 @@ Please analyze this error and provide a fix.
                     <button
                       onClick={handleBulkApprove}
                       disabled={refreshing}
-                      className="px-4 py-2 bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 rounded-xl hover:bg-emerald-500/30 transition-colors flex items-center gap-2 disabled:opacity-50"
+                      className="px-4 py-2 bg-[#c99b4a]/15 border border-[#c99b4a]/30 text-[#c99b4a] rounded-xl hover:bg-[#c99b4a]/25 transition-colors flex items-center gap-2 disabled:opacity-50"
                     >
                       <CheckCircle2 size={18} />
                       אשר נבחרים ({selectedUsers.size})
@@ -1577,7 +1577,7 @@ Please analyze this error and provide a fix.
               {allUsers.length === 0 ? (
                 <div className="text-center py-16">
                   <Users className="w-20 h-20 mx-auto text-white/20 mb-4" />
-                  <p className="text-white text-xl font-medium">אין משתמשים במערכת</p>
+                  <p className="text-[#2b241d] text-xl font-medium">אין משתמשים במערכת</p>
                 </div>
               ) : (
                 <>
@@ -1585,19 +1585,19 @@ Please analyze this error and provide a fix.
                 <div className="hidden md:block overflow-x-auto">
                   <table className="w-full">
                     <thead>
-                      <tr className="border-b border-white/10">
+                      <tr className="border-b border-[rgba(201,155,74,0.08)]">
                         <th className="py-3 px-4 text-right">
                           {pendingUsers.length > 0 && (
                             <input type="checkbox" checked={selectedUsers.size === pendingUsers.length && pendingUsers.length > 0} onChange={selectAllPendingUsers} className="w-4 h-4 rounded bg-white/10 border-white/20 text-emerald-500" />
                           )}
                         </th>
-                        <th className="py-3 px-4 text-right text-white/60 font-medium">שם</th>
-                        <th className="py-3 px-4 text-right text-white/60 font-medium">אימייל</th>
-                        <th className="py-3 px-4 text-right text-white/60 font-medium">טלפון</th>
-                        <th className="py-3 px-4 text-right text-white/60 font-medium">תפקיד</th>
-                        <th className="py-3 px-4 text-right text-white/60 font-medium">סטטוס</th>
-                        <th className="py-3 px-4 text-right text-white/60 font-medium">תאריך הרשמה</th>
-                        <th className="py-3 px-4 text-right text-white/60 font-medium">פעולות</th>
+                        <th className="py-3 px-4 text-right text-[#8b7c69] font-medium">שם</th>
+                        <th className="py-3 px-4 text-right text-[#8b7c69] font-medium">אימייל</th>
+                        <th className="py-3 px-4 text-right text-[#8b7c69] font-medium">טלפון</th>
+                        <th className="py-3 px-4 text-right text-[#8b7c69] font-medium">תפקיד</th>
+                        <th className="py-3 px-4 text-right text-[#8b7c69] font-medium">סטטוס</th>
+                        <th className="py-3 px-4 text-right text-[#8b7c69] font-medium">תאריך הרשמה</th>
+                        <th className="py-3 px-4 text-right text-[#8b7c69] font-medium">פעולות</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -1608,7 +1608,7 @@ Please analyze this error and provide a fix.
                         const allImages = [...(user.profileImage ? [user.profileImage] : []), ...(sp?.businessImages || [])];
                         return (
                           <React.Fragment key={user.id}>
-                            <tr className={`border-b border-white/5 hover:bg-white/5 transition-colors cursor-pointer ${!user.isActive ? 'bg-yellow-500/5' : ''} ${isExpanded ? 'bg-white/5' : ''}`} onClick={() => setExpandedUserId(isExpanded ? null : user.id)}>
+                            <tr className={`border-b border-[rgba(201,155,74,0.08)] hover:bg-[#f0ebe6] transition-colors cursor-pointer ${!user.isActive ? 'bg-yellow-500/5' : ''} ${isExpanded ? 'bg-[#f7f3f2]' : ''}`} onClick={() => setExpandedUserId(isExpanded ? null : user.id)}>
                               <td className="py-4 px-4" onClick={(e) => e.stopPropagation()}>
                                 {!user.isActive && <input type="checkbox" checked={selectedUsers.has(user.id)} onChange={() => toggleUserSelection(user.id)} className="w-4 h-4 rounded bg-white/10 border-white/20 text-emerald-500" />}
                               </td>
@@ -1620,26 +1620,26 @@ Please analyze this error and provide a fix.
                                     <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold flex-shrink-0 ${user.isActive ? 'bg-gradient-to-br from-emerald-400 to-emerald-600 text-white' : 'bg-gradient-to-br from-yellow-400 to-yellow-600 text-black'}`}>{user.name.charAt(0)}</div>
                                   )}
                                   <div className="flex items-center gap-2">
-                                    <span className="text-white font-medium">{user.name}</span>
-                                    {isExpanded ? <ChevronUp size={16} className="text-white/40" /> : <ChevronDown size={16} className="text-white/40" />}
+                                    <span className="text-[#2b241d] font-medium">{user.name}</span>
+                                    {isExpanded ? <ChevronUp size={16} className="text-[#a89b8a]" /> : <ChevronDown size={16} className="text-[#a89b8a]" />}
                                   </div>
                                 </div>
                               </td>
-                              <td className="py-4 px-4"><span className="text-white/70 flex items-center gap-2"><Mail size={14} className="text-white/50" />{user.email}</span></td>
-                              <td className="py-4 px-4"><span className="text-white/70 flex items-center gap-2"><Phone size={14} className="text-white/50" />{user.phone || '-'}</span></td>
+                              <td className="py-4 px-4"><span className="text-[#8b7c69] flex items-center gap-2"><Mail size={14} className="text-[#a89b8a]" />{user.email}</span></td>
+                              <td className="py-4 px-4"><span className="text-[#8b7c69] flex items-center gap-2"><Phone size={14} className="text-[#a89b8a]" />{user.phone || '-'}</span></td>
                               <td className="py-4 px-4"><span className={`px-3 py-1 rounded-full text-sm ${user.role === 'ARCHITECT' ? 'bg-blue-500/20 text-blue-400' : user.role === 'ADMIN' ? 'bg-red-500/20 text-red-400' : 'bg-purple-500/20 text-purple-400'}`}>{roleLabels[user.role] || user.role}</span></td>
                               <td className="py-4 px-4">
                                 {user.isActive ? <span className="px-3 py-1 rounded-full text-sm bg-green-500/20 text-green-400 flex items-center gap-1 w-fit"><CheckCircle size={14} />מאושר</span> : <span className="px-3 py-1 rounded-full text-sm bg-yellow-500/20 text-yellow-400 flex items-center gap-1 w-fit"><Clock size={14} />ממתין</span>}
                               </td>
-                              <td className="py-4 px-4"><span className="text-white/60 flex items-center gap-2"><Calendar size={14} className="text-white/50" />{new Date(user.createdAt).toLocaleDateString('he-IL')}</span></td>
+                              <td className="py-4 px-4"><span className="text-white/60 flex items-center gap-2"><Calendar size={14} className="text-[#a89b8a]" />{new Date(user.createdAt).toLocaleDateString('he-IL')}</span></td>
                               <td className="py-4 px-4" onClick={(e) => e.stopPropagation()}>
                                 <div className="flex items-center gap-2">
                                   {user.isActive && user.role !== 'ADMIN' ? (
-                                    <button onClick={() => handleLoginAsUser(user.id)} disabled={loggingInAs === user.id} className="px-3 py-1.5 bg-white/10 border border-white/20 text-white/80 rounded-lg hover:bg-white/20 transition-colors text-sm flex items-center gap-2 disabled:opacity-50">
+                                    <button onClick={() => handleLoginAsUser(user.id)} disabled={loggingInAs === user.id} className="px-3 py-1.5 bg-[#f7f3f2] border border-[rgba(201,155,74,0.12)] text-[#8b7c69] rounded-lg hover:bg-[#f0ebe6] transition-colors text-sm flex items-center gap-2 disabled:opacity-50">
                                       {loggingInAs === user.id ? <Loader2 size={16} className="animate-spin" /> : <ExternalLink size={16} />}צפה בחשבון
                                     </button>
                                   ) : !user.isActive ? (
-                                    <button onClick={() => handleApproveUser(user.id)} disabled={approvingUser === user.id} className="px-3 py-1.5 bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 rounded-lg hover:bg-emerald-500/30 transition-colors text-sm flex items-center gap-2 disabled:opacity-50">
+                                    <button onClick={() => handleApproveUser(user.id)} disabled={approvingUser === user.id} className="px-3 py-1.5 bg-[#c99b4a]/15 border border-[#c99b4a]/30 text-[#c99b4a] rounded-lg hover:bg-[#c99b4a]/25 transition-colors text-sm flex items-center gap-2 disabled:opacity-50">
                                       {approvingUser === user.id ? <Loader2 size={16} className="animate-spin" /> : <UserCheck size={16} />}אשר
                                     </button>
                                   ) : null}
@@ -1653,21 +1653,21 @@ Please analyze this error and provide a fix.
                             </tr>
                             {isExpanded && (
                               <tr><td colSpan={8} className="p-0">
-                                <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="bg-white/[0.03] border-b border-white/10">
+                                <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="bg-[#f7f3f2]/50 border-b border-[rgba(201,155,74,0.08)]">
                                   <div className="p-6 space-y-6">
                                     <div className="flex items-center justify-between">
-                                      <h3 className="text-white font-semibold text-lg">פרטי {user.name}</h3>
+                                      <h3 className="text-[#2b241d] font-semibold text-lg">פרטי {user.name}</h3>
                                       {user.role !== 'ADMIN' && (editingUserId === user.id ? (
                                         <div className="flex items-center gap-2">
-                                          <button onClick={() => handleSaveUser(user.id)} disabled={savingUser} className="px-4 py-2 bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 rounded-lg text-sm flex items-center gap-2 disabled:opacity-50">{savingUser ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}שמור</button>
-                                          <button onClick={() => setEditingUserId(null)} className="px-4 py-2 bg-white/10 border border-white/20 text-white/70 rounded-lg text-sm flex items-center gap-2"><X size={16} />ביטול</button>
+                                          <button onClick={() => handleSaveUser(user.id)} disabled={savingUser} className="px-4 py-2 bg-[#c99b4a]/15 border border-[#c99b4a]/30 text-[#c99b4a] rounded-lg text-sm flex items-center gap-2 disabled:opacity-50">{savingUser ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}שמור</button>
+                                          <button onClick={() => setEditingUserId(null)} className="px-4 py-2 bg-[#f7f3f2] border border-[rgba(201,155,74,0.12)] text-[#8b7c69] rounded-lg text-sm flex items-center gap-2"><X size={16} />ביטול</button>
                                         </div>
                                       ) : (
-                                        <button onClick={() => startEditUser(user)} className="px-4 py-2 bg-white/10 border border-white/20 text-white/70 rounded-lg text-sm flex items-center gap-2"><Edit3 size={16} />עריכה</button>
+                                        <button onClick={() => startEditUser(user)} className="px-4 py-2 bg-[#f7f3f2] border border-[rgba(201,155,74,0.12)] text-[#8b7c69] rounded-lg text-sm flex items-center gap-2"><Edit3 size={16} />עריכה</button>
                                       ))}
                                     </div>
                                     {/* Profile Image Change */}
-                                    <div className="flex items-center gap-4 pb-4 border-b border-white/10">
+                                    <div className="flex items-center gap-4 pb-4 border-b border-[rgba(201,155,74,0.08)]">
                                       <div className="relative group">
                                         <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-white/20">
                                           {(user.profileImage || sp?.profileImage) ? (
@@ -1691,68 +1691,68 @@ Please analyze this error and provide a fix.
                                                 body: formData,
                                               });
                                               await fetchAllUsers();
-                                              Swal.fire({ title: 'עודכן!', icon: 'success', timer: 1500, showConfirmButton: false, background: '#0f2620', color: '#fff' });
-                                            } catch { Swal.fire({ title: 'שגיאה', icon: 'error', background: '#0f2620', color: '#fff' }); }
+                                              Swal.fire({ title: 'עודכן!', icon: 'success', timer: 1500, showConfirmButton: false, background: '#f7f3f2', color: '#2b241d' });
+                                            } catch { Swal.fire({ title: 'שגיאה', icon: 'error', background: '#f7f3f2', color: '#2b241d' }); }
                                           }} />
                                         </label>
                                       </div>
                                       <div>
-                                        <p className="text-white font-semibold">{user.name}</p>
-                                        <p className="text-white/40 text-xs">העבר עכבר על התמונה להחלפה</p>
+                                        <p className="text-[#2b241d] font-semibold">{user.name}</p>
+                                        <p className="text-[#a89b8a] text-xs">העבר עכבר על התמונה להחלפה</p>
                                       </div>
                                     </div>
                                     <div className="grid grid-cols-3 gap-6">
                                       <div className="space-y-4">
-                                        <h4 className="text-white font-semibold flex items-center gap-2"><Users size={16} className="text-emerald-400" />פרטי משתמש</h4>
+                                        <h4 className="text-[#2b241d] font-semibold flex items-center gap-2"><Users size={16} className="text-[#c99b4a]" />פרטי משתמש</h4>
                                         {editingUserId === user.id ? (
                                           <div className="space-y-3">
-                                            <div><label className="text-white/40 text-xs mb-1 block">שם</label><input value={editForm.name || ''} onChange={(e) => setEditForm(f => ({ ...f, name: e.target.value }))} className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white text-sm focus:outline-none focus:border-emerald-500" /></div>
-                                            <div><label className="text-white/40 text-xs mb-1 block">טלפון</label><input value={editForm.phone || ''} onChange={(e) => setEditForm(f => ({ ...f, phone: e.target.value }))} className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white text-sm focus:outline-none focus:border-emerald-500" dir="ltr" /></div>
-                                            <div><label className="text-white/40 text-xs mb-1 block">כתובת</label><input value={editForm.address || ''} onChange={(e) => setEditForm(f => ({ ...f, address: e.target.value }))} className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white text-sm focus:outline-none focus:border-emerald-500" /></div>
-                                            <div><label className="text-white/40 text-xs mb-1 block">חברה</label><input value={editForm.company || ''} onChange={(e) => setEditForm(f => ({ ...f, company: e.target.value }))} className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white text-sm focus:outline-none focus:border-emerald-500" /></div>
+                                            <div><label className="text-[#a89b8a] text-xs mb-1 block">שם</label><input value={editForm.name || ''} onChange={(e) => setEditForm(f => ({ ...f, name: e.target.value }))} className="w-full px-3 py-2 bg-[#f7f3f2] border border-[rgba(201,155,74,0.12)] rounded-lg text-[#2b241d] text-sm focus:outline-none focus:border-[#c99b4a]" /></div>
+                                            <div><label className="text-[#a89b8a] text-xs mb-1 block">טלפון</label><input value={editForm.phone || ''} onChange={(e) => setEditForm(f => ({ ...f, phone: e.target.value }))} className="w-full px-3 py-2 bg-[#f7f3f2] border border-[rgba(201,155,74,0.12)] rounded-lg text-[#2b241d] text-sm focus:outline-none focus:border-[#c99b4a]" dir="ltr" /></div>
+                                            <div><label className="text-[#a89b8a] text-xs mb-1 block">כתובת</label><input value={editForm.address || ''} onChange={(e) => setEditForm(f => ({ ...f, address: e.target.value }))} className="w-full px-3 py-2 bg-[#f7f3f2] border border-[rgba(201,155,74,0.12)] rounded-lg text-[#2b241d] text-sm focus:outline-none focus:border-[#c99b4a]" /></div>
+                                            <div><label className="text-[#a89b8a] text-xs mb-1 block">חברה</label><input value={editForm.company || ''} onChange={(e) => setEditForm(f => ({ ...f, company: e.target.value }))} className="w-full px-3 py-2 bg-[#f7f3f2] border border-[rgba(201,155,74,0.12)] rounded-lg text-[#2b241d] text-sm focus:outline-none focus:border-[#c99b4a]" /></div>
                                           </div>
                                         ) : (
                                           <div className="space-y-2 text-sm">
-                                            <div className="flex items-center gap-2 text-white/70"><span className="text-white/40 min-w-[60px]">שם:</span><span className="text-white">{user.name}</span></div>
-                                            <div className="flex items-center gap-2 text-white/70"><span className="text-white/40 min-w-[60px]">אימייל:</span><span className="text-white" dir="ltr">{user.email}</span></div>
-                                            <div className="flex items-center gap-2 text-white/70"><span className="text-white/40 min-w-[60px]">טלפון:</span><span className="text-white" dir="ltr">{user.phone || 'לא צוין'}</span></div>
-                                            <div className="flex items-center gap-2 text-white/70"><span className="text-white/40 min-w-[60px]">כתובת:</span><span className="text-white">{user.address || 'לא צוינה'}</span></div>
-                                            <div className="flex items-center gap-2 text-white/70"><span className="text-white/40 min-w-[60px]">חברה:</span><span className="text-white">{user.company || sp?.companyName || 'לא צוינה'}</span></div>
+                                            <div className="flex items-center gap-2 text-[#8b7c69]"><span className="text-white/40 min-w-[60px]">שם:</span><span className="text-[#2b241d]">{user.name}</span></div>
+                                            <div className="flex items-center gap-2 text-[#8b7c69]"><span className="text-white/40 min-w-[60px]">אימייל:</span><span className="text-[#2b241d]" dir="ltr">{user.email}</span></div>
+                                            <div className="flex items-center gap-2 text-[#8b7c69]"><span className="text-white/40 min-w-[60px]">טלפון:</span><span className="text-[#2b241d]" dir="ltr">{user.phone || 'לא צוין'}</span></div>
+                                            <div className="flex items-center gap-2 text-[#8b7c69]"><span className="text-white/40 min-w-[60px]">כתובת:</span><span className="text-[#2b241d]">{user.address || 'לא צוינה'}</span></div>
+                                            <div className="flex items-center gap-2 text-[#8b7c69]"><span className="text-white/40 min-w-[60px]">חברה:</span><span className="text-[#2b241d]">{user.company || sp?.companyName || 'לא צוינה'}</span></div>
                                           </div>
                                         )}
                                       </div>
                                       <div className="space-y-4">
-                                        <h4 className="text-white font-semibold flex items-center gap-2"><Calendar size={16} className="text-emerald-400" />תאריכים וסטטוס</h4>
+                                        <h4 className="text-[#2b241d] font-semibold flex items-center gap-2"><Calendar size={16} className="text-[#c99b4a]" />תאריכים וסטטוס</h4>
                                         <div className="space-y-2 text-sm">
-                                          <div className="flex items-center gap-2 text-white/70"><span className="text-white/40 min-w-[80px]">נרשם:</span><span className="text-white">{new Date(user.createdAt).toLocaleString('he-IL')}</span></div>
-                                          {user.activatedAt && <div className="flex items-center gap-2 text-white/70"><span className="text-white/40 min-w-[80px]">אושר:</span><span className="text-white">{new Date(user.activatedAt).toLocaleString('he-IL')}</span></div>}
-                                          {user.updatedAt && <div className="flex items-center gap-2 text-white/70"><span className="text-white/40 min-w-[80px]">עודכן:</span><span className="text-white">{new Date(user.updatedAt).toLocaleString('he-IL')}</span></div>}
-                                          <div className="flex items-center gap-2 text-white/70"><span className="text-white/40 min-w-[80px]">תפקיד:</span><span className={`px-2 py-0.5 rounded-full text-xs ${user.role === 'ARCHITECT' ? 'bg-blue-500/20 text-blue-400' : user.role === 'ADMIN' ? 'bg-red-500/20 text-red-400' : 'bg-purple-500/20 text-purple-400'}`}>{roleLabels[user.role] || user.role}</span></div>
-                                          <div className="flex items-center gap-2 text-white/70"><span className="text-white/40 min-w-[80px]">מזהה:</span><span className="text-white/50 text-xs font-mono" dir="ltr">{user.id}</span></div>
+                                          <div className="flex items-center gap-2 text-[#8b7c69]"><span className="text-white/40 min-w-[80px]">נרשם:</span><span className="text-[#2b241d]">{new Date(user.createdAt).toLocaleString('he-IL')}</span></div>
+                                          {user.activatedAt && <div className="flex items-center gap-2 text-[#8b7c69]"><span className="text-white/40 min-w-[80px]">אושר:</span><span className="text-[#2b241d]">{new Date(user.activatedAt).toLocaleString('he-IL')}</span></div>}
+                                          {user.updatedAt && <div className="flex items-center gap-2 text-[#8b7c69]"><span className="text-white/40 min-w-[80px]">עודכן:</span><span className="text-[#2b241d]">{new Date(user.updatedAt).toLocaleString('he-IL')}</span></div>}
+                                          <div className="flex items-center gap-2 text-[#8b7c69]"><span className="text-white/40 min-w-[80px]">תפקיד:</span><span className={`px-2 py-0.5 rounded-full text-xs ${user.role === 'ARCHITECT' ? 'bg-blue-500/20 text-blue-400' : user.role === 'ADMIN' ? 'bg-red-500/20 text-red-400' : 'bg-purple-500/20 text-purple-400'}`}>{roleLabels[user.role] || user.role}</span></div>
+                                          <div className="flex items-center gap-2 text-[#8b7c69]"><span className="text-white/40 min-w-[80px]">מזהה:</span><span className="text-[#a89b8a] text-xs font-mono" dir="ltr">{user.id}</span></div>
                                         </div>
                                       </div>
                                       <div className="space-y-4">
                                         {user.role === 'SUPPLIER' && sp && (
                                           <>
-                                            <h4 className="text-white font-semibold flex items-center gap-2"><Building2 size={16} className="text-purple-400" />פרופיל ספק</h4>
+                                            <h4 className="text-[#2b241d] font-semibold flex items-center gap-2"><Building2 size={16} className="text-purple-400" />פרופיל ספק</h4>
                                             {editingUserId === user.id ? (
                                               <div className="space-y-3">
-                                                <div><label className="text-white/40 text-xs mb-1 block">שם חברה</label><input value={editForm.sp_companyName || ''} onChange={(e) => setEditForm(f => ({ ...f, sp_companyName: e.target.value }))} className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white text-sm focus:outline-none focus:border-emerald-500" /></div>
-                                                <div><label className="text-white/40 text-xs mb-1 block">תיאור</label><textarea value={editForm.sp_description || ''} onChange={(e) => setEditForm(f => ({ ...f, sp_description: e.target.value }))} rows={2} className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white text-sm focus:outline-none focus:border-emerald-500 resize-none" /></div>
-                                                <div><label className="text-white/40 text-xs mb-1 block">טלפון</label><input value={editForm.sp_phone || ''} onChange={(e) => setEditForm(f => ({ ...f, sp_phone: e.target.value }))} className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white text-sm focus:outline-none focus:border-emerald-500" dir="ltr" /></div>
-                                                <div><label className="text-white/40 text-xs mb-1 block">כתובת</label><input value={editForm.sp_address || ''} onChange={(e) => setEditForm(f => ({ ...f, sp_address: e.target.value }))} className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white text-sm focus:outline-none focus:border-emerald-500" /></div>
-                                                <div><label className="text-white/40 text-xs mb-1 block">אתר</label><input value={editForm.sp_website || ''} onChange={(e) => setEditForm(f => ({ ...f, sp_website: e.target.value }))} className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white text-sm focus:outline-none focus:border-emerald-500" dir="ltr" /></div>
-                                                <div><label className="text-white/40 text-xs mb-1 block">פייסבוק</label><input value={editForm.sp_facebook || ''} onChange={(e) => setEditForm(f => ({ ...f, sp_facebook: e.target.value }))} className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white text-sm focus:outline-none focus:border-emerald-500" dir="ltr" /></div>
-                                                <div><label className="text-white/40 text-xs mb-1 block">אינסטגרם</label><input value={editForm.sp_instagram || ''} onChange={(e) => setEditForm(f => ({ ...f, sp_instagram: e.target.value }))} className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white text-sm focus:outline-none focus:border-emerald-500" dir="ltr" /></div>
-                                                <div><label className="text-white/40 text-xs mb-1 block">לינקדאין</label><input value={editForm.sp_linkedin || ''} onChange={(e) => setEditForm(f => ({ ...f, sp_linkedin: e.target.value }))} className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white text-sm focus:outline-none focus:border-emerald-500" dir="ltr" /></div>
+                                                <div><label className="text-[#a89b8a] text-xs mb-1 block">שם חברה</label><input value={editForm.sp_companyName || ''} onChange={(e) => setEditForm(f => ({ ...f, sp_companyName: e.target.value }))} className="w-full px-3 py-2 bg-[#f7f3f2] border border-[rgba(201,155,74,0.12)] rounded-lg text-[#2b241d] text-sm focus:outline-none focus:border-[#c99b4a]" /></div>
+                                                <div><label className="text-[#a89b8a] text-xs mb-1 block">תיאור</label><textarea value={editForm.sp_description || ''} onChange={(e) => setEditForm(f => ({ ...f, sp_description: e.target.value }))} rows={2} className="w-full px-3 py-2 bg-[#f7f3f2] border border-[rgba(201,155,74,0.12)] rounded-lg text-[#2b241d] text-sm focus:outline-none focus:border-[#c99b4a] resize-none" /></div>
+                                                <div><label className="text-[#a89b8a] text-xs mb-1 block">טלפון</label><input value={editForm.sp_phone || ''} onChange={(e) => setEditForm(f => ({ ...f, sp_phone: e.target.value }))} className="w-full px-3 py-2 bg-[#f7f3f2] border border-[rgba(201,155,74,0.12)] rounded-lg text-[#2b241d] text-sm focus:outline-none focus:border-[#c99b4a]" dir="ltr" /></div>
+                                                <div><label className="text-[#a89b8a] text-xs mb-1 block">כתובת</label><input value={editForm.sp_address || ''} onChange={(e) => setEditForm(f => ({ ...f, sp_address: e.target.value }))} className="w-full px-3 py-2 bg-[#f7f3f2] border border-[rgba(201,155,74,0.12)] rounded-lg text-[#2b241d] text-sm focus:outline-none focus:border-[#c99b4a]" /></div>
+                                                <div><label className="text-[#a89b8a] text-xs mb-1 block">אתר</label><input value={editForm.sp_website || ''} onChange={(e) => setEditForm(f => ({ ...f, sp_website: e.target.value }))} className="w-full px-3 py-2 bg-[#f7f3f2] border border-[rgba(201,155,74,0.12)] rounded-lg text-[#2b241d] text-sm focus:outline-none focus:border-[#c99b4a]" dir="ltr" /></div>
+                                                <div><label className="text-[#a89b8a] text-xs mb-1 block">פייסבוק</label><input value={editForm.sp_facebook || ''} onChange={(e) => setEditForm(f => ({ ...f, sp_facebook: e.target.value }))} className="w-full px-3 py-2 bg-[#f7f3f2] border border-[rgba(201,155,74,0.12)] rounded-lg text-[#2b241d] text-sm focus:outline-none focus:border-[#c99b4a]" dir="ltr" /></div>
+                                                <div><label className="text-[#a89b8a] text-xs mb-1 block">אינסטגרם</label><input value={editForm.sp_instagram || ''} onChange={(e) => setEditForm(f => ({ ...f, sp_instagram: e.target.value }))} className="w-full px-3 py-2 bg-[#f7f3f2] border border-[rgba(201,155,74,0.12)] rounded-lg text-[#2b241d] text-sm focus:outline-none focus:border-[#c99b4a]" dir="ltr" /></div>
+                                                <div><label className="text-[#a89b8a] text-xs mb-1 block">לינקדאין</label><input value={editForm.sp_linkedin || ''} onChange={(e) => setEditForm(f => ({ ...f, sp_linkedin: e.target.value }))} className="w-full px-3 py-2 bg-[#f7f3f2] border border-[rgba(201,155,74,0.12)] rounded-lg text-[#2b241d] text-sm focus:outline-none focus:border-[#c99b4a]" dir="ltr" /></div>
                                               </div>
                                             ) : (
                                               <div className="space-y-2 text-sm">
-                                                {sp.companyName && <div className="flex items-center gap-2 text-white/70"><span className="text-white/40">חברה:</span><span className="text-white">{sp.companyName}</span></div>}
-                                                {sp.phone && <div className="flex items-center gap-2 text-white/70"><Phone size={12} className="text-white/40" /><span className="text-white" dir="ltr">{sp.phone}</span></div>}
-                                                {sp.address && <div className="flex items-center gap-2 text-white/70"><MapPin size={12} className="text-white/40" /><span className="text-white">{sp.address}</span></div>}
-                                                {sp.website && <div className="flex items-center gap-2 text-white/70"><Globe size={12} className="text-white/40" /><a href={sp.website} target="_blank" rel="noopener noreferrer" className="text-emerald-400 hover:underline" dir="ltr">{sp.website}</a></div>}
-                                                {sp.description && <div className="mt-2"><span className="text-white/40 text-xs">תיאור:</span><p className="text-white/70 mt-1">{sp.description}</p></div>}
+                                                {sp.companyName && <div className="flex items-center gap-2 text-[#8b7c69]"><span className="text-[#a89b8a]">חברה:</span><span className="text-[#2b241d]">{sp.companyName}</span></div>}
+                                                {sp.phone && <div className="flex items-center gap-2 text-[#8b7c69]"><Phone size={12} className="text-[#a89b8a]" /><span className="text-[#2b241d]" dir="ltr">{sp.phone}</span></div>}
+                                                {sp.address && <div className="flex items-center gap-2 text-[#8b7c69]"><MapPin size={12} className="text-[#a89b8a]" /><span className="text-[#2b241d]">{sp.address}</span></div>}
+                                                {sp.website && <div className="flex items-center gap-2 text-[#8b7c69]"><Globe size={12} className="text-[#a89b8a]" /><a href={sp.website} target="_blank" rel="noopener noreferrer" className="text-[#c99b4a] hover:underline" dir="ltr">{sp.website}</a></div>}
+                                                {sp.description && <div className="mt-2"><span className="text-[#a89b8a] text-xs">תיאור:</span><p className="text-[#8b7c69] mt-1">{sp.description}</p></div>}
                                                 <div className="flex items-center gap-3 mt-2">
                                                   {sp.facebook && <a href={sp.facebook} target="_blank" rel="noopener noreferrer" className="text-blue-400"><Facebook size={16} /></a>}
                                                   {sp.instagram && <a href={sp.instagram} target="_blank" rel="noopener noreferrer" className="text-pink-400"><Instagram size={16} /></a>}
@@ -1764,11 +1764,11 @@ Please analyze this error and provide a fix.
                                         )}
                                         {user.role === 'ARCHITECT' && ap && (
                                           <>
-                                            <h4 className="text-white font-semibold flex items-center gap-2"><Building2 size={16} className="text-blue-400" />פרופיל אדריכל</h4>
+                                            <h4 className="text-[#2b241d] font-semibold flex items-center gap-2"><Building2 size={16} className="text-blue-400" />פרופיל אדריכל</h4>
                                             <div className="space-y-2 text-sm">
-                                              {ap.licenseNumber && <div className="flex items-center gap-2 text-white/70"><span className="text-white/40">מס׳ רישיון:</span><span className="text-white">{ap.licenseNumber}</span></div>}
-                                              {ap.experience && <div className="flex items-center gap-2 text-white/70"><span className="text-white/40">ניסיון:</span><span className="text-white">{ap.experience} שנים</span></div>}
-                                              {ap.specialties && ap.specialties.length > 0 && <div><span className="text-white/40 text-xs">התמחויות:</span><div className="flex flex-wrap gap-1 mt-1">{ap.specialties.map((s, i) => <span key={i} className="px-2 py-0.5 bg-blue-500/10 text-blue-400 rounded-full text-xs">{s}</span>)}</div></div>}
+                                              {ap.licenseNumber && <div className="flex items-center gap-2 text-[#8b7c69]"><span className="text-[#a89b8a]">מס׳ רישיון:</span><span className="text-[#2b241d]">{ap.licenseNumber}</span></div>}
+                                              {ap.experience && <div className="flex items-center gap-2 text-[#8b7c69]"><span className="text-[#a89b8a]">ניסיון:</span><span className="text-[#2b241d]">{ap.experience} שנים</span></div>}
+                                              {ap.specialties && ap.specialties.length > 0 && <div><span className="text-[#a89b8a] text-xs">התמחויות:</span><div className="flex flex-wrap gap-1 mt-1">{ap.specialties.map((s, i) => <span key={i} className="px-2 py-0.5 bg-blue-500/10 text-blue-400 rounded-full text-xs">{s}</span>)}</div></div>}
                                             </div>
                                           </>
                                         )}
@@ -1776,18 +1776,18 @@ Please analyze this error and provide a fix.
                                     </div>
                                     {allImages.length > 0 && (
                                       <div className="space-y-3">
-                                        <h4 className="text-white font-semibold flex items-center gap-2"><ImageIcon size={16} className="text-emerald-400" />תמונות ({allImages.length})</h4>
+                                        <h4 className="text-[#2b241d] font-semibold flex items-center gap-2"><ImageIcon size={16} className="text-[#c99b4a]" />תמונות ({allImages.length})</h4>
                                         <div className="grid grid-cols-6 gap-3">{allImages.map((img, idx) => (
-                                          <div key={idx} className="relative aspect-square rounded-lg overflow-hidden border border-white/10 hover:border-emerald-500/50 transition-colors group">
+                                          <div key={idx} className="relative aspect-square rounded-lg overflow-hidden border border-[rgba(201,155,74,0.08)] hover:border-[#c99b4a]/50 transition-colors group">
                                             <a href={img} target="_blank" rel="noopener noreferrer"><Image src={img} alt={`תמונה ${idx + 1}`} fill className="object-cover group-hover:scale-105 transition-transform" unoptimized /></a>
                                             <button onClick={() => handleDeleteUserImage(user.id, img)} className="absolute top-1 left-1 p-1 bg-red-500/80 rounded-md opacity-0 group-hover:opacity-100 transition-opacity" title="מחק תמונה"><Trash2 size={12} className="text-white" /></button>
                                           </div>
                                         ))}</div>
                                       </div>
                                     )}
-                                    <div className="flex flex-wrap items-center gap-3 pt-2 border-t border-white/10">
-                                      {user.isActive && user.role !== 'ADMIN' && <button onClick={() => handleLoginAsUser(user.id)} disabled={loggingInAs === user.id} className="px-4 py-2 bg-white/10 border border-white/20 text-white/80 rounded-lg hover:bg-white/20 transition-colors text-sm flex items-center gap-2 disabled:opacity-50">{loggingInAs === user.id ? <Loader2 size={16} className="animate-spin" /> : <ExternalLink size={16} />}כניסה לחשבון</button>}
-                                      {!user.isActive && <button onClick={() => handleApproveUser(user.id)} disabled={approvingUser === user.id} className="px-4 py-2 bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 rounded-lg hover:bg-emerald-500/30 transition-colors text-sm flex items-center gap-2 disabled:opacity-50">{approvingUser === user.id ? <Loader2 size={16} className="animate-spin" /> : <UserCheck size={16} />}אשר משתמש</button>}
+                                    <div className="flex flex-wrap items-center gap-3 pt-2 border-t border-[rgba(201,155,74,0.08)]">
+                                      {user.isActive && user.role !== 'ADMIN' && <button onClick={() => handleLoginAsUser(user.id)} disabled={loggingInAs === user.id} className="px-4 py-2 bg-[#f7f3f2] border border-[rgba(201,155,74,0.12)] text-[#8b7c69] rounded-lg hover:bg-[#f0ebe6] transition-colors text-sm flex items-center gap-2 disabled:opacity-50">{loggingInAs === user.id ? <Loader2 size={16} className="animate-spin" /> : <ExternalLink size={16} />}כניסה לחשבון</button>}
+                                      {!user.isActive && <button onClick={() => handleApproveUser(user.id)} disabled={approvingUser === user.id} className="px-4 py-2 bg-[#c99b4a]/15 border border-[#c99b4a]/30 text-[#c99b4a] rounded-lg hover:bg-[#c99b4a]/25 transition-colors text-sm flex items-center gap-2 disabled:opacity-50">{approvingUser === user.id ? <Loader2 size={16} className="animate-spin" /> : <UserCheck size={16} />}אשר משתמש</button>}
                                       {user.isActive && user.role !== 'ADMIN' && <button onClick={() => handleDeactivateUser(user.id, user.name)} disabled={deactivatingUser === user.id} className="px-4 py-2 bg-yellow-500/10 border border-yellow-500/20 text-yellow-400 rounded-lg hover:bg-yellow-500/20 transition-colors text-sm flex items-center gap-2 disabled:opacity-50">{deactivatingUser === user.id ? <Loader2 size={16} className="animate-spin" /> : <Ban size={16} />}נתק משתמש</button>}
                                       {user.role !== 'ADMIN' && <button onClick={() => handleResetPassword(user.id, user.name)} className="px-4 py-2 bg-blue-500/10 border border-blue-500/20 text-blue-400 rounded-lg hover:bg-blue-500/20 transition-colors text-sm flex items-center gap-2"><KeyRound size={16} />איפוס סיסמה</button>}
                                       {user.role !== 'ADMIN' && <button onClick={() => handleDeleteUser(user.id, user.name)} disabled={deletingUser === user.id} className="px-4 py-2 bg-red-500/10 border border-red-500/20 text-red-400 rounded-lg hover:bg-red-500/20 transition-colors text-sm flex items-center gap-2 disabled:opacity-50">{deletingUser === user.id ? <Loader2 size={16} className="animate-spin" /> : <Trash2 size={16} />}מחק משתמש</button>}
@@ -1817,7 +1817,7 @@ Please analyze this error and provide a fix.
 
                     return (
                       <div key={user.id} className={`rounded-xl border transition-colors ${
-                        isExpanded ? 'border-emerald-500/30 bg-white/5' : 'border-white/10 bg-white/[0.02]'
+                        isExpanded ? 'border-[#c99b4a]/30 bg-[#f7f3f2]' : 'border-[rgba(201,155,74,0.08)] bg-white'
                       } ${!user.isActive ? 'border-yellow-500/20' : ''}`}>
                         {/* User Card Header */}
                         <div
@@ -1848,7 +1848,7 @@ Please analyze this error and provide a fix.
                           {/* Name + Info */}
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 flex-wrap">
-                              <span className="text-white font-semibold">{user.name}</span>
+                              <span className="text-[#2b241d] font-semibold">{user.name}</span>
                               <span className={`px-2 py-0.5 rounded-full text-xs ${
                                 user.role === 'ARCHITECT' ? 'bg-blue-500/20 text-blue-400'
                                 : user.role === 'ADMIN' ? 'bg-red-500/20 text-red-400'
@@ -1866,12 +1866,12 @@ Please analyze this error and provide a fix.
                                 </span>
                               )}
                             </div>
-                            <p className="text-white/50 text-sm truncate mt-0.5" dir="ltr">{user.email}</p>
+                            <p className="text-[#a89b8a] text-sm truncate mt-0.5" dir="ltr">{user.email}</p>
                           </div>
 
                           {/* Expand Arrow */}
                           <div className="flex-shrink-0">
-                            {isExpanded ? <ChevronUp size={20} className="text-emerald-400" /> : <ChevronDown size={20} className="text-white/40" />}
+                            {isExpanded ? <ChevronUp size={20} className="text-[#c99b4a]" /> : <ChevronDown size={20} className="text-[#a89b8a]" />}
                           </div>
                         </div>
 
@@ -1880,26 +1880,26 @@ Please analyze this error and provide a fix.
                           <motion.div
                             initial={{ opacity: 0, height: 0 }}
                             animate={{ opacity: 1, height: 'auto' }}
-                            className="border-t border-white/10"
+                            className="border-t border-[rgba(201,155,74,0.08)]"
                           >
                             <div className="p-4 space-y-5">
                               {/* Edit toggle */}
                               <div className="flex items-center justify-between">
-                                <h3 className="text-white font-semibold">פרטי {user.name}</h3>
+                                <h3 className="text-[#2b241d] font-semibold">פרטי {user.name}</h3>
                                 {user.role !== 'ADMIN' && (
                                   editingUserId === user.id ? (
                                     <div className="flex items-center gap-2">
                                       <button
                                         onClick={() => handleSaveUser(user.id)}
                                         disabled={savingUser}
-                                        className="px-3 py-1.5 bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 rounded-lg text-sm flex items-center gap-1.5 disabled:opacity-50"
+                                        className="px-3 py-1.5 bg-[#c99b4a]/15 border border-[#c99b4a]/30 text-[#c99b4a] rounded-lg text-sm flex items-center gap-1.5 disabled:opacity-50"
                                       >
                                         {savingUser ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}
                                         שמור
                                       </button>
                                       <button
                                         onClick={() => setEditingUserId(null)}
-                                        className="px-3 py-1.5 bg-white/10 border border-white/20 text-white/70 rounded-lg text-sm flex items-center gap-1.5"
+                                        className="px-3 py-1.5 bg-[#f7f3f2] border border-[rgba(201,155,74,0.12)] text-[#8b7c69] rounded-lg text-sm flex items-center gap-1.5"
                                       >
                                         <X size={14} />
                                         ביטול
@@ -1908,7 +1908,7 @@ Please analyze this error and provide a fix.
                                   ) : (
                                     <button
                                       onClick={() => startEditUser(user)}
-                                      className="px-3 py-1.5 bg-white/10 border border-white/20 text-white/70 rounded-lg text-sm flex items-center gap-1.5"
+                                      className="px-3 py-1.5 bg-[#f7f3f2] border border-[rgba(201,155,74,0.12)] text-[#8b7c69] rounded-lg text-sm flex items-center gap-1.5"
                                     >
                                       <Edit3 size={14} />
                                       עריכה
@@ -1919,50 +1919,50 @@ Please analyze this error and provide a fix.
 
                               {/* User Basic Info */}
                               <div className="space-y-4">
-                                <h4 className="text-white font-medium flex items-center gap-2 text-sm">
-                                  <Users size={14} className="text-emerald-400" />
+                                <h4 className="text-[#2b241d] font-medium flex items-center gap-2 text-sm">
+                                  <Users size={14} className="text-[#c99b4a]" />
                                   פרטי משתמש
                                 </h4>
                                 {editingUserId === user.id ? (
                                   <div className="space-y-3">
                                     <div>
-                                      <label className="text-white/40 text-xs mb-1 block">שם</label>
-                                      <input value={editForm.name || ''} onChange={(e) => setEditForm(f => ({ ...f, name: e.target.value }))} className="w-full px-3 py-2.5 bg-white/10 border border-white/20 rounded-lg text-white text-sm focus:outline-none focus:border-emerald-500" />
+                                      <label className="text-[#a89b8a] text-xs mb-1 block">שם</label>
+                                      <input value={editForm.name || ''} onChange={(e) => setEditForm(f => ({ ...f, name: e.target.value }))} className="w-full px-3 py-2.5 bg-[#f7f3f2] border border-[rgba(201,155,74,0.12)] rounded-lg text-[#2b241d] text-sm focus:outline-none focus:border-[#c99b4a]" />
                                     </div>
                                     <div>
-                                      <label className="text-white/40 text-xs mb-1 block">טלפון</label>
-                                      <input value={editForm.phone || ''} onChange={(e) => setEditForm(f => ({ ...f, phone: e.target.value }))} className="w-full px-3 py-2.5 bg-white/10 border border-white/20 rounded-lg text-white text-sm focus:outline-none focus:border-emerald-500" dir="ltr" />
+                                      <label className="text-[#a89b8a] text-xs mb-1 block">טלפון</label>
+                                      <input value={editForm.phone || ''} onChange={(e) => setEditForm(f => ({ ...f, phone: e.target.value }))} className="w-full px-3 py-2.5 bg-[#f7f3f2] border border-[rgba(201,155,74,0.12)] rounded-lg text-[#2b241d] text-sm focus:outline-none focus:border-[#c99b4a]" dir="ltr" />
                                     </div>
                                     <div>
-                                      <label className="text-white/40 text-xs mb-1 block">כתובת</label>
-                                      <input value={editForm.address || ''} onChange={(e) => setEditForm(f => ({ ...f, address: e.target.value }))} className="w-full px-3 py-2.5 bg-white/10 border border-white/20 rounded-lg text-white text-sm focus:outline-none focus:border-emerald-500" />
+                                      <label className="text-[#a89b8a] text-xs mb-1 block">כתובת</label>
+                                      <input value={editForm.address || ''} onChange={(e) => setEditForm(f => ({ ...f, address: e.target.value }))} className="w-full px-3 py-2.5 bg-[#f7f3f2] border border-[rgba(201,155,74,0.12)] rounded-lg text-[#2b241d] text-sm focus:outline-none focus:border-[#c99b4a]" />
                                     </div>
                                     <div>
-                                      <label className="text-white/40 text-xs mb-1 block">חברה</label>
-                                      <input value={editForm.company || ''} onChange={(e) => setEditForm(f => ({ ...f, company: e.target.value }))} className="w-full px-3 py-2.5 bg-white/10 border border-white/20 rounded-lg text-white text-sm focus:outline-none focus:border-emerald-500" />
+                                      <label className="text-[#a89b8a] text-xs mb-1 block">חברה</label>
+                                      <input value={editForm.company || ''} onChange={(e) => setEditForm(f => ({ ...f, company: e.target.value }))} className="w-full px-3 py-2.5 bg-[#f7f3f2] border border-[rgba(201,155,74,0.12)] rounded-lg text-[#2b241d] text-sm focus:outline-none focus:border-[#c99b4a]" />
                                     </div>
                                   </div>
                                 ) : (
                                   <div className="space-y-2 text-sm">
                                     <div className="flex justify-between">
-                                      <span className="text-white/40">שם:</span>
-                                      <span className="text-white">{user.name}</span>
+                                      <span className="text-[#a89b8a]">שם:</span>
+                                      <span className="text-[#2b241d]">{user.name}</span>
                                     </div>
                                     <div className="flex justify-between">
-                                      <span className="text-white/40">אימייל:</span>
+                                      <span className="text-[#a89b8a]">אימייל:</span>
                                       <span className="text-white text-xs" dir="ltr">{user.email}</span>
                                     </div>
                                     <div className="flex justify-between">
-                                      <span className="text-white/40">טלפון:</span>
-                                      <span className="text-white" dir="ltr">{user.phone || 'לא צוין'}</span>
+                                      <span className="text-[#a89b8a]">טלפון:</span>
+                                      <span className="text-[#2b241d]" dir="ltr">{user.phone || 'לא צוין'}</span>
                                     </div>
                                     <div className="flex justify-between">
-                                      <span className="text-white/40">כתובת:</span>
-                                      <span className="text-white">{user.address || 'לא צוינה'}</span>
+                                      <span className="text-[#a89b8a]">כתובת:</span>
+                                      <span className="text-[#2b241d]">{user.address || 'לא צוינה'}</span>
                                     </div>
                                     <div className="flex justify-between">
-                                      <span className="text-white/40">חברה:</span>
-                                      <span className="text-white">{user.company || sp?.companyName || 'לא צוינה'}</span>
+                                      <span className="text-[#a89b8a]">חברה:</span>
+                                      <span className="text-[#2b241d]">{user.company || sp?.companyName || 'לא צוינה'}</span>
                                     </div>
                                   </div>
                                 )}
@@ -1970,29 +1970,29 @@ Please analyze this error and provide a fix.
 
                               {/* Dates */}
                               <div className="space-y-2">
-                                <h4 className="text-white font-medium flex items-center gap-2 text-sm">
-                                  <Calendar size={14} className="text-emerald-400" />
+                                <h4 className="text-[#2b241d] font-medium flex items-center gap-2 text-sm">
+                                  <Calendar size={14} className="text-[#c99b4a]" />
                                   תאריכים וסטטוס
                                 </h4>
                                 <div className="space-y-1.5 text-sm">
                                   <div className="flex justify-between">
-                                    <span className="text-white/40">נרשם:</span>
+                                    <span className="text-[#a89b8a]">נרשם:</span>
                                     <span className="text-white text-xs">{new Date(user.createdAt).toLocaleString('he-IL')}</span>
                                   </div>
                                   {user.activatedAt && (
                                     <div className="flex justify-between">
-                                      <span className="text-white/40">אושר:</span>
+                                      <span className="text-[#a89b8a]">אושר:</span>
                                       <span className="text-white text-xs">{new Date(user.activatedAt).toLocaleString('he-IL')}</span>
                                     </div>
                                   )}
                                   {user.updatedAt && (
                                     <div className="flex justify-between">
-                                      <span className="text-white/40">עודכן:</span>
+                                      <span className="text-[#a89b8a]">עודכן:</span>
                                       <span className="text-white text-xs">{new Date(user.updatedAt).toLocaleString('he-IL')}</span>
                                     </div>
                                   )}
                                   <div className="flex justify-between items-center">
-                                    <span className="text-white/40">תפקיד:</span>
+                                    <span className="text-[#a89b8a]">תפקיד:</span>
                                     <span className={`px-2 py-0.5 rounded-full text-xs ${
                                       user.role === 'ARCHITECT' ? 'bg-blue-500/20 text-blue-400'
                                       : user.role === 'ADMIN' ? 'bg-red-500/20 text-red-400'
@@ -2000,8 +2000,8 @@ Please analyze this error and provide a fix.
                                     }`}>{roleLabels[user.role] || user.role}</span>
                                   </div>
                                   <div className="flex justify-between">
-                                    <span className="text-white/40">מזהה:</span>
-                                    <span className="text-white/40 text-[10px] font-mono break-all" dir="ltr">{user.id}</span>
+                                    <span className="text-[#a89b8a]">מזהה:</span>
+                                    <span className="text-[#a89b8a] text-[10px] font-mono break-all" dir="ltr">{user.id}</span>
                                   </div>
                                 </div>
                               </div>
@@ -2009,52 +2009,52 @@ Please analyze this error and provide a fix.
                               {/* Supplier Profile */}
                               {user.role === 'SUPPLIER' && sp && (
                                 <div className="space-y-3">
-                                  <h4 className="text-white font-medium flex items-center gap-2 text-sm">
+                                  <h4 className="text-[#2b241d] font-medium flex items-center gap-2 text-sm">
                                     <Building2 size={14} className="text-purple-400" />
                                     פרופיל ספק
                                   </h4>
                                   {editingUserId === user.id ? (
                                     <div className="space-y-3">
                                       <div>
-                                        <label className="text-white/40 text-xs mb-1 block">שם חברה</label>
-                                        <input value={editForm.sp_companyName || ''} onChange={(e) => setEditForm(f => ({ ...f, sp_companyName: e.target.value }))} className="w-full px-3 py-2.5 bg-white/10 border border-white/20 rounded-lg text-white text-sm focus:outline-none focus:border-emerald-500" />
+                                        <label className="text-[#a89b8a] text-xs mb-1 block">שם חברה</label>
+                                        <input value={editForm.sp_companyName || ''} onChange={(e) => setEditForm(f => ({ ...f, sp_companyName: e.target.value }))} className="w-full px-3 py-2.5 bg-[#f7f3f2] border border-[rgba(201,155,74,0.12)] rounded-lg text-[#2b241d] text-sm focus:outline-none focus:border-[#c99b4a]" />
                                       </div>
                                       <div>
-                                        <label className="text-white/40 text-xs mb-1 block">תיאור</label>
-                                        <textarea value={editForm.sp_description || ''} onChange={(e) => setEditForm(f => ({ ...f, sp_description: e.target.value }))} rows={2} className="w-full px-3 py-2.5 bg-white/10 border border-white/20 rounded-lg text-white text-sm focus:outline-none focus:border-emerald-500 resize-none" />
+                                        <label className="text-[#a89b8a] text-xs mb-1 block">תיאור</label>
+                                        <textarea value={editForm.sp_description || ''} onChange={(e) => setEditForm(f => ({ ...f, sp_description: e.target.value }))} rows={2} className="w-full px-3 py-2.5 bg-[#f7f3f2] border border-[rgba(201,155,74,0.12)] rounded-lg text-[#2b241d] text-sm focus:outline-none focus:border-[#c99b4a] resize-none" />
                                       </div>
                                       <div>
-                                        <label className="text-white/40 text-xs mb-1 block">טלפון ספק</label>
-                                        <input value={editForm.sp_phone || ''} onChange={(e) => setEditForm(f => ({ ...f, sp_phone: e.target.value }))} className="w-full px-3 py-2.5 bg-white/10 border border-white/20 rounded-lg text-white text-sm focus:outline-none focus:border-emerald-500" dir="ltr" />
+                                        <label className="text-[#a89b8a] text-xs mb-1 block">טלפון ספק</label>
+                                        <input value={editForm.sp_phone || ''} onChange={(e) => setEditForm(f => ({ ...f, sp_phone: e.target.value }))} className="w-full px-3 py-2.5 bg-[#f7f3f2] border border-[rgba(201,155,74,0.12)] rounded-lg text-[#2b241d] text-sm focus:outline-none focus:border-[#c99b4a]" dir="ltr" />
                                       </div>
                                       <div>
-                                        <label className="text-white/40 text-xs mb-1 block">כתובת ספק</label>
-                                        <input value={editForm.sp_address || ''} onChange={(e) => setEditForm(f => ({ ...f, sp_address: e.target.value }))} className="w-full px-3 py-2.5 bg-white/10 border border-white/20 rounded-lg text-white text-sm focus:outline-none focus:border-emerald-500" />
+                                        <label className="text-[#a89b8a] text-xs mb-1 block">כתובת ספק</label>
+                                        <input value={editForm.sp_address || ''} onChange={(e) => setEditForm(f => ({ ...f, sp_address: e.target.value }))} className="w-full px-3 py-2.5 bg-[#f7f3f2] border border-[rgba(201,155,74,0.12)] rounded-lg text-[#2b241d] text-sm focus:outline-none focus:border-[#c99b4a]" />
                                       </div>
                                       <div>
-                                        <label className="text-white/40 text-xs mb-1 block">אתר</label>
-                                        <input value={editForm.sp_website || ''} onChange={(e) => setEditForm(f => ({ ...f, sp_website: e.target.value }))} className="w-full px-3 py-2.5 bg-white/10 border border-white/20 rounded-lg text-white text-sm focus:outline-none focus:border-emerald-500" dir="ltr" />
+                                        <label className="text-[#a89b8a] text-xs mb-1 block">אתר</label>
+                                        <input value={editForm.sp_website || ''} onChange={(e) => setEditForm(f => ({ ...f, sp_website: e.target.value }))} className="w-full px-3 py-2.5 bg-[#f7f3f2] border border-[rgba(201,155,74,0.12)] rounded-lg text-[#2b241d] text-sm focus:outline-none focus:border-[#c99b4a]" dir="ltr" />
                                       </div>
                                       <div>
-                                        <label className="text-white/40 text-xs mb-1 block">פייסבוק</label>
-                                        <input value={editForm.sp_facebook || ''} onChange={(e) => setEditForm(f => ({ ...f, sp_facebook: e.target.value }))} className="w-full px-3 py-2.5 bg-white/10 border border-white/20 rounded-lg text-white text-sm focus:outline-none focus:border-emerald-500" dir="ltr" />
+                                        <label className="text-[#a89b8a] text-xs mb-1 block">פייסבוק</label>
+                                        <input value={editForm.sp_facebook || ''} onChange={(e) => setEditForm(f => ({ ...f, sp_facebook: e.target.value }))} className="w-full px-3 py-2.5 bg-[#f7f3f2] border border-[rgba(201,155,74,0.12)] rounded-lg text-[#2b241d] text-sm focus:outline-none focus:border-[#c99b4a]" dir="ltr" />
                                       </div>
                                       <div>
-                                        <label className="text-white/40 text-xs mb-1 block">אינסטגרם</label>
-                                        <input value={editForm.sp_instagram || ''} onChange={(e) => setEditForm(f => ({ ...f, sp_instagram: e.target.value }))} className="w-full px-3 py-2.5 bg-white/10 border border-white/20 rounded-lg text-white text-sm focus:outline-none focus:border-emerald-500" dir="ltr" />
+                                        <label className="text-[#a89b8a] text-xs mb-1 block">אינסטגרם</label>
+                                        <input value={editForm.sp_instagram || ''} onChange={(e) => setEditForm(f => ({ ...f, sp_instagram: e.target.value }))} className="w-full px-3 py-2.5 bg-[#f7f3f2] border border-[rgba(201,155,74,0.12)] rounded-lg text-[#2b241d] text-sm focus:outline-none focus:border-[#c99b4a]" dir="ltr" />
                                       </div>
                                       <div>
-                                        <label className="text-white/40 text-xs mb-1 block">לינקדאין</label>
-                                        <input value={editForm.sp_linkedin || ''} onChange={(e) => setEditForm(f => ({ ...f, sp_linkedin: e.target.value }))} className="w-full px-3 py-2.5 bg-white/10 border border-white/20 rounded-lg text-white text-sm focus:outline-none focus:border-emerald-500" dir="ltr" />
+                                        <label className="text-[#a89b8a] text-xs mb-1 block">לינקדאין</label>
+                                        <input value={editForm.sp_linkedin || ''} onChange={(e) => setEditForm(f => ({ ...f, sp_linkedin: e.target.value }))} className="w-full px-3 py-2.5 bg-[#f7f3f2] border border-[rgba(201,155,74,0.12)] rounded-lg text-[#2b241d] text-sm focus:outline-none focus:border-[#c99b4a]" dir="ltr" />
                                       </div>
                                     </div>
                                   ) : (
                                     <div className="space-y-1.5 text-sm">
-                                      {sp.companyName && <div className="flex justify-between"><span className="text-white/40">חברה:</span><span className="text-white">{sp.companyName}</span></div>}
-                                      {sp.phone && <div className="flex justify-between"><span className="text-white/40">טלפון:</span><span className="text-white" dir="ltr">{sp.phone}</span></div>}
-                                      {sp.address && <div className="flex justify-between"><span className="text-white/40">כתובת:</span><span className="text-white">{sp.address}</span></div>}
-                                      {sp.website && <div className="flex justify-between"><span className="text-white/40">אתר:</span><a href={sp.website} target="_blank" rel="noopener noreferrer" className="text-emerald-400 hover:underline text-xs" dir="ltr">{sp.website}</a></div>}
-                                      {sp.description && <div className="mt-2"><span className="text-white/40 text-xs">תיאור:</span><p className="text-white/70 mt-1 text-xs">{sp.description}</p></div>}
+                                      {sp.companyName && <div className="flex justify-between"><span className="text-[#a89b8a]">חברה:</span><span className="text-[#2b241d]">{sp.companyName}</span></div>}
+                                      {sp.phone && <div className="flex justify-between"><span className="text-[#a89b8a]">טלפון:</span><span className="text-[#2b241d]" dir="ltr">{sp.phone}</span></div>}
+                                      {sp.address && <div className="flex justify-between"><span className="text-[#a89b8a]">כתובת:</span><span className="text-[#2b241d]">{sp.address}</span></div>}
+                                      {sp.website && <div className="flex justify-between"><span className="text-[#a89b8a]">אתר:</span><a href={sp.website} target="_blank" rel="noopener noreferrer" className="text-[#c99b4a] hover:underline text-xs" dir="ltr">{sp.website}</a></div>}
+                                      {sp.description && <div className="mt-2"><span className="text-[#a89b8a] text-xs">תיאור:</span><p className="text-[#8b7c69] mt-1 text-xs">{sp.description}</p></div>}
                                       <div className="flex items-center gap-3 mt-2">
                                         {sp.facebook && <a href={sp.facebook} target="_blank" rel="noopener noreferrer" className="text-blue-400"><Facebook size={16} /></a>}
                                         {sp.instagram && <a href={sp.instagram} target="_blank" rel="noopener noreferrer" className="text-pink-400"><Instagram size={16} /></a>}
@@ -2068,16 +2068,16 @@ Please analyze this error and provide a fix.
                               {/* Architect Profile */}
                               {user.role === 'ARCHITECT' && ap && (
                                 <div className="space-y-2">
-                                  <h4 className="text-white font-medium flex items-center gap-2 text-sm">
+                                  <h4 className="text-[#2b241d] font-medium flex items-center gap-2 text-sm">
                                     <Building2 size={14} className="text-blue-400" />
                                     פרופיל אדריכל
                                   </h4>
                                   <div className="space-y-1.5 text-sm">
-                                    {ap.licenseNumber && <div className="flex justify-between"><span className="text-white/40">מס׳ רישיון:</span><span className="text-white">{ap.licenseNumber}</span></div>}
-                                    {ap.experience && <div className="flex justify-between"><span className="text-white/40">ניסיון:</span><span className="text-white">{ap.experience} שנים</span></div>}
+                                    {ap.licenseNumber && <div className="flex justify-between"><span className="text-[#a89b8a]">מס׳ רישיון:</span><span className="text-[#2b241d]">{ap.licenseNumber}</span></div>}
+                                    {ap.experience && <div className="flex justify-between"><span className="text-[#a89b8a]">ניסיון:</span><span className="text-[#2b241d]">{ap.experience} שנים</span></div>}
                                     {ap.specialties && ap.specialties.length > 0 && (
                                       <div>
-                                        <span className="text-white/40 text-xs">התמחויות:</span>
+                                        <span className="text-[#a89b8a] text-xs">התמחויות:</span>
                                         <div className="flex flex-wrap gap-1 mt-1">
                                           {ap.specialties.map((s, i) => (
                                             <span key={i} className="px-2 py-0.5 bg-blue-500/10 text-blue-400 rounded-full text-xs">{s}</span>
@@ -2092,13 +2092,13 @@ Please analyze this error and provide a fix.
                               {/* Images Gallery */}
                               {allImages.length > 0 && (
                                 <div className="space-y-2">
-                                  <h4 className="text-white font-medium flex items-center gap-2 text-sm">
-                                    <ImageIcon size={14} className="text-emerald-400" />
+                                  <h4 className="text-[#2b241d] font-medium flex items-center gap-2 text-sm">
+                                    <ImageIcon size={14} className="text-[#c99b4a]" />
                                     תמונות ({allImages.length})
                                   </h4>
                                   <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
                                     {allImages.map((img, idx) => (
-                                      <div key={idx} className="relative aspect-square rounded-lg overflow-hidden border border-white/10 hover:border-emerald-500/50 transition-colors group">
+                                      <div key={idx} className="relative aspect-square rounded-lg overflow-hidden border border-[rgba(201,155,74,0.08)] hover:border-[#c99b4a]/50 transition-colors group">
                                         <a href={img} target="_blank" rel="noopener noreferrer">
                                           <Image src={img} alt={`תמונה ${idx + 1}`} fill className="object-cover" unoptimized />
                                         </a>
@@ -2110,7 +2110,7 @@ Please analyze this error and provide a fix.
                               )}
 
                               {/* Quick Actions */}
-                              <div className="flex flex-wrap gap-2 pt-3 border-t border-white/10">
+                              <div className="flex flex-wrap gap-2 pt-3 border-t border-[rgba(201,155,74,0.08)]">
                                 {user.isActive && user.role !== 'ADMIN' && (
                                   <button
                                     onClick={() => handleLoginAsUser(user.id)}
@@ -2125,7 +2125,7 @@ Please analyze this error and provide a fix.
                                   <button
                                     onClick={() => handleApproveUser(user.id)}
                                     disabled={approvingUser === user.id}
-                                    className="flex-1 min-w-[120px] py-2.5 bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 rounded-lg text-sm flex items-center justify-center gap-2 disabled:opacity-50"
+                                    className="flex-1 min-w-[120px] py-2.5 bg-[#c99b4a]/15 border border-[#c99b4a]/30 text-[#c99b4a] rounded-lg text-sm flex items-center justify-center gap-2 disabled:opacity-50"
                                   >
                                     {approvingUser === user.id ? <Loader2 size={14} className="animate-spin" /> : <UserCheck size={14} />}
                                     אשר משתמש
@@ -2172,33 +2172,33 @@ Please analyze this error and provide a fix.
             animate={{ opacity: 1, y: 0 }}
           >
             {/* Search & Filter Bar */}
-            <div className="bg-white/5 backdrop-blur border border-white/10 rounded-2xl p-4 mb-6">
+            <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-4 mb-6">
               <div className="flex flex-col sm:flex-row gap-3">
                 <div className="flex-1 relative">
-                  <Search size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40" />
+                  <Search size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#a89b8a]" />
                   <input
                     type="text"
                     value={invoiceSearch}
                     onChange={(e) => setInvoiceSearch(e.target.value)}
                     placeholder="חיפוש לפי שם, אימייל, ספק או סכום..."
-                    className="w-full pr-10 pl-4 py-2.5 bg-white/10 border border-white/20 rounded-xl text-white text-sm placeholder-white/40 focus:outline-none focus:border-emerald-500"
+                    className="w-full pr-10 pl-4 py-2.5 bg-[#f7f3f2] border border-[rgba(201,155,74,0.12)] rounded-xl text-[#2b241d] text-sm placeholder:text-[#a89b8a] focus:outline-none focus:border-[#c99b4a]"
                   />
                 </div>
                 <select
                   value={invoiceStatusFilter}
                   onChange={(e) => setInvoiceStatusFilter(e.target.value)}
-                  className="px-4 py-2.5 bg-white/10 border border-white/20 rounded-xl text-white text-sm focus:outline-none focus:border-emerald-500 appearance-none cursor-pointer"
+                  className="px-4 py-2.5 bg-[#f7f3f2] border border-[rgba(201,155,74,0.12)] rounded-xl text-[#2b241d] text-sm focus:outline-none focus:border-[#c99b4a] appearance-none cursor-pointer"
                 >
-                  <option value="" className="bg-[#0f2620]">כל הסטטוסים</option>
-                  <option value="PENDING_ADMIN" className="bg-[#0f2620]">ממתין לאישור</option>
-                  <option value="APPROVED" className="bg-[#0f2620]">מאושר</option>
-                  <option value="PENDING_SUPPLIER_PAY" className="bg-[#0f2620]">ממתין לתשלום</option>
-                  <option value="PAID" className="bg-[#0f2620]">שולם</option>
-                  <option value="REJECTED" className="bg-[#0f2620]">נדחה</option>
-                  <option value="OVERDUE" className="bg-[#0f2620]">באיחור</option>
+                  <option value="" className="bg-[#f7f3f2]">כל הסטטוסים</option>
+                  <option value="PENDING_ADMIN" className="bg-[#f7f3f2]">ממתין לאישור</option>
+                  <option value="APPROVED" className="bg-[#f7f3f2]">מאושר</option>
+                  <option value="PENDING_SUPPLIER_PAY" className="bg-[#f7f3f2]">ממתין לתשלום</option>
+                  <option value="PAID" className="bg-[#f7f3f2]">שולם</option>
+                  <option value="REJECTED" className="bg-[#f7f3f2]">נדחה</option>
+                  <option value="OVERDUE" className="bg-[#f7f3f2]">באיחור</option>
                 </select>
               </div>
-              <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-3 text-xs text-white/50">
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-3 text-xs text-[#a89b8a]">
                 <span>סה"כ: {invoices.length} חשבוניות</span>
                 {invoiceSearch || invoiceStatusFilter ? <span>מוצגות: {filteredInvoices.length}</span> : null}
                 <span>ממתינות: {invoices.filter(inv => inv.status === 'PENDING_ADMIN').length}</span>
@@ -2208,10 +2208,10 @@ Please analyze this error and provide a fix.
 
             <div className="grid lg:grid-cols-2 gap-6">
               {/* Architects Folders */}
-              <div className="bg-white/5 backdrop-blur border border-white/10 rounded-2xl p-3 sm:p-6">
+              <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-3 sm:p-6">
                 <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-xl font-semibold text-white flex items-center gap-2">
-                    <FolderOpen className="text-emerald-400" />
+                  <h2 className="text-xl font-semibold text-[#2b241d] flex items-center gap-2">
+                    <FolderOpen className="text-[#c99b4a]" />
                     חשבוניות לפי אדריכל ({groupedInvoices.length} אדריכלים)
                     {filteredInvoices.filter(inv => inv.status === 'PENDING_ADMIN').length > 0 && (
                       <span className="bg-yellow-500/20 text-yellow-400 text-sm px-2 py-0.5 rounded-full mr-2">
@@ -2224,7 +2224,7 @@ Please analyze this error and provide a fix.
                 {groupedInvoices.length === 0 ? (
                   <div className="text-center py-16">
                     <Receipt className="w-20 h-20 mx-auto text-white/20 mb-4" />
-                    <p className="text-white text-xl font-medium">אין חשבוניות במערכת</p>
+                    <p className="text-[#2b241d] text-xl font-medium">אין חשבוניות במערכת</p>
                   </div>
                 ) : (
                   <div className="space-y-3 max-h-[600px] overflow-y-auto custom-scrollbar">
@@ -2233,27 +2233,27 @@ Please analyze this error and provide a fix.
                       const pendingCount = group.invoices.filter(inv => inv.status === 'PENDING_ADMIN').length;
 
                       return (
-                        <div key={group.architectId} className="border border-white/10 rounded-lg overflow-hidden">
+                        <div key={group.architectId} className="border border-[rgba(201,155,74,0.08)] rounded-lg overflow-hidden">
                           {/* Architect Folder Header */}
                           <div
                             onClick={() => toggleArchitectExpand(group.architectId)}
                             className={`p-3 sm:p-4 cursor-pointer transition-all flex flex-col sm:flex-row sm:items-center gap-2 sm:justify-between ${
-                              isExpanded ? 'bg-emerald-500/10 border-b border-white/10' : 'bg-white/5 hover:bg-white/10'
+                              isExpanded ? 'bg-[#c99b4a]/10 border-b border-[rgba(201,155,74,0.08)]' : 'bg-[#f7f3f2] hover:bg-[#f0ebe6]'
                             }`}
                           >
                             <div className="flex items-center gap-3 min-w-0">
-                              <div className={`p-2 rounded-lg shrink-0 ${isExpanded ? 'bg-emerald-500/20' : 'bg-white/10'}`}>
-                                <FolderOpen size={20} className={isExpanded ? 'text-emerald-400' : 'text-white/60'} />
+                              <div className={`p-2 rounded-lg shrink-0 ${isExpanded ? 'bg-[#c99b4a]/15' : 'bg-white/10'}`}>
+                                <FolderOpen size={20} className={isExpanded ? 'text-[#c99b4a]' : 'text-white/60'} />
                               </div>
                               <div className="min-w-0">
-                                <p className="text-white font-medium truncate">{group.architectName}</p>
-                                <p className="text-white/50 text-xs truncate">{group.architectEmail}</p>
+                                <p className="text-[#2b241d] font-medium truncate">{group.architectName}</p>
+                                <p className="text-[#a89b8a] text-xs truncate">{group.architectEmail}</p>
                               </div>
                             </div>
                             <div className="flex items-center gap-3 sm:gap-4 mr-9 sm:mr-0">
                               <div className="text-left">
-                                <p className="text-emerald-400 font-bold text-sm sm:text-base">₪{group.totalAmount.toLocaleString()}</p>
-                                <p className="text-white/50 text-xs">{group.invoices.length} חשבוניות</p>
+                                <p className="text-[#c99b4a] font-bold text-sm sm:text-base">₪{group.totalAmount.toLocaleString()}</p>
+                                <p className="text-[#a89b8a] text-xs">{group.invoices.length} חשבוניות</p>
                               </div>
                               {pendingCount > 0 && (
                                 <span className="bg-yellow-500/20 text-yellow-400 text-xs px-2 py-1 rounded-full whitespace-nowrap">
@@ -2299,10 +2299,10 @@ Please analyze this error and provide a fix.
                                     onClick={() => setSelectedInvoice(invoice)}
                                     className={`p-3 rounded-lg cursor-pointer transition-all flex items-center justify-between ${
                                       selectedInvoice?.id === invoice.id
-                                        ? 'border border-emerald-500/50 bg-emerald-500/10'
+                                        ? 'border border-[#c99b4a]/50 bg-[#c99b4a]/10'
                                         : isApprovedWithMismatch
                                           ? 'border border-red-500/40 bg-red-500/10 hover:border-red-500/60'
-                                          : 'border border-white/5 bg-white/5 hover:border-white/20'
+                                          : 'border border-[rgba(201,155,74,0.08)] bg-[#f7f3f2] hover:border-[rgba(201,155,74,0.15)]'
                                     }`}
                                   >
                                     <div className="flex items-center gap-3">
@@ -2310,8 +2310,8 @@ Please analyze this error and provide a fix.
                                         <Receipt size={14} className={isApprovedWithMismatch ? 'text-red-400' : status.text} />
                                       </div>
                                       <div>
-                                        <p className="text-white font-medium text-sm">₪{invoice.amount.toLocaleString()}</p>
-                                        <p className="text-white/50 text-xs">
+                                        <p className="text-[#2b241d] font-medium text-sm">₪{invoice.amount.toLocaleString()}</p>
+                                        <p className="text-[#a89b8a] text-xs">
                                           {invoice.supplier.companyName || invoice.supplier.user.name}
                                         </p>
                                       </div>
@@ -2329,8 +2329,8 @@ Please analyze this error and provide a fix.
                                               confirmButtonText: `תקן ל-₪${invoice.aiExtractedAmount!.toLocaleString()}`,
                                               cancelButtonText: 'ביטול',
                                               confirmButtonColor: '#f59e0b',
-                                              background: '#0f2620',
-                                              color: '#fff',
+                                              background: '#f7f3f2',
+                                              color: '#2b241d',
                                             });
                                             if (result.isConfirmed) {
                                               try {
@@ -2341,10 +2341,10 @@ Please analyze this error and provide a fix.
                                                   body: JSON.stringify({ amount: invoice.aiExtractedAmount }),
                                                 });
                                                 await fetchInvoices();
-                                                Swal.fire({ title: 'תוקן!', text: `הסכום עודכן ל-₪${invoice.aiExtractedAmount?.toLocaleString()}`, icon: 'success', background: '#0f2620', color: '#fff', timer: 1500, showConfirmButton: false });
+                                                Swal.fire({ title: 'תוקן!', text: `הסכום עודכן ל-₪${invoice.aiExtractedAmount?.toLocaleString()}`, icon: 'success', background: '#f7f3f2', color: '#2b241d', timer: 1500, showConfirmButton: false });
                                               } catch (err) {
                                                 console.error(err);
-                                                Swal.fire({ title: 'שגיאה', text: 'לא ניתן לתקן את הסכום', icon: 'error', background: '#0f2620', color: '#fff' });
+                                                Swal.fire({ title: 'שגיאה', text: 'לא ניתן לתקן את הסכום', icon: 'error', background: '#f7f3f2', color: '#2b241d' });
                                               }
                                             }
                                           }}
@@ -2358,7 +2358,7 @@ Please analyze this error and provide a fix.
                                         <span className={`px-2 py-0.5 rounded-full text-xs ${status.bg} ${status.text}`}>
                                           {status.label}
                                         </span>
-                                        <p className="text-white/40 text-xs mt-1">
+                                        <p className="text-[#a89b8a] text-xs mt-1">
                                           {new Date(invoice.createdAt).toLocaleDateString('he-IL')}
                                         </p>
                                       </div>
@@ -2391,9 +2391,9 @@ Please analyze this error and provide a fix.
               </div>
 
               {/* Selected Invoice Details */}
-              <div className="bg-white/5 backdrop-blur border border-white/10 rounded-2xl p-6 h-fit sticky top-6">
-                <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-                  <FileText className="text-emerald-400" size={20} />
+              <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6 h-fit sticky top-6">
+                <h2 className="text-lg font-semibold text-[#2b241d] mb-4 flex items-center gap-2">
+                  <FileText className="text-[#c99b4a]" size={20} />
                   פרטי החשבונית
                 </h2>
 
@@ -2407,7 +2407,7 @@ Please analyze this error and provide a fix.
                           <div className="w-16 h-20 bg-red-500/20 border-2 border-red-500/50 rounded-lg flex items-center justify-center mb-3">
                             <FileIcon size={32} className="text-red-400" />
                           </div>
-                          <p className="text-white font-medium mb-3">קובץ PDF</p>
+                          <p className="text-[#2b241d] font-medium mb-3">קובץ PDF</p>
                           <div className="flex gap-2">
                             <a
                               href={selectedInvoice.imageUrl}
@@ -2451,11 +2451,11 @@ Please analyze this error and provide a fix.
                     {/* Invoice Details */}
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <label className="text-white/60 text-sm">סכום</label>
-                        <p className="text-2xl font-bold text-emerald-400">₪{selectedInvoice.amount.toLocaleString()}</p>
+                        <label className="text-[#8b7c69] text-sm">סכום</label>
+                        <p className="text-2xl font-bold text-[#c99b4a]">₪{selectedInvoice.amount.toLocaleString()}</p>
                       </div>
                       <div>
-                        <label className="text-white/60 text-sm">סטטוס</label>
+                        <label className="text-[#8b7c69] text-sm">סטטוס</label>
                         <p className={`font-medium ${
                           selectedInvoice.status === 'PENDING_ADMIN' ? 'text-yellow-400' :
                           selectedInvoice.status === 'APPROVED' ? 'text-green-400' :
@@ -2476,7 +2476,7 @@ Please analyze this error and provide a fix.
                           <AlertTriangle size={18} className="text-red-400 flex-shrink-0 mt-0.5" />
                           <div>
                             <p className="text-red-400 font-medium text-sm">שים לב! זוהה סכום אחר בחשבונית</p>
-                            <p className="text-white/60 text-xs mt-1">
+                            <p className="text-[#8b7c69] text-xs mt-1">
                               הסכום שהוזן: ₪{selectedInvoice.amount.toLocaleString()} | סכום שזוהה: ₪{selectedInvoice.aiExtractedAmount.toLocaleString()}
                             </p>
                           </div>
@@ -2498,7 +2498,7 @@ Please analyze this error and provide a fix.
                               });
                               await fetchInvoices();
                               setSelectedInvoice(null);
-                              Swal.fire({ title: 'תוקן!', text: `הסכום עודכן ל-₪${selectedInvoice.aiExtractedAmount?.toLocaleString()} והחשבונית אושרה`, icon: 'success', background: '#0f2620', color: '#fff', timer: 2000, showConfirmButton: false });
+                              Swal.fire({ title: 'תוקן!', text: `הסכום עודכן ל-₪${selectedInvoice.aiExtractedAmount?.toLocaleString()} והחשבונית אושרה`, icon: 'success', background: '#f7f3f2', color: '#2b241d', timer: 2000, showConfirmButton: false });
                             } catch (err) {
                               console.error(err);
                             }
@@ -2511,16 +2511,16 @@ Please analyze this error and provide a fix.
                       </div>
                     )}
 
-                    <div className="grid grid-cols-2 gap-4 pt-4 border-t border-white/10">
+                    <div className="grid grid-cols-2 gap-4 pt-4 border-t border-[rgba(201,155,74,0.08)]">
                       <div>
-                        <label className="text-white/60 text-sm">אדריכל</label>
-                        <p className="text-white font-medium">{selectedInvoice.architect.user.name}</p>
-                        <p className="text-white/50 text-xs">{selectedInvoice.architect.user.email}</p>
+                        <label className="text-[#8b7c69] text-sm">אדריכל</label>
+                        <p className="text-[#2b241d] font-medium">{selectedInvoice.architect.user.name}</p>
+                        <p className="text-[#a89b8a] text-xs">{selectedInvoice.architect.user.email}</p>
                       </div>
                       <div>
-                        <label className="text-white/60 text-sm">ספק</label>
-                        <p className="text-white font-medium">{selectedInvoice.supplier.companyName || selectedInvoice.supplier.user.name}</p>
-                        <p className="text-white/50 text-xs">{selectedInvoice.supplier.user.email}</p>
+                        <label className="text-[#8b7c69] text-sm">ספק</label>
+                        <p className="text-[#2b241d] font-medium">{selectedInvoice.supplier.companyName || selectedInvoice.supplier.user.name}</p>
+                        <p className="text-[#a89b8a] text-xs">{selectedInvoice.supplier.user.email}</p>
                       </div>
                     </div>
 
@@ -2533,22 +2533,22 @@ Please analyze this error and provide a fix.
                       <p className="text-sm text-white/60 mb-2">ניתוח AI</p>
                       <div className="space-y-1.5">
                         <div className="flex items-center justify-between">
-                          <span className="text-white/60 text-sm">סכום שהוצהר:</span>
-                          <span className="text-white font-semibold">₪{selectedInvoice.amount.toLocaleString()}</span>
+                          <span className="text-[#8b7c69] text-sm">סכום שהוצהר:</span>
+                          <span className="text-[#2b241d] font-semibold">₪{selectedInvoice.amount.toLocaleString()}</span>
                         </div>
                         <div className="flex items-center justify-between">
-                          <span className="text-white/60 text-sm">סכום שזוהה:</span>
+                          <span className="text-[#8b7c69] text-sm">סכום שזוהה:</span>
                           <span className={selectedInvoice.aiStatus === 'MATCH' ? 'text-green-400 font-semibold' : selectedInvoice.aiStatus === 'MISMATCH' ? 'text-red-400 font-semibold' : 'text-yellow-400 font-semibold'}>
                             {selectedInvoice.aiExtractedAmount ? `₪${selectedInvoice.aiExtractedAmount.toLocaleString()}` : 'לא זוהה'}
                           </span>
                         </div>
                         <div className="flex items-center justify-between">
-                          <span className="text-white/60 text-sm">ביטחון:</span>
-                          <span className="text-white/70 text-sm">{Math.round((selectedInvoice.aiConfidence || 0) * 100)}%</span>
+                          <span className="text-[#8b7c69] text-sm">ביטחון:</span>
+                          <span className="text-[#8b7c69] text-sm">{Math.round((selectedInvoice.aiConfidence || 0) * 100)}%</span>
                         </div>
                         {selectedInvoice.aiStatus && (
-                          <div className="flex items-center justify-between pt-1 border-t border-white/10">
-                            <span className="text-white/60 text-sm">סטטוס:</span>
+                          <div className="flex items-center justify-between pt-1 border-t border-[rgba(201,155,74,0.08)]">
+                            <span className="text-[#8b7c69] text-sm">סטטוס:</span>
                             <span className={`px-2 py-0.5 rounded-full text-xs ${
                               selectedInvoice.aiStatus === 'MATCH' ? 'bg-green-500/30 text-green-400' :
                               selectedInvoice.aiStatus === 'MISMATCH' ? 'bg-red-500/30 text-red-400' :
@@ -2561,9 +2561,9 @@ Please analyze this error and provide a fix.
                       </div>
                     </div>
 
-                    <div className="pt-4 border-t border-white/10">
-                      <label className="text-white/60 text-sm">תאריך העלאה</label>
-                      <p className="text-white">{new Date(selectedInvoice.createdAt).toLocaleString('he-IL')}</p>
+                    <div className="pt-4 border-t border-[rgba(201,155,74,0.08)]">
+                      <label className="text-[#8b7c69] text-sm">תאריך העלאה</label>
+                      <p className="text-[#2b241d]">{new Date(selectedInvoice.createdAt).toLocaleString('he-IL')}</p>
                     </div>
 
                     {/* Action Buttons */}
@@ -2584,8 +2584,8 @@ Please analyze this error and provide a fix.
                                 cancelButtonText: 'לא',
                                 confirmButtonColor: '#f59e0b',
                                 cancelButtonColor: '#6b7280',
-                                background: '#0f2620',
-                                color: '#fff',
+                                background: '#f7f3f2',
+                                color: '#2b241d',
                                 reverseButtons: true,
                               });
 
@@ -2605,10 +2605,10 @@ Please analyze this error and provide a fix.
                                   });
                                   await fetchInvoices();
                                   setSelectedInvoice(null);
-                                  Swal.fire({ title: 'תוקן ואושר!', text: `הסכום עודכן ל-₪${selectedInvoice.aiExtractedAmount?.toLocaleString()} והחשבונית אושרה`, icon: 'success', background: '#0f2620', color: '#fff', timer: 2000, showConfirmButton: false });
+                                  Swal.fire({ title: 'תוקן ואושר!', text: `הסכום עודכן ל-₪${selectedInvoice.aiExtractedAmount?.toLocaleString()} והחשבונית אושרה`, icon: 'success', background: '#f7f3f2', color: '#2b241d', timer: 2000, showConfirmButton: false });
                                 } catch (err) {
                                   console.error(err);
-                                  Swal.fire({ title: 'שגיאה', text: 'שגיאה בתיקון הסכום', icon: 'error', background: '#0f2620', color: '#fff' });
+                                  Swal.fire({ title: 'שגיאה', text: 'שגיאה בתיקון הסכום', icon: 'error', background: '#f7f3f2', color: '#2b241d' });
                                 } finally {
                                   setProcessingInvoice(null);
                                 }
@@ -2621,10 +2621,10 @@ Please analyze this error and provide a fix.
                                   showCancelButton: true,
                                   confirmButtonText: 'כן, אשר',
                                   cancelButtonText: 'לא',
-                                  confirmButtonColor: '#10b981',
+                                  confirmButtonColor: '#c99b4a',
                                   cancelButtonColor: '#6b7280',
-                                  background: '#0f2620',
-                                  color: '#fff',
+                                  background: '#f7f3f2',
+                                  color: '#2b241d',
                                   reverseButtons: true,
                                 });
 
@@ -2640,7 +2640,7 @@ Please analyze this error and provide a fix.
                             }
                           }}
                           disabled={processingInvoice === selectedInvoice.id}
-                          className="flex-1 px-4 py-2 bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 rounded-xl hover:bg-emerald-500/30 transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+                          className="flex-1 px-4 py-2 bg-[#c99b4a]/15 border border-[#c99b4a]/30 text-[#c99b4a] rounded-xl hover:bg-[#c99b4a]/25 transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
                         >
                           {processingInvoice === selectedInvoice.id ? (
                             <Loader2 size={18} className="animate-spin" />
@@ -2661,8 +2661,8 @@ Please analyze this error and provide a fix.
                               confirmButtonText: 'דחה',
                               cancelButtonText: 'ביטול',
                               confirmButtonColor: '#dc2626',
-                              background: '#0f2620',
-                              color: '#fff',
+                              background: '#f7f3f2',
+                              color: '#2b241d',
                             });
                             if (result.isConfirmed) {
                               handleVerifyInvoice(selectedInvoice.id, 'REJECTED', result.value || undefined);
@@ -2692,12 +2692,12 @@ Please analyze this error and provide a fix.
                     </button>
 
                     {selectedInvoice.adminNote && (
-                      <div className="p-3 rounded-lg bg-white/5 border border-white/10">
+                      <div className="p-3 rounded-lg bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)]">
                         <p className="text-sm text-white/60 mb-1 flex items-center gap-1">
                           <MessageSquare size={14} />
                           הערת מנהל
                         </p>
-                        <p className="text-white">{selectedInvoice.adminNote}</p>
+                        <p className="text-[#2b241d]">{selectedInvoice.adminNote}</p>
                       </div>
                     )}
 
@@ -2710,19 +2710,19 @@ Please analyze this error and provide a fix.
                         </p>
                         {selectedInvoice.supplierRef && (
                           <div className="mb-2">
-                            <label className="text-white/60 text-xs">מספר אסמכתא</label>
+                            <label className="text-[#8b7c69] text-xs">מספר אסמכתא</label>
                             <p className="text-white font-mono">{selectedInvoice.supplierRef}</p>
                           </div>
                         )}
                         {selectedInvoice.paidAt && (
                           <div className="mb-2">
-                            <label className="text-white/60 text-xs">תאריך תשלום</label>
-                            <p className="text-white">{new Date(selectedInvoice.paidAt).toLocaleString('he-IL')}</p>
+                            <label className="text-[#8b7c69] text-xs">תאריך תשלום</label>
+                            <p className="text-[#2b241d]">{new Date(selectedInvoice.paidAt).toLocaleString('he-IL')}</p>
                           </div>
                         )}
                         {selectedInvoice.paymentProofUrl && (
                           <div className="mt-3 pt-3 border-t border-green-500/30">
-                            <label className="text-white/60 text-xs block mb-2">מסמך אישור העברה</label>
+                            <label className="text-[#8b7c69] text-xs block mb-2">מסמך אישור העברה</label>
                             {selectedInvoice.paymentProofUrl.toLowerCase().endsWith('.pdf') ? (
                               <div className="flex gap-2">
                                 <a
@@ -2768,7 +2768,7 @@ Please analyze this error and provide a fix.
                 ) : (
                   <div className="text-center py-12">
                     <Receipt className="w-16 h-16 mx-auto text-white/20 mb-4" />
-                    <p className="text-white/50">בחר חשבונית מהרשימה לצפייה בפרטים</p>
+                    <p className="text-[#a89b8a]">בחר חשבונית מהרשימה לצפייה בפרטים</p>
                   </div>
                 )}
               </div>
@@ -2782,9 +2782,9 @@ Please analyze this error and provide a fix.
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
           >
-            <div className="bg-white/5 backdrop-blur border border-white/10 rounded-2xl p-6">
+            <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-semibold text-white flex items-center gap-2">
+                <h2 className="text-xl font-semibold text-[#2b241d] flex items-center gap-2">
                   <Trash className="text-red-400" />
                   סל מחזור ({deletedInvoices.length} חשבוניות)
                 </h2>
@@ -2804,14 +2804,14 @@ Please analyze this error and provide a fix.
                 )}
               </div>
 
-              <p className="text-white/50 text-sm mb-6">
+              <p className="text-[#a89b8a] text-sm mb-6">
                 חשבוניות שנמחקו יישמרו כאן למשך 30 יום לפני מחיקה לצמיתות.
               </p>
 
               {deletedInvoices.length === 0 ? (
                 <div className="text-center py-16">
                   <Trash className="w-20 h-20 mx-auto text-white/20 mb-4" />
-                  <p className="text-white text-xl font-medium">סל המחזור ריק</p>
+                  <p className="text-[#2b241d] text-xl font-medium">סל המחזור ריק</p>
                 </div>
               ) : (
                 <div className="space-y-3">
@@ -2822,16 +2822,16 @@ Please analyze this error and provide a fix.
                     return (
                       <div
                         key={invoice.id}
-                        className="p-4 rounded-lg border border-white/10 bg-white/5 flex items-center justify-between"
+                        className="p-4 rounded-lg border border-[rgba(201,155,74,0.08)] bg-[#f7f3f2] flex items-center justify-between"
                       >
                         <div className="flex items-center gap-4">
                           <div className="p-2 rounded-lg bg-red-500/20">
                             <Receipt size={20} className="text-red-400" />
                           </div>
                           <div>
-                            <p className="text-white font-medium">₪{invoice.amount.toLocaleString()}</p>
-                            <p className="text-white/70 text-sm">{invoice.architect.user.name}</p>
-                            <p className="text-white/50 text-xs">
+                            <p className="text-[#2b241d] font-medium">₪{invoice.amount.toLocaleString()}</p>
+                            <p className="text-[#8b7c69] text-sm">{invoice.architect.user.name}</p>
+                            <p className="text-[#a89b8a] text-xs">
                               נמחק: {deletedDate.toLocaleDateString('he-IL')} •
                               <span className={daysUntilPermanentDelete <= 7 ? 'text-red-400' : 'text-white/50'}>
                                 {' '}{daysUntilPermanentDelete} ימים למחיקה לצמיתות
@@ -2872,34 +2872,34 @@ Please analyze this error and provide a fix.
               )}
 
               {/* ── Deleted Users Section ── */}
-              <div className="mt-8 pt-6 border-t border-white/10">
-                <h2 className="text-xl font-semibold text-white flex items-center gap-2 mb-4">
+              <div className="mt-8 pt-6 border-t border-[rgba(201,155,74,0.08)]">
+                <h2 className="text-xl font-semibold text-[#2b241d] flex items-center gap-2 mb-4">
                   <Users className="text-orange-400" />
                   משתמשים שנמחקו ({deletedUsers.length})
                 </h2>
-                <p className="text-white/50 text-sm mb-4">
+                <p className="text-[#a89b8a] text-sm mb-4">
                   משתמשים שנמחקו נשמרים כאן לצמיתות. ניתן לשחזר בכל עת. החשבוניות שלהם נשמרות במערכת.
                 </p>
 
                 {deletedUsers.length === 0 ? (
                   <div className="text-center py-8">
                     <Users className="w-12 h-12 mx-auto text-white/20 mb-2" />
-                    <p className="text-white/40 text-sm">אין משתמשים מחוקים</p>
+                    <p className="text-[#a89b8a] text-sm">אין משתמשים מחוקים</p>
                   </div>
                 ) : (
                   <div className="space-y-3">
                     {deletedUsers.map((user) => {
                       const deletedDate = (user as any).deletedAt ? new Date((user as any).deletedAt) : new Date();
                       return (
-                        <div key={user.id} className="p-4 rounded-lg border border-white/10 bg-white/5 flex items-center justify-between">
+                        <div key={user.id} className="p-4 rounded-lg border border-[rgba(201,155,74,0.08)] bg-[#f7f3f2] flex items-center justify-between">
                           <div className="flex items-center gap-4">
                             <div className="p-2 rounded-lg bg-orange-500/20">
                               {user.role === 'SUPPLIER' ? <Building2 size={20} className="text-orange-400" /> : <Users size={20} className="text-orange-400" />}
                             </div>
                             <div>
-                              <p className="text-white font-medium">{user.name}</p>
-                              <p className="text-white/70 text-sm">{user.email}</p>
-                              <p className="text-white/50 text-xs">
+                              <p className="text-[#2b241d] font-medium">{user.name}</p>
+                              <p className="text-[#8b7c69] text-sm">{user.email}</p>
+                              <p className="text-[#a89b8a] text-xs">
                                 {user.role === 'SUPPLIER' ? 'ספק' : user.role === 'ARCHITECT' ? 'אדריכל' : user.role} •
                                 נמחק: {deletedDate.toLocaleDateString('he-IL')}
                               </p>
@@ -2938,7 +2938,7 @@ Please analyze this error and provide a fix.
               <button
                 onClick={runScan}
                 disabled={refreshing}
-                className="px-4 py-2 bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 rounded-xl hover:bg-emerald-500/30 transition-colors flex items-center gap-2"
+                className="px-4 py-2 bg-[#c99b4a]/15 border border-[#c99b4a]/30 text-[#c99b4a] rounded-xl hover:bg-[#c99b4a]/25 transition-colors flex items-center gap-2"
               >
                 <Search size={18} className={refreshing ? 'animate-spin' : ''} />
                 הפעל סריקה
@@ -2946,7 +2946,7 @@ Please analyze this error and provide a fix.
               {latestScan?.claudeFormat && (
                 <button
                   onClick={handleCopyScanReport}
-                  className="px-4 py-2 bg-white/10 border border-white/20 text-white/80 rounded-xl hover:bg-white/20 transition-colors flex items-center gap-2"
+                  className="px-4 py-2 bg-[#f7f3f2] border border-[rgba(201,155,74,0.12)] text-[#8b7c69] rounded-xl hover:bg-[#f0ebe6] transition-colors flex items-center gap-2"
                 >
                   <Copy size={18} />
                   {copiedId === 'scan' ? 'הועתק!' : 'העתק ל-Claude'}
@@ -2958,7 +2958,7 @@ Please analyze this error and provide a fix.
               <>
                 {/* Scan Status Banner */}
                 <div
-                  className={`mb-6 bg-white/5 backdrop-blur border rounded-2xl p-6 ${
+                  className={`mb-6 bg-white border rounded-2xl p-6 ${
                     latestScan.isHealthy
                       ? 'border-green-500/30'
                       : 'border-red-500/30'
@@ -2979,7 +2979,7 @@ Please analyze this error and provide a fix.
                     >
                       {latestScan.isHealthy ? 'דוח סטטוס מערכת' : 'התראת מערכת'}
                     </h2>
-                    <p className="text-white/60 mt-2">
+                    <p className="text-[#8b7c69] mt-2">
                       זמן: {new Date(latestScan.createdAt).toLocaleString('he-IL')}
                     </p>
                   </div>
@@ -2987,9 +2987,9 @@ Please analyze this error and provide a fix.
 
                 {/* Scan Stats */}
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-                  <div className="bg-white/5 backdrop-blur border border-white/10 rounded-xl p-4">
+                  <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-xl p-4">
                     <div className="text-center">
-                      <p className="text-white/50 text-sm">בדיקות</p>
+                      <p className="text-[#a89b8a] text-sm">בדיקות</p>
                       <p className="text-3xl font-bold text-white">{latestScan.checksRun}</p>
                     </div>
                   </div>
@@ -3014,8 +3014,8 @@ Please analyze this error and provide a fix.
                 </div>
 
                 {/* Scan Results */}
-                <div className="bg-white/5 backdrop-blur border border-white/10 rounded-2xl p-6">
-                  <h3 className="text-lg font-semibold text-white mb-4">תוצאות הסריקה</h3>
+                <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
+                  <h3 className="text-lg font-semibold text-[#2b241d] mb-4">תוצאות הסריקה</h3>
                   <div className="space-y-2">
                     {(Array.isArray(latestScan.results) ? latestScan.results : []).map((result, i) => {
                       const statusConfig = {
@@ -3034,12 +3034,12 @@ Please analyze this error and provide a fix.
                             <div className="flex items-center gap-3">
                               <span className="text-xl">{config.icon}</span>
                               <div>
-                                <p className="text-white font-medium">{result.name}</p>
-                                <p className="text-white/60 text-sm">{result.message}</p>
+                                <p className="text-[#2b241d] font-medium">{result.name}</p>
+                                <p className="text-[#8b7c69] text-sm">{result.message}</p>
                               </div>
                             </div>
                             {result.responseTime && (
-                              <span className="text-white/50 text-sm">
+                              <span className="text-[#a89b8a] text-sm">
                                 {result.responseTime}ms
                               </span>
                             )}
@@ -3051,11 +3051,11 @@ Please analyze this error and provide a fix.
                 </div>
               </>
             ) : (
-              <div className="bg-white/5 backdrop-blur border border-white/10 rounded-2xl p-6">
+              <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
                 <div className="text-center py-16">
                   <Search className="w-16 h-16 mx-auto text-white/20 mb-4" />
-                  <p className="text-white/60">אין דוחות סריקה</p>
-                  <p className="text-white/50 text-sm mt-2">לחץ על "הפעל סריקה" להפעלת סריקת מערכת</p>
+                  <p className="text-[#8b7c69]">אין דוחות סריקה</p>
+                  <p className="text-[#a89b8a] text-sm mt-2">לחץ על "הפעל סריקה" להפעלת סריקת מערכת</p>
                 </div>
               </div>
             )}
@@ -3078,13 +3078,13 @@ Please analyze this error and provide a fix.
                   { label: 'שגיאות', value: stats.errors, icon: AlertTriangle, color: 'text-orange-400' },
                   { label: 'אזהרות', value: stats.warnings, icon: Info, color: 'text-yellow-300' },
                 ].map((stat, i) => (
-                  <div key={i} className="bg-white/5 backdrop-blur border border-white/10 rounded-xl p-4">
+                  <div key={i} className="bg-white border border-[rgba(201,155,74,0.08)] rounded-xl p-4">
                     <div className="flex items-center gap-3">
                       <div className={`p-2 rounded-lg bg-white/10`}>
                         <stat.icon size={20} className={stat.color} />
                       </div>
                       <div>
-                        <p className="text-white/50 text-sm">{stat.label}</p>
+                        <p className="text-[#a89b8a] text-sm">{stat.label}</p>
                         <p className={`text-2xl font-bold ${stat.color}`}>{stat.value}</p>
                       </div>
                     </div>
@@ -3094,23 +3094,23 @@ Please analyze this error and provide a fix.
             )}
 
             {/* Filters */}
-            <div className="bg-white/5 backdrop-blur border border-white/10 rounded-2xl p-6 mb-6">
+            <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6 mb-6">
               <button
                 type="button"
                 onClick={() => setShowFilters(!showFilters)}
                 className="flex items-center justify-between w-full text-white"
               >
                 <div className="flex items-center gap-2">
-                  <Filter size={18} className="text-emerald-400" />
+                  <Filter size={18} className="text-[#c99b4a]" />
                   <span className="font-medium">סינון תוצאות</span>
                 </div>
                 {showFilters ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
               </button>
 
               {showFilters && (
-                <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t border-white/10">
+                <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t border-[rgba(201,155,74,0.08)]">
                   <div>
-                    <label className="text-white/60 text-sm mb-2 block">חומרה</label>
+                    <label className="text-[#8b7c69] text-sm mb-2 block">חומרה</label>
                     <select
                       value={filter.severity || ''}
                       onChange={(e) =>
@@ -3119,7 +3119,7 @@ Please analyze this error and provide a fix.
                           severity: e.target.value ? (e.target.value as SystemLogSeverity) : undefined,
                         }))
                       }
-                      className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white"
+                      className="w-full bg-[#f7f3f2] border border-[rgba(201,155,74,0.12)] rounded-lg px-4 py-2 text-[#2b241d]"
                     >
                       <option value="">הכל</option>
                       <option value="CRITICAL">קריטי</option>
@@ -3130,7 +3130,7 @@ Please analyze this error and provide a fix.
                   </div>
 
                   <div>
-                    <label className="text-white/60 text-sm mb-2 block">קטגוריה</label>
+                    <label className="text-[#8b7c69] text-sm mb-2 block">קטגוריה</label>
                     <select
                       value={filter.category || ''}
                       onChange={(e) =>
@@ -3139,7 +3139,7 @@ Please analyze this error and provide a fix.
                           category: e.target.value ? (e.target.value as SystemLogCategory) : undefined,
                         }))
                       }
-                      className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white"
+                      className="w-full bg-[#f7f3f2] border border-[rgba(201,155,74,0.12)] rounded-lg px-4 py-2 text-[#2b241d]"
                     >
                       <option value="">הכל</option>
                       {Object.entries(categoryConfig).map(([key, { label }]) => (
@@ -3151,7 +3151,7 @@ Please analyze this error and provide a fix.
                   </div>
 
                   <div>
-                    <label className="text-white/60 text-sm mb-2 block">סטטוס</label>
+                    <label className="text-[#8b7c69] text-sm mb-2 block">סטטוס</label>
                     <select
                       value={filter.resolved === undefined ? '' : filter.resolved.toString()}
                       onChange={(e) =>
@@ -3160,7 +3160,7 @@ Please analyze this error and provide a fix.
                           resolved: e.target.value === '' ? undefined : e.target.value === 'true',
                         }))
                       }
-                      className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white"
+                      className="w-full bg-[#f7f3f2] border border-[rgba(201,155,74,0.12)] rounded-lg px-4 py-2 text-[#2b241d]"
                     >
                       <option value="">הכל</option>
                       <option value="false">לא טופל</option>
@@ -3173,9 +3173,9 @@ Please analyze this error and provide a fix.
 
             {/* Logs List */}
             <div className="grid lg:grid-cols-2 gap-6">
-              <div className="bg-white/5 backdrop-blur border border-white/10 rounded-2xl p-6 h-fit">
-                <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-                  <AlertCircle className="text-emerald-400" size={20} />
+              <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6 h-fit">
+                <h2 className="text-lg font-semibold text-[#2b241d] mb-4 flex items-center gap-2">
+                  <AlertCircle className="text-[#c99b4a]" size={20} />
                   לוגים ({logs.length})
                 </h2>
 
@@ -3183,8 +3183,8 @@ Please analyze this error and provide a fix.
                   {logs.length === 0 ? (
                     <div className="text-center py-12">
                       <CheckCircle className="w-16 h-16 mx-auto text-green-400 mb-4" />
-                      <p className="text-white font-medium">אין תקלות פתוחות</p>
-                      <p className="text-white/60 text-sm">המערכת תקינה</p>
+                      <p className="text-[#2b241d] font-medium">אין תקלות פתוחות</p>
+                      <p className="text-[#8b7c69] text-sm">המערכת תקינה</p>
                     </div>
                   ) : (
                     logs.map((log) => {
@@ -3201,8 +3201,8 @@ Please analyze this error and provide a fix.
                           onClick={() => setSelectedLog(log)}
                           className={`p-4 rounded-lg border cursor-pointer transition-all ${
                             selectedLog?.id === log.id
-                              ? 'border-emerald-500/50 bg-emerald-500/10'
-                              : 'border-white/10 bg-white/5 hover:border-white/20'
+                              ? 'border-[#c99b4a]/50 bg-[#c99b4a]/10'
+                              : 'border-[rgba(201,155,74,0.08)] bg-[#f7f3f2] hover:border-[rgba(201,155,74,0.15)]'
                           }`}
                         >
                           <div className="flex items-start gap-3">
@@ -3219,9 +3219,9 @@ Please analyze this error and provide a fix.
                                   {category.label}
                                 </span>
                               </div>
-                              <p className="text-white font-medium truncate">{log.title}</p>
-                              <p className="text-white/60 text-sm truncate">{log.message}</p>
-                              <div className="flex items-center gap-3 mt-2 text-xs text-white/50">
+                              <p className="text-[#2b241d] font-medium truncate">{log.title}</p>
+                              <p className="text-[#8b7c69] text-sm truncate">{log.message}</p>
+                              <div className="flex items-center gap-3 mt-2 text-xs text-[#a89b8a]">
                                 <span>{new Date(log.createdAt).toLocaleString('he-IL')}</span>
                                 {log.resolved && (
                                   <span className="text-green-400 flex items-center gap-1">
@@ -3240,9 +3240,9 @@ Please analyze this error and provide a fix.
               </div>
 
               {/* Selected Log Details */}
-              <div className="bg-white/5 backdrop-blur border border-white/10 rounded-2xl p-6 h-fit sticky top-6">
-                <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
-                  <FileText className="text-emerald-400" size={20} />
+              <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6 h-fit sticky top-6">
+                <h2 className="text-lg font-semibold text-[#2b241d] mb-4 flex items-center gap-2">
+                  <FileText className="text-[#c99b4a]" size={20} />
                   פרטי הלוג
                 </h2>
 
@@ -3258,11 +3258,11 @@ Please analyze this error and provide a fix.
                           >
                             {(severityConfig[selectedLog.severity] || defaultSeverity).label}
                           </span>
-                          <span className="text-white/50 text-sm">
+                          <span className="text-[#a89b8a] text-sm">
                             {(categoryConfig[selectedLog.category] || defaultCategory).label}
                           </span>
                         </div>
-                        <h3 className="text-xl font-bold text-white">{selectedLog.title}</h3>
+                        <h3 className="text-xl font-bold text-[#2b241d]">{selectedLog.title}</h3>
                       </div>
                       {!selectedLog.resolved && (
                         <button
@@ -3276,14 +3276,14 @@ Please analyze this error and provide a fix.
                     </div>
 
                     <div>
-                      <label className="text-white/60 text-sm">הודעה</label>
+                      <label className="text-[#8b7c69] text-sm">הודעה</label>
                       <p className="text-white mt-1">{selectedLog.message}</p>
                     </div>
 
                     {selectedLog.details && (
                       <div>
-                        <label className="text-white/60 text-sm">פרטים נוספים</label>
-                        <pre className="mt-1 p-3 bg-black/30 rounded-lg text-white/70 text-sm overflow-x-auto">
+                        <label className="text-[#8b7c69] text-sm">פרטים נוספים</label>
+                        <pre className="mt-1 p-3 bg-black/30 rounded-lg text-[#8b7c69] text-sm overflow-x-auto">
                           {selectedLog.details}
                         </pre>
                       </div>
@@ -3291,39 +3291,39 @@ Please analyze this error and provide a fix.
 
                     {selectedLog.stackTrace && (
                       <div>
-                        <label className="text-white/60 text-sm">Stack Trace</label>
+                        <label className="text-[#8b7c69] text-sm">Stack Trace</label>
                         <pre className="mt-1 p-3 bg-black/30 rounded-lg text-red-400/80 text-xs overflow-x-auto max-h-48">
                           {selectedLog.stackTrace}
                         </pre>
                       </div>
                     )}
 
-                    <div className="grid grid-cols-2 gap-4 pt-4 border-t border-white/10">
+                    <div className="grid grid-cols-2 gap-4 pt-4 border-t border-[rgba(201,155,74,0.08)]">
                       <div>
-                        <label className="text-white/60 text-sm">Endpoint</label>
+                        <label className="text-[#8b7c69] text-sm">Endpoint</label>
                         <p className="text-white font-mono text-sm">{selectedLog.endpoint || 'N/A'}</p>
                       </div>
                       <div>
-                        <label className="text-white/60 text-sm">Response Time</label>
+                        <label className="text-[#8b7c69] text-sm">Response Time</label>
                         <p className="text-white font-mono text-sm">
                           {selectedLog.responseTime ? `${selectedLog.responseTime}ms` : 'N/A'}
                         </p>
                       </div>
                       <div>
-                        <label className="text-white/60 text-sm">תאריך יצירה</label>
+                        <label className="text-[#8b7c69] text-sm">תאריך יצירה</label>
                         <p className="text-white text-sm">
                           {new Date(selectedLog.createdAt).toLocaleString('he-IL')}
                         </p>
                       </div>
                       <div>
-                        <label className="text-white/60 text-sm">ID</label>
+                        <label className="text-[#8b7c69] text-sm">ID</label>
                         <p className="text-white font-mono text-xs">{selectedLog.id}</p>
                       </div>
                     </div>
 
                     <button
                       onClick={() => handleCopyToClipboard(selectedLog)}
-                      className="w-full px-4 py-2 bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 rounded-xl hover:bg-emerald-500/30 transition-colors flex items-center justify-center gap-2"
+                      className="w-full px-4 py-2 bg-[#c99b4a]/15 border border-[#c99b4a]/30 text-[#c99b4a] rounded-xl hover:bg-[#c99b4a]/25 transition-colors flex items-center justify-center gap-2"
                     >
                       <Copy size={18} />
                       {copiedId === selectedLog.id ? 'הועתק!' : 'העתק ל-Claude'}
@@ -3332,7 +3332,7 @@ Please analyze this error and provide a fix.
                 ) : (
                   <div className="text-center py-12">
                     <AlertCircle className="w-16 h-16 mx-auto text-white/20 mb-4" />
-                    <p className="text-white/50">בחר לוג מהרשימה לצפייה בפרטים</p>
+                    <p className="text-[#a89b8a]">בחר לוג מהרשימה לצפייה בפרטים</p>
                   </div>
                 )}
               </div>

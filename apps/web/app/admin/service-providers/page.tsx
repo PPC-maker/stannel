@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import Image from 'next/image';
 import { useAdminGuard, AuthGuardLoader } from '@/lib/useAuthGuard';
 import {
   useAdminServiceProviders,
@@ -121,9 +120,9 @@ export default function ManageServiceProvidersPage() {
       showCancelButton: true,
       confirmButtonText: 'הוספה',
       cancelButtonText: 'ביטול',
-      background: '#1a2e2a',
-      color: '#fff',
-      confirmButtonColor: '#10B981',
+      background: '#f7f3f2',
+      color: '#2b241d',
+      confirmButtonColor: '#c99b4a',
       width: 500,
       preConfirm: () => {
         const name = (document.getElementById('swal-name') as HTMLInputElement).value.trim();
@@ -146,9 +145,9 @@ export default function ManageServiceProvidersPage() {
     if (formValues) {
       try {
         await createMutation.mutateAsync(formValues);
-        Swal.fire({ title: 'נוסף!', text: `${formValues.name} נוסף בהצלחה`, icon: 'success', timer: 2000, showConfirmButton: false, background: '#1a2e2a', color: '#fff' });
+        Swal.fire({ title: 'נוסף!', text: `${formValues.name} נוסף בהצלחה`, icon: 'success', timer: 2000, showConfirmButton: false, background: '#f7f3f2', color: '#2b241d' });
       } catch {
-        Swal.fire({ title: 'שגיאה', text: 'לא ניתן להוסיף', icon: 'error', background: '#1a2e2a', color: '#fff' });
+        Swal.fire({ title: 'שגיאה', text: 'לא ניתן להוסיף', icon: 'error', background: '#f7f3f2', color: '#2b241d' });
       }
     }
   };
@@ -168,11 +167,11 @@ export default function ManageServiceProvidersPage() {
           <textarea id="swal-desc" class="swal2-textarea" placeholder="תיאור" style="margin:0; text-align:right; min-height:60px;">${provider.description || ''}</textarea>
           <input id="swal-website" class="swal2-input" placeholder="אתר אינטרנט" value="${provider.website || ''}" style="margin:0; text-align:right;" dir="ltr">
           <input id="swal-address" class="swal2-input" placeholder="כתובת" value="${provider.address || ''}" style="margin:0; text-align:right;">
-          <label style="display:flex; align-items:center; gap:8px; color:white; font-size:14px;">
+          <label style="display:flex; align-items:center; gap:8px; color:#2b241d; font-size:14px;">
             <input type="checkbox" id="swal-active" ${provider.isActive ? 'checked' : ''}>
             פעיל
           </label>
-          <label style="display:flex; align-items:center; gap:8px; color:white; font-size:14px;">
+          <label style="display:flex; align-items:center; gap:8px; color:#2b241d; font-size:14px;">
             <input type="checkbox" id="swal-verified" ${provider.isVerified ? 'checked' : ''}>
             מאומת
           </label>
@@ -181,9 +180,9 @@ export default function ManageServiceProvidersPage() {
       showCancelButton: true,
       confirmButtonText: 'עדכון',
       cancelButtonText: 'ביטול',
-      background: '#1a2e2a',
-      color: '#fff',
-      confirmButtonColor: '#10B981',
+      background: '#f7f3f2',
+      color: '#2b241d',
+      confirmButtonColor: '#c99b4a',
       width: 500,
       preConfirm: () => {
         const name = (document.getElementById('swal-name') as HTMLInputElement).value.trim();
@@ -208,9 +207,9 @@ export default function ManageServiceProvidersPage() {
     if (formValues) {
       try {
         await updateMutation.mutateAsync({ id: provider.id, data: formValues });
-        Swal.fire({ title: 'עודכן!', text: `${formValues.name} עודכן בהצלחה`, icon: 'success', timer: 2000, showConfirmButton: false, background: '#1a2e2a', color: '#fff' });
+        Swal.fire({ title: 'עודכן!', text: `${formValues.name} עודכן בהצלחה`, icon: 'success', timer: 2000, showConfirmButton: false, background: '#f7f3f2', color: '#2b241d' });
       } catch {
-        Swal.fire({ title: 'שגיאה', text: 'לא ניתן לעדכן', icon: 'error', background: '#1a2e2a', color: '#fff' });
+        Swal.fire({ title: 'שגיאה', text: 'לא ניתן לעדכן', icon: 'error', background: '#f7f3f2', color: '#2b241d' });
       }
     }
   };
@@ -225,16 +224,16 @@ export default function ManageServiceProvidersPage() {
       confirmButtonText: 'מחק',
       cancelButtonText: 'ביטול',
       confirmButtonColor: '#EF4444',
-      background: '#1a2e2a',
-      color: '#fff',
+      background: '#f7f3f2',
+      color: '#2b241d',
     });
 
     if (result.isConfirmed) {
       try {
         await deleteMutation.mutateAsync(provider.id);
-        Swal.fire({ title: 'נמחק!', text: `${provider.name} נמחק`, icon: 'success', timer: 2000, showConfirmButton: false, background: '#1a2e2a', color: '#fff' });
+        Swal.fire({ title: 'נמחק!', text: `${provider.name} נמחק`, icon: 'success', timer: 2000, showConfirmButton: false, background: '#f7f3f2', color: '#2b241d' });
       } catch {
-        Swal.fire({ title: 'שגיאה', text: 'לא ניתן למחוק', icon: 'error', background: '#1a2e2a', color: '#fff' });
+        Swal.fire({ title: 'שגיאה', text: 'לא ניתן למחוק', icon: 'error', background: '#f7f3f2', color: '#2b241d' });
       }
     }
   };
@@ -244,7 +243,7 @@ export default function ManageServiceProvidersPage() {
     try {
       await updateMutation.mutateAsync({ id: provider.id, data: { isActive: !provider.isActive } });
     } catch {
-      Swal.fire({ title: 'שגיאה', text: 'לא ניתן לעדכן סטטוס', icon: 'error', background: '#1a2e2a', color: '#fff' });
+      Swal.fire({ title: 'שגיאה', text: 'לא ניתן לעדכן סטטוס', icon: 'error', background: '#f7f3f2', color: '#2b241d' });
     }
   };
 
@@ -253,40 +252,27 @@ export default function ManageServiceProvidersPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0f2620] -mt-16">
-      {/* Hero Section */}
-      <div className="relative h-80 overflow-hidden">
-        <Image
-          src="https://images.unsplash.com/photo-1556761175-4b46a572b786"
-          alt="Business meeting"
-          fill
-          className="object-cover"
-          priority
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0f2620]/60 via-[#0f2620]/70 to-[#0f2620]" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(16,185,129,0.15),transparent_60%)]" />
-        <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#0f2620] to-transparent" />
-      </div>
+    <div className="min-h-screen pt-8 pb-24">
 
-      <div className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto -mt-40 relative z-10 pb-12">
+      <div className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto relative z-10">
         {/* Header */}
         <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="mb-8">
-          <Link href="/admin" className="inline-flex items-center gap-2 text-white/60 hover:text-white mb-4 transition-colors">
+          <Link href="/admin" className="inline-flex items-center gap-2 text-[#8b7c69] hover:text-[#2b241d] mb-4 transition-colors">
             <ArrowRight size={18} />
             חזרה לפאנל ניהול
           </Link>
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-display font-bold text-white flex items-center gap-3">
-                <Building2 className="text-emerald-400" />
+              <h1 className="text-3xl font-display font-bold text-[#2b241d] flex items-center gap-3">
+                <Building2 className="text-[#c99b4a]" />
                 ניהול נותני שירות
               </h1>
-              <p className="text-white/60 mt-1">הוספה, עריכה ומחיקה של נותני שירות במערכת</p>
+              <p className="text-[#8b7c69] mt-1">הוספה, עריכה ומחיקה של נותני שירות במערכת</p>
             </div>
             <button
               onClick={handleAdd}
-              className="flex items-center gap-2 px-5 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-bold transition-all hover:scale-105 active:scale-100"
-              style={{ boxShadow: '0 4px 16px rgba(16,185,129,0.35)' }}
+              className="flex items-center gap-2 px-5 py-3 rounded-xl bg-[#c99b4a] hover:bg-[#9e7746] text-white font-bold transition-all hover:scale-105 active:scale-100"
+              style={{ boxShadow: '0 4px 16px rgba(201,155,74,0.35)' }}
             >
               <Plus size={20} />
               הוספת נותן שירות
@@ -296,24 +282,24 @@ export default function ManageServiceProvidersPage() {
 
         {/* Search & Filter */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="mb-6">
-          <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6">
+          <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
             <div className="flex flex-wrap gap-4">
               <div className="flex-1 min-w-[200px]">
                 <div className="relative">
-                  <Search className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40" size={18} />
+                  <Search className="absolute right-3 top-1/2 -translate-y-1/2 text-[#a89b8a]" size={18} />
                   <input
                     type="text"
                     placeholder="חיפוש לפי שם, אימייל או טלפון..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-10 py-3 text-white placeholder:text-white/40"
+                    className="w-full bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-xl px-10 py-3 text-[#2b241d] placeholder:text-[#a89b8a]"
                   />
                 </div>
               </div>
               <select
                 value={filterCategory}
                 onChange={(e) => setFilterCategory(e.target.value)}
-                className="bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white min-w-[160px]"
+                className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-xl px-4 py-3 text-[#2b241d] min-w-[160px]"
               >
                 <option value="">כל הקטגוריות</option>
                 {categoryOptions.map(c => (
@@ -326,33 +312,33 @@ export default function ManageServiceProvidersPage() {
 
         {/* Stats */}
         <div className="grid grid-cols-3 gap-4 mb-6">
-          <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-5">
-            <p className="text-white/40 text-sm">סה״כ</p>
-            <p className="text-3xl font-bold text-white">{providers.length}</p>
+          <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-5">
+            <p className="text-[#a89b8a] text-sm">סה״כ</p>
+            <p className="text-3xl font-bold text-[#2b241d]">{providers.length}</p>
           </div>
-          <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-5 bg-green-500/10">
-            <p className="text-green-400/70 text-sm">פעילים</p>
-            <p className="text-3xl font-bold text-green-400">{activeCount}</p>
+          <div className="bg-green-50 border border-[rgba(201,155,74,0.08)] rounded-2xl p-5">
+            <p className="text-green-600/70 text-sm">פעילים</p>
+            <p className="text-3xl font-bold text-green-600">{activeCount}</p>
           </div>
-          <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-5 bg-blue-500/10">
-            <p className="text-blue-400/70 text-sm">תוצאות</p>
-            <p className="text-3xl font-bold text-blue-400">{filteredProviders.length}</p>
+          <div className="bg-blue-50 border border-[rgba(201,155,74,0.08)] rounded-2xl p-5">
+            <p className="text-blue-600/70 text-sm">תוצאות</p>
+            <p className="text-3xl font-bold text-blue-600">{filteredProviders.length}</p>
           </div>
         </div>
 
         {/* Providers List */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
-          <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6">
+          <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
             {isLoading ? (
               <div className="text-center py-12">
-                <Loader2 className="w-10 h-10 mx-auto text-emerald-400 animate-spin" />
-                <p className="text-white/60 mt-4">טוען נותני שירות...</p>
+                <Loader2 className="w-10 h-10 mx-auto text-[#c99b4a] animate-spin" />
+                <p className="text-[#8b7c69] mt-4">טוען נותני שירות...</p>
               </div>
             ) : filteredProviders.length === 0 ? (
               <div className="text-center py-12">
-                <Building2 className="w-16 h-16 mx-auto text-white/20 mb-4" />
-                <p className="text-white/60 mb-4">אין נותני שירות להצגה</p>
-                <button onClick={handleAdd} className="text-emerald-400 hover:text-emerald-300 font-medium transition-colors">
+                <Building2 className="w-16 h-16 mx-auto text-[#a89b8a]/40 mb-4" />
+                <p className="text-[#8b7c69] mb-4">אין נותני שירות להצגה</p>
+                <button onClick={handleAdd} className="text-[#c99b4a] hover:text-[#9e7746] font-medium transition-colors">
                   + הוסף נותן שירות ראשון
                 </button>
               </div>
@@ -364,18 +350,18 @@ export default function ManageServiceProvidersPage() {
                     initial={{ opacity: 0, x: -10 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.03 }}
-                    className="bg-white/5 border border-white/10 rounded-xl p-4 hover:bg-white/8 transition-colors"
+                    className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-xl p-4 hover:bg-[#f0ebe6] transition-colors"
                   >
                     {/* Top row: Name + Status + Actions */}
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center">
-                          <Building2 size={18} className="text-emerald-400" />
+                        <div className="w-10 h-10 rounded-full bg-[#c99b4a]/15 flex items-center justify-center">
+                          <Building2 size={18} className="text-[#c99b4a]" />
                         </div>
                         <div>
-                          <span className="font-bold text-white text-lg">{provider.name}</span>
+                          <span className="font-bold text-[#2b241d] text-lg">{provider.name}</span>
                           <div className="flex items-center gap-2 mt-0.5">
-                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] bg-white/10 text-white/60">
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] bg-[#f7f3f2] text-[#8b7c69]">
                               <Tag size={10} />
                               {categoryLabels[provider.category] || provider.category}
                             </span>
@@ -410,7 +396,7 @@ export default function ManageServiceProvidersPage() {
                             </button>
                             <button
                               onClick={() => handleEdit(provider)}
-                              className="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-white/60 hover:text-white transition-colors"
+                              className="p-2 rounded-lg bg-[#f7f3f2] hover:bg-[#f0ebe6] text-[#8b7c69] hover:text-[#2b241d] transition-colors"
                               title="עריכה"
                             >
                               <Pencil size={16} />
@@ -421,7 +407,7 @@ export default function ManageServiceProvidersPage() {
                         {!(provider as any)._isSupplier && (
                           <button
                             onClick={() => handleDelete(provider)}
-                            className="p-2 rounded-lg bg-white/5 hover:bg-red-500/20 text-white/60 hover:text-red-400 transition-colors"
+                            className="p-2 rounded-lg bg-[#f7f3f2] hover:bg-red-50 text-[#8b7c69] hover:text-red-500 transition-colors"
                             title="מחיקה"
                           >
                             <Trash2 size={16} />
@@ -431,7 +417,7 @@ export default function ManageServiceProvidersPage() {
                     </div>
 
                     {/* Details row */}
-                    <div className="flex flex-wrap items-center gap-4 text-sm text-white/50">
+                    <div className="flex flex-wrap items-center gap-4 text-sm text-[#a89b8a]">
                       {provider.phone && (
                         <div className="flex items-center gap-1.5">
                           <Phone size={13} />
@@ -445,7 +431,7 @@ export default function ManageServiceProvidersPage() {
                         </div>
                       )}
                       {provider.website && (
-                        <a href={provider.website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 hover:text-emerald-400 transition-colors">
+                        <a href={provider.website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 hover:text-[#c99b4a] transition-colors">
                           <Globe size={13} />
                           <span>אתר</span>
                         </a>
@@ -460,7 +446,7 @@ export default function ManageServiceProvidersPage() {
 
                     {/* Description */}
                     {provider.description && (
-                      <p className="text-white/40 text-sm mt-2 line-clamp-2">{provider.description}</p>
+                      <p className="text-[#a89b8a] text-sm mt-2 line-clamp-2">{provider.description}</p>
                     )}
                   </motion.div>
                 ))}

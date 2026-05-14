@@ -82,8 +82,8 @@ export default function AdminRewardsPage() {
         icon: 'success',
         timer: 2000,
         showConfirmButton: false,
-        background: '#0a1f18',
-        color: '#ffffff',
+        background: '#f7f3f2',
+        color: '#2b241d',
       });
     },
     onError: (error: any) => {
@@ -91,9 +91,9 @@ export default function AdminRewardsPage() {
         title: 'שגיאה',
         text: error.message,
         icon: 'error',
-        background: '#0a1f18',
-        color: '#ffffff',
-        confirmButtonColor: '#10b981',
+        background: '#f7f3f2',
+        color: '#2b241d',
+        confirmButtonColor: '#c99b4a',
       });
     },
   });
@@ -110,8 +110,8 @@ export default function AdminRewardsPage() {
         icon: 'success',
         timer: 2000,
         showConfirmButton: false,
-        background: '#0a1f18',
-        color: '#ffffff',
+        background: '#f7f3f2',
+        color: '#2b241d',
       });
     },
   });
@@ -127,8 +127,8 @@ export default function AdminRewardsPage() {
           icon: 'info',
           timer: 3000,
           showConfirmButton: false,
-          background: '#0a1f18',
-          color: '#ffffff',
+          background: '#f7f3f2',
+          color: '#2b241d',
         });
       } else {
         Swal.fire({
@@ -136,8 +136,8 @@ export default function AdminRewardsPage() {
           icon: 'success',
           timer: 2000,
           showConfirmButton: false,
-          background: '#0a1f18',
-          color: '#ffffff',
+          background: '#f7f3f2',
+          color: '#2b241d',
         });
       }
     },
@@ -146,9 +146,9 @@ export default function AdminRewardsPage() {
         title: 'שגיאה במחיקת המוצר',
         text: error.message,
         icon: 'error',
-        background: '#0a1f18',
-        color: '#ffffff',
-        confirmButtonColor: '#10b981',
+        background: '#f7f3f2',
+        color: '#2b241d',
+        confirmButtonColor: '#c99b4a',
       });
     },
   });
@@ -195,8 +195,8 @@ export default function AdminRewardsPage() {
       confirmButtonText: 'כן, מחק',
       cancelButtonText: 'ביטול',
       confirmButtonColor: '#dc2626',
-      background: '#0a1f18',
-      color: '#ffffff',
+      background: '#f7f3f2',
+      color: '#2b241d',
     });
 
     if (result.isConfirmed) {
@@ -230,9 +230,9 @@ export default function AdminRewardsPage() {
         title: 'שגיאה בהעלאת תמונה',
         text: error.message,
         icon: 'error',
-        background: '#0a1f18',
-        color: '#ffffff',
-        confirmButtonColor: '#10b981',
+        background: '#f7f3f2',
+        color: '#2b241d',
+        confirmButtonColor: '#c99b4a',
       });
     } finally {
       setUploading(false);
@@ -246,22 +246,9 @@ export default function AdminRewardsPage() {
   const products = productsData?.data || [];
 
   return (
-    <div className="min-h-screen bg-[#0f2620] -mt-16">
-      {/* Hero Section */}
-      <div className="relative h-80 overflow-hidden">
-        <Image
-          src="https://images.unsplash.com/photo-1513885535751-8b9238bd345a"
-          alt="Gifts"
-          fill
-          className="object-cover"
-          priority
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0f2620]/60 via-[#0f2620]/70 to-[#0f2620]" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(16,185,129,0.15),transparent_60%)]" />
-        <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#0f2620] to-transparent" />
-      </div>
+    <div className="min-h-screen -mt-16 pt-8 pb-24">
 
-      <div className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto -mt-40 relative z-10 pb-12">
+      <div className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto relative z-10">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
@@ -270,18 +257,18 @@ export default function AdminRewardsPage() {
         >
           <Link
             href="/admin"
-            className="inline-flex items-center gap-2 text-white/60 hover:text-white mb-4 transition-colors"
+            className="inline-flex items-center gap-2 text-[#8b7c69] hover:text-[#2b241d] mb-4 transition-colors"
           >
             <ArrowRight size={16} />
             חזרה לניהול
           </Link>
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-display font-bold text-white flex items-center gap-3">
-                <Gift className="text-emerald-400" />
+              <h1 className="text-3xl font-display font-bold text-[#2b241d] flex items-center gap-3">
+                <Gift className="text-[#c99b4a]" />
                 ניהול מוצרים - חנות ההטבות
               </h1>
-              <p className="text-white/60 mt-1">הוסף ונהל מוצרים לחנות ההטבות של האדריכלים</p>
+              <p className="text-[#8b7c69] mt-1">הוסף ונהל מוצרים לחנות ההטבות של האדריכלים</p>
             </div>
             <button
               onClick={() => {
@@ -289,7 +276,7 @@ export default function AdminRewardsPage() {
                 setEditingProduct(null);
                 setShowModal(true);
               }}
-              className="flex items-center gap-2 px-4 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition-colors"
+              className="flex items-center gap-2 px-4 py-2 bg-[#c99b4a] text-white rounded-lg hover:bg-[#9e7746] transition-colors"
             >
               <Plus size={20} />
               הוסף מוצר
@@ -304,20 +291,20 @@ export default function AdminRewardsPage() {
           transition={{ delay: 0.1 }}
           className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8"
         >
-          <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6">
+          <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
             <div className="text-center">
-              <Package className="mx-auto text-emerald-400 mb-2" size={24} />
-              <p className="text-2xl font-bold text-white">{products.length}</p>
-              <p className="text-white/60 text-sm">סה"כ מוצרים</p>
+              <Package className="mx-auto text-[#c99b4a] mb-2" size={24} />
+              <p className="text-2xl font-bold text-[#2b241d]">{products.length}</p>
+              <p className="text-[#8b7c69] text-sm">סה"כ מוצרים</p>
             </div>
           </div>
-          <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6">
+          <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
             <div className="text-center">
               <Gift className="mx-auto text-green-400 mb-2" size={24} />
-              <p className="text-2xl font-bold text-white">
+              <p className="text-2xl font-bold text-[#2b241d]">
                 {products.filter((p: Product) => p.isActive && p.stock > 0).length}
               </p>
-              <p className="text-white/60 text-sm">פעילים</p>
+              <p className="text-[#8b7c69] text-sm">פעילים</p>
             </div>
           </div>
         </motion.div>
@@ -330,18 +317,18 @@ export default function AdminRewardsPage() {
         >
           {isLoading ? (
             <div className="text-center py-12">
-              <Loader2 className="w-8 h-8 mx-auto text-emerald-400 animate-spin" />
+              <Loader2 className="w-8 h-8 mx-auto text-[#c99b4a] animate-spin" />
             </div>
           ) : products.length === 0 ? (
-            <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 text-center py-12">
-              <Gift size={48} className="mx-auto text-white/20 mb-4" />
-              <p className="text-white/60">אין מוצרים עדיין</p>
-              <p className="text-white/40 text-sm mt-1">לחץ על "הוסף מוצר" כדי להתחיל</p>
+            <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6 text-center py-12">
+              <Gift size={48} className="mx-auto text-[#a89b8a] mb-4" />
+              <p className="text-[#8b7c69]">אין מוצרים עדיין</p>
+              <p className="text-[#a89b8a] text-sm mt-1">לחץ על "הוסף מוצר" כדי להתחיל</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {products.map((product: Product) => (
-                <div key={product.id} className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl overflow-hidden group">
+                <div key={product.id} className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl overflow-hidden group">
                   {/* Product Image - Click to view */}
                   <div
                     className="relative w-full bg-white cursor-pointer" style={{ aspectRatio: '3/4' }}
@@ -357,7 +344,7 @@ export default function AdminRewardsPage() {
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center">
-                        <Gift size={48} className="text-white/20" />
+                        <Gift size={48} className="text-[#a89b8a]" />
                       </div>
                     )}
                     {!product.isActive && (
@@ -373,25 +360,25 @@ export default function AdminRewardsPage() {
 
                   {/* Product Info */}
                   <div className="p-5">
-                  <h3 className="text-white font-semibold text-lg mb-1">{product.name}</h3>
+                  <h3 className="text-[#2b241d] font-semibold text-lg mb-1">{product.name}</h3>
                   {product.category && (
-                    <span className="inline-block text-xs px-2 py-0.5 bg-emerald-500/20 text-emerald-400 rounded-full mb-2">{product.category}</span>
+                    <span className="inline-block text-xs px-2 py-0.5 bg-[#c99b4a]/15 text-[#c99b4a] rounded-full mb-2">{product.category}</span>
                   )}
-                  <p className="text-white/60 text-sm mb-4 line-clamp-2">{product.description}</p>
+                  <p className="text-[#8b7c69] text-sm mb-4 line-clamp-2">{product.description}</p>
 
                   <div className="flex items-center justify-between mb-4">
                     <div>
-                      <span className="text-emerald-400 font-bold text-lg">
+                      <span className="text-[#c99b4a] font-bold text-lg">
                         {product.pointCost.toLocaleString()} נק׳
                       </span>
-                      <span className="text-white/40 text-xs mr-2 block">
+                      <span className="text-[#a89b8a] text-xs mr-2 block">
                         ({product.pointsPerShekel || 100} נק׳ = 1 ש"ח)
                       </span>
                     </div>
                     <span className={`text-sm px-2 py-1 rounded ${
-                      product.stock > 5 ? 'bg-green-500/20 text-green-400' :
-                      product.stock > 0 ? 'bg-yellow-500/20 text-yellow-400' :
-                      'bg-red-500/20 text-red-400'
+                      product.stock > 5 ? 'bg-green-50 text-green-600' :
+                      product.stock > 0 ? 'bg-yellow-50 text-yellow-600' :
+                      'bg-red-50 text-red-500'
                     }`}>
                       מלאי: {product.stock}
                     </span>
@@ -401,13 +388,13 @@ export default function AdminRewardsPage() {
                   <div className="flex gap-2">
                     <button
                       onClick={() => handleView(product)}
-                      className="flex items-center justify-center gap-2 px-3 py-2 bg-white/5 text-white/60 rounded-lg hover:bg-white/10 transition-colors"
+                      className="flex items-center justify-center gap-2 px-3 py-2 bg-[#f7f3f2] text-[#8b7c69] rounded-lg hover:bg-[#f0ebe6] transition-colors"
                     >
                       <Eye size={16} />
                     </button>
                     <button
                       onClick={() => handleEdit(product)}
-                      className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-emerald-500/20 text-emerald-400 rounded-lg hover:bg-emerald-500/30 transition-colors"
+                      className="flex-1 flex items-center justify-center gap-2 px-3 py-2 bg-[#c99b4a]/15 text-[#c99b4a] rounded-lg hover:bg-[#c99b4a]/25 transition-colors"
                     >
                       <Edit2 size={16} />
                       עריכה
@@ -434,10 +421,10 @@ export default function AdminRewardsPage() {
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-[#0a1f18] border border-white/10 rounded-2xl p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto"
+            className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto"
           >
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold text-white">
+              <h2 className="text-xl font-bold text-[#2b241d]">
                 {editingProduct ? 'עריכת מוצר' : 'הוספת מוצר חדש'}
               </h2>
               <button
@@ -445,7 +432,7 @@ export default function AdminRewardsPage() {
                   setShowModal(false);
                   setEditingProduct(null);
                 }}
-                className="text-white/60 hover:text-white"
+                className="text-[#8b7c69] hover:text-[#2b241d]"
               >
                 <X size={24} />
               </button>
@@ -454,7 +441,7 @@ export default function AdminRewardsPage() {
             <form onSubmit={handleSubmit} className="space-y-4">
               {/* Image */}
               <div>
-                <label className="block text-sm font-medium text-white/60 mb-2">תמונה</label>
+                <label className="block text-sm font-medium text-[#8b7c69] mb-2">תמונה</label>
                 <div className="flex items-center gap-4">
                   {form.imageUrl ? (
                     <div className="relative w-24 h-24 rounded-lg overflow-hidden">
@@ -468,13 +455,13 @@ export default function AdminRewardsPage() {
                       </button>
                     </div>
                   ) : (
-                    <label className="w-24 h-24 border-2 border-dashed border-white/20 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-emerald-400 transition-colors">
+                    <label className="w-24 h-24 border-2 border-dashed border-[rgba(201,155,74,0.2)] rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-[#c99b4a] transition-colors">
                       {uploading ? (
-                        <Loader2 size={24} className="animate-spin text-white/40" />
+                        <Loader2 size={24} className="animate-spin text-[#a89b8a]" />
                       ) : (
                         <>
-                          <Upload size={24} className="text-white/40" />
-                          <span className="text-xs text-white/40 mt-1">העלה</span>
+                          <Upload size={24} className="text-[#a89b8a]" />
+                          <span className="text-xs text-[#a89b8a] mt-1">העלה</span>
                         </>
                       )}
                       <input
@@ -491,7 +478,7 @@ export default function AdminRewardsPage() {
                     type="url"
                     value={form.imageUrl}
                     onChange={(e) => setForm({ ...form, imageUrl: e.target.value })}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder:text-white/40"
+                    className="w-full bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-xl px-4 py-3 text-[#2b241d] text-sm placeholder:text-[#a89b8a]"
                     placeholder="או הדבק קישור לתמונה..."
                   />
                 </div>
@@ -499,48 +486,48 @@ export default function AdminRewardsPage() {
 
               {/* Name */}
               <div>
-                <label className="block text-sm font-medium text-white/60 mb-2">שם המוצר <span className="text-red-400/70 text-xs font-normal">(שדה חובה)</span></label>
+                <label className="block text-sm font-medium text-[#8b7c69] mb-2">שם המוצר <span className="text-red-400/70 text-xs font-normal">(שדה חובה)</span></label>
                 <input
                   type="text"
                   value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
                   required
-                  className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-white/40"
+                  className="w-full bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-xl px-4 py-3 text-[#2b241d] placeholder:text-[#a89b8a]"
                   placeholder="למשל: שובר מתנה לאיקאה"
                 />
               </div>
 
               {/* Description */}
               <div>
-                <label className="block text-sm font-medium text-white/60 mb-2">תיאור</label>
+                <label className="block text-sm font-medium text-[#8b7c69] mb-2">תיאור</label>
                 <textarea
                   value={form.description}
                   onChange={(e) => setForm({ ...form, description: e.target.value })}
                   rows={3}
-                  className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-white/40"
+                  className="w-full bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-xl px-4 py-3 text-[#2b241d] placeholder:text-[#a89b8a]"
                   placeholder="תיאור קצר של המוצר"
                 />
               </div>
 
               {/* Category */}
               <div>
-                <label className="block text-sm font-medium text-white/60 mb-2">קטגוריה <span className="text-red-400/70 text-xs font-normal">(שדה חובה)</span></label>
+                <label className="block text-sm font-medium text-[#8b7c69] mb-2">קטגוריה <span className="text-red-400/70 text-xs font-normal">(שדה חובה)</span></label>
                 {!showNewCategory ? (
                   <div className="space-y-2">
                     <select
                       value={form.category}
                       onChange={(e) => setForm({ ...form, category: e.target.value })}
-                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white appearance-none cursor-pointer"
+                      className="w-full bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-xl px-4 py-3 text-[#2b241d] appearance-none cursor-pointer"
                     >
-                      <option value="" className="bg-[#0a1f18]">בחר קטגוריה</option>
+                      <option value="" className="bg-white">בחר קטגוריה</option>
                       {(categoriesData?.data || []).map((cat: string) => (
-                        <option key={cat} value={cat} className="bg-[#0a1f18]">{cat}</option>
+                        <option key={cat} value={cat} className="bg-white">{cat}</option>
                       ))}
                     </select>
                     <button
                       type="button"
                       onClick={() => setShowNewCategory(true)}
-                      className="text-emerald-400 text-sm hover:text-emerald-300 transition-colors"
+                      className="text-[#c99b4a] text-sm hover:text-[#9e7746] transition-colors"
                     >
                       + צור קטגוריה חדשה
                     </button>
@@ -551,14 +538,14 @@ export default function AdminRewardsPage() {
                       type="text"
                       value={newCategory}
                       onChange={(e) => setNewCategory(e.target.value)}
-                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-white/40"
+                      className="w-full bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-xl px-4 py-3 text-[#2b241d] placeholder:text-[#a89b8a]"
                       placeholder="שם הקטגוריה החדשה"
                       required
                     />
                     <button
                       type="button"
                       onClick={() => { setShowNewCategory(false); setNewCategory(''); }}
-                      className="text-white/40 text-sm hover:text-white transition-colors"
+                      className="text-[#a89b8a] text-sm hover:text-[#2b241d] transition-colors"
                     >
                       ← חזרה לקטגוריות קיימות
                     </button>
@@ -569,39 +556,39 @@ export default function AdminRewardsPage() {
               {/* Point Cost */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-white/60 mb-2">עלות בנקודות <span className="text-red-400/70 text-xs font-normal">(שדה חובה)</span></label>
+                  <label className="block text-sm font-medium text-[#8b7c69] mb-2">עלות בנקודות <span className="text-red-400/70 text-xs font-normal">(שדה חובה)</span></label>
                   <input
                     type="number"
                     value={form.pointCost}
                     onChange={(e) => setForm({ ...form, pointCost: parseInt(e.target.value) || 0 })}
                     required
                     min="0"
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white"
+                    className="w-full bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-xl px-4 py-3 text-[#2b241d]"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-white/60 mb-2">נקודות לשקל</label>
+                  <label className="block text-sm font-medium text-[#8b7c69] mb-2">נקודות לשקל</label>
                   <input
                     type="number"
                     value={form.pointsPerShekel}
                     onChange={(e) => setForm({ ...form, pointsPerShekel: parseInt(e.target.value) || 100 })}
                     min="1"
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white"
+                    className="w-full bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-xl px-4 py-3 text-[#2b241d]"
                   />
-                  <p className="text-xs text-white/40 mt-1">כמה נקודות שוות 1 ש"ח להשלמה</p>
+                  <p className="text-xs text-[#a89b8a] mt-1">כמה נקודות שוות 1 ש"ח להשלמה</p>
                 </div>
               </div>
 
               {/* Stock */}
               <div>
-                <label className="block text-sm font-medium text-white/60 mb-2">כמות במלאי <span className="text-red-400/70 text-xs font-normal">(שדה חובה)</span></label>
+                <label className="block text-sm font-medium text-[#8b7c69] mb-2">כמות במלאי <span className="text-red-400/70 text-xs font-normal">(שדה חובה)</span></label>
                 <input
                   type="number"
                   value={form.stock}
                   onChange={(e) => setForm({ ...form, stock: parseInt(e.target.value) || 0 })}
                   required
                   min="0"
-                  className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white"
+                  className="w-full bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-xl px-4 py-3 text-[#2b241d]"
                 />
               </div>
 
@@ -613,14 +600,14 @@ export default function AdminRewardsPage() {
                     setShowModal(false);
                     setEditingProduct(null);
                   }}
-                  className="flex-1 px-4 py-3 bg-white/10 border border-white/10 text-white rounded-xl hover:bg-white/20 transition-colors"
+                  className="flex-1 px-4 py-3 bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] text-[#2b241d] rounded-xl hover:bg-[#f0ebe6] transition-colors"
                 >
                   ביטול
                 </button>
                 <button
                   type="submit"
                   disabled={createMutation.isPending || updateMutation.isPending}
-                  className="flex-1 px-4 py-3 bg-emerald-500 text-white rounded-xl hover:bg-emerald-600 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                  className="flex-1 px-4 py-3 bg-[#c99b4a] text-white rounded-xl hover:bg-[#9e7746] transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
                 >
                   {(createMutation.isPending || updateMutation.isPending) && (
                     <Loader2 size={16} className="animate-spin" />
@@ -641,10 +628,10 @@ export default function AdminRewardsPage() {
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-[#0a1f18] border border-white/10 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden shadow-2xl"
+              className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden shadow-2xl"
             >
               {/* Image Header */}
-              <div className="relative h-64 bg-gradient-to-br from-white/5 to-white/10">
+              <div className="relative h-64 bg-gradient-to-br from-[#f7f3f2] to-[#f0ebe6]">
                 {viewingProduct.imageUrl ? (
                   <ImageWithLoader
                     src={viewingProduct.imageUrl}
@@ -654,14 +641,14 @@ export default function AdminRewardsPage() {
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center">
-                    <Gift size={80} className="text-white/20" />
+                    <Gift size={80} className="text-[#a89b8a]" />
                   </div>
                 )}
                 <button
                   onClick={() => setShowDetailModal(false)}
-                  className="absolute top-4 left-4 p-2 bg-white/10 backdrop-blur rounded-full hover:bg-white/20 transition-colors shadow-lg"
+                  className="absolute top-4 left-4 p-2 bg-white/80 backdrop-blur rounded-full hover:bg-white transition-colors shadow-lg"
                 >
-                  <X size={20} className="text-white" />
+                  <X size={20} className="text-[#2b241d]" />
                 </button>
                 {!viewingProduct.isActive && (
                   <div className="absolute top-4 right-4 px-3 py-1 bg-red-500 text-white text-sm font-medium rounded-full">
@@ -672,29 +659,29 @@ export default function AdminRewardsPage() {
 
               {/* Content */}
               <div className="p-6">
-                <h2 className="text-2xl font-bold text-white mb-2">{viewingProduct.name}</h2>
+                <h2 className="text-2xl font-bold text-[#2b241d] mb-2">{viewingProduct.name}</h2>
 
                 {viewingProduct.description && (
-                  <p className="text-white/60 mb-6 leading-relaxed">{viewingProduct.description}</p>
+                  <p className="text-[#8b7c69] mb-6 leading-relaxed">{viewingProduct.description}</p>
                 )}
 
                 {/* Stats Grid */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                  <div className="bg-amber-500/10 rounded-xl p-4 text-center">
+                  <div className="bg-amber-50 rounded-xl p-4 text-center">
                     <Coins className="mx-auto text-amber-400 mb-2" size={24} />
                     <p className="text-2xl font-bold text-amber-400">{viewingProduct.pointCost.toLocaleString()}</p>
                     <p className="text-amber-400/70 text-sm">נקודות</p>
                   </div>
 
-                  <div className="bg-green-500/10 rounded-xl p-4 text-center">
+                  <div className="bg-green-50 rounded-xl p-4 text-center">
                     <Banknote className="mx-auto text-green-400 mb-2" size={24} />
                     <p className="text-2xl font-bold text-green-400">{viewingProduct.pointsPerShekel || 100}</p>
                     <p className="text-green-400/70 text-sm">נקודות = 1 ש"ח</p>
                   </div>
 
                   <div className={`rounded-xl p-4 text-center ${
-                    viewingProduct.stock > 5 ? 'bg-blue-500/10' :
-                    viewingProduct.stock > 0 ? 'bg-yellow-500/10' : 'bg-red-500/10'
+                    viewingProduct.stock > 5 ? 'bg-blue-50' :
+                    viewingProduct.stock > 0 ? 'bg-yellow-50' : 'bg-red-50'
                   }`}>
                     <BoxIcon className={`mx-auto mb-2 ${
                       viewingProduct.stock > 5 ? 'text-blue-400' :
@@ -710,7 +697,7 @@ export default function AdminRewardsPage() {
                     }`}>במלאי</p>
                   </div>
 
-                  <div className="bg-purple-500/10 rounded-xl p-4 text-center">
+                  <div className="bg-purple-50 rounded-xl p-4 text-center">
                     <Calendar className="mx-auto text-purple-400 mb-2" size={24} />
                     <p className="text-sm font-bold text-purple-400">
                       {new Date(viewingProduct.createdAt).toLocaleDateString('he-IL')}
@@ -726,7 +713,7 @@ export default function AdminRewardsPage() {
                       setShowDetailModal(false);
                       handleEdit(viewingProduct);
                     }}
-                    className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-emerald-500 text-white rounded-xl hover:bg-emerald-600 transition-colors font-medium"
+                    className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-[#c99b4a] text-white rounded-xl hover:bg-[#9e7746] transition-colors font-medium"
                   >
                     <Edit2 size={18} />
                     עריכה

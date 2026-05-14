@@ -117,8 +117,7 @@ export default function Navbar() {
 
   // All pages now use light background (wallet style) except login
   const isLoginPage = pathname === '/login' || pathname === '/register';
-  const isAdminPage = (pathname || '').startsWith('/admin');
-  const isLightPage = !isLoginPage && !isAdminPage;
+  const isLightPage = !isLoginPage;
   const isDarkPage = !isLightPage;
 
   return (
