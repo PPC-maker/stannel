@@ -245,24 +245,8 @@ export default function SupplierProfilePage() {
   }
 
   return (
-    <div className="min-h-screen -mt-16">
-      {/* Hero Section with Image */}
-      <div className="relative h-80 overflow-hidden">
-        {/* Background Image */}
-        <Image
-          src="https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=2000&q=80"
-          alt="Office Interior"
-          fill
-          className="object-cover"
-          priority
-        />
-        {/* Dark Overlay with Fade */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#f7f3f2]/60 via-[#f7f3f2]/70 to-[#f7f3f2]" />
-        {/* Gold Glow */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(201,155,74,0.15),transparent_60%)]" />
-      </div>
-
-      <div className="px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto -mt-48 relative z-10 pb-24">
+    <div className="min-h-screen">
+      <div className="px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto pt-8 pb-24">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}

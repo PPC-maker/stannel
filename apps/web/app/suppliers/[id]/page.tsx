@@ -252,33 +252,21 @@ export default function SupplierDetailPage() {
         </div>
       </div>
 
-      {/* Hero Section */}
-      <div className="relative h-[35vh] min-h-[260px]">
-        <ImageWithLoader
-          src={heroImage}
-          alt={supplier.companyName || 'Supplier'}
-          fill
-          className="object-cover"
-          priority
-          unoptimized={heroImage.includes('localhost')}
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-[#f7f3f2]" />
-
-        {/* Premium Supplier Badge */}
+      {/* Premium Supplier Badge */}
+      <div className="pt-20 pb-4 text-center">
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="absolute bottom-20 left-1/2 -translate-x-1/2"
         >
-          <span className="px-4 py-1.5 bg-[#c99b4a]/15 backdrop-blur-sm text-[#c99b4a] text-xs tracking-wider rounded-full border border-[#c99b4a]/20">
+          <span className="px-4 py-1.5 bg-[#c99b4a]/15 text-[#c99b4a] text-xs tracking-wider rounded-full border border-[#c99b4a]/20">
             ספק מוביל
           </span>
         </motion.div>
       </div>
 
       {/* Content Card */}
-      <div className="relative -mt-8 mx-4 mb-4">
+      <div className="relative mx-4 mb-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

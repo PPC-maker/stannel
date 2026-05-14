@@ -93,58 +93,41 @@ export default function HomePage() {
   }
 
   return (
-    <div className="min-h-screen -mt-16 pb-24">
-      {/* Hero Section */}
-      <section className="relative">
-        {/* Background Image Container - Limited Height */}
-        <div className="relative h-[60vh] min-h-[400px]">
-          <Image
-            src="/bg_top.jpg"
-            alt="Modern architecture"
-            fill
-            className="object-cover"
-            priority
-          />
-          <div className="absolute inset-0 bg-white/20" />
-          {/* Strong fade at bottom of image */}
-          <div className="absolute inset-0 bg-gradient-to-b from-[#f7f3f2]/20 via-transparent via-40% to-[#f7f3f2]" />
-        </div>
-
-        {/* Hero Content - Below the image */}
-        <div className="px-6 py-8">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center max-w-3xl mx-auto"
-          >
-            <h1 className="text-4xl md:text-6xl font-bold text-[#2b241d] mb-4">
-              STANNEL CLUB
-            </h1>
-            <h2 className="text-2xl md:text-3xl text-[#2b241d] font-light mb-6">
-              קהילת הערך למעצבים ואדריכלים
-            </h2>
-            <p className="text-[#8b7c69] text-lg mb-8 max-w-xl mx-auto">
-              פלטפורמה חדשנית המחברת אדריכלים ומעצבים עם ספקים מובחרים.
-              הצטרפו והתחילו להרוויח מכל פרויקט.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link
-                href="/register"
-                className="inline-flex items-center justify-center gap-2 bg-[#c99b4a] text-white px-8 py-4 rounded-2xl font-semibold text-lg hover:bg-[#9e7746] transition-all group"
-              >
-                <span>הצטרפו עכשיו</span>
-                <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
-              </Link>
-              <Link
-                href="/login"
-                className="inline-flex items-center justify-center gap-2 bg-white border border-[rgba(201,155,74,0.2)] text-[#2b241d] px-8 py-4 rounded-2xl font-semibold text-lg hover:bg-[#f7f3f2] transition-all"
-              >
-                <span>התחברות</span>
-              </Link>
-            </div>
-          </motion.div>
-        </div>
+    <div className="min-h-screen pb-24">
+      {/* Hero Content */}
+      <section className="px-6 pt-12 pb-8">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="text-center max-w-3xl mx-auto"
+        >
+          <h1 className="text-4xl md:text-6xl font-bold text-[#2b241d] mb-4">
+            STANNEL CLUB
+          </h1>
+          <h2 className="text-2xl md:text-3xl text-[#2b241d] font-light mb-6">
+            קהילת הערך למעצבים ואדריכלים
+          </h2>
+          <p className="text-[#8b7c69] text-lg mb-8 max-w-xl mx-auto">
+            פלטפורמה חדשנית המחברת אדריכלים ומעצבים עם ספקים מובחרים.
+            הצטרפו והתחילו להרוויח מכל פרויקט.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link
+              href="/register"
+              className="inline-flex items-center justify-center gap-2 bg-[#c99b4a] text-white px-8 py-4 rounded-2xl font-semibold text-lg hover:bg-[#9e7746] transition-all group"
+            >
+              <span>הצטרפו עכשיו</span>
+              <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
+            </Link>
+            <Link
+              href="/login"
+              className="inline-flex items-center justify-center gap-2 bg-white border border-[rgba(201,155,74,0.2)] text-[#2b241d] px-8 py-4 rounded-2xl font-semibold text-lg hover:bg-[#f7f3f2] transition-all"
+            >
+              <span>התחברות</span>
+            </Link>
+          </div>
+        </motion.div>
       </section>
 
       {/* Stats Section */}

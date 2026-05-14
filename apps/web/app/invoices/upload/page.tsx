@@ -4,7 +4,6 @@ import { useState, useCallback, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import Image from 'next/image';
 import { Upload, FileText, CheckCircle, AlertTriangle, X, ArrowRight, Building2, FileIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useUploadInvoice, useSuppliers } from '@/lib/api-hooks';
@@ -110,22 +109,8 @@ export default function InvoiceUploadPage() {
 
   if (success) {
     return (
-      <div className="min-h-screen -mt-16">
-        {/* Hero Section */}
-        <div className="relative h-80 overflow-hidden">
-          <Image
-            src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=2000&q=80"
-            alt="Finance"
-            fill
-            className="object-cover"
-            priority
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#f7f3f2]/60 via-[#f7f3f2]/70 to-[#f7f3f2]" />
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(201,155,74,0.15),transparent_60%)]" />
-          <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#f7f3f2] to-transparent" />
-        </div>
-
-        <div className="px-4 sm:px-6 lg:px-8 max-w-2xl mx-auto -mt-32 relative z-10 pb-24">
+      <div className="min-h-screen">
+        <div className="px-4 sm:px-6 lg:px-8 max-w-2xl mx-auto pt-8 pb-24">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -157,22 +142,8 @@ export default function InvoiceUploadPage() {
   const noSuppliers = !suppliersLoading && suppliers.length === 0;
 
   return (
-    <div className="min-h-screen -mt-16">
-      {/* Hero Section */}
-      <div className="relative h-52 sm:h-80 overflow-hidden">
-        <Image
-          src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=2000&q=80"
-          alt="Finance"
-          fill
-          className="object-cover"
-          priority
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#f7f3f2]/60 via-[#f7f3f2]/70 to-[#f7f3f2]" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(201,155,74,0.15),transparent_60%)]" />
-        <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#f7f3f2] to-transparent" />
-      </div>
-
-      <div className="px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto -mt-24 sm:-mt-40 relative z-10 pb-24">
+    <div className="min-h-screen">
+      <div className="px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto pt-8 pb-24">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}

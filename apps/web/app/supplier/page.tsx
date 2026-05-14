@@ -12,7 +12,6 @@ import {
 import { meetingsApi } from '@stannel/api-client';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
-import Image from 'next/image';
 import Swal from 'sweetalert2';
 import {
   Receipt,
@@ -178,105 +177,62 @@ export default function SupplierDashboardPage() {
   }
 
   return (
-    <div className="min-h-screen -mt-16">
-      {/* Hero Section with Image */}
-      <div className="relative h-[420px] md:h-[480px] overflow-hidden">
-        {/* Background Image */}
-        <Image
-          src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=2000&q=80"
-          alt="Modern Architecture"
-          fill
-          className="object-cover"
-          priority
-        />
-        {/* Dark Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/40 to-[#f7f3f2]" />
-        {/* Gold Glow */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(201,155,74,0.15),transparent_60%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,rgba(201,155,74,0.1),transparent_50%)]" />
-
-        {/* Animated Particles */}
-        <div className="absolute inset-0 overflow-hidden">
-          {[...Array(6)].map((_, i) => (
-            <motion.div
-              key={i}
-              className="absolute w-1 h-1 bg-[#c99b4a]/30 rounded-full"
-              initial={{
-                x: Math.random() * 100 + '%',
-                y: '100%',
-                opacity: 0
-              }}
-              animate={{
-                y: '-20%',
-                opacity: [0, 1, 0],
-              }}
-              transition={{
-                duration: 4 + Math.random() * 2,
-                repeat: Infinity,
-                delay: i * 0.8,
-                ease: 'linear'
-              }}
-            />
-          ))}
-        </div>
-
-        {/* Hero Content */}
-        <div className="absolute inset-0 flex items-end justify-center pb-4">
+    <div className="min-h-screen">
+      {/* Page Header */}
+      <div className="pt-8 pb-6 px-4 text-center">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="text-center px-4"
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ delay: 0.2 }}
+            className="inline-flex items-center gap-2 px-4 py-2 bg-[#c99b4a]/10 border border-[#c99b4a]/20 rounded-full mb-5"
           >
-            <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 0.2 }}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-[#c99b4a]/20 border border-[#c99b4a]/30 rounded-full mb-5"
-            >
-              <Sparkles size={16} className="text-[#c99b4a]" />
-              <span className="text-[#c99b4a] text-sm font-medium">פורטל ספקים</span>
-            </motion.div>
-
-            <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-              שלום, <span className="text-[#c99b4a]">{user?.name || 'ספק'}</span>
-            </h1>
-
-            <p className="text-white/70 text-lg mb-8">{user?.email}</p>
-
-            <div className="flex items-center justify-center gap-3 flex-wrap">
-              <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ delay: 0.4, type: 'spring' }}
-                className="flex items-center gap-2 px-5 py-2.5 bg-white/20 backdrop-blur-sm border border-white/30 rounded-full"
-              >
-                <Shield size={16} className="text-[#c99b4a]" />
-                <span className="text-white text-sm">ספק מאושר</span>
-              </motion.div>
-            </div>
-
-            {/* View Profile Button */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6 }}
-              className="mt-5"
-            >
-              <Link
-                href={`/suppliers/${user?.id}`}
-                className="inline-flex items-center gap-2 px-6 py-3 bg-[#c99b4a] hover:bg-[#9e7746] text-white font-medium rounded-full transition-colors"
-              >
-                <Eye size={18} />
-                צפה בפרופיל הציבורי
-              </Link>
-            </motion.div>
+            <Sparkles size={16} className="text-[#c99b4a]" />
+            <span className="text-[#c99b4a] text-sm font-medium">פורטל ספקים</span>
           </motion.div>
-        </div>
+
+          <h1 className="text-4xl md:text-5xl font-bold text-[#2b241d] mb-4">
+            שלום, <span className="text-[#c99b4a]">{user?.name || 'ספק'}</span>
+          </h1>
+
+          <p className="text-[#8b7c69] text-lg mb-6">{user?.email}</p>
+
+          <div className="flex items-center justify-center gap-3 flex-wrap">
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ delay: 0.4, type: 'spring' }}
+              className="flex items-center gap-2 px-5 py-2.5 bg-[#c99b4a]/10 border border-[#c99b4a]/20 rounded-full"
+            >
+              <Shield size={16} className="text-[#c99b4a]" />
+              <span className="text-[#2b241d] text-sm">ספק מאושר</span>
+            </motion.div>
+          </div>
+
+          {/* View Profile Button */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6 }}
+            className="mt-5"
+          >
+            <Link
+              href={`/suppliers/${user?.id}`}
+              className="inline-flex items-center gap-2 px-6 py-3 bg-[#c99b4a] hover:bg-[#9e7746] text-white font-medium rounded-full transition-colors"
+            >
+              <Eye size={18} />
+              צפה בפרופיל הציבורי
+            </Link>
+          </motion.div>
+        </motion.div>
       </div>
 
       {/* Content */}
-      <div className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto mt-8 relative z-10 pb-24">
+      <div className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto mt-4 relative z-10 pb-24">
         {/* Stats Cards */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}

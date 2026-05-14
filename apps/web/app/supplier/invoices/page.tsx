@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
-import Image from 'next/image';
 import { useSupplierGuard, AuthGuardLoader } from '@/lib/useAuthGuard';
 import { useSupplierInvoices, useConfirmPayment } from '@/lib/api-hooks';
 import Swal from 'sweetalert2';
@@ -111,24 +110,8 @@ export default function SupplierInvoicesPage() {
   }
 
   return (
-    <div className="min-h-screen -mt-16">
-      {/* Hero Section with Image */}
-      <div className="relative h-80 overflow-hidden">
-        {/* Background Image */}
-        <Image
-          src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&w=2000&q=80"
-          alt="Documents"
-          fill
-          className="object-cover"
-          priority
-        />
-        {/* Overlay with Fade */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/40 to-[#f7f3f2]" />
-        {/* Gold Glow */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(201,155,74,0.15),transparent_60%)]" />
-      </div>
-
-      <div className="px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto -mt-48 relative z-10 pb-24">
+    <div className="min-h-screen">
+      <div className="px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto pt-8 pb-24">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
@@ -137,16 +120,16 @@ export default function SupplierInvoicesPage() {
         >
           <Link
             href="/supplier"
-            className="inline-flex items-center gap-2 text-white/70 hover:text-[#c99b4a] mb-4 transition-colors font-medium"
+            className="inline-flex items-center gap-2 text-[#8b7c69] hover:text-[#c99b4a] mb-4 transition-colors font-medium"
           >
             <ArrowRight size={16} />
             חזרה לדשבורד
           </Link>
-          <h1 className="text-3xl font-display font-bold text-white flex items-center gap-3">
+          <h1 className="text-3xl font-display font-bold text-[#2b241d] flex items-center gap-3">
             <FileText className="text-[#c99b4a]" />
             חשבוניות
           </h1>
-          <p className="text-white/70 mt-1 font-medium">כל החשבוניות שהוגשו על ידי אדריכלים</p>
+          <p className="text-[#8b7c69] mt-1 font-medium">כל החשבוניות שהוגשו על ידי אדריכלים</p>
         </motion.div>
 
         {/* Filter & Stats */}
