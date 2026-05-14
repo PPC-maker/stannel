@@ -157,23 +157,21 @@ export default function ManageContractsPage() {
             <ArrowRight size={18} />
             חזרה לפאנל ניהול
           </Link>
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-display font-bold text-[#2b241d] flex items-center gap-3">
-                <FileText className="text-[#c99b4a]" />
-                ניהול חוזים
-              </h1>
-              <p className="text-[#8b7c69] mt-1">יצירה, צפייה וניהול חוזים עם ספקים</p>
-            </div>
-            <button
-              onClick={handleOpenForm}
-              className="bg-[#c99b4a] text-white hover:bg-[#9e7746] px-5 py-3 rounded-xl flex items-center gap-2 transition-all font-bold hover:scale-105 active:scale-100"
-              style={{ boxShadow: '0 4px 16px rgba(201,155,74,0.35)' }}
-            >
-              <Plus size={18} />
-              חוזה חדש
-            </button>
+          <div>
+            <h1 className="text-3xl font-display font-bold text-[#2b241d] flex items-center gap-3">
+              <FileText className="text-[#c99b4a]" />
+              ניהול חוזים
+            </h1>
+            <p className="text-[#8b7c69] mt-1">יצירה, צפייה וניהול חוזים עם ספקים</p>
           </div>
+          <button
+            onClick={handleOpenForm}
+            className="w-[90%] mx-auto mt-4 flex items-center justify-center gap-2 px-5 py-4 rounded-xl bg-[#c99b4a] text-white hover:bg-[#9e7746] transition-all font-bold text-base hover:scale-105 active:scale-100"
+            style={{ boxShadow: '0 4px 16px rgba(201,155,74,0.35)' }}
+          >
+            <Plus size={18} />
+            חוזה חדש
+          </button>
         </motion.div>
 
         {/* Stats */}

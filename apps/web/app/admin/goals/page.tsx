@@ -134,25 +134,23 @@ export default function ManageGoalsPage() {
             <ArrowRight size={18} />
             חזרה לפאנל ניהול
           </Link>
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-display font-bold text-[#2b241d] flex items-center gap-3">
-                <Target className="text-[#c99b4a]" />
-                ניהול יעדי אדריכלים
-              </h1>
-              <p className="text-[#8b7c69] mt-1">הגדרת יעדי מכירות ובונוסים לאדריכלים</p>
-            </div>
-            <button
-              onClick={() => {
-                loadArchitects();
-                setShowAddModal(true);
-              }}
-              className="bg-[#c99b4a] text-white hover:bg-[#9e7746] px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
-            >
-              <Plus size={18} />
-              הוסף יעד חדש
-            </button>
+          <div>
+            <h1 className="text-3xl font-display font-bold text-[#2b241d] flex items-center gap-3">
+              <Target className="text-[#c99b4a]" />
+              ניהול יעדי אדריכלים
+            </h1>
+            <p className="text-[#8b7c69] mt-1">הגדרת יעדי מכירות ובונוסים לאדריכלים</p>
           </div>
+          <button
+            onClick={() => {
+              loadArchitects();
+              setShowAddModal(true);
+            }}
+            className="w-[90%] mx-auto mt-4 flex items-center justify-center gap-2 px-5 py-4 rounded-xl bg-[#c99b4a] text-white hover:bg-[#9e7746] transition-colors font-bold text-base"
+          >
+            <Plus size={18} />
+            הוסף יעד חדש
+          </button>
         </motion.div>
 
         {/* Filter */}

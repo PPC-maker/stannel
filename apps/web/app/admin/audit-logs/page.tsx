@@ -117,23 +117,21 @@ export default function AuditLogsPage() {
             <ArrowRight size={18} />
             חזרה לפאנל ניהול
           </Link>
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-display font-bold text-[#2b241d] flex items-center gap-3">
-                <FileText className="text-[#c99b4a]" />
-                יומן פעולות
-              </h1>
-              <p className="text-[#8b7c69] mt-1">מעקב אחרי כל הפעולות במערכת</p>
-            </div>
-            <button
-              onClick={loadLogs}
-              disabled={loading}
-              className="bg-[#c99b4a] text-white hover:bg-[#9e7746] px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
-            >
-              <RefreshCw size={18} className={loading ? 'animate-spin' : ''} />
-              רענון
-            </button>
+          <div>
+            <h1 className="text-3xl font-display font-bold text-[#2b241d] flex items-center gap-3">
+              <FileText className="text-[#c99b4a]" />
+              יומן פעולות
+            </h1>
+            <p className="text-[#8b7c69] mt-1">מעקב אחרי כל הפעולות במערכת</p>
           </div>
+          <button
+            onClick={loadLogs}
+            disabled={loading}
+            className="w-[90%] mx-auto mt-4 flex items-center justify-center gap-2 px-5 py-4 rounded-xl bg-[#c99b4a] text-white hover:bg-[#9e7746] transition-colors font-bold text-base"
+          >
+            <RefreshCw size={18} className={loading ? 'animate-spin' : ''} />
+            רענון
+          </button>
         </motion.div>
 
         {/* Filters */}

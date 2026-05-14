@@ -262,26 +262,24 @@ export default function AdminRewardsPage() {
             <ArrowRight size={16} />
             חזרה לניהול
           </Link>
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-display font-bold text-[#2b241d] flex items-center gap-3">
-                <Gift className="text-[#c99b4a]" />
-                ניהול מוצרים - חנות ההטבות
-              </h1>
-              <p className="text-[#8b7c69] mt-1">הוסף ונהל מוצרים לחנות ההטבות של האדריכלים</p>
-            </div>
-            <button
-              onClick={() => {
-                resetForm();
-                setEditingProduct(null);
-                setShowModal(true);
-              }}
-              className="flex items-center gap-2 px-4 py-2 bg-[#c99b4a] text-white rounded-lg hover:bg-[#9e7746] transition-colors"
-            >
-              <Plus size={20} />
-              הוסף מוצר
-            </button>
+          <div>
+            <h1 className="text-3xl font-display font-bold text-[#2b241d] flex items-center gap-3">
+              <Gift className="text-[#c99b4a]" />
+              ניהול מוצרים - חנות ההטבות
+            </h1>
+            <p className="text-[#8b7c69] mt-1">הוסף ונהל מוצרים לחנות ההטבות של האדריכלים</p>
           </div>
+          <button
+            onClick={() => {
+              resetForm();
+              setEditingProduct(null);
+              setShowModal(true);
+            }}
+            className="w-[90%] mx-auto mt-4 flex items-center justify-center gap-2 px-5 py-4 rounded-xl bg-[#c99b4a] text-white hover:bg-[#9e7746] transition-colors font-bold text-base"
+          >
+            <Plus size={20} />
+            הוסף מוצר
+          </button>
         </motion.div>
 
         {/* Stats */}

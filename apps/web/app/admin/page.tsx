@@ -1320,23 +1320,21 @@ Please analyze this error and provide a fix.
           animate={{ opacity: 1, x: 0 }}
           className="mb-4 sm:mb-8 bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-4 sm:p-6"
         >
-          <div className="flex items-center justify-between gap-3">
-            <div>
-              <h1 className="text-xl sm:text-3xl font-display font-bold text-[#2b241d] flex items-center gap-2 sm:gap-3">
-                <Shield className="text-[#c99b4a]" size={22} />
-                פאנל ניהול
-              </h1>
-              <p className="text-[#8b7c69] mt-1 font-medium text-xs sm:text-base">ניהול משתמשים ומעקב אחרי תקלות המערכת</p>
-            </div>
-            <button
-              onClick={fetchData}
-              disabled={refreshing}
-              className="px-3 py-2 bg-[#c99b4a]/15 border border-[#c99b4a]/30 text-[#c99b4a] rounded-xl hover:bg-[#c99b4a]/25 transition-colors flex items-center gap-1.5 text-sm flex-shrink-0"
-            >
-              <RefreshCw size={16} className={refreshing ? 'animate-spin' : ''} />
-              <span className="hidden sm:inline">רענון</span>
-            </button>
+          <div>
+            <h1 className="text-xl sm:text-3xl font-display font-bold text-[#2b241d] flex items-center gap-2 sm:gap-3">
+              <Shield className="text-[#c99b4a]" size={22} />
+              פאנל ניהול
+            </h1>
+            <p className="text-[#8b7c69] mt-1 font-medium text-xs sm:text-base">ניהול משתמשים ומעקב אחרי תקלות המערכת</p>
           </div>
+          <button
+            onClick={fetchData}
+            disabled={refreshing}
+            className="w-[90%] mx-auto mt-4 flex items-center justify-center gap-2 px-5 py-4 rounded-xl bg-[#c99b4a]/15 border border-[#c99b4a]/30 text-[#c99b4a] hover:bg-[#c99b4a]/25 transition-colors font-bold text-base"
+          >
+            <RefreshCw size={16} className={refreshing ? 'animate-spin' : ''} />
+            רענון
+          </button>
         </motion.div>
 
         {/* Quick Links */}

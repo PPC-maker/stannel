@@ -261,23 +261,21 @@ export default function ManageServiceProvidersPage() {
             <ArrowRight size={18} />
             חזרה לפאנל ניהול
           </Link>
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-display font-bold text-[#2b241d] flex items-center gap-3">
-                <Building2 className="text-[#c99b4a]" />
-                ניהול נותני שירות
-              </h1>
-              <p className="text-[#8b7c69] mt-1">הוספה, עריכה ומחיקה של נותני שירות במערכת</p>
-            </div>
-            <button
-              onClick={handleAdd}
-              className="flex items-center gap-2 px-5 py-3 rounded-xl bg-[#c99b4a] hover:bg-[#9e7746] text-white font-bold transition-all hover:scale-105 active:scale-100"
-              style={{ boxShadow: '0 4px 16px rgba(201,155,74,0.35)' }}
-            >
-              <Plus size={20} />
-              הוספת נותן שירות
-            </button>
+          <div>
+            <h1 className="text-3xl font-display font-bold text-[#2b241d] flex items-center gap-3">
+              <Building2 className="text-[#c99b4a]" />
+              ניהול נותני שירות
+            </h1>
+            <p className="text-[#8b7c69] mt-1">הוספה, עריכה ומחיקה של נותני שירות במערכת</p>
           </div>
+          <button
+            onClick={handleAdd}
+            className="w-[90%] mx-auto mt-4 flex items-center justify-center gap-2 px-5 py-4 rounded-xl bg-[#c99b4a] hover:bg-[#9e7746] text-white font-bold text-base transition-all hover:scale-[1.02] active:scale-100"
+            style={{ boxShadow: '0 4px 16px rgba(201,155,74,0.35)' }}
+          >
+            <Plus size={20} />
+            הוספת נותן שירות
+          </button>
         </motion.div>
 
         {/* Search & Filter */}

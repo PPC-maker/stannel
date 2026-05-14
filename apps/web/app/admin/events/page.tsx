@@ -246,22 +246,20 @@ export default function ManageEventsPage() {
             <ArrowRight size={18} />
             חזרה לפאנל ניהול
           </Link>
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-display font-bold text-[#2b241d] flex items-center gap-3">
-                <Calendar className="text-[#c99b4a]" />
-                ניהול אירועים
-              </h1>
-              <p className="text-[#8b7c69] mt-1">יצירה וניהול אירועים לאדריכלים</p>
-            </div>
-            <button
-              onClick={() => setShowForm(true)}
-              className="bg-[#c99b4a] text-white hover:bg-[#9e7746] px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
-            >
-              <Plus size={18} />
-              אירוע חדש
-            </button>
+          <div>
+            <h1 className="text-3xl font-display font-bold text-[#2b241d] flex items-center gap-3">
+              <Calendar className="text-[#c99b4a]" />
+              ניהול אירועים
+            </h1>
+            <p className="text-[#8b7c69] mt-1">יצירה וניהול אירועים לאדריכלים</p>
           </div>
+          <button
+            onClick={() => setShowForm(true)}
+            className="w-[90%] mx-auto mt-4 flex items-center justify-center gap-2 px-5 py-4 rounded-xl bg-[#c99b4a] text-white hover:bg-[#9e7746] transition-colors font-bold text-base"
+          >
+            <Plus size={18} />
+            אירוע חדש
+          </button>
         </motion.div>
 
         {/* Stats */}
