@@ -1541,8 +1541,8 @@ Please analyze this error and provide a fix.
             animate={{ opacity: 1, y: 0 }}
           >
             <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-semibold text-[#2b241d] flex items-center gap-2">
+              <div className="mb-6">
+                <h2 className="text-xl font-semibold text-[#2b241d] flex items-center gap-2 mb-3">
                   <Users className="text-[#c99b4a]" />
                   ניהול משתמשים ({allUsers.length})
                   {pendingUsers.length > 0 && (
@@ -1551,12 +1551,12 @@ Please analyze this error and provide a fix.
                     </span>
                   )}
                 </h2>
-                <div className="flex items-center gap-2">
+                <div className="flex flex-col gap-2">
                   {pendingUsers.length > 0 && selectedUsers.size > 0 && (
                     <button
                       onClick={handleBulkApprove}
                       disabled={refreshing}
-                      className="px-4 py-2 bg-[#c99b4a]/15 border border-[#c99b4a]/30 text-[#c99b4a] rounded-xl hover:bg-[#c99b4a]/25 transition-colors flex items-center gap-2 disabled:opacity-50"
+                      className="w-[90%] mx-auto px-5 py-4 bg-[#c99b4a]/15 border border-[#c99b4a]/30 text-[#c99b4a] rounded-xl hover:bg-[#c99b4a]/25 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 font-bold text-base"
                     >
                       <CheckCircle2 size={18} />
                       אשר נבחרים ({selectedUsers.size})
@@ -1564,7 +1564,7 @@ Please analyze this error and provide a fix.
                   )}
                   <button
                     onClick={handleCreateSupplier}
-                    className="px-4 py-2 bg-blue-500/20 border border-blue-500/30 text-blue-400 rounded-xl hover:bg-blue-500/30 transition-colors flex items-center gap-2"
+                    className="w-[90%] mx-auto px-5 py-4 bg-blue-50 border border-blue-200 text-blue-600 rounded-xl hover:bg-blue-100 transition-colors flex items-center justify-center gap-2 font-bold text-base"
                   >
                     <Building2 size={18} />
                     + הוספת ספק חדש
