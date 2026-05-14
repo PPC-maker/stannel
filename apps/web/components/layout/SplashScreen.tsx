@@ -8,8 +8,8 @@ export default function SplashScreen() {
     const splash = document.createElement('div');
     splash.id = 'splash-screen';
     splash.innerHTML = `
-      <img src="/logo-f.png" alt="STANNEL" />
-      <div class="splash-text">...המערכת נטענת</div>
+      <img src="/logo_black1.png" alt="STANNEL" />
+      <div class="splash-text">...אנחנו עוברים לדף המבוקש</div>
       <div class="splash-loader"></div>
     `;
     document.body.prepend(splash);

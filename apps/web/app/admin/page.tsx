@@ -1617,7 +1617,7 @@ Please analyze this error and provide a fix.
                                   {user.profileImage || sp?.profileImage ? (
                                     <div className="w-10 h-10 rounded-full overflow-hidden relative flex-shrink-0"><Image src={user.profileImage || sp?.profileImage || ''} alt={user.name} fill className="object-cover" unoptimized /></div>
                                   ) : (
-                                    <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold flex-shrink-0 ${user.isActive ? 'bg-gradient-to-br from-emerald-400 to-emerald-600 text-white' : 'bg-gradient-to-br from-yellow-400 to-yellow-600 text-black'}`}>{user.name.charAt(0)}</div>
+                                    <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold flex-shrink-0 ${user.isActive ? 'bg-gradient-to-br from-[#c99b4a] to-[#9e7746] text-white' : 'bg-gradient-to-br from-yellow-400 to-yellow-600 text-black'}`}>{user.name.charAt(0)}</div>
                                   )}
                                   <div className="flex items-center gap-2">
                                     <span className="text-[#2b241d] font-medium">{user.name}</span>
@@ -1673,7 +1673,7 @@ Please analyze this error and provide a fix.
                                           {(user.profileImage || sp?.profileImage) ? (
                                             <Image src={user.profileImage || sp?.profileImage || ''} alt={user.name} fill className="object-cover" unoptimized />
                                           ) : (
-                                            <div className="w-full h-full bg-gradient-to-br from-emerald-500 to-emerald-700 flex items-center justify-center text-white text-xl font-bold">{user.name.charAt(0)}</div>
+                                            <div className="w-full h-full bg-gradient-to-br from-[#c99b4a] to-[#9e7746] flex items-center justify-center text-white text-xl font-bold">{user.name.charAt(0)}</div>
                                           )}
                                         </div>
                                         <label className="absolute inset-0 rounded-full cursor-pointer flex items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -1838,7 +1838,7 @@ Please analyze this error and provide a fix.
                           ) : (
                             <div className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg flex-shrink-0 ${
                               user.isActive
-                                ? 'bg-gradient-to-br from-emerald-400 to-emerald-600 text-white'
+                                ? 'bg-gradient-to-br from-[#c99b4a] to-[#9e7746] text-white'
                                 : 'bg-gradient-to-br from-yellow-400 to-yellow-600 text-black'
                             }`}>
                               {user.name.charAt(0)}
