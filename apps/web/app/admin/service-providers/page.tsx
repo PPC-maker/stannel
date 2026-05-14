@@ -343,111 +343,123 @@ export default function ManageServiceProvidersPage() {
                 </button>
               </div>
             ) : (
-              <div className="space-y-3">
+              <div className="space-y-4">
                 {filteredProviders.map((provider, index) => (
                   <motion.div
                     key={provider.id}
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.03 }}
-                    className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-xl p-4 hover:bg-[#f0ebe6] transition-colors"
+                    className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl overflow-hidden hover:shadow-lg transition-all"
+                    style={{ boxShadow: '0 4px 16px rgba(64,38,18,0.06)' }}
                   >
-                    {/* Top row: Name + Status + Actions */}
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-[#c99b4a]/15 flex items-center justify-center">
-                          <Building2 size={18} className="text-[#c99b4a]" />
+                    {/* Image / Logo area - 3/4 width */}
+                    <div className="relative w-full h-44 bg-gradient-to-br from-[#f7f3f2] to-[#ede6e0] flex items-center justify-center">
+                      {(provider as any)._profileImage ? (
+                        <img src={(provider as any)._profileImage} alt={provider.name} className="w-full h-full object-cover" />
+                      ) : (
+                        <div className="w-20 h-20 rounded-2xl bg-[#c99b4a]/15 flex items-center justify-center">
+                          <Building2 size={36} className="text-[#c99b4a]" />
                         </div>
-                        <div>
-                          <span className="font-bold text-[#2b241d] text-lg">{provider.name}</span>
-                          <div className="flex items-center gap-2 mt-0.5">
-                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] bg-[#f7f3f2] text-[#8b7c69]">
-                              <Tag size={10} />
-                              {categoryLabels[provider.category] || provider.category}
-                            </span>
-                            {provider.isVerified && (
-                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] bg-blue-500/20 text-blue-400">
-                                <CheckCircle size={10} />
-                                מאומת
-                              </span>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        {/* Active toggle */}
-                        {(provider as any)._isSupplier ? (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium bg-blue-500/20 text-blue-400">
-                            <Building2 size={14} />
-                            ספק רשום
-                          </span>
-                        ) : (
+                      )}
+                      {/* Action buttons overlay */}
+                      <div className="absolute top-3 left-3 flex items-center gap-2">
+                        {!(provider as any)._isSupplier && (
                           <>
                             <button
-                              onClick={() => handleToggleActive(provider)}
-                              className={`inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                                provider.isActive
-                                  ? 'bg-green-500/20 text-green-400 hover:bg-green-500/30'
-                                  : 'bg-red-500/20 text-red-400 hover:bg-red-500/30'
-                              }`}
-                            >
-                              {provider.isActive ? <CheckCircle size={14} /> : <XCircle size={14} />}
-                              {provider.isActive ? 'פעיל' : 'לא פעיל'}
-                            </button>
-                            <button
                               onClick={() => handleEdit(provider)}
-                              className="p-2 rounded-lg bg-[#f7f3f2] hover:bg-[#f0ebe6] text-[#8b7c69] hover:text-[#2b241d] transition-colors"
+                              className="p-2 rounded-lg bg-white/90 hover:bg-white text-[#8b7c69] hover:text-[#2b241d] transition-colors shadow-sm"
                               title="עריכה"
                             >
                               <Pencil size={16} />
                             </button>
+                            <button
+                              onClick={() => handleDelete(provider)}
+                              className="p-2 rounded-lg bg-white/90 hover:bg-red-50 text-[#8b7c69] hover:text-red-500 transition-colors shadow-sm"
+                              title="מחיקה"
+                            >
+                              <Trash2 size={16} />
+                            </button>
                           </>
-                        )}
-                        {/* Delete - only for real service providers, not mapped suppliers */}
-                        {!(provider as any)._isSupplier && (
-                          <button
-                            onClick={() => handleDelete(provider)}
-                            className="p-2 rounded-lg bg-[#f7f3f2] hover:bg-red-50 text-[#8b7c69] hover:text-red-500 transition-colors"
-                            title="מחיקה"
-                          >
-                            <Trash2 size={16} />
-                          </button>
                         )}
                       </div>
                     </div>
 
-                    {/* Details row */}
-                    <div className="flex flex-wrap items-center gap-4 text-sm text-[#a89b8a]">
-                      {provider.phone && (
-                        <div className="flex items-center gap-1.5">
-                          <Phone size={13} />
-                          <span dir="ltr">{provider.phone}</span>
-                        </div>
-                      )}
-                      {provider.email && (
-                        <div className="flex items-center gap-1.5">
-                          <Mail size={13} />
-                          <span>{provider.email}</span>
-                        </div>
-                      )}
-                      {provider.website && (
-                        <a href={provider.website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 hover:text-[#c99b4a] transition-colors">
-                          <Globe size={13} />
-                          <span>אתר</span>
-                        </a>
-                      )}
-                      {provider.address && (
-                        <div className="flex items-center gap-1.5">
-                          <MapPin size={13} />
-                          <span>{provider.address}</span>
-                        </div>
+                    {/* Content */}
+                    <div className="p-4">
+                      {/* Name */}
+                      <h3 className="font-bold text-[#2b241d] text-lg mb-3">{provider.name}</h3>
+
+                      {/* Badges row - equal size */}
+                      <div className="grid grid-cols-3 gap-2 mb-3">
+                        <span className="inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium bg-[#f7f3f2] text-[#8b7c69] border border-[rgba(201,155,74,0.08)]">
+                          <Tag size={12} />
+                          {categoryLabels[provider.category] || provider.category}
+                        </span>
+                        {(provider as any)._isSupplier ? (
+                          <span className="inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium bg-blue-50 text-blue-600 border border-blue-100">
+                            <Building2 size={12} />
+                            ספק רשום
+                          </span>
+                        ) : (
+                          <button
+                            onClick={() => handleToggleActive(provider)}
+                            className={`inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium border transition-colors ${
+                              provider.isActive
+                                ? 'bg-green-50 text-green-600 border-green-100 hover:bg-green-100'
+                                : 'bg-red-50 text-red-500 border-red-100 hover:bg-red-100'
+                            }`}
+                          >
+                            {provider.isActive ? <CheckCircle size={12} /> : <XCircle size={12} />}
+                            {provider.isActive ? 'פעיל' : 'לא פעיל'}
+                          </button>
+                        )}
+                        {provider.isVerified ? (
+                          <span className="inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium bg-[#c99b4a]/10 text-[#c99b4a] border border-[#c99b4a]/20">
+                            <CheckCircle size={12} />
+                            מאומת
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium bg-[#f7f3f2] text-[#a89b8a] border border-[rgba(201,155,74,0.08)]">
+                            <XCircle size={12} />
+                            לא מאומת
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Details - stacked */}
+                      <div className="space-y-2 text-sm">
+                        {provider.phone && (
+                          <div className="flex items-center gap-2 text-[#2b241d]">
+                            <Phone size={14} className="text-[#c99b4a] flex-shrink-0" />
+                            <span dir="ltr">{provider.phone}</span>
+                          </div>
+                        )}
+                        {provider.email && (
+                          <div className="flex items-center gap-2 text-[#2b241d]">
+                            <Mail size={14} className="text-[#c99b4a] flex-shrink-0" />
+                            <span className="truncate">{provider.email}</span>
+                          </div>
+                        )}
+                        {provider.website && (
+                          <a href={provider.website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-[#c99b4a] hover:text-[#9e7746] transition-colors">
+                            <Globe size={14} className="flex-shrink-0" />
+                            <span>אתר אינטרנט</span>
+                          </a>
+                        )}
+                        {provider.address && (
+                          <div className="flex items-center gap-2 text-[#2b241d]">
+                            <MapPin size={14} className="text-[#c99b4a] flex-shrink-0" />
+                            <span>{provider.address}</span>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Description */}
+                      {provider.description && (
+                        <p className="text-[#8b7c69] text-sm mt-3 line-clamp-2">{provider.description}</p>
                       )}
                     </div>
-
-                    {/* Description */}
-                    {provider.description && (
-                      <p className="text-[#a89b8a] text-sm mt-2 line-clamp-2">{provider.description}</p>
-                    )}
                   </motion.div>
                 ))}
               </div>
