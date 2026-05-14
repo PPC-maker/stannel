@@ -2,7 +2,6 @@
 
 import { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import Image from 'next/image';
 import Link from 'next/link';
 import ImageWithLoader from '@/components/ui/ImageWithLoader';
 import { Gift, Star, ShoppingCart, Loader2, Coins, Banknote } from 'lucide-react';
@@ -148,21 +147,8 @@ export default function RewardsPage() {
   };
 
   return (
-    <div className="min-h-screen -mt-16">
-      {/* Hero Background */}
-      <div className="absolute inset-x-0 top-0 h-[45vh]">
-        <Image
-          src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1920&q=80"
-          alt="Rewards"
-          fill
-          className="object-cover"
-          priority
-        />
-        <div className="absolute inset-0 bg-black/50" />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#f7f3f2]/30 via-transparent to-[#f7f3f2]" />
-      </div>
-
-      <div className="relative z-10 px-4 sm:px-6 pt-24 sm:pt-28 pb-24 max-w-7xl mx-auto">
+    <div className="min-h-screen">
+      <div className="relative z-10 px-4 sm:px-6 pt-8 pb-24 max-w-7xl mx-auto">
         {/* Balance Banner */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}

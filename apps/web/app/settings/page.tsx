@@ -119,20 +119,9 @@ export default function SettingsPage() {
   ];
 
   return (
-    <div className="min-h-screen -mt-16">
-      {/* Hero Background - Gradient with Better Fade */}
-      <div className="relative h-72 overflow-hidden">
-        {/* Base gradient */}
-        <div className="absolute inset-0 bg-gradient-to-br from-[#f7f3f2] via-[#ede6e0] to-[#f7f3f2]" />
-        {/* Radial gold glow at top */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(201,155,74,0.12),transparent_60%)]" />
-        {/* Enhanced bottom fade - multiple layers for smooth transition */}
-        <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#f7f3f2] via-[#f7f3f2]/80 to-transparent" />
-        <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#f7f3f2] to-transparent" />
-      </div>
-
+    <div className="min-h-screen">
       {/* Content */}
-      <div className="px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto -mt-32 relative z-10 pb-24">
+      <div className="px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto pt-8 relative z-10 pb-24">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}

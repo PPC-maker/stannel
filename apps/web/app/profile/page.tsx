@@ -195,15 +195,9 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="min-h-screen -mt-16">
-      {/* Hero Background - Gradient */}
-      <div className="relative h-48 sm:h-72 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#f7f3f2] via-[#ede6e0] to-[#f7f3f2]" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(201,155,74,0.12),transparent_50%)]" />
-      </div>
-
+    <div className="min-h-screen">
       {/* Content */}
-      <div className="px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto -mt-20 sm:-mt-32 relative z-10 pb-24">
+      <div className="px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto pt-8 relative z-10 pb-24">
         {/* Profile Header */}
         <motion.div
           ref={profileRef}

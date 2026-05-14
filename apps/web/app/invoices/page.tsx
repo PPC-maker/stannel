@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import Image from 'next/image';
 import { FileText, Upload, Search, Clock, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
 import Link from 'next/link';
 import { useInvoices } from '@/lib/api-hooks';
@@ -49,21 +48,8 @@ export default function InvoicesPage() {
   };
 
   return (
-    <div className="min-h-screen -mt-16">
-      {/* Hero Background */}
-      <div className="absolute inset-x-0 top-0 h-[40vh]">
-        <Image
-          src="https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=1920&q=80"
-          alt="Invoices"
-          fill
-          className="object-cover"
-          priority
-        />
-        <div className="absolute inset-0 bg-black/50" />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#f7f3f2]/30 via-transparent to-[#f7f3f2]" />
-      </div>
-
-      <div className="relative z-10 px-4 sm:px-6 pt-24 sm:pt-28 pb-24 max-w-7xl mx-auto">
+    <div className="min-h-screen">
+      <div className="relative z-10 px-4 sm:px-6 pt-8 pb-24 max-w-7xl mx-auto">
         {/* Header */}
         <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-4 sm:p-6 mb-6">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">

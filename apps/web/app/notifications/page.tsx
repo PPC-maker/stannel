@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import Image from 'next/image';
 import {
   Bell,
   Check,
@@ -303,14 +302,8 @@ export default function NotificationsPage() {
   };
 
   return (
-    <div className="min-h-screen -mt-16">
-      <div className="absolute inset-x-0 top-0 h-[35vh]">
-        <Image src="https://images.unsplash.com/photo-1557804506-669a67965ba0?w=1920&q=80" alt="Notifications" fill className="object-cover" priority />
-        <div className="absolute inset-0 bg-white/50" />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#f7f3f2]/30 via-transparent to-[#f7f3f2]" />
-      </div>
-
-      <div className="relative z-10 px-4 sm:px-6 pt-24 sm:pt-28 pb-24 max-w-4xl mx-auto">
+    <div className="min-h-screen">
+      <div className="relative z-10 px-4 sm:px-6 pt-8 pb-24 max-w-4xl mx-auto">
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-4 sm:mb-6">
           <div className="flex items-center justify-between gap-3">
             <div>

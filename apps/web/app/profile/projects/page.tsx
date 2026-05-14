@@ -308,35 +308,21 @@ export default function ProjectsManagementPage() {
   }
 
   return (
-    <div className="min-h-screen -mt-16">
+    <div className="min-h-screen">
       {/* Header */}
-      <div className="relative h-48 overflow-hidden">
-        <Image
-          src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1920&q=80"
-          alt="Projects"
-          fill
-          className="object-cover"
-          priority
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-[#f7f3f2]" />
-
-        <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6 pt-16">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
+      <div className="px-4 sm:px-6 pt-8 max-w-4xl mx-auto">
+        <div className="flex items-center gap-3 mb-6">
+          <Link
+            href="/profile"
+            className="w-10 h-10 bg-[#f7f3f2] hover:bg-[#ede6e0] rounded-full flex items-center justify-center transition-colors"
           >
-            <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">הפרויקטים שלי</h1>
-            <p className="text-white/80">ניהול תיק העבודות שלך</p>
-          </motion.div>
+            <ArrowRight size={20} className="text-[#2b241d]" />
+          </Link>
+          <div>
+            <h1 className="text-3xl md:text-4xl font-bold text-[#2b241d]">הפרויקטים שלי</h1>
+            <p className="text-[#8b7c69]">ניהול תיק העבודות שלך</p>
+          </div>
         </div>
-
-        {/* Back Button */}
-        <Link
-          href="/profile"
-          className="absolute top-20 right-4 w-10 h-10 bg-white/20 backdrop-blur rounded-full flex items-center justify-center"
-        >
-          <ArrowRight size={20} className="text-white" />
-        </Link>
       </div>
 
       {/* Content */}

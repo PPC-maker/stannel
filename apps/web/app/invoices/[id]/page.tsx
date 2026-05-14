@@ -2,7 +2,6 @@
 
 import { useParams, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import Image from 'next/image';
 import { ArrowRight, FileText, Calendar, Building2, User, CheckCircle, Clock, XCircle, AlertTriangle, FileIcon, Download } from 'lucide-react';
 import Link from 'next/link';
 import { useInvoice } from '@/lib/api-hooks';
@@ -31,12 +30,8 @@ export default function InvoiceDetailPage() {
 
   if (error || !invoice) {
     return (
-      <div className="min-h-screen -mt-16">
-        <div className="relative h-64 overflow-hidden">
-          <Image src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=2000&q=80" alt="Finance" fill className="object-cover" priority />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#f7f3f2]/60 via-[#f7f3f2]/70 to-[#f7f3f2]" />
-        </div>
-        <div className="px-4 max-w-4xl mx-auto -mt-32 relative z-10 pb-24">
+      <div className="min-h-screen">
+        <div className="px-4 max-w-4xl mx-auto pt-8 relative z-10 pb-24">
           <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-8 text-center">
             <AlertTriangle size={48} className="mx-auto text-red-400 mb-4" />
             <h1 className="text-2xl font-bold text-[#2b241d] mb-2">חשבונית לא נמצאה</h1>
@@ -54,15 +49,8 @@ export default function InvoiceDetailPage() {
   const StatusIcon = status.icon;
 
   return (
-    <div className="min-h-screen -mt-16">
-      {/* Hero */}
-      <div className="relative h-64 overflow-hidden">
-        <Image src="https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&w=2000&q=80" alt="Finance" fill className="object-cover" priority />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#f7f3f2]/60 via-[#f7f3f2]/70 to-[#f7f3f2]" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(201,155,74,0.15),transparent_60%)]" />
-      </div>
-
-      <div className="px-4 sm:px-6 max-w-5xl mx-auto -mt-32 relative z-10 pb-24">
+    <div className="min-h-screen">
+      <div className="px-4 sm:px-6 max-w-5xl mx-auto pt-8 relative z-10 pb-24">
         {/* Header */}
         <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="mb-6">
           <button onClick={() => router.back()} className="inline-flex items-center gap-2 text-[#8b7c69] hover:text-[#c99b4a] mb-4 transition-colors font-medium">

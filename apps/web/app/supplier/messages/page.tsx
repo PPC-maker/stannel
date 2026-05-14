@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import Image from 'next/image';
 import Link from 'next/link';
 import {
   ArrowRight,
@@ -150,14 +149,8 @@ export default function SupplierMessagesPage() {
   if (!isReady) return <AuthGuardLoader />;
 
   return (
-    <div className="min-h-screen -mt-16">
-      {/* Hero */}
-      <div className="relative h-64 overflow-hidden">
-        <Image src="https://images.unsplash.com/photo-1557200134-90327ee9fafa?auto=format&fit=crop&w=2000&q=80" alt="Messages" fill className="object-cover" priority />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#f7f3f2]/60 via-[#f7f3f2]/70 to-[#f7f3f2]" />
-      </div>
-
-      <div className="px-4 sm:px-6 max-w-4xl mx-auto -mt-32 relative z-10 pb-24">
+    <div className="min-h-screen">
+      <div className="px-4 sm:px-6 max-w-4xl mx-auto pt-8 relative z-10 pb-24">
         {/* Header */}
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-6">
           <Link href="/supplier" className="inline-flex items-center gap-2 text-[#8b7c69] hover:text-[#c99b4a] mb-4 transition-colors">

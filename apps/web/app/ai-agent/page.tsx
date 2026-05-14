@@ -2,7 +2,6 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import Image from 'next/image';
 import { Send, Bot, User, Sparkles, Loader2 } from 'lucide-react';
 import { useAiChat, useAiPrompts } from '@/lib/api-hooks';
 import { useAuthGuard, AuthGuardLoader } from '@/lib/useAuthGuard';
@@ -79,21 +78,8 @@ export default function AiAgentPage() {
   };
 
   return (
-    <div className="min-h-screen -mt-16">
-      {/* Hero Background */}
-      <div className="absolute inset-x-0 top-0 h-[30vh]">
-        <Image
-          src="https://images.unsplash.com/photo-1677442136019-21780ecad995?w=1920&q=80"
-          alt="AI Agent"
-          fill
-          className="object-cover"
-          priority
-        />
-        <div className="absolute inset-0 bg-black/60" />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#f7f3f2]/30 via-transparent to-[#f7f3f2]" />
-      </div>
-
-      <div className="relative z-10 px-4 sm:px-6 pt-24 sm:pt-28 pb-24 max-w-4xl mx-auto">
+    <div className="min-h-screen">
+      <div className="relative z-10 px-4 sm:px-6 pt-8 pb-24 max-w-4xl mx-auto">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
