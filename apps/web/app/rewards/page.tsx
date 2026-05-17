@@ -91,6 +91,28 @@ export default function RewardsPage() {
 
     const completion = calculateCashCompletion(points, product.pointCost, product.pointsPerShekel || 100);
 
+    // BLOCK: If not enough points and not using cash completion
+    if (!completion.canAffordFull && !useCash) {
+      Swal.fire({
+        title: 'אין מספיק נקודות',
+        html: `
+          <div style="text-align: right; direction: rtl; margin-top: 10px;">
+            <p>יתרת הנקודות שלך: <strong>${points.toLocaleString()} נק׳</strong></p>
+            <p>עלות המוצר: <strong>${product.pointCost.toLocaleString()} נק׳</strong></p>
+            <p style="color: #dc2626; font-weight: bold;">חסרות: ${completion.missingPoints.toLocaleString()} נק׳</p>
+            <hr style="margin: 12px 0; opacity: 0.2;">
+            <p style="color: #8b7c69;">ניתן להשלים ב-₪${completion.cashNeeded.toLocaleString()} או לצבור עוד נקודות.</p>
+          </div>
+        `,
+        icon: 'warning',
+        confirmButtonText: 'הבנתי',
+        background: '#f7f3f2',
+        color: '#2b241d',
+        confirmButtonColor: '#c99b4a',
+      });
+      return;
+    }
+
     let confirmMessage = `האם ברצונך לממש את "${product.name}"?`;
     let confirmDetails = '';
 
@@ -102,6 +124,14 @@ export default function RewardsPage() {
           <p>נקודות חסרות: <strong>${completion.missingPoints.toLocaleString()}</strong></p>
           <hr style="margin: 10px 0; opacity: 0.3;">
           <p style="color: #c99b4a; font-weight: bold;">תשלום להשלמה: ₪${completion.cashNeeded.toLocaleString()}</p>
+          <p style="color: #8b7c69; font-size: 12px; margin-top: 8px;">הפרטים שלך יישלחו למנהל המערכת לטיפול.</p>
+        </div>
+      `;
+    } else {
+      confirmDetails = `
+        <div style="text-align: right; direction: rtl; margin-top: 10px;">
+          <p>יתרת הנקודות שלך: <strong>${points.toLocaleString()} נק׳</strong></p>
+          <p>ינוכו: <strong>${product.pointCost.toLocaleString()} נק׳</strong></p>
         </div>
       `;
     }
@@ -124,8 +154,8 @@ export default function RewardsPage() {
     try {
       await redeemMutation.mutateAsync({ productId, cashPayment: useCash ? completion.cashNeeded : 0 });
       Swal.fire({
-        title: 'המוצר נרכש בהצלחה!',
-        text: useCash ? `שילמת ₪${completion.cashNeeded} + ${points.toLocaleString()} נקודות` : 'המימוש בוצע בהצלחה',
+        title: useCash ? 'הבקשה נשלחה!' : 'המוצר נרכש בהצלחה!',
+        text: useCash ? `פנייתך נשלחה למנהל. תשלום: ₪${completion.cashNeeded} + ${completion.useAllPoints.toLocaleString()} נקודות` : 'המימוש בוצע בהצלחה',
         icon: 'success',
         confirmButtonText: 'אישור',
         background: '#f7f3f2',

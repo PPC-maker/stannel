@@ -477,6 +477,14 @@ export function useSupplierPerformance() {
   });
 }
 
+// Redemptions hooks (Admin)
+export function useAdminRedemptions() {
+  return useQuery({
+    queryKey: ['admin', 'redemptions'],
+    queryFn: () => adminApi.getRedemptions(),
+  });
+}
+
 // Contracts hooks (Admin)
 export function useContracts() {
   return useQuery({

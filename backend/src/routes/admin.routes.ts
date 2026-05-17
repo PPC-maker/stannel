@@ -1019,6 +1019,23 @@ export async function adminRoutes(server: FastifyInstance) {
     return contracts;
   });
 
+  // Get all redemptions (orders from rewards store)
+  server.get('/redemptions', async (request: FastifyRequest) => {
+    const redemptions = await prisma.redemption.findMany({
+      include: {
+        product: { select: { name: true, pointCost: true, imageUrl: true } },
+        architect: {
+          include: {
+            user: { select: { name: true, email: true, phone: true } },
+          },
+        },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    return redemptions;
+  });
+
   // Create goal
   server.post('/goals', async (request: FastifyRequest) => {
     const body = createGoalSchema.parse(request.body);

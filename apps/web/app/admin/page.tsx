@@ -61,6 +61,7 @@ import {
   X,
   Camera,
   KeyRound,
+  ShoppingBag,
 } from 'lucide-react';
 import Swal from 'sweetalert2';
 import Link from 'next/link';
@@ -1366,6 +1367,19 @@ Please analyze this error and provide a fix.
                 <div>
                   <p className="text-[#2b241d] font-medium group-hover:text-[#c99b4a] transition-colors">אדריכלים</p>
                   <p className="text-[#a89b8a] text-xs">ניהול אדריכלים</p>
+                </div>
+              </div>
+            </div>
+          </Link>
+          <Link href="/admin/orders" className="group">
+            <div className="p-4 bg-white border border-[rgba(201,155,74,0.08)] rounded-xl hover:bg-[#f0ebe6] transition-all">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-[#c99b4a]/20">
+                  <ShoppingBag size={20} className="text-[#c99b4a]" />
+                </div>
+                <div>
+                  <p className="text-[#2b241d] font-medium group-hover:text-[#c99b4a] transition-colors">הזמנות הטבות</p>
+                  <p className="text-[#a89b8a] text-xs">רכישות מחנות ההטבות</p>
                 </div>
               </div>
             </div>

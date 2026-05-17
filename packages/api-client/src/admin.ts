@@ -620,6 +620,20 @@ export const adminApi = {
     return res.json();
   },
 
+  // Redemptions (orders from rewards store)
+  async getRedemptions(): Promise<any[]> {
+    const res = await fetchWithAuth(`${config.baseUrl}/admin/redemptions`, {
+      headers: getHeaders(),
+    });
+
+    if (!res.ok) {
+      const error = await res.json().catch(() => ({ message: 'שגיאה בטעינת ההזמנות' }));
+      throw new Error(error.message || 'שגיאה בטעינת ההזמנות');
+    }
+
+    return res.json();
+  },
+
   // Contracts
   async getContracts(): Promise<any[]> {
     const res = await fetchWithAuth(`${config.baseUrl}/admin/contracts`, {

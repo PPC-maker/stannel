@@ -453,6 +453,7 @@ enum NotificationType {
   SYSTEM_ALERT
   WELCOME
   MEETING_REQUEST
+  REDEMPTION
 }
 
 model Notification {

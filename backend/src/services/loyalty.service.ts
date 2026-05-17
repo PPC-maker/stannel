@@ -193,16 +193,20 @@ export const loyaltyService = {
       // User has enough points - full point redemption
       pointsToUse = product.pointCost;
       requiredCash = 0;
-    } else {
-      // User needs cash completion
-      pointsToUse = userPoints; // Use all available points
+    } else if (cashAmount > 0) {
+      // User wants cash completion - verify amount
+      pointsToUse = userPoints;
       const missingPoints = product.pointCost - userPoints;
       requiredCash = Math.ceil(missingPoints / pointsPerShekel);
 
-      // Verify cash amount is sufficient
       if (cashAmount < requiredCash) {
         throw new Error(`נדרש תשלום של ₪${requiredCash} להשלמת המימוש. יתרת הנקודות שלך: ${userPoints.toLocaleString()}`);
       }
+    } else {
+      // User has insufficient points and didn't provide cash - BLOCK
+      const missingPoints = product.pointCost - userPoints;
+      const cashNeeded = Math.ceil(missingPoints / pointsPerShekel);
+      throw new Error(`אין מספיק נקודות למימוש. חסרות ${missingPoints.toLocaleString()} נקודות (₪${cashNeeded.toLocaleString()}). יתרתך: ${userPoints.toLocaleString()} נקודות.`);
     }
 
     const redemption = await prisma.$transaction(async (tx) => {
@@ -260,6 +264,34 @@ export const loyaltyService = {
 
       return redemption;
     });
+
+    // Send notification to all admin users about the redemption
+    try {
+      const adminUsers = await prisma.user.findMany({
+        where: { role: 'ADMIN' },
+        select: { id: true },
+      });
+      const architectUser = await prisma.user.findFirst({
+        where: { architectProfile: { id: architectId } },
+        select: { name: true, email: true },
+      });
+      const userName = architectUser?.name || architectUser?.email || 'משתמש';
+
+      for (const admin of adminUsers) {
+        await prisma.notification.create({
+          data: {
+            recipientId: admin.id,
+            type: 'REDEMPTION',
+            title: 'הזמנה חדשה מחנות ההטבות',
+            message: `${userName} מימש את "${product.name}" (${pointsToUse.toLocaleString()} נק׳${requiredCash > 0 ? ` + ₪${requiredCash}` : ''})`,
+            relatedEntity: 'redemption',
+            relatedId: redemption.id,
+          },
+        });
+      }
+    } catch (notifError) {
+      console.error('Failed to send admin notification for redemption:', notifError);
+    }
 
     return redemption;
   },
