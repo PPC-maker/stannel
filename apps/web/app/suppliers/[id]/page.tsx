@@ -129,8 +129,8 @@ export default function SupplierDetailPage() {
 
   return (
     <div className="min-h-screen pb-28">
-      {/* Top bar */}
-      <div className="px-4 pt-4 pb-2 flex items-center justify-between">
+      {/* Top bar - below global navbar */}
+      <div className="px-4 pt-2 pb-2 flex items-center justify-between">
         <Link href="/suppliers" className="w-10 h-10 rounded-full bg-white border border-[rgba(201,155,74,0.08)] flex items-center justify-center shadow-sm">
           <ArrowRight size={20} className="text-[#2b241d]" />
         </Link>
@@ -150,8 +150,8 @@ export default function SupplierDetailPage() {
                   <ImageWithLoader src={heroImage} alt={supplier.companyName} fill className="object-contain" unoptimized />
                 </div>
               ) : (
-                <div className="w-40 h-40 rounded-3xl bg-[#c99b4a]/10 flex items-center justify-center">
-                  <Building2 size={64} className="text-[#c99b4a]" />
+                <div className="w-40 h-40 rounded-3xl bg-gradient-to-br from-[#c99b4a]/20 to-[#c99b4a]/5 flex items-center justify-center border border-[#c99b4a]/15">
+                  <span className="text-6xl font-bold text-[#c99b4a]">{supplier.companyName?.charAt(0) || 'S'}</span>
                 </div>
               )}
             </div>
@@ -234,31 +234,59 @@ export default function SupplierDetailPage() {
         </div>
       </motion.div>
 
-      {/* ── Contact Row ── */}
+      {/* ── Contact Details ── */}
       <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="mx-4 mb-4">
-        <div className="grid grid-cols-4 gap-2">
-          {[
-            { icon: Mail, label: 'מייל', href: supplier.user?.email ? `mailto:${supplier.user.email}` : null },
-            { icon: Globe, label: 'אתר', href: supplier.website || null },
-            { icon: Phone, label: 'טלפון', href: supplier.phone ? `tel:${supplier.phone}` : null },
-            { icon: Share2, label: 'שיתוף', action: handleShare },
-          ].map((item, i) => {
-            const Icon = item.icon;
-            const content = (
-              <div className="bg-white rounded-2xl border border-[rgba(201,155,74,0.08)] p-3 flex flex-col items-center gap-2 hover:bg-[#faf8f5] transition-colors shadow-sm">
-                <Icon size={20} className="text-[#c99b4a]" />
-                <span className="text-[11px] text-[#8b7c69] font-medium">{item.label}</span>
+        <div className="grid grid-cols-2 gap-3">
+          {supplier.user?.email && (
+            <a href={`mailto:${supplier.user.email}`} className="bg-white rounded-2xl border border-[rgba(201,155,74,0.08)] p-4 flex items-center gap-3 hover:bg-[#faf8f5] transition-colors shadow-sm">
+              <div className="w-11 h-11 rounded-full bg-purple-50 flex items-center justify-center flex-shrink-0">
+                <Mail size={18} className="text-purple-500" />
               </div>
-            );
-            if ((item as any).action) {
-              return <button key={i} onClick={(item as any).action}>{content}</button>;
-            }
-            if ((item as any).href) {
-              return <a key={i} href={(item as any).href} target={item.label === 'אתר' ? '_blank' : undefined} rel="noopener noreferrer">{content}</a>;
-            }
-            return <div key={i} className="opacity-40 pointer-events-none">{content}</div>;
-          })}
+              <div className="min-w-0">
+                <p className="text-[#a89b8a] text-[10px] font-medium">מייל</p>
+                <p className="text-[#2b241d] text-sm font-semibold truncate">{supplier.user.email}</p>
+              </div>
+            </a>
+          )}
+          {supplier.phone && (
+            <a href={`tel:${supplier.phone}`} className="bg-white rounded-2xl border border-[rgba(201,155,74,0.08)] p-4 flex items-center gap-3 hover:bg-[#faf8f5] transition-colors shadow-sm">
+              <div className="w-11 h-11 rounded-full bg-green-50 flex items-center justify-center flex-shrink-0">
+                <Phone size={18} className="text-green-500" />
+              </div>
+              <div>
+                <p className="text-[#a89b8a] text-[10px] font-medium">טלפון</p>
+                <p className="text-[#2b241d] text-sm font-semibold" dir="ltr">{supplier.phone}</p>
+              </div>
+            </a>
+          )}
+          {supplier.website && (
+            <a href={supplier.website} target="_blank" rel="noopener noreferrer" className="bg-white rounded-2xl border border-[rgba(201,155,74,0.08)] p-4 flex items-center gap-3 hover:bg-[#faf8f5] transition-colors shadow-sm">
+              <div className="w-11 h-11 rounded-full bg-[#c99b4a]/10 flex items-center justify-center flex-shrink-0">
+                <Globe size={18} className="text-[#c99b4a]" />
+              </div>
+              <div>
+                <p className="text-[#a89b8a] text-[10px] font-medium">אתר</p>
+                <p className="text-[#c99b4a] text-sm font-semibold flex items-center gap-1">אתר אינטרנט <ExternalLink size={10} /></p>
+              </div>
+            </a>
+          )}
+          {supplier.address && (
+            <a href={`https://maps.google.com/?q=${encodeURIComponent(supplier.address)}`} target="_blank" rel="noopener noreferrer" className="bg-white rounded-2xl border border-[rgba(201,155,74,0.08)] p-4 flex items-center gap-3 hover:bg-[#faf8f5] transition-colors shadow-sm">
+              <div className="w-11 h-11 rounded-full bg-red-50 flex items-center justify-center flex-shrink-0">
+                <MapPin size={18} className="text-red-400" />
+              </div>
+              <div className="min-w-0">
+                <p className="text-[#a89b8a] text-[10px] font-medium">כתובת</p>
+                <p className="text-[#2b241d] text-sm font-semibold truncate">{supplier.address}</p>
+              </div>
+            </a>
+          )}
         </div>
+        {/* Share button */}
+        <button onClick={handleShare} className="w-full mt-3 py-3 bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold rounded-2xl transition-colors flex items-center justify-center gap-2 shadow-md">
+          <Share2 size={18} />
+          שיתוף בוואטסאפ
+        </button>
       </motion.div>
 
       {/* ── About Section ── */}
