@@ -142,9 +142,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => unsubscribe();
   }, []);
 
-  // Proactively refresh token every 45 minutes (Firebase tokens expire after 60 min)
+  // Proactively refresh token every 30 minutes (Firebase tokens expire after 60 min)
+  // Also refresh when tab becomes visible again (prevents stale token after sleep/background)
   useEffect(() => {
-    const interval = setInterval(async () => {
+    const refreshToken = async () => {
       if (firebaseUser) {
         try {
           const token = await firebaseUser.getIdToken(true); // force refresh
@@ -153,9 +154,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           console.error('Token refresh failed:', err);
         }
       }
-    }, 45 * 60 * 1000); // 45 minutes
+    };
 
-    return () => clearInterval(interval);
+    const interval = setInterval(refreshToken, 30 * 60 * 1000); // 30 minutes
+
+    // Refresh token when user comes back to the tab
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible' && firebaseUser) {
+        refreshToken();
+      }
+    };
+
+    // Refresh on focus (covers switching between windows)
+    const handleFocus = () => {
+      if (firebaseUser) refreshToken();
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('focus', handleFocus);
+
+    return () => {
+      clearInterval(interval);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('focus', handleFocus);
+    };
   }, [firebaseUser]);
 
   // Register token refresh callback for 401 auto-retry (uses ref to avoid stale closures)
