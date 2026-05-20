@@ -124,50 +124,7 @@ export default function SupplierDetailPage() {
         </Link>
       </div>
 
-      {/* ── 1. Gallery (images first) ── */}
-      {galleryImages.length > 0 && (
-        <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="mx-4 mb-4">
-          {galleryImages.length === 1 ? (
-            <button onClick={() => openLightbox(0)} className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden shadow-lg">
-              <ImageWithLoader src={galleryImages[0]} alt="תמונה" fill className="object-cover" unoptimized />
-              <div className="absolute inset-0 bg-black/0 hover:bg-black/10 transition-colors flex items-center justify-center">
-                <ZoomIn size={24} className="text-white opacity-0 hover:opacity-100 transition-opacity" />
-              </div>
-            </button>
-          ) : (
-            <div className="grid grid-cols-2 gap-2">
-              {/* First image large */}
-              <button onClick={() => openLightbox(0)} className="relative col-span-2 aspect-[16/9] rounded-2xl overflow-hidden shadow-lg group">
-                <ImageWithLoader src={galleryImages[0]} alt="תמונה" fill className="object-cover group-hover:scale-105 transition-transform duration-500" unoptimized />
-                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/15 transition-colors flex items-center justify-center">
-                  <ZoomIn size={24} className="text-white opacity-0 group-hover:opacity-100 transition-opacity" />
-                </div>
-              </button>
-              {/* Rest as thumbnails */}
-              {galleryImages.slice(1, 5).map((img: string, index: number) => (
-                <button
-                  key={index}
-                  onClick={() => openLightbox(index + 1)}
-                  className="relative aspect-square rounded-xl overflow-hidden group"
-                >
-                  <ImageWithLoader src={img} alt={`תמונה ${index + 2}`} fill className="object-cover group-hover:scale-105 transition-transform duration-500" unoptimized />
-                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/15 transition-colors flex items-center justify-center">
-                    <ZoomIn size={18} className="text-white opacity-0 group-hover:opacity-100 transition-opacity" />
-                  </div>
-                  {/* Show +N overlay on last thumbnail if more images */}
-                  {index === 3 && galleryImages.length > 5 && (
-                    <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                      <span className="text-white text-xl font-bold">+{galleryImages.length - 5}</span>
-                    </div>
-                  )}
-                </button>
-              ))}
-            </div>
-          )}
-        </motion.div>
-      )}
-
-      {/* ── 2. Logo + Name + Bio ── */}
+      {/* ── 1. Logo + Name + Bio ── */}
       <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="mx-4 mb-4">
         <div className="bg-white rounded-2xl border border-[rgba(201,155,74,0.08)] p-5 shadow-sm">
           <div className="flex items-center gap-4 mb-3">
@@ -197,6 +154,46 @@ export default function SupplierDetailPage() {
           )}
         </div>
       </motion.div>
+
+      {/* ── 2. Gallery ── */}
+      {galleryImages.length > 0 && (
+        <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="mx-4 mb-4">
+          {galleryImages.length === 1 ? (
+            <button onClick={() => openLightbox(0)} className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden shadow-lg">
+              <ImageWithLoader src={galleryImages[0]} alt="תמונה" fill className="object-cover" unoptimized />
+              <div className="absolute inset-0 bg-black/0 hover:bg-black/10 transition-colors flex items-center justify-center">
+                <ZoomIn size={24} className="text-white opacity-0 hover:opacity-100 transition-opacity" />
+              </div>
+            </button>
+          ) : (
+            <div className="grid grid-cols-2 gap-2">
+              <button onClick={() => openLightbox(0)} className="relative col-span-2 aspect-[16/9] rounded-2xl overflow-hidden shadow-lg group">
+                <ImageWithLoader src={galleryImages[0]} alt="תמונה" fill className="object-cover group-hover:scale-105 transition-transform duration-500" unoptimized />
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/15 transition-colors flex items-center justify-center">
+                  <ZoomIn size={24} className="text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+                </div>
+              </button>
+              {galleryImages.slice(1, 5).map((img: string, index: number) => (
+                <button
+                  key={index}
+                  onClick={() => openLightbox(index + 1)}
+                  className="relative aspect-square rounded-xl overflow-hidden group"
+                >
+                  <ImageWithLoader src={img} alt={`תמונה ${index + 2}`} fill className="object-cover group-hover:scale-105 transition-transform duration-500" unoptimized />
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/15 transition-colors flex items-center justify-center">
+                    <ZoomIn size={18} className="text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </div>
+                  {index === 3 && galleryImages.length > 5 && (
+                    <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                      <span className="text-white text-xl font-bold">+{galleryImages.length - 5}</span>
+                    </div>
+                  )}
+                </button>
+              ))}
+            </div>
+          )}
+        </motion.div>
+      )}
 
       {/* ── 3. Schedule Meeting Button ── */}
       <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="mx-4 mb-4">
