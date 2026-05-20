@@ -53,6 +53,25 @@
   padding: 0;
 }
 
+/* Force dark text in login inputs - fix mobile white-on-white */
+.login-input {
+  background-color: rgba(255, 255, 255, 0.92) !important;
+  color: #1a1a1a !important;
+  -webkit-text-fill-color: #1a1a1a !important;
+  opacity: 1 !important;
+}
+.login-input::placeholder {
+  color: #9ca3af !important;
+  -webkit-text-fill-color: #9ca3af !important;
+}
+.login-input:-webkit-autofill,
+.login-input:-webkit-autofill:hover,
+.login-input:-webkit-autofill:focus {
+  -webkit-text-fill-color: #1a1a1a !important;
+  -webkit-box-shadow: 0 0 0px 1000px rgba(255, 255, 255, 0.92) inset !important;
+  background-color: rgba(255, 255, 255, 0.92) !important;
+}
+
 /* ===== Splash Screen ===== */
 #splash-screen {
   position: fixed;

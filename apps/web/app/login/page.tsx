@@ -155,7 +155,7 @@ export default function LoginPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 disabled={isLoading}
-                className="w-full bg-white/8 backdrop-blur border border-[#C9A961]/25 rounded-2xl px-5 py-5 pr-14 text-white placeholder:text-white/30 focus:border-[#C9A961]/60 focus:outline-none focus:ring-2 focus:ring-[#C9A961]/15 transition-all text-lg font-medium text-right"
+                className="login-input w-full border border-[#C9A961]/25 rounded-2xl px-5 py-5 pr-14 focus:border-[#C9A961]/60 focus:outline-none focus:ring-2 focus:ring-[#C9A961]/15 transition-all text-lg font-medium text-right"
               />
             </div>
 
@@ -169,7 +169,7 @@ export default function LoginPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 disabled={isLoading}
-                className="w-full bg-white/8 backdrop-blur border border-[#C9A961]/25 rounded-2xl px-5 py-5 pr-14 pl-14 text-white placeholder:text-white/30 focus:border-[#C9A961]/60 focus:outline-none focus:ring-2 focus:ring-[#C9A961]/15 transition-all text-lg font-medium text-right"
+                className="login-input w-full border border-[#C9A961]/25 rounded-2xl px-5 py-5 pr-14 pl-14 focus:border-[#C9A961]/60 focus:outline-none focus:ring-2 focus:ring-[#C9A961]/15 transition-all text-lg font-medium text-right"
               />
               <button
                 type="button"
@@ -210,7 +210,7 @@ export default function LoginPage() {
             type="button"
             onClick={handleGoogleLogin}
             disabled={isLoading}
-            className="w-full bg-white/8 backdrop-blur border border-[#C9A961]/25 hover:border-[#C9A961]/50 text-white py-5 rounded-2xl transition-all flex items-center justify-center gap-3 disabled:opacity-50 text-lg font-semibold"
+            className="w-full bg-white/10 backdrop-blur border border-[#C9A961]/25 hover:border-[#C9A961]/50 text-white py-5 rounded-2xl transition-all flex items-center justify-center gap-3 disabled:opacity-50 text-lg font-semibold"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24">
               <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
