@@ -2,19 +2,16 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import Image from 'next/image';
 import ImageWithLoader from '@/components/ui/ImageWithLoader';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { AnimatePresence } from 'framer-motion';
 import {
   ArrowRight,
-  MapPin,
   Phone,
   Globe,
   Mail,
   Calendar,
-  ExternalLink,
   Loader2,
   Building2,
   Share2,
@@ -22,10 +19,7 @@ import {
   ChevronLeft,
   ChevronRight,
   ZoomIn,
-  Star,
-  Award,
-  Sparkles,
-  Clock,
+  MapPin,
 } from 'lucide-react';
 import { useSupplierDetail } from '@/lib/api-hooks';
 import { useAuthGuard, AuthGuardLoader } from '@/lib/useAuthGuard';
@@ -61,8 +55,8 @@ export default function SupplierDetailPage() {
     );
   }
 
-  const heroImage = supplier.profileImage || supplier.businessImages?.[0] || null;
   const galleryImages = supplier.businessImages || [];
+  const logoImage = supplier.profileImage || null;
 
   const openLightbox = (index: number) => { setCurrentImageIndex(index); setLightboxOpen(true); };
   const closeLightbox = () => setLightboxOpen(false);
@@ -119,232 +113,123 @@ export default function SupplierDetailPage() {
     });
   };
 
-  // Extract features from description or use defaults
-  const features = [
-    { icon: Star, label: 'איכות פרימיום' },
-    { icon: Award, label: 'מותג מוביל' },
-    { icon: Sparkles, label: 'חדשנות ועיצוב' },
-    { icon: Clock, label: 'מוניטין ארוך' },
-  ];
-
   return (
     <div className="min-h-screen pb-28">
-      {/* Top bar - below global navbar */}
-      <div className="px-4 pt-2 pb-2 flex items-center justify-between">
+      {/* Back button */}
+      <div className="px-4 pt-2 pb-2">
         <Link href="/suppliers" className="w-10 h-10 rounded-full bg-white border border-[rgba(201,155,74,0.08)] flex items-center justify-center shadow-sm">
           <ArrowRight size={20} className="text-[#2b241d]" />
         </Link>
-        <span className="px-4 py-1.5 bg-[#c99b4a] text-white text-sm font-bold rounded-full shadow-md">
-          ספק מוביל
-        </span>
       </div>
 
-      {/* ── Hero Card: Logo + Company Info ── */}
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mx-4 mb-4">
-        <div className="bg-white rounded-3xl overflow-hidden border border-[rgba(201,155,74,0.08)] shadow-lg">
-          <div className="flex flex-col md:flex-row">
-            {/* Left: Logo / Image */}
-            <div className="md:w-1/2 p-6 flex items-center justify-center bg-[#faf8f5]">
-              {heroImage ? (
-                <div className="relative w-full aspect-square max-w-[280px] rounded-2xl overflow-hidden">
-                  <ImageWithLoader src={heroImage} alt={supplier.companyName} fill className="object-contain" unoptimized />
-                </div>
-              ) : (
-                <div className="w-40 h-40 rounded-3xl bg-gradient-to-br from-[#c99b4a]/20 to-[#c99b4a]/5 flex items-center justify-center border border-[#c99b4a]/15">
-                  <span className="text-6xl font-bold text-[#c99b4a]">{supplier.companyName?.charAt(0) || 'S'}</span>
-                </div>
-              )}
-            </div>
-
-            {/* Right: Company Details Cards */}
-            <div className="md:w-1/2 p-5 flex flex-col gap-3">
-              <h1 className="text-2xl font-bold text-[#2b241d] mb-1">{supplier.companyName}</h1>
-              <p className="text-[#8b7c69] text-sm leading-relaxed mb-2">
-                {supplier.description || 'מותג פרימיום המציע מוצרים איכותיים בתחום העיצוב והבנייה.'}
-              </p>
-
-              {/* Info cards */}
-              <div className="space-y-2">
-                {supplier.companyName && (
-                  <div className="flex items-center gap-3 p-3 rounded-xl bg-[#faf8f5] border border-[rgba(201,155,74,0.06)]">
-                    <div className="w-9 h-9 rounded-full bg-[#c99b4a]/15 flex items-center justify-center flex-shrink-0">
-                      <Building2 size={16} className="text-[#c99b4a]" />
-                    </div>
-                    <div>
-                      <p className="text-[#a89b8a] text-[10px] font-medium uppercase tracking-wider">COMPANY NAME</p>
-                      <p className="text-[#2b241d] text-sm font-semibold">{supplier.companyName}</p>
-                    </div>
-                  </div>
-                )}
-                {supplier.address && (
-                  <div className="flex items-center gap-3 p-3 rounded-xl bg-[#faf8f5] border border-[rgba(201,155,74,0.06)]">
-                    <div className="w-9 h-9 rounded-full bg-[#c99b4a]/15 flex items-center justify-center flex-shrink-0">
-                      <MapPin size={16} className="text-[#c99b4a]" />
-                    </div>
-                    <div>
-                      <p className="text-[#a89b8a] text-[10px] font-medium uppercase tracking-wider">ORIGIN</p>
-                      <p className="text-[#2b241d] text-sm font-semibold">{supplier.address}</p>
-                    </div>
-                  </div>
-                )}
-                {supplier.website && (
-                  <div className="flex items-center gap-3 p-3 rounded-xl bg-[#faf8f5] border border-[rgba(201,155,74,0.06)]">
-                    <div className="w-9 h-9 rounded-full bg-[#c99b4a]/15 flex items-center justify-center flex-shrink-0">
-                      <Globe size={16} className="text-[#c99b4a]" />
-                    </div>
-                    <div>
-                      <p className="text-[#a89b8a] text-[10px] font-medium uppercase tracking-wider">WEBSITE</p>
-                      <a href={supplier.website} target="_blank" rel="noopener noreferrer" className="text-[#c99b4a] text-sm font-semibold hover:underline flex items-center gap-1">
-                        {supplier.website.replace(/^https?:\/\//, '').replace(/\/$/, '')} <ExternalLink size={12} />
-                      </a>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* Features row */}
-          <div className="border-t border-[rgba(201,155,74,0.06)] px-6 py-4">
-            <div className="flex justify-around">
-              {features.map((f, i) => {
-                const Icon = f.icon;
-                return (
-                  <div key={i} className="flex flex-col items-center gap-1.5">
-                    <div className="w-10 h-10 rounded-full bg-[#faf8f5] flex items-center justify-center">
-                      <Icon size={18} className="text-[#c99b4a]" />
-                    </div>
-                    <span className="text-[10px] text-[#8b7c69] font-medium text-center">{f.label}</span>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* CTA Button */}
-          <div className="px-6 pb-6">
-            <button
-              onClick={handleScheduleMeeting}
-              className="w-full py-4 bg-[#c99b4a] hover:bg-[#9e7746] text-white font-bold text-base rounded-2xl transition-all flex items-center justify-center gap-2 shadow-lg shadow-[#c99b4a]/20"
-            >
-              <Calendar size={20} />
-              קבע פגישה
-            </button>
-          </div>
-        </div>
-      </motion.div>
-
-      {/* ── Contact Details ── */}
-      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="mx-4 mb-4">
-        <div className="grid grid-cols-2 gap-3">
-          {supplier.user?.email && (
-            <a href={`mailto:${supplier.user.email}`} className="bg-white rounded-2xl border border-[rgba(201,155,74,0.08)] p-4 flex items-center gap-3 hover:bg-[#faf8f5] transition-colors shadow-sm">
-              <div className="w-11 h-11 rounded-full bg-purple-50 flex items-center justify-center flex-shrink-0">
-                <Mail size={18} className="text-purple-500" />
-              </div>
-              <div className="min-w-0">
-                <p className="text-[#a89b8a] text-[10px] font-medium">מייל</p>
-                <p className="text-[#2b241d] text-sm font-semibold truncate">{supplier.user.email}</p>
-              </div>
-            </a>
-          )}
-          {supplier.phone && (
-            <a href={`tel:${supplier.phone}`} className="bg-white rounded-2xl border border-[rgba(201,155,74,0.08)] p-4 flex items-center gap-3 hover:bg-[#faf8f5] transition-colors shadow-sm">
-              <div className="w-11 h-11 rounded-full bg-green-50 flex items-center justify-center flex-shrink-0">
-                <Phone size={18} className="text-green-500" />
-              </div>
-              <div>
-                <p className="text-[#a89b8a] text-[10px] font-medium">טלפון</p>
-                <p className="text-[#2b241d] text-sm font-semibold" dir="ltr">{supplier.phone}</p>
-              </div>
-            </a>
-          )}
-          {supplier.website && (
-            <a href={supplier.website} target="_blank" rel="noopener noreferrer" className="bg-white rounded-2xl border border-[rgba(201,155,74,0.08)] p-4 flex items-center gap-3 hover:bg-[#faf8f5] transition-colors shadow-sm">
-              <div className="w-11 h-11 rounded-full bg-[#c99b4a]/10 flex items-center justify-center flex-shrink-0">
-                <Globe size={18} className="text-[#c99b4a]" />
-              </div>
-              <div>
-                <p className="text-[#a89b8a] text-[10px] font-medium">אתר</p>
-                <p className="text-[#c99b4a] text-sm font-semibold flex items-center gap-1">אתר אינטרנט <ExternalLink size={10} /></p>
-              </div>
-            </a>
-          )}
-          {supplier.address && (
-            <a href={`https://maps.google.com/?q=${encodeURIComponent(supplier.address)}`} target="_blank" rel="noopener noreferrer" className="bg-white rounded-2xl border border-[rgba(201,155,74,0.08)] p-4 flex items-center gap-3 hover:bg-[#faf8f5] transition-colors shadow-sm">
-              <div className="w-11 h-11 rounded-full bg-red-50 flex items-center justify-center flex-shrink-0">
-                <MapPin size={18} className="text-red-400" />
-              </div>
-              <div className="min-w-0">
-                <p className="text-[#a89b8a] text-[10px] font-medium">כתובת</p>
-                <p className="text-[#2b241d] text-sm font-semibold truncate">{supplier.address}</p>
-              </div>
-            </a>
-          )}
-        </div>
-        {/* Share button */}
-        <button onClick={handleShare} className="w-full mt-3 py-3 bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold rounded-2xl transition-colors flex items-center justify-center gap-2 shadow-md">
-          <Share2 size={18} />
-          שיתוף בוואטסאפ
-        </button>
-      </motion.div>
-
-      {/* ── About Section ── */}
-      {supplier.description && (
-        <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="mx-4 mb-4">
-          <div className="bg-white rounded-2xl border border-[rgba(201,155,74,0.08)] p-5 shadow-sm">
-            <h3 className="text-xs font-bold text-[#a89b8a] uppercase tracking-wider mb-3">ABOUT THE COMPANY</h3>
-            <p className="text-[#2b241d] text-sm leading-relaxed">{supplier.description}</p>
-          </div>
-        </motion.div>
-      )}
-
-      {/* ── Product Range ── */}
-      {supplier.products && supplier.products.length > 0 && (
-        <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="mx-4 mb-4">
-          <div className="bg-white rounded-2xl border border-[rgba(201,155,74,0.08)] p-5 shadow-sm">
-            <h3 className="text-xs font-bold text-[#a89b8a] uppercase tracking-wider mb-4">PRODUCT RANGE</h3>
-            <div className="grid grid-cols-3 sm:grid-cols-5 gap-3">
-              {supplier.products.map((product: any) => (
-                <div key={product.id} className="text-center">
-                  <div className="relative aspect-square rounded-xl overflow-hidden mb-2 bg-[#1a1a1a]">
-                    <ImageWithLoader
-                      src={product.imageUrl || 'https://via.placeholder.com/200'}
-                      alt={product.name}
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                  <p className="text-[#2b241d] text-[11px] font-medium uppercase tracking-wide">{product.name}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </motion.div>
-      )}
-
-      {/* ── Gallery ── */}
+      {/* ── 1. Gallery (images first) ── */}
       {galleryImages.length > 0 && (
-        <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }} className="mx-4 mb-4">
-          <div className="bg-white rounded-2xl border border-[rgba(201,155,74,0.08)] p-5 shadow-sm">
-            <h3 className="text-xs font-bold text-[#a89b8a] uppercase tracking-wider mb-4">GALLERY</h3>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-              {galleryImages.map((img: string, index: number) => (
+        <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} className="mx-4 mb-4">
+          {galleryImages.length === 1 ? (
+            <button onClick={() => openLightbox(0)} className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden shadow-lg">
+              <ImageWithLoader src={galleryImages[0]} alt="תמונה" fill className="object-cover" unoptimized />
+              <div className="absolute inset-0 bg-black/0 hover:bg-black/10 transition-colors flex items-center justify-center">
+                <ZoomIn size={24} className="text-white opacity-0 hover:opacity-100 transition-opacity" />
+              </div>
+            </button>
+          ) : (
+            <div className="grid grid-cols-2 gap-2">
+              {/* First image large */}
+              <button onClick={() => openLightbox(0)} className="relative col-span-2 aspect-[16/9] rounded-2xl overflow-hidden shadow-lg group">
+                <ImageWithLoader src={galleryImages[0]} alt="תמונה" fill className="object-cover group-hover:scale-105 transition-transform duration-500" unoptimized />
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/15 transition-colors flex items-center justify-center">
+                  <ZoomIn size={24} className="text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+                </div>
+              </button>
+              {/* Rest as thumbnails */}
+              {galleryImages.slice(1, 5).map((img: string, index: number) => (
                 <button
                   key={index}
-                  onClick={() => openLightbox(index)}
-                  className="relative aspect-[4/3] rounded-xl overflow-hidden group bg-[#f7f3f2]"
+                  onClick={() => openLightbox(index + 1)}
+                  className="relative aspect-square rounded-xl overflow-hidden group"
                 >
-                  <ImageWithLoader src={img} alt={`תמונה ${index + 1}`} fill className="object-cover group-hover:scale-105 transition-transform duration-500" unoptimized />
-                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center">
-                    <ZoomIn size={20} className="text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <ImageWithLoader src={img} alt={`תמונה ${index + 2}`} fill className="object-cover group-hover:scale-105 transition-transform duration-500" unoptimized />
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/15 transition-colors flex items-center justify-center">
+                    <ZoomIn size={18} className="text-white opacity-0 group-hover:opacity-100 transition-opacity" />
                   </div>
+                  {/* Show +N overlay on last thumbnail if more images */}
+                  {index === 3 && galleryImages.length > 5 && (
+                    <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                      <span className="text-white text-xl font-bold">+{galleryImages.length - 5}</span>
+                    </div>
+                  )}
                 </button>
               ))}
             </div>
-          </div>
+          )}
         </motion.div>
       )}
+
+      {/* ── 2. Logo + Name + Bio ── */}
+      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="mx-4 mb-4">
+        <div className="bg-white rounded-2xl border border-[rgba(201,155,74,0.08)] p-5 shadow-sm">
+          <div className="flex items-center gap-4 mb-3">
+            {/* Logo */}
+            {logoImage ? (
+              <div className="relative w-16 h-16 rounded-2xl overflow-hidden flex-shrink-0 border border-[rgba(201,155,74,0.1)]">
+                <ImageWithLoader src={logoImage} alt={supplier.companyName} fill className="object-contain" unoptimized />
+              </div>
+            ) : (
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#c99b4a]/20 to-[#c99b4a]/5 flex items-center justify-center flex-shrink-0 border border-[#c99b4a]/15">
+                <span className="text-3xl font-bold text-[#c99b4a]">{supplier.companyName?.charAt(0) || 'S'}</span>
+              </div>
+            )}
+            <div>
+              <h1 className="text-xl font-bold text-[#2b241d]">{supplier.companyName}</h1>
+              {supplier.address && (
+                <p className="text-[#a89b8a] text-sm flex items-center gap-1 mt-0.5">
+                  <MapPin size={13} />
+                  {supplier.address}
+                </p>
+              )}
+            </div>
+          </div>
+          {/* Bio */}
+          {supplier.description && (
+            <p className="text-[#5a4f42] text-sm leading-relaxed">{supplier.description}</p>
+          )}
+        </div>
+      </motion.div>
+
+      {/* ── 3. Schedule Meeting Button ── */}
+      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="mx-4 mb-4">
+        <button
+          onClick={handleScheduleMeeting}
+          className="w-full py-4 bg-[#c99b4a] hover:bg-[#9e7746] text-white font-bold text-lg rounded-2xl transition-all flex items-center justify-center gap-2 shadow-lg shadow-[#c99b4a]/25"
+        >
+          <Calendar size={22} />
+          קבע פגישה
+        </button>
+      </motion.div>
+
+      {/* ── 4. Contact Icons (icons only, no labels) ── */}
+      <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="mx-4 mb-4">
+        <div className="flex items-center justify-center gap-4">
+          {supplier.phone && (
+            <a href={`tel:${supplier.phone}`} className="w-14 h-14 rounded-full bg-white border border-[rgba(201,155,74,0.08)] flex items-center justify-center shadow-sm hover:bg-[#faf8f5] transition-colors">
+              <Phone size={22} className="text-green-500" />
+            </a>
+          )}
+          {supplier.user?.email && (
+            <a href={`mailto:${supplier.user.email}`} className="w-14 h-14 rounded-full bg-white border border-[rgba(201,155,74,0.08)] flex items-center justify-center shadow-sm hover:bg-[#faf8f5] transition-colors">
+              <Mail size={22} className="text-purple-500" />
+            </a>
+          )}
+          {supplier.website && (
+            <a href={supplier.website} target="_blank" rel="noopener noreferrer" className="w-14 h-14 rounded-full bg-white border border-[rgba(201,155,74,0.08)] flex items-center justify-center shadow-sm hover:bg-[#faf8f5] transition-colors">
+              <Globe size={22} className="text-[#c99b4a]" />
+            </a>
+          )}
+          <button onClick={handleShare} className="w-14 h-14 rounded-full bg-white border border-[rgba(201,155,74,0.08)] flex items-center justify-center shadow-sm hover:bg-[#faf8f5] transition-colors">
+            <Share2 size={22} className="text-[#25D366]" />
+          </button>
+        </div>
+      </motion.div>
 
       {/* ── Lightbox ── */}
       <AnimatePresence>
