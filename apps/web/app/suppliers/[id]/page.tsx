@@ -79,10 +79,12 @@ export default function SupplierDetailPage() {
       html: `
         <p style="margin-bottom: 16px; color: #8b7c69; font-size: 14px; text-align: center;">קביעת פגישה עם ${supplier.companyName}</p>
         <div style="display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 320px; margin: 0 auto;" dir="rtl">
-          <input id="swal-subject" type="text" placeholder="נושא הפגישה *" style="width: 100%; padding: 14px 16px; background: #ffffff; border: 1px solid rgba(201,155,74,0.15); color: #2b241d; border-radius: 12px; font-size: 16px; text-align: right; outline: none; box-sizing: border-box;">
-          <input id="swal-date" type="date" min="${minDate}" style="width: 100%; padding: 14px 16px; background: #ffffff; border: 1px solid rgba(201,155,74,0.15); color: #2b241d; border-radius: 12px; font-size: 16px; outline: none; box-sizing: border-box;" dir="ltr">
-          <input id="swal-time" type="time" value="10:00" style="width: 100%; padding: 14px 16px; background: #ffffff; border: 1px solid rgba(201,155,74,0.15); color: #2b241d; border-radius: 12px; font-size: 16px; outline: none; box-sizing: border-box;" dir="ltr">
-          <textarea id="swal-notes" placeholder="הערות (אופציונלי)" style="width: 100%; padding: 14px 16px; background: #ffffff; border: 1px solid rgba(201,155,74,0.15); color: #2b241d; border-radius: 12px; min-height: 80px; font-size: 14px; text-align: right; outline: none; resize: none; box-sizing: border-box;"></textarea>
+          <input id="swal-subject" type="text" placeholder="נושא הפגישה *" style="width: 100%; padding: 14px 16px; background: #ffffff; border: 1px solid rgba(201,155,74,0.15); color: #2b241d; border-radius: 12px; font-size: 16px; text-align: right; outline: none; box-sizing: border-box; -webkit-appearance: none; appearance: none;">
+          <label style="display: block; font-size: 13px; color: #8b7c69; text-align: right; margin-bottom: -4px;">תאריך *</label>
+          <input id="swal-date" type="date" min="${minDate}" style="width: 100%; padding: 14px 16px; background: #ffffff; border: 1px solid rgba(201,155,74,0.15); color: #2b241d; border-radius: 12px; font-size: 16px; text-align: right; outline: none; box-sizing: border-box; -webkit-appearance: none; appearance: none; direction: rtl;">
+          <label style="display: block; font-size: 13px; color: #8b7c69; text-align: right; margin-bottom: -4px;">שעה</label>
+          <input id="swal-time" type="time" value="10:00" style="width: 100%; padding: 14px 16px; background: #ffffff; border: 1px solid rgba(201,155,74,0.15); color: #2b241d; border-radius: 12px; font-size: 16px; text-align: right; outline: none; box-sizing: border-box; -webkit-appearance: none; appearance: none; direction: rtl;">
+          <textarea id="swal-notes" placeholder="הערות (אופציונלי)" style="width: 100%; padding: 14px 16px; background: #ffffff; border: 1px solid rgba(201,155,74,0.15); color: #2b241d; border-radius: 12px; min-height: 80px; font-size: 16px; text-align: right; outline: none; resize: none; box-sizing: border-box; -webkit-appearance: none; appearance: none;"></textarea>
         </div>
       `,
       showCancelButton: true,
