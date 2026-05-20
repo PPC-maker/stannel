@@ -155,6 +155,7 @@ export default function LoginPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 required
                 disabled={isLoading}
+                style={{ backgroundColor: '#ffffff', color: '#1a1a1a', WebkitTextFillColor: '#1a1a1a' }}
                 className="login-input w-full border border-[#C9A961]/25 rounded-2xl px-5 py-5 pr-14 focus:border-[#C9A961]/60 focus:outline-none focus:ring-2 focus:ring-[#C9A961]/15 transition-all text-lg font-medium text-right"
               />
             </div>
@@ -169,6 +170,7 @@ export default function LoginPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 disabled={isLoading}
+                style={{ backgroundColor: '#ffffff', color: '#1a1a1a', WebkitTextFillColor: '#1a1a1a' }}
                 className="login-input w-full border border-[#C9A961]/25 rounded-2xl px-5 py-5 pr-14 pl-14 focus:border-[#C9A961]/60 focus:outline-none focus:ring-2 focus:ring-[#C9A961]/15 transition-all text-lg font-medium text-right"
               />
               <button
