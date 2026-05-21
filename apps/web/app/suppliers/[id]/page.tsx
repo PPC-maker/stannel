@@ -210,22 +210,22 @@ export default function SupplierDetailPage() {
       <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="mx-4 mb-4">
         <div className="flex items-center justify-center gap-4">
           {supplier.phone && (
-            <a href={`tel:${supplier.phone}`} className="w-14 h-14 rounded-full bg-white border border-[rgba(201,155,74,0.08)] flex items-center justify-center shadow-sm hover:bg-[#faf8f5] transition-colors">
-              <Phone size={22} className="text-green-500" />
+            <a href={`tel:${supplier.phone}`} className="w-14 h-14 rounded-full bg-white border border-[rgba(201,155,74,0.15)] flex items-center justify-center shadow-sm hover:bg-[#faf8f5] transition-colors">
+              <Phone size={22} className="text-[#c99b4a]" />
             </a>
           )}
           {supplier.user?.email && (
-            <a href={`mailto:${supplier.user.email}`} className="w-14 h-14 rounded-full bg-white border border-[rgba(201,155,74,0.08)] flex items-center justify-center shadow-sm hover:bg-[#faf8f5] transition-colors">
-              <Mail size={22} className="text-purple-500" />
+            <a href={`mailto:${supplier.user.email}`} className="w-14 h-14 rounded-full bg-white border border-[rgba(201,155,74,0.15)] flex items-center justify-center shadow-sm hover:bg-[#faf8f5] transition-colors">
+              <Mail size={22} className="text-[#c99b4a]" />
             </a>
           )}
           {supplier.website && (
-            <a href={supplier.website} target="_blank" rel="noopener noreferrer" className="w-14 h-14 rounded-full bg-white border border-[rgba(201,155,74,0.08)] flex items-center justify-center shadow-sm hover:bg-[#faf8f5] transition-colors">
+            <a href={supplier.website} target="_blank" rel="noopener noreferrer" className="w-14 h-14 rounded-full bg-white border border-[rgba(201,155,74,0.15)] flex items-center justify-center shadow-sm hover:bg-[#faf8f5] transition-colors">
               <Globe size={22} className="text-[#c99b4a]" />
             </a>
           )}
-          <button onClick={handleShare} className="w-14 h-14 rounded-full bg-white border border-[rgba(201,155,74,0.08)] flex items-center justify-center shadow-sm hover:bg-[#faf8f5] transition-colors">
-            <Share2 size={22} className="text-[#25D366]" />
+          <button onClick={handleShare} className="w-14 h-14 rounded-full bg-white border border-[rgba(201,155,74,0.15)] flex items-center justify-center shadow-sm hover:bg-[#faf8f5] transition-colors">
+            <Share2 size={22} className="text-[#c99b4a]" />
           </button>
         </div>
       </motion.div>
