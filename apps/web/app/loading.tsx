@@ -15,7 +15,7 @@ export default function Loading() {
           <div className="absolute inset-0 rounded-full bg-[#d4af37]/20 blur-3xl animate-pulse" style={{ transform: 'scale(2)' }} />
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="/logo1.png"
+            src="/logoNew.png"
             alt="Stannel Club"
             className="h-20 w-auto relative z-10"
             style={{

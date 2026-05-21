@@ -1,8 +1,8 @@
 const CACHE_NAME = 'stannel-v1';
 const STATIC_ASSETS = [
   '/login',
-  '/logo-f.png',
-  '/logo-f2.png',
+  '/logoNew.png',
+  '/logoNew.png',
   '/bg_top.jpg',
   '/manifest.json',
 ];
