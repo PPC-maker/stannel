@@ -164,14 +164,14 @@ export default function Navbar() {
             <img
               src="/logoNewWhite.png"
               alt="Stannel"
-              className="h-20 w-auto mt-4"
+              className="h-16 w-auto mt-4 max-w-[200px]"
             />
           ) : (
             /* eslint-disable-next-line @next/next/no-img-element */
             <img
               src={isLightPage ? "/logoNew.png" : "/logoNewWhite.png"}
               alt="Stannel"
-              className={isDarkPage ? "h-[57px] sm:h-[82px] w-auto" : "h-[53px] sm:h-[64px] w-auto"}
+              className={isDarkPage ? "h-[50px] sm:h-[70px] w-auto max-w-[180px] sm:max-w-[240px]" : "h-[46px] sm:h-[58px] w-auto max-w-[180px] sm:max-w-[240px]"}
             />
           )}
         </Link>
