@@ -157,8 +157,8 @@ export default function Navbar() {
         </div>
         )}
 
-        {/* Centered Logo - shifted right (RTL) to avoid hamburger overlap */}
-        <Link href="/wallet" className="flex items-center mr-12">
+        {/* Centered Logo */}
+        <Link href="/wallet" className={`flex items-center ${pathname === '/login' ? 'mr-12' : ''}`}>
           {pathname === '/login' ? (
             /* eslint-disable-next-line @next/next/no-img-element */
             <img
