@@ -104,7 +104,7 @@ export function AuthGuardLoader() {
         <div className="relative">
           <div className="absolute inset-0 rounded-full bg-[#d4af37]/20 blur-3xl animate-pulse" style={{ transform: 'scale(2)' }} />
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/logoNew.png" alt="Stannel Club" className="h-20 w-auto relative z-10" style={{ animation: 'logoFadeIn 0.8s ease-out forwards' }} />
+          <img src="/logoNewWhite.png" alt="Stannel Club" className="h-20 w-auto relative z-10" style={{ animation: 'logoFadeIn 0.8s ease-out forwards' }} />
         </div>
         <p className="text-white/60 text-sm font-medium tracking-wider" style={{ animation: 'textFadeIn 1s ease-out 0.3s both' }}>
           אנחנו עוברים לדף המבוקש...

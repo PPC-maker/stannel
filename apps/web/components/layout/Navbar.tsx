@@ -162,14 +162,14 @@ export default function Navbar() {
           {pathname === '/login' ? (
             /* eslint-disable-next-line @next/next/no-img-element */
             <img
-              src="/logoNew.png"
+              src="/logoNewWhite.png"
               alt="Stannel"
               className="h-20 w-auto mt-4"
             />
           ) : (
             /* eslint-disable-next-line @next/next/no-img-element */
             <img
-              src={isLightPage ? "/logoNew.png" : "/logoNew.png"}
+              src={isLightPage ? "/logoNew.png" : "/logoNewWhite.png"}
               alt="Stannel"
               className={isDarkPage ? "h-[57px] sm:h-[82px] w-auto" : "h-[53px] sm:h-[64px] w-auto"}
             />
