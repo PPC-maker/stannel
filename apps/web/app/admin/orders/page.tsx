@@ -80,18 +80,18 @@ export default function AdminOrdersPage() {
         </motion.div>
 
         {/* Stats */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="grid grid-cols-3 gap-4 mb-6">
-          <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-5 text-center">
-            <p className="text-[#a89b8a] text-sm">סה״כ הזמנות</p>
-            <p className="text-3xl font-bold text-[#2b241d]">{orders.length}</p>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="grid grid-cols-3 gap-2 sm:gap-4 mb-6">
+          <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-3 sm:p-5 text-center overflow-hidden">
+            <p className="text-[#a89b8a] text-xs sm:text-sm">סה״כ הזמנות</p>
+            <p className="text-xl sm:text-3xl font-bold text-[#2b241d]">{orders.length}</p>
           </div>
-          <div className="bg-[#c99b4a]/10 border border-[#c99b4a]/20 rounded-2xl p-5 text-center">
-            <p className="text-[#c99b4a]/70 text-sm">נקודות שמומשו</p>
-            <p className="text-3xl font-bold text-[#c99b4a]">{totalPointsUsed.toLocaleString()}</p>
+          <div className="bg-[#c99b4a]/10 border border-[#c99b4a]/20 rounded-2xl p-3 sm:p-5 text-center overflow-hidden">
+            <p className="text-[#c99b4a]/70 text-xs sm:text-sm">נקודות שמומשו</p>
+            <p className="text-lg sm:text-3xl font-bold text-[#c99b4a]">{totalPointsUsed.toLocaleString()}</p>
           </div>
-          <div className="bg-green-50 border border-green-100 rounded-2xl p-5 text-center">
-            <p className="text-green-600/70 text-sm">תשלומים במזומן</p>
-            <p className="text-3xl font-bold text-green-600">₪{totalCashPaid.toLocaleString()}</p>
+          <div className="bg-green-50 border border-green-100 rounded-2xl p-3 sm:p-5 text-center overflow-hidden">
+            <p className="text-green-600/70 text-xs sm:text-sm">תשלומים במזומן</p>
+            <p className="text-lg sm:text-3xl font-bold text-green-600">₪{totalCashPaid.toLocaleString()}</p>
           </div>
         </motion.div>
 
