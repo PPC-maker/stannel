@@ -295,7 +295,7 @@ export default function RewardsPage() {
                   onClick={() => setSelectedProduct(product.id)}
                 >
                   {/* Product Image */}
-                  <div className="relative h-48 overflow-hidden bg-[#c99b4a]/5">
+                  <div className="relative h-64 sm:h-72 overflow-hidden bg-[#c99b4a]/5">
                     {product.imageUrl ? (
                       <ImageWithLoader
                         src={product.imageUrl}
@@ -350,12 +350,12 @@ export default function RewardsPage() {
 
                       {/* Cash completion info */}
                       {!affordable && product.stock > 0 && (
-                        <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
-                          <div className="flex items-center gap-2 text-blue-700 mb-2 font-semibold text-base">
+                        <div className="bg-[#c99b4a]/10 border border-[#c99b4a]/20 rounded-xl p-4">
+                          <div className="flex items-center gap-2 text-[#c99b4a] mb-2 font-semibold text-base">
                             <Coins size={18} />
                             <span>חסרים {completion.missingPoints.toLocaleString()} נק׳</span>
                           </div>
-                          <div className="flex items-center gap-2 text-green-700 font-bold text-lg">
+                          <div className="flex items-center gap-2 text-[#8B6F3A] font-bold text-lg">
                             <Banknote size={18} />
                             <span>השלם עם ₪{completion.cashNeeded.toLocaleString()}</span>
                           </div>
@@ -408,7 +408,7 @@ export default function RewardsPage() {
                               e.stopPropagation();
                               handleRedeem(product.id, true);
                             }}
-                            className="flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center justify-center gap-2 bg-green-500 text-white hover:bg-green-600"
+                            className="flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center justify-center gap-2 bg-[#c99b4a] text-white hover:bg-[#9e7746]"
                           >
                             {isRedeeming ? (
                               <Loader2 size={16} className="animate-spin" />
