@@ -82,7 +82,7 @@ export default function SuppliersDirectoryPage() {
 }
 
 function SupplierCard({ supplier, index }: { supplier: any; index: number }) {
-  const coverImage = supplier.businessImages?.[0] || supplier.profileImage || 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&q=80';
+  const logoImage = supplier.profileImage || null;
 
   return (
     <motion.div
@@ -91,43 +91,51 @@ function SupplierCard({ supplier, index }: { supplier: any; index: number }) {
       transition={{ delay: index * 0.1 }}
     >
       <Link href={`/suppliers/${supplier.id}`}>
-        <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl sm:rounded-3xl overflow-hidden hover:border-[#c99b4a]/30 hover:bg-[#f7f3f2] transition-all group cursor-pointer">
-          {/* Cover Image - Large */}
-          <div className="relative" style={{ aspectRatio: '3/4.4' }}>
-            <ImageWithLoader
-              src={coverImage}
-              alt={supplier.companyName}
-              fill
-              sizes="(max-width: 768px) 100vw, 50vw"
-              className="object-cover group-hover:scale-105 transition-transform duration-500"
-              unoptimized={coverImage.includes('localhost')}
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-
-            {/* Company Name Overlay */}
-            <div className="absolute bottom-0 left-0 right-0 p-4">
-              <h2 className="text-2xl font-bold text-white mb-2">{supplier.companyName}</h2>
-              {/* Icons only */}
-              <div className="flex items-center gap-3">
-                {supplier.phone && (
-                  <div className="w-8 h-8 rounded-full bg-white/15 backdrop-blur-sm flex items-center justify-center">
-                    <Phone size={14} className="text-white" />
-                  </div>
-                )}
-                {supplier.website && (
-                  <div className="w-8 h-8 rounded-full bg-white/15 backdrop-blur-sm flex items-center justify-center">
-                    <Globe size={14} className="text-white" />
-                  </div>
-                )}
-                {supplier.address && (
-                  <div className="w-8 h-8 rounded-full bg-white/15 backdrop-blur-sm flex items-center justify-center">
-                    <MapPin size={14} className="text-white" />
-                  </div>
-                )}
-                <div className="mr-auto">
-                  <ChevronLeft size={18} className="text-[#c99b4a] group-hover:-translate-x-1 transition-transform" />
-                </div>
+        <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl sm:rounded-3xl overflow-hidden hover:border-[#c99b4a]/30 hover:bg-[#faf8f5] transition-all group cursor-pointer p-5">
+          {/* Logo */}
+          <div className="flex items-center justify-center mb-4">
+            {logoImage ? (
+              <div className="relative w-28 h-28 sm:w-32 sm:h-32">
+                <ImageWithLoader
+                  src={logoImage}
+                  alt={supplier.companyName}
+                  fill
+                  className="object-contain"
+                  unoptimized
+                />
               </div>
+            ) : (
+              <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-2xl bg-gradient-to-br from-[#c99b4a]/20 to-[#c99b4a]/5 flex items-center justify-center border border-[#c99b4a]/15">
+                <span className="text-5xl font-bold text-[#c99b4a]">{supplier.companyName?.charAt(0) || 'S'}</span>
+              </div>
+            )}
+          </div>
+
+          {/* Company Name */}
+          <h2 className="text-lg font-bold text-[#2b241d] text-center mb-1">{supplier.companyName}</h2>
+
+          {/* Address */}
+          {supplier.address && (
+            <p className="text-[#a89b8a] text-xs text-center flex items-center justify-center gap-1 mb-3">
+              <MapPin size={12} />
+              {supplier.address}
+            </p>
+          )}
+
+          {/* Icons + Arrow */}
+          <div className="flex items-center justify-center gap-3 pt-3 border-t border-[rgba(201,155,74,0.08)]">
+            {supplier.phone && (
+              <div className="w-8 h-8 rounded-full bg-[#c99b4a]/10 flex items-center justify-center">
+                <Phone size={14} className="text-[#c99b4a]" />
+              </div>
+            )}
+            {supplier.website && (
+              <div className="w-8 h-8 rounded-full bg-[#c99b4a]/10 flex items-center justify-center">
+                <Globe size={14} className="text-[#c99b4a]" />
+              </div>
+            )}
+            <div className="mr-auto">
+              <ChevronLeft size={18} className="text-[#c99b4a] group-hover:-translate-x-1 transition-transform" />
             </div>
           </div>
         </div>
