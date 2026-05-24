@@ -189,20 +189,11 @@ function SupplierCard({ supplier, index }: { supplier: any; index: number }) {
             </p>
           )}
 
-          {/* Action Buttons: WhatsApp + Schedule Meeting */}
-          <div className="flex flex-col sm:flex-row gap-1.5 sm:gap-2 mb-2 sm:mb-3">
-            {supplier.phone && (
-              <button
-                onClick={handleWhatsApp}
-                className="flex-1 flex items-center justify-center gap-1 py-2 sm:py-2.5 bg-[#25D366]/10 hover:bg-[#25D366]/20 text-[#25D366] rounded-lg sm:rounded-xl text-xs sm:text-sm font-semibold transition-colors"
-              >
-                <MessageCircle size={14} className="sm:w-4 sm:h-4" />
-                <span>וואטסאפ</span>
-              </button>
-            )}
+          {/* Action Button: Schedule Meeting */}
+          <div className="mb-2 sm:mb-3">
             <button
               onClick={handleScheduleMeeting}
-              className="flex-1 flex items-center justify-center gap-1 py-2 sm:py-2.5 bg-[#c99b4a]/10 hover:bg-[#c99b4a]/20 text-[#c99b4a] rounded-lg sm:rounded-xl text-xs sm:text-sm font-semibold transition-colors"
+              className="w-full flex items-center justify-center gap-1 py-2 sm:py-2.5 bg-[#c99b4a]/10 hover:bg-[#c99b4a]/20 text-[#c99b4a] rounded-lg sm:rounded-xl text-xs sm:text-sm font-semibold transition-colors"
             >
               <Calendar size={14} className="sm:w-4 sm:h-4" />
               <span>קבע פגישה</span>
