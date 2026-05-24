@@ -192,7 +192,7 @@ export default function RewardsPage() {
                 <Star size={28} className="text-[#c99b4a] hidden sm:block" />
               </div>
               <div>
-                <p className="text-[#8b7c69] text-xs sm:text-sm">יתרת נקודות זמינה</p>
+                <p className="text-[#8b7c69] text-xs sm:text-sm">Stannel Credits</p>
                 <p className="text-2xl sm:text-4xl font-bold text-[#2b241d]">
                   {points.toLocaleString()} <span className="text-sm sm:text-lg">נק׳</span>
                 </p>

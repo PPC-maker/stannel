@@ -491,7 +491,7 @@ export default function WalletPage() {
               <div className="flex items-center justify-between mb-4">
                 {/* Left: Cash balance */}
                 <div className="text-center flex-1">
-                  <p className="text-white/55 text-xs mb-1.5 font-medium">יתרת נקודות</p>
+                  <p className="text-white/55 text-xs mb-1.5 font-medium">Stannel Credits</p>
                   {isLoading ? (
                     <div className="h-6 w-20 mx-auto bg-white/10 rounded animate-pulse" />
                   ) : (

@@ -46,7 +46,7 @@ export default function WalletScreen() {
         <GlassCard gold style={styles.balanceCard}>
           <View style={styles.balanceRow}>
             <View>
-              <Text style={styles.balanceLabel}>יתרת נקודות</Text>
+              <Text style={styles.balanceLabel}>Stannel Credits</Text>
               <Text style={styles.balanceValue}>{walletBalance.points?.toLocaleString() || 0} נק׳</Text>
             </View>
             <View style={styles.rankBadge}>

@@ -329,7 +329,7 @@ export default function AdminRewardsPage() {
                 <div key={product.id} className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl overflow-hidden group">
                   {/* Product Image - Click to view */}
                   <div
-                    className="relative w-full bg-white cursor-pointer" style={{ aspectRatio: '3/4' }}
+                    className="relative w-full h-64 bg-white cursor-pointer overflow-hidden"
                     onClick={() => handleView(product)}
                   >
                     {product.imageUrl ? (
@@ -337,7 +337,7 @@ export default function AdminRewardsPage() {
                         src={product.imageUrl}
                         alt={product.name}
                         fill
-                        className="object-cover"
+                        className="object-contain"
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                       />
                     ) : (
