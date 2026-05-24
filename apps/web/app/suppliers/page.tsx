@@ -72,7 +72,7 @@ export default function SuppliersDirectoryPage() {
             <p className="text-[#8b7c69] text-base">לא נמצאו ספקים</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+          <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-5">
             {suppliers.map((supplier, index) => (
               <SupplierCard key={supplier.id} supplier={supplier} index={index} />
             ))}
@@ -158,11 +158,11 @@ function SupplierCard({ supplier, index }: { supplier: any; index: number }) {
       transition={{ delay: index * 0.1 }}
     >
       <Link href={`/suppliers/${supplier.id}`}>
-        <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl sm:rounded-3xl overflow-hidden hover:border-[#c99b4a]/30 hover:bg-[#faf8f5] transition-all group cursor-pointer p-5">
+        <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl sm:rounded-3xl overflow-hidden hover:border-[#c99b4a]/30 hover:bg-[#faf8f5] transition-all group cursor-pointer p-3 sm:p-5">
           {/* Logo */}
-          <div className="flex items-center justify-center mb-4">
+          <div className="flex items-center justify-center mb-3 sm:mb-4">
             {logoImage ? (
-              <div className="relative w-28 h-28 sm:w-32 sm:h-32">
+              <div className="relative w-full aspect-square max-w-[140px] sm:max-w-[160px]">
                 <ImageWithLoader
                   src={logoImage}
                   alt={supplier.companyName}
@@ -172,48 +172,48 @@ function SupplierCard({ supplier, index }: { supplier: any; index: number }) {
                 />
               </div>
             ) : (
-              <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-2xl bg-gradient-to-br from-[#c99b4a]/20 to-[#c99b4a]/5 flex items-center justify-center border border-[#c99b4a]/15">
-                <span className="text-5xl font-bold text-[#c99b4a]">{supplier.companyName?.charAt(0) || 'S'}</span>
+              <div className="w-full aspect-square max-w-[140px] sm:max-w-[160px] rounded-2xl bg-gradient-to-br from-[#c99b4a]/20 to-[#c99b4a]/5 flex items-center justify-center border border-[#c99b4a]/15">
+                <span className="text-5xl sm:text-6xl font-bold text-[#c99b4a]">{supplier.companyName?.charAt(0) || 'S'}</span>
               </div>
             )}
           </div>
 
           {/* Company Name */}
-          <h2 className="text-lg font-bold text-[#2b241d] text-center mb-1">{supplier.companyName}</h2>
+          <h2 className="text-sm sm:text-lg font-bold text-[#2b241d] text-center mb-0.5 sm:mb-1 line-clamp-1">{supplier.companyName}</h2>
 
           {/* Address */}
           {supplier.address && (
-            <p className="text-[#a89b8a] text-xs text-center flex items-center justify-center gap-1 mb-3">
-              <MapPin size={12} />
+            <p className="text-[#a89b8a] text-[10px] sm:text-xs text-center flex items-center justify-center gap-1 mb-2 sm:mb-3 line-clamp-1">
+              <MapPin size={10} className="flex-shrink-0" />
               {supplier.address}
             </p>
           )}
 
           {/* Action Buttons: WhatsApp + Schedule Meeting */}
-          <div className="flex gap-2 mb-3">
+          <div className="flex flex-col sm:flex-row gap-1.5 sm:gap-2 mb-2 sm:mb-3">
             {supplier.phone && (
               <button
                 onClick={handleWhatsApp}
-                className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-[#25D366]/10 hover:bg-[#25D366]/20 text-[#25D366] rounded-xl text-sm font-semibold transition-colors"
+                className="flex-1 flex items-center justify-center gap-1 py-2 sm:py-2.5 bg-[#25D366]/10 hover:bg-[#25D366]/20 text-[#25D366] rounded-lg sm:rounded-xl text-xs sm:text-sm font-semibold transition-colors"
               >
-                <MessageCircle size={16} />
+                <MessageCircle size={14} className="sm:w-4 sm:h-4" />
                 <span>וואטסאפ</span>
               </button>
             )}
             <button
               onClick={handleScheduleMeeting}
-              className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-[#c99b4a]/10 hover:bg-[#c99b4a]/20 text-[#c99b4a] rounded-xl text-sm font-semibold transition-colors"
+              className="flex-1 flex items-center justify-center gap-1 py-2 sm:py-2.5 bg-[#c99b4a]/10 hover:bg-[#c99b4a]/20 text-[#c99b4a] rounded-lg sm:rounded-xl text-xs sm:text-sm font-semibold transition-colors"
             >
-              <Calendar size={16} />
+              <Calendar size={14} className="sm:w-4 sm:h-4" />
               <span>קבע פגישה</span>
             </button>
           </div>
 
           {/* Icons + Arrow */}
-          <div className="flex items-center justify-center gap-3 pt-3 border-t border-[rgba(201,155,74,0.08)]">
+          <div className="flex items-center justify-center gap-2 sm:gap-3 pt-2 sm:pt-3 border-t border-[rgba(201,155,74,0.08)]">
             {supplier.phone && (
-              <button onClick={handlePhone} className="w-8 h-8 rounded-full bg-[#c99b4a]/10 hover:bg-[#c99b4a]/20 flex items-center justify-center transition-colors">
-                <Phone size={14} className="text-[#c99b4a]" />
+              <button onClick={handlePhone} className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#c99b4a]/10 hover:bg-[#c99b4a]/20 flex items-center justify-center transition-colors">
+                <Phone size={12} className="text-[#c99b4a] sm:w-3.5 sm:h-3.5" />
               </button>
             )}
             {supplier.website && (
@@ -222,13 +222,13 @@ function SupplierCard({ supplier, index }: { supplier: any; index: number }) {
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={(e) => e.stopPropagation()}
-                className="w-8 h-8 rounded-full bg-[#c99b4a]/10 hover:bg-[#c99b4a]/20 flex items-center justify-center transition-colors"
+                className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#c99b4a]/10 hover:bg-[#c99b4a]/20 flex items-center justify-center transition-colors"
               >
-                <Globe size={14} className="text-[#c99b4a]" />
+                <Globe size={12} className="text-[#c99b4a] sm:w-3.5 sm:h-3.5" />
               </a>
             )}
             <div className="mr-auto">
-              <ChevronLeft size={18} className="text-[#c99b4a] group-hover:-translate-x-1 transition-transform" />
+              <ChevronLeft size={16} className="text-[#c99b4a] group-hover:-translate-x-1 transition-transform sm:w-[18px] sm:h-[18px]" />
             </div>
           </div>
         </div>
