@@ -212,6 +212,11 @@ function SupplierCard({ supplier, index }: { supplier: any; index: number }) {
           {/* Icons + Arrow */}
           <div className="flex items-center justify-center gap-2 sm:gap-3 pt-2 sm:pt-3 border-t border-[rgba(201,155,74,0.08)]">
             {supplier.phone && (
+              <button onClick={handleWhatsApp} className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#c99b4a]/10 hover:bg-[#c99b4a]/20 flex items-center justify-center transition-colors">
+                <MessageCircle size={12} className="text-[#c99b4a] sm:w-3.5 sm:h-3.5" />
+              </button>
+            )}
+            {supplier.phone && (
               <button onClick={handlePhone} className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#c99b4a]/10 hover:bg-[#c99b4a]/20 flex items-center justify-center transition-colors">
                 <Phone size={12} className="text-[#c99b4a] sm:w-3.5 sm:h-3.5" />
               </button>
