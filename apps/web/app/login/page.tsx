@@ -23,18 +23,7 @@ export default function LoginPage() {
 
   useEffect(() => {
     setMounted(true);
-    // Show auth alert if redirected from protected page
-    if (searchParams.get('reason') === 'auth') {
-      Swal.fire({
-        title: 'שים לב',
-        text: 'אתה לא מחובר למערכת. התחבר כדי לצפות בדף.',
-        icon: 'info',
-        confirmButtonText: 'הבנתי',
-        confirmButtonColor: '#d4af37',
-        background: '#0f2620',
-        color: '#fff',
-      });
-    }
+    // No need to show alert on login page - user is already here to log in
   }, []);
 
   // Redirect if already logged in
