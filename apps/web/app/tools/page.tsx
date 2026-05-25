@@ -466,7 +466,7 @@ export default function ToolsPage() {
                   onClick={() => { setColorSystem('ral'); setSelectedColor(null); }}
                   className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
                     colorSystem === 'ral'
-                      ? 'bg-blue-500 text-white'
+                      ? 'bg-[#c99b4a] text-white'
                       : 'bg-white text-[#8b7c69] hover:bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)]'
                   }`}
                 >
