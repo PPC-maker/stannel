@@ -139,7 +139,7 @@ export default function AdminAnalyticsPage() {
             { label: 'חשבוניות', value: trendsData?.summary?.totalInvoices || 0, color: 'text-[#2b241d]', border: 'border-[rgba(201,155,74,0.08)]' },
             { label: 'אושרו', value: trendsData?.summary?.approvedCount || 0, color: 'text-[#c99b4a]', border: 'border-[#c99b4a]/30' },
             { label: 'סה"כ סכום', value: `₪${(trendsData?.summary?.totalAmount || 0).toLocaleString()}`, color: 'text-amber-400', border: 'border-amber-500/30' },
-            { label: 'עמלת מנהל', value: commissionStats ? `₪${commissionStats.adminCommission.toLocaleString()}` : '...', color: 'text-green-400', border: 'border-green-500/30' },
+            { label: 'עמלת מנהל', value: commissionStats ? `₪${commissionStats.adminCommission.toLocaleString()}` : '...', color: 'text-[#c99b4a]', border: 'border-[#c99b4a]/30' },
             { label: 'SLA', value: slaData ? `${slaData.complianceRate}%` : '...', color: 'text-blue-400', border: 'border-blue-500/30' },
           ].map((stat, i) => (
             <motion.div key={i} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
@@ -365,7 +365,7 @@ export default function AdminAnalyticsPage() {
               <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-lg font-semibold text-[#2b241d] flex items-center gap-2">
-                    <DollarSign size={18} className="text-green-400" />
+                    <DollarSign size={18} className="text-[#c99b4a]" />
                     דוח עמלות
                   </h2>
                   <button
@@ -397,9 +397,9 @@ export default function AdminAnalyticsPage() {
                         <p className="text-[#c99b4a]/70 text-sm mb-1">מחזור כולל</p>
                         <p className="text-2xl font-bold text-[#c99b4a]">₪{commissionStats.totalRevenue.toLocaleString()}</p>
                       </div>
-                      <div className="bg-green-50 border border-green-500/20 rounded-xl p-5 text-center">
-                        <p className="text-green-600/70 text-sm mb-1">עמלת מנהל (2%)</p>
-                        <p className="text-2xl font-bold text-green-600">₪{commissionStats.adminCommission.toLocaleString()}</p>
+                      <div className="bg-[#c99b4a]/10 border border-[#c99b4a]/20 rounded-xl p-5 text-center">
+                        <p className="text-[#c99b4a]/70 text-sm mb-1">עמלת מנהל (2%)</p>
+                        <p className="text-2xl font-bold text-[#c99b4a]">₪{commissionStats.adminCommission.toLocaleString()}</p>
                       </div>
                       <div className="bg-purple-50 border border-purple-500/20 rounded-xl p-5 text-center">
                         <p className="text-purple-500/70 text-sm mb-1">עמלת אדריכלים (2%)</p>

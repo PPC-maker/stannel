@@ -89,9 +89,9 @@ export default function AdminOrdersPage() {
             <p className="text-[#c99b4a]/70 text-xs sm:text-sm">נקודות שמומשו</p>
             <p className="text-lg sm:text-3xl font-bold text-[#c99b4a]">{totalPointsUsed.toLocaleString()}</p>
           </div>
-          <div className="bg-green-50 border border-green-100 rounded-2xl p-3 sm:p-5 text-center overflow-hidden">
-            <p className="text-green-600/70 text-xs sm:text-sm">תשלומים במזומן</p>
-            <p className="text-lg sm:text-3xl font-bold text-green-600">₪{totalCashPaid.toLocaleString()}</p>
+          <div className="bg-[#c99b4a]/10 border border-[#c99b4a]/20 rounded-2xl p-3 sm:p-5 text-center overflow-hidden">
+            <p className="text-[#c99b4a]/70 text-xs sm:text-sm">תשלומים במזומן</p>
+            <p className="text-lg sm:text-3xl font-bold text-[#c99b4a]">₪{totalCashPaid.toLocaleString()}</p>
           </div>
         </motion.div>
 
@@ -178,7 +178,7 @@ export default function AdminOrdersPage() {
                             {order.pointsUsed.toLocaleString()} נק׳
                           </span>
                           {order.cashPaid > 0 && (
-                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium bg-green-50 text-green-600">
+                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-medium bg-[#c99b4a]/10 text-[#c99b4a]">
                               <Banknote size={12} />
                               ₪{order.cashPaid.toLocaleString()}
                             </span>

@@ -37,7 +37,7 @@ const whyChooseUs = [
 const suppliers = [
   { name: 'Samsung', category: 'אלקטרוניקה', initial: 'S', color: 'bg-blue-600' },
   { name: 'Bezeq', category: 'תקשורת', initial: 'B', color: 'bg-cyan-500' },
-  { name: 'דברת', category: 'ריהוט', initial: 'ד', color: 'bg-emerald-600' },
+  { name: 'דברת', category: 'ריהוט', initial: 'ד', color: 'bg-[#c99b4a]' },
   { name: 'ACE', category: 'חומרי בניין', initial: 'A', color: 'bg-orange-500' },
 ];
 

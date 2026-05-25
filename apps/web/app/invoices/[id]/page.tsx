@@ -12,7 +12,7 @@ const statusConfig: Record<string, { label: string; color: string; bg: string; i
   APPROVED: { label: 'מאושר', color: 'text-green-400', bg: 'bg-green-500/20 border-green-500/30', icon: CheckCircle },
   REJECTED: { label: 'נדחה', color: 'text-red-400', bg: 'bg-red-500/20 border-red-500/30', icon: XCircle },
   PENDING_SUPPLIER_PAY: { label: 'ממתין לתשלום', color: 'text-blue-400', bg: 'bg-blue-500/20 border-blue-500/30', icon: Clock },
-  PAID: { label: 'שולם', color: 'text-green-400', bg: 'bg-green-500/20 border-green-500/30', icon: CheckCircle },
+  PAID: { label: 'שולם', color: 'text-[#c99b4a]', bg: 'bg-[#c99b4a]/20 border-[#c99b4a]/30', icon: CheckCircle },
   OVERDUE: { label: 'באיחור', color: 'text-red-400', bg: 'bg-red-500/20 border-red-500/30', icon: AlertTriangle },
 };
 
@@ -177,7 +177,7 @@ export default function InvoiceDetailPage() {
               {/* AI Validation */}
               {invoice.aiStatus && (
                 <div className={`p-4 rounded-xl border ${
-                  invoice.aiStatus === 'MATCH' ? 'bg-green-500/10 border-green-500/30' :
+                  invoice.aiStatus === 'MATCH' ? 'bg-[#c99b4a]/100/10 border-[#c99b4a]/30' :
                   invoice.aiStatus === 'MISMATCH' ? 'bg-red-500/10 border-red-500/30' :
                   'bg-yellow-500/10 border-yellow-500/30'
                 }`}>
@@ -190,7 +190,7 @@ export default function InvoiceDetailPage() {
                     {invoice.aiExtractedAmount !== undefined && invoice.aiExtractedAmount !== null && (
                       <div className="flex items-center justify-between">
                         <span className="text-[#8b7c69] text-sm">סכום שזוהה:</span>
-                        <span className={`font-semibold ${invoice.aiStatus === 'MATCH' ? 'text-green-400' : 'text-red-400'}`}>
+                        <span className={`font-semibold ${invoice.aiStatus === 'MATCH' ? 'text-[#c99b4a]' : 'text-red-400'}`}>
                           ₪{invoice.aiExtractedAmount.toLocaleString()}
                         </span>
                       </div>
@@ -198,8 +198,8 @@ export default function InvoiceDetailPage() {
                     <div className="flex items-center justify-between">
                       <span className="text-[#8b7c69] text-sm">סטטוס:</span>
                       <div className="flex items-center gap-1.5">
-                        {invoice.aiStatus === 'MATCH' ? <CheckCircle size={14} className="text-green-400" /> : <AlertTriangle size={14} className="text-yellow-400" />}
-                        <span className={invoice.aiStatus === 'MATCH' ? 'text-green-400 text-sm' : 'text-yellow-400 text-sm'}>
+                        {invoice.aiStatus === 'MATCH' ? <CheckCircle size={14} className="text-[#c99b4a]" /> : <AlertTriangle size={14} className="text-yellow-400" />}
+                        <span className={invoice.aiStatus === 'MATCH' ? 'text-[#c99b4a] text-sm' : 'text-yellow-400 text-sm'}>
                           {invoice.aiStatus === 'MATCH' ? 'תואם' : invoice.aiStatus === 'MISMATCH' ? 'לא תואם' : 'לא ברור'}
                         </span>
                       </div>

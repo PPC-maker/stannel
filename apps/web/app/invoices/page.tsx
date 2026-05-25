@@ -14,7 +14,7 @@ const statusConfig = {
   APPROVED: { label: 'אושר', color: 'text-green-400', bg: 'bg-green-400/20', icon: CheckCircle },
   REJECTED: { label: 'נדחה', color: 'text-red-400', bg: 'bg-red-400/20', icon: XCircle },
   PENDING_SUPPLIER_PAY: { label: 'ממתין לתשלום', color: 'text-blue-400', bg: 'bg-blue-400/20', icon: Clock },
-  PAID: { label: 'שולם', color: 'text-green-400', bg: 'bg-green-400/20', icon: CheckCircle },
+  PAID: { label: 'שולם', color: 'text-[#c99b4a]', bg: 'bg-[#c99b4a]/20', icon: CheckCircle },
   OVERDUE: { label: 'באיחור', color: 'text-red-400', bg: 'bg-red-400/20', icon: AlertCircle },
 };
 
@@ -76,7 +76,7 @@ export default function InvoicesPage() {
           {[
             { label: 'סה״כ', value: stats.total, color: 'text-[#c99b4a]', borderColor: 'border-[rgba(201,155,74,0.08)]' },
             { label: 'ממתינות', value: stats.pending, color: 'text-yellow-400', borderColor: 'border-yellow-500/30' },
-            { label: 'אושרו', value: stats.approved, color: 'text-green-400', borderColor: 'border-green-500/30' },
+            { label: 'אושרו', value: stats.approved, color: 'text-[#c99b4a]', borderColor: 'border-[#c99b4a]/30' },
             { label: 'נדחו', value: stats.rejected, color: 'text-red-400', borderColor: 'border-red-500/30' },
           ].map((stat, i) => (
             <motion.div
@@ -182,7 +182,7 @@ export default function InvoicesPage() {
                         <span className={`text-xs ${status.color}`}>{status.label}</span>
                       </div>
                       {isAiVerified && (
-                        <div className="flex items-center gap-1 text-green-400 text-xs">
+                        <div className="flex items-center gap-1 text-[#c99b4a] text-xs">
                           <CheckCircle size={12} />
                           <span>AI מאומת</span>
                         </div>

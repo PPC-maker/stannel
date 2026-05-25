@@ -39,9 +39,9 @@ export default function AdminError({
   return (
     <div className="min-h-[60vh] flex items-center justify-center p-4">
       <div className="glass-card p-8 max-w-md text-center">
-        <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-emerald-500/20 flex items-center justify-center">
+        <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-[#c99b4a]/20 flex items-center justify-center">
           <svg
-            className="w-10 h-10 text-emerald-400"
+            className="w-10 h-10 text-[#c99b4a]"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -70,7 +70,7 @@ export default function AdminError({
         <div className="flex gap-3 justify-center">
           <button
             onClick={reset}
-            className="px-6 py-2 bg-emerald-500 hover:bg-emerald-600 text-white font-medium rounded-lg transition-colors"
+            className="px-6 py-2 bg-[#c99b4a] hover:bg-[#c99b4a] text-white font-medium rounded-lg transition-colors"
           >
             נסה שוב
           </button>

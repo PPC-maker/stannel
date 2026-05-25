@@ -183,10 +183,10 @@ export default function ManageGoalsPage() {
               <p className="text-3xl font-bold text-[#2b241d]">{goals.length}</p>
             </div>
           </div>
-          <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6 bg-green-50">
+          <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6 bg-[#c99b4a]/10">
             <div className="text-center">
-              <p className="text-green-400/70 text-sm">הושגו</p>
-              <p className="text-3xl font-bold text-green-400">
+              <p className="text-[#c99b4a]/70 text-sm">הושגו</p>
+              <p className="text-3xl font-bold text-[#c99b4a]">
                 {goals.filter(g => g.targetMet).length}
               </p>
             </div>
@@ -241,7 +241,7 @@ export default function ManageGoalsPage() {
                       animate={{ opacity: 1, y: 0 }}
                       className={`p-4 rounded-xl border ${
                         isCompleted
-                          ? 'border-green-500/30 bg-green-500/10'
+                          ? 'border-[#c99b4a]/30 bg-[#c99b4a]/100/10'
                           : isExpired
                           ? 'border-red-500/30 bg-red-500/10'
                           : goal.isActive
@@ -252,10 +252,10 @@ export default function ManageGoalsPage() {
                       <div className="flex items-start justify-between mb-4">
                         <div className="flex items-center gap-3">
                           <div className={`p-2 rounded-lg ${
-                            isCompleted ? 'bg-green-500/20' : isExpired ? 'bg-red-500/20' : 'bg-[#c99b4a]/20'
+                            isCompleted ? 'bg-[#c99b4a]/20' : isExpired ? 'bg-red-500/20' : 'bg-[#c99b4a]/20'
                           }`}>
                             {isCompleted ? (
-                              <Award className="text-green-400" size={24} />
+                              <Award className="text-[#c99b4a]" size={24} />
                             ) : (
                               <Target className={isExpired ? 'text-red-400' : 'text-[#c99b4a]'} size={24} />
                             )}
@@ -271,7 +271,7 @@ export default function ManageGoalsPage() {
                         <div className="text-left">
                           <span className={`px-3 py-1 rounded-full text-sm ${
                             isCompleted
-                              ? 'bg-green-500/20 text-green-400'
+                              ? 'bg-[#c99b4a]/20 text-[#c99b4a]'
                               : isExpired
                               ? 'bg-red-500/20 text-red-400'
                               : goal.isActive
@@ -310,7 +310,7 @@ export default function ManageGoalsPage() {
                         <div className="h-3 bg-[#f7f3f2] rounded-full overflow-hidden">
                           <div
                             className={`h-full transition-all duration-500 ${
-                              isCompleted ? 'bg-green-400' : progress >= 75 ? 'bg-[#c99b4a]' : 'bg-blue-400'
+                              isCompleted ? 'bg-[#c99b4a]' : progress >= 75 ? 'bg-[#c99b4a]' : 'bg-blue-400'
                             }`}
                             style={{ width: `${progress}%` }}
                           />
@@ -331,7 +331,7 @@ export default function ManageGoalsPage() {
                           </span>
                         </div>
                         {goal.targetMetAt && (
-                          <span className="flex items-center gap-1 text-green-400">
+                          <span className="flex items-center gap-1 text-[#c99b4a]">
                             <CheckCircle size={14} />
                             הושג ב-{new Date(goal.targetMetAt).toLocaleDateString('he-IL')}
                           </span>

@@ -180,9 +180,9 @@ export default function ManageContractsPage() {
             <p className="text-[#a89b8a] text-sm">סה״כ חוזים</p>
             <p className="text-3xl font-bold text-[#2b241d]">{contracts?.length || 0}</p>
           </div>
-          <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6 bg-green-50 text-center">
-            <p className="text-green-600/70 text-sm">פעילים</p>
-            <p className="text-3xl font-bold text-green-600">{contracts?.filter((c: Contract) => isContractActive(c)).length || 0}</p>
+          <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6 bg-[#c99b4a]/10 text-center">
+            <p className="text-[#c99b4a]/70 text-sm">פעילים</p>
+            <p className="text-3xl font-bold text-[#c99b4a]">{contracts?.filter((c: Contract) => isContractActive(c)).length || 0}</p>
           </div>
           <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6 bg-purple-50 text-center">
             <p className="text-purple-600/70 text-sm">פרימיום</p>
@@ -225,7 +225,7 @@ export default function ManageContractsPage() {
                   return (
                     <div
                       key={contract.id}
-                      className={`p-4 rounded-xl border cursor-pointer hover:bg-[#f0ebe6] transition-colors ${active ? 'border-green-200 bg-green-50/50' : 'border-[rgba(201,155,74,0.08)] bg-[#f7f3f2]'}`}
+                      className={`p-4 rounded-xl border cursor-pointer hover:bg-[#f0ebe6] transition-colors ${active ? 'border-[#c99b4a]/20 bg-[#c99b4a]/5' : 'border-[rgba(201,155,74,0.08)] bg-[#f7f3f2]'}`}
                       onClick={() => setViewContract(contract)}
                     >
                       <div className="flex items-center justify-between">
@@ -256,8 +256,8 @@ export default function ManageContractsPage() {
                         <div className="flex items-center gap-3">
                           <div className="text-left">
                             <div className="flex items-center gap-1 mb-1">
-                              {active ? <CheckCircle size={16} className="text-green-400" /> : <XCircle size={16} className="text-red-400" />}
-                              <span className={active ? 'text-green-400 text-sm' : 'text-red-400 text-sm'}>{active ? 'פעיל' : 'לא פעיל'}</span>
+                              {active ? <CheckCircle size={16} className="text-[#c99b4a]" /> : <XCircle size={16} className="text-red-400" />}
+                              <span className={active ? 'text-[#c99b4a] text-sm' : 'text-red-400 text-sm'}>{active ? 'פעיל' : 'לא פעיל'}</span>
                             </div>
                           </div>
                           <button
@@ -338,7 +338,7 @@ export default function ManageContractsPage() {
                     {/* Status */}
                     <div className="p-3 bg-[#f7f3f2] rounded-xl flex items-center justify-between">
                       <span className="text-[#a89b8a] text-sm">סטטוס</span>
-                      <span className={`flex items-center gap-1.5 font-medium ${isContractActive(viewContract) ? 'text-green-400' : 'text-red-400'}`}>
+                      <span className={`flex items-center gap-1.5 font-medium ${isContractActive(viewContract) ? 'text-[#c99b4a]' : 'text-red-400'}`}>
                         {isContractActive(viewContract) ? <CheckCircle size={16} /> : <XCircle size={16} />}
                         {isContractActive(viewContract) ? 'פעיל' : 'לא פעיל'}
                       </span>

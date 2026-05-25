@@ -105,7 +105,7 @@ export default function OnboardingPage() {
                 <div
                   className={`w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all ${
                     index < currentStep
-                      ? 'bg-green-500 text-white'
+                      ? 'bg-[#c99b4a]/100 text-white'
                       : index === currentStep
                       ? 'bg-gold-400 text-primary-900'
                       : 'bg-gray-200 text-gray-600'
@@ -116,7 +116,7 @@ export default function OnboardingPage() {
                 {index < steps.length - 1 && (
                   <div
                     className={`w-16 h-1 mx-1 rounded-full transition-all ${
-                      index < currentStep ? 'bg-green-500' : 'bg-gray-200'
+                      index < currentStep ? 'bg-[#c99b4a]/100' : 'bg-gray-200'
                     }`}
                   />
                 )}
@@ -275,9 +275,9 @@ export default function OnboardingPage() {
                       initial={{ scale: 0.5, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
                       transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
-                      className="w-20 h-20 mx-auto mb-6 rounded-full bg-green-500/20 flex items-center justify-center"
+                      className="w-20 h-20 mx-auto mb-6 rounded-full bg-[#c99b4a]/20 flex items-center justify-center"
                     >
-                      <Check size={40} className="text-green-500" />
+                      <Check size={40} className="text-[#c99b4a]" />
                     </motion.div>
 
                     <h2 className="text-2xl font-display font-bold text-gray-900 mb-2">

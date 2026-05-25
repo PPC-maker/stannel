@@ -538,7 +538,7 @@ export default function ProjectsManagementPage() {
                           <X size={14} className="text-white" />
                         </button>
                         {index === 0 && (
-                          <span className="absolute bottom-1 right-1 text-xs bg-emerald-500 px-2 py-0.5 rounded-full text-white">
+                          <span className="absolute bottom-1 right-1 text-xs bg-[#c99b4a] px-2 py-0.5 rounded-full text-white">
                             ראשית
                           </span>
                         )}

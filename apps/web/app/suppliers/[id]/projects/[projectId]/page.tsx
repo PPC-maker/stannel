@@ -58,7 +58,7 @@ export default function ProjectDetailPage() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-[#1a1a1a] flex items-center justify-center">
-        <Loader2 size={40} className="text-emerald-400 animate-spin" />
+        <Loader2 size={40} className="text-[#c99b4a] animate-spin" />
       </div>
     );
   }
@@ -68,7 +68,7 @@ export default function ProjectDetailPage() {
       <div className="min-h-screen bg-[#1a1a1a] flex flex-col items-center justify-center">
         <FolderOpen size={64} className="text-white/20 mb-4" />
         <p className="text-white/60 text-lg mb-4">הפרויקט לא נמצא</p>
-        <Link href={`/suppliers/${supplierId}`} className="text-emerald-400 hover:underline">
+        <Link href={`/suppliers/${supplierId}`} className="text-[#c99b4a] hover:underline">
           חזרה לפרופיל הספק
         </Link>
       </div>

@@ -314,9 +314,9 @@ export default function ManageServiceProvidersPage() {
             <p className="text-[#a89b8a] text-sm">סה״כ</p>
             <p className="text-3xl font-bold text-[#2b241d]">{providers.length}</p>
           </div>
-          <div className="bg-green-50 border border-[rgba(201,155,74,0.08)] rounded-2xl p-5">
-            <p className="text-green-600/70 text-sm">פעילים</p>
-            <p className="text-3xl font-bold text-green-600">{activeCount}</p>
+          <div className="bg-[#c99b4a]/10 border border-[rgba(201,155,74,0.08)] rounded-2xl p-5">
+            <p className="text-[#c99b4a]/70 text-sm">פעילים</p>
+            <p className="text-3xl font-bold text-[#c99b4a]">{activeCount}</p>
           </div>
           <div className="bg-blue-50 border border-[rgba(201,155,74,0.08)] rounded-2xl p-5">
             <p className="text-blue-600/70 text-sm">תוצאות</p>
@@ -404,7 +404,7 @@ export default function ManageServiceProvidersPage() {
                             onClick={() => handleToggleActive(provider)}
                             className={`inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium border transition-colors ${
                               provider.isActive
-                                ? 'bg-green-50 text-green-600 border-green-100 hover:bg-green-100'
+                                ? 'bg-[#c99b4a]/10 text-[#c99b4a] border-[#c99b4a]/20 hover:bg-[#c99b4a]/15'
                                 : 'bg-red-50 text-red-500 border-red-100 hover:bg-red-100'
                             }`}
                           >

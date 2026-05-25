@@ -143,7 +143,7 @@ export default function EventsPage() {
               {meetings.map((meeting: any) => {
                 const statusConfig: Record<string, { label: string; color: string; bg: string }> = {
                   pending: { label: 'ממתין לאישור', color: 'text-amber-400', bg: 'bg-amber-500/15' },
-                  approved: { label: 'אושרה', color: 'text-emerald-400', bg: 'bg-emerald-500/15' },
+                  approved: { label: 'אושרה', color: 'text-[#c99b4a]', bg: 'bg-[#c99b4a]/15' },
                   rejected: { label: 'נדחתה', color: 'text-red-400', bg: 'bg-red-500/15' },
                 };
                 const st = statusConfig[meeting.status] || statusConfig.pending;
@@ -240,7 +240,7 @@ export default function EventsPage() {
               >
                 <div
                   className={`bg-white border rounded-2xl overflow-hidden group hover:bg-[#f7f3f2] transition-all ${
-                    registered ? 'border-green-500/50 ring-1 ring-green-500/30' : 'border-[rgba(201,155,74,0.08)]'
+                    registered ? 'border-[#c99b4a]/30 ring-1 ring-[#c99b4a]/30' : 'border-[rgba(201,155,74,0.08)]'
                   }`}
                 >
                   {/* Event Image */}
@@ -313,7 +313,7 @@ export default function EventsPage() {
                         disabled={full || registered || isRegistering}
                         className={`px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${
                           registered
-                            ? 'bg-green-500/20 text-green-600 cursor-default'
+                            ? 'bg-[#c99b4a]/20 text-[#c99b4a] cursor-default'
                             : full
                             ? 'bg-[#f7f3f2] text-[#a89b8a] cursor-not-allowed'
                             : 'bg-[#c99b4a] text-white hover:bg-[#9e7746]'

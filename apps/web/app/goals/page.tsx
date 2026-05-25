@@ -61,7 +61,7 @@ export default function GoalsPage() {
         {/* Stats */}
         <div className="grid sm:grid-cols-3 gap-4 mb-8">
           {[
-            { label: 'בונוסים שנצברו', value: `₪${(stats?.totalBonusEarned || 0).toLocaleString()}`, color: 'text-green-600', borderColor: 'border-green-200', icon: Award },
+            { label: 'בונוסים שנצברו', value: `₪${(stats?.totalBonusEarned || 0).toLocaleString()}`, color: 'text-[#c99b4a]', borderColor: 'border-[#c99b4a]/20', icon: Award },
             { label: 'יעדים שהושגו', value: stats?.achievedGoals || 0, color: 'text-[#c99b4a]', borderColor: 'border-[rgba(201,155,74,0.2)]', icon: CheckCircle },
             { label: 'אחוז הצלחה', value: `${stats?.achievementRate || 0}%`, color: 'text-blue-500', borderColor: 'border-blue-200', icon: TrendingUp },
           ].map((stat, index) => (
@@ -108,9 +108,9 @@ export default function GoalsPage() {
                   </p>
                 </div>
                 {activeGoal.targetMet && (
-                  <div className="flex items-center gap-2 bg-green-50 border border-green-200 px-4 py-2 rounded-lg">
-                    <Award className="w-4 h-4 text-green-600" />
-                    <span className="text-green-700 text-sm font-medium">הושג!</span>
+                  <div className="flex items-center gap-2 bg-[#c99b4a]/10 border border-[#c99b4a]/20 px-4 py-2 rounded-lg">
+                    <Award className="w-4 h-4 text-[#c99b4a]" />
+                    <span className="text-[#c99b4a] text-sm font-medium">הושג!</span>
                   </div>
                 )}
               </div>
@@ -126,7 +126,7 @@ export default function GoalsPage() {
                 </div>
                 <div className="text-left">
                   <p className="text-[#a89b8a] text-xs uppercase tracking-wider">בונוס אפשרי</p>
-                  <p className="text-2xl font-bold text-green-600 mt-1">
+                  <p className="text-2xl font-bold text-[#c99b4a] mt-1">
                     ₪{possibleBonus.toLocaleString()}
                   </p>
                   <p className="text-[#a89b8a] text-xs">{activeGoal.bonusPercentage}%</p>
@@ -139,7 +139,7 @@ export default function GoalsPage() {
                   initial={{ width: 0 }}
                   animate={{ width: `${progressPercent}%` }}
                   transition={{ duration: 1, ease: 'easeOut' }}
-                  className={`h-full rounded-full ${activeGoal.targetMet ? 'bg-green-500' : 'bg-[#c99b4a]'}`}
+                  className={`h-full rounded-full ${activeGoal.targetMet ? 'bg-[#c99b4a]/100' : 'bg-[#c99b4a]'}`}
                 />
               </div>
               <p className="text-[#a89b8a] text-sm mt-2">
@@ -197,10 +197,10 @@ export default function GoalsPage() {
                   >
                     <div className="flex items-center gap-4">
                       <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-                        bonus.status === 'CREDITED' ? 'bg-green-500/20' : 'bg-amber-500/20'
+                        bonus.status === 'CREDITED' ? 'bg-[#c99b4a]/20' : 'bg-amber-500/20'
                       }`}>
                         <Award className={`w-5 h-5 ${
-                          bonus.status === 'CREDITED' ? 'text-green-400' : 'text-amber-400'
+                          bonus.status === 'CREDITED' ? 'text-[#c99b4a]' : 'text-amber-400'
                         }`} />
                       </div>
                       <div>
@@ -214,7 +214,7 @@ export default function GoalsPage() {
                     </div>
                     <div className="text-left">
                       <span className={`text-xs px-3 py-1 rounded-full font-medium ${
-                        bonus.status === 'CREDITED' ? 'bg-green-500/20 text-green-400' :
+                        bonus.status === 'CREDITED' ? 'bg-[#c99b4a]/20 text-[#c99b4a]' :
                         bonus.status === 'PENDING' ? 'bg-amber-500/20 text-amber-400' :
                         'bg-red-500/20 text-red-400'
                       }`}>

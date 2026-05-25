@@ -698,7 +698,7 @@ export default function ToolsPage() {
                       <div className="flex items-start justify-between mb-2">
                         <p className="text-[#2b241d] font-medium">{provider.name}</p>
                         {provider.isVerified && (
-                          <span className="text-xs bg-green-500/20 text-green-400 px-2 py-0.5 rounded">
+                          <span className="text-xs bg-[#c99b4a]/20 text-[#c99b4a] px-2 py-0.5 rounded">
                             מאומת
                           </span>
                         )}

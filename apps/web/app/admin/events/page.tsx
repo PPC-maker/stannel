@@ -275,10 +275,10 @@ export default function ManageEventsPage() {
               <p className="text-2xl sm:text-3xl font-bold text-[#2b241d]">{events?.length || 0}</p>
             </div>
           </div>
-          <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-3 sm:p-6 bg-green-50">
+          <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-3 sm:p-6 bg-[#c99b4a]/10">
             <div className="text-center">
-              <p className="text-green-400/70 text-xs sm:text-sm">אירועים קרובים</p>
-              <p className="text-2xl sm:text-3xl font-bold text-green-400">{upcomingEvents.length}</p>
+              <p className="text-[#c99b4a]/70 text-xs sm:text-sm">אירועים קרובים</p>
+              <p className="text-2xl sm:text-3xl font-bold text-[#c99b4a]">{upcomingEvents.length}</p>
             </div>
           </div>
           <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-3 sm:p-6 bg-blue-50">
@@ -339,7 +339,7 @@ export default function ManageEventsPage() {
                           ? 'border-red-500/30 bg-red-500/5'
                           : isPast
                           ? 'border-[rgba(201,155,74,0.08)] bg-[#f7f3f2] opacity-60'
-                          : 'border-green-500/30 bg-green-500/5'
+                          : 'border-[#c99b4a]/30 bg-[#c99b4a]/100/5'
                       }`}
                     >
                       {/* Top row: image + title + actions */}
@@ -375,7 +375,7 @@ export default function ManageEventsPage() {
                           <button
                             onClick={() => handleToggleVisibility(event)}
                             className={`p-1.5 sm:p-2 rounded-lg hover:bg-[#f0ebe6] transition-colors ${
-                              event.isHidden ? 'text-red-400' : 'text-green-400'
+                              event.isHidden ? 'text-red-400' : 'text-[#c99b4a]'
                             }`}
                             title={event.isHidden ? 'הצג אירוע' : 'הסתר אירוע'}
                           >

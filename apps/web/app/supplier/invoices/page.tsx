@@ -38,7 +38,7 @@ const STATUS_CONFIG: Record<string, { label: string; color: string; bg: string }
   PENDING_ADMIN: { label: 'ממתין לאישור', color: 'text-blue-400', bg: 'bg-blue-500/20' },
   PENDING_SUPPLIER_PAY: { label: 'ממתין לתשלום', color: 'text-yellow-400', bg: 'bg-yellow-500/20' },
   OVERDUE: { label: 'באיחור', color: 'text-red-400', bg: 'bg-red-500/20' },
-  PAID: { label: 'שולם', color: 'text-emerald-400', bg: 'bg-emerald-500/20' },
+  PAID: { label: 'שולם', color: 'text-[#c99b4a]', bg: 'bg-[#c99b4a]/20' },
   CREDITED: { label: 'זוכה', color: 'text-purple-400', bg: 'bg-purple-500/20' },
   REJECTED: { label: 'נדחה', color: 'text-red-400', bg: 'bg-red-500/20' },
 };
@@ -273,7 +273,7 @@ export default function SupplierInvoicesPage() {
                                 אשר תשלום
                               </button>
                             ) : invoice.status === 'PAID' ? (
-                              <span className="text-emerald-400 text-sm font-semibold flex items-center gap-1">
+                              <span className="text-[#c99b4a] text-sm font-semibold flex items-center gap-1">
                                 <CheckCircle size={14} />
                                 שולם
                               </span>

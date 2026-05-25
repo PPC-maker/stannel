@@ -164,10 +164,10 @@ export default function AdminArchitectsPage() {
               <p className="text-2xl sm:text-3xl font-bold text-[#2b241d]">{stats.total}</p>
             </div>
           </div>
-          <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-4 sm:p-6 bg-green-50">
+          <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-4 sm:p-6 bg-[#c99b4a]/10">
             <div className="text-center">
-              <p className="text-green-400/70 text-xs sm:text-sm">פעילים</p>
-              <p className="text-2xl sm:text-3xl font-bold text-green-400">{stats.active}</p>
+              <p className="text-[#c99b4a]/70 text-xs sm:text-sm">פעילים</p>
+              <p className="text-2xl sm:text-3xl font-bold text-[#c99b4a]">{stats.active}</p>
             </div>
           </div>
           <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-4 sm:p-6 bg-[#c99b4a]/15">
@@ -288,7 +288,7 @@ export default function AdminArchitectsPage() {
                             onClick={() => handleToggleActive(architect)}
                             className={`flex items-center gap-1 px-3 py-1 rounded-full text-sm ${
                               architect.isActive
-                                ? 'bg-green-500/20 text-green-400'
+                                ? 'bg-[#c99b4a]/20 text-[#c99b4a]'
                                 : 'bg-red-500/20 text-red-400'
                             }`}
                           >
@@ -375,10 +375,10 @@ export default function AdminArchitectsPage() {
                         {(selectedArchitect.architectProfile?.pointsBalance || 0).toLocaleString()}
                       </p>
                     </div>
-                    <div className="p-3 bg-green-50 rounded-lg text-center">
-                      <FileText className="mx-auto text-green-400 mb-1" size={20} />
-                      <p className="text-green-400/70 text-xs">סה״כ הרוויח</p>
-                      <p className="text-green-400 font-bold">
+                    <div className="p-3 bg-[#c99b4a]/10 rounded-lg text-center">
+                      <FileText className="mx-auto text-[#c99b4a] mb-1" size={20} />
+                      <p className="text-[#c99b4a]/70 text-xs">סה״כ הרוויח</p>
+                      <p className="text-[#c99b4a] font-bold">
                         ₪{(selectedArchitect.architectProfile?.totalEarned || 0).toLocaleString()}
                       </p>
                     </div>

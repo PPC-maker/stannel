@@ -298,7 +298,7 @@ export default function AdminRewardsPage() {
           </div>
           <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
             <div className="text-center">
-              <Gift className="mx-auto text-green-400 mb-2" size={24} />
+              <Gift className="mx-auto text-[#c99b4a] mb-2" size={24} />
               <p className="text-2xl font-bold text-[#2b241d]">
                 {products.filter((p: Product) => p.isActive && p.stock > 0).length}
               </p>
@@ -374,7 +374,7 @@ export default function AdminRewardsPage() {
                       </span>
                     </div>
                     <span className={`text-sm px-2 py-1 rounded ${
-                      product.stock > 5 ? 'bg-green-50 text-green-600' :
+                      product.stock > 5 ? 'bg-[#c99b4a]/10 text-[#c99b4a]' :
                       product.stock > 0 ? 'bg-yellow-50 text-yellow-600' :
                       'bg-red-50 text-red-500'
                     }`}>
@@ -671,10 +671,10 @@ export default function AdminRewardsPage() {
                     <p className="text-amber-400/70 text-sm">נקודות</p>
                   </div>
 
-                  <div className="bg-green-50 rounded-xl p-4 text-center">
-                    <Banknote className="mx-auto text-green-400 mb-2" size={24} />
-                    <p className="text-2xl font-bold text-green-400">{viewingProduct.pointsPerShekel || 100}</p>
-                    <p className="text-green-400/70 text-sm">נקודות = 1 ש"ח</p>
+                  <div className="bg-[#c99b4a]/10 rounded-xl p-4 text-center">
+                    <Banknote className="mx-auto text-[#c99b4a] mb-2" size={24} />
+                    <p className="text-2xl font-bold text-[#c99b4a]">{viewingProduct.pointsPerShekel || 100}</p>
+                    <p className="text-[#c99b4a]/70 text-sm">נקודות = 1 ש"ח</p>
                   </div>
 
                   <div className={`rounded-xl p-4 text-center ${

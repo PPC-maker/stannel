@@ -51,8 +51,8 @@ const quickActionCategories = [
     id: 'invoices',
     label: 'חשבוניות',
     icon: FileUp,
-    color: 'bg-emerald-500',
-    iconColor: 'text-emerald-500',
+    color: 'bg-[#c99b4a]',
+    iconColor: 'text-[#c99b4a]',
     items: [
       { label: 'העלאת חשבונית', href: '/invoices/upload', icon: FileUp },
       { label: 'החשבוניות שלי', href: '/invoices', icon: FileText },
@@ -98,8 +98,8 @@ const quickActionCategories = [
     id: 'service',
     label: 'שירות אישי',
     icon: Headphones,
-    color: 'bg-teal-500',
-    iconColor: 'text-teal-500',
+    color: 'bg-[#c99b4a]',
+    iconColor: 'text-[#c99b4a]',
     items: [
       { label: 'צור קשר', href: '/contact', icon: Headphones },
     ],
@@ -767,14 +767,14 @@ export default function WalletPage() {
                         const txDate = new Date(tx.createdAt);
                         return (
                           <motion.div key={tx.id} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: index * 0.05 }} className="flex items-center gap-3 py-3 border-b border-[#F2EAD8] last:border-0">
-                            <div className={`p-2 rounded-xl ${isCredit ? 'bg-green-50' : 'bg-red-50'}`}>
-                              {isCredit ? <ArrowUpRight className="text-green-600" size={16} /> : <ArrowDownRight className="text-red-500" size={16} />}
+                            <div className={`p-2 rounded-xl ${isCredit ? 'bg-[#c99b4a]/10' : 'bg-red-50'}`}>
+                              {isCredit ? <ArrowUpRight className="text-[#c99b4a]" size={16} /> : <ArrowDownRight className="text-red-500" size={16} />}
                             </div>
                             <div className="flex-1 min-w-0">
                               <p className="text-[#2b241d] font-semibold text-[15px] truncate">{tx.description || (isCredit ? 'זיכוי' : 'חיוב')}</p>
                               <p className="text-[#8b7c69] text-[13px]">{txDate.toLocaleDateString('he-IL')} {txDate.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' })}</p>
                             </div>
-                            <div className={`font-bold text-[15px] ${isCredit ? 'text-green-600' : 'text-red-500'}`}>
+                            <div className={`font-bold text-[15px] ${isCredit ? 'text-[#c99b4a]' : 'text-red-500'}`}>
                               {isCredit ? '+' : '-'}{Math.abs(tx.amount || 0).toLocaleString()} {tx.currency === 'ILS' ? '₪' : 'נק׳'}
                             </div>
                           </motion.div>

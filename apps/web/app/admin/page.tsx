@@ -1387,8 +1387,8 @@ Please analyze this error and provide a fix.
           <Link href="/admin/service-providers" className="group">
             <div className="p-4 bg-white border border-[rgba(201,155,74,0.08)] rounded-xl hover:bg-[#f0ebe6] transition-all">
               <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-green-500/20">
-                  <Building2 size={20} className="text-green-400" />
+                <div className="p-2 rounded-lg bg-[#c99b4a]/20">
+                  <Building2 size={20} className="text-[#c99b4a]" />
                 </div>
                 <div>
                   <p className="text-[#2b241d] font-medium group-hover:text-[#c99b4a] transition-colors">ספקי שירות</p>
@@ -2538,7 +2538,7 @@ Please analyze this error and provide a fix.
 
                     {/* AI Analysis */}
                     <div className={`p-3 rounded-lg ${
-                      selectedInvoice.aiStatus === 'MATCH' ? 'bg-green-500/20 border border-green-500/30' :
+                      selectedInvoice.aiStatus === 'MATCH' ? 'bg-[#c99b4a]/20 border border-[#c99b4a]/30' :
                       selectedInvoice.aiStatus === 'MISMATCH' ? 'bg-red-500/20 border border-red-500/30' :
                       'bg-yellow-500/20 border border-yellow-500/30'
                     }`}>
@@ -2550,7 +2550,7 @@ Please analyze this error and provide a fix.
                         </div>
                         <div className="flex items-center justify-between">
                           <span className="text-[#8b7c69] text-sm">סכום שזוהה:</span>
-                          <span className={selectedInvoice.aiStatus === 'MATCH' ? 'text-green-400 font-semibold' : selectedInvoice.aiStatus === 'MISMATCH' ? 'text-red-400 font-semibold' : 'text-yellow-400 font-semibold'}>
+                          <span className={selectedInvoice.aiStatus === 'MATCH' ? 'text-[#c99b4a] font-semibold' : selectedInvoice.aiStatus === 'MISMATCH' ? 'text-red-400 font-semibold' : 'text-yellow-400 font-semibold'}>
                             {selectedInvoice.aiExtractedAmount ? `₪${selectedInvoice.aiExtractedAmount.toLocaleString()}` : 'לא זוהה'}
                           </span>
                         </div>
@@ -2562,7 +2562,7 @@ Please analyze this error and provide a fix.
                           <div className="flex items-center justify-between pt-1 border-t border-[rgba(201,155,74,0.08)]">
                             <span className="text-[#8b7c69] text-sm">סטטוס:</span>
                             <span className={`px-2 py-0.5 rounded-full text-xs ${
-                              selectedInvoice.aiStatus === 'MATCH' ? 'bg-green-500/30 text-green-400' :
+                              selectedInvoice.aiStatus === 'MATCH' ? 'bg-[#c99b4a]/30 text-[#c99b4a]' :
                               selectedInvoice.aiStatus === 'MISMATCH' ? 'bg-red-500/30 text-red-400' :
                               'bg-yellow-500/30 text-yellow-400'
                             }`}>
@@ -2715,8 +2715,8 @@ Please analyze this error and provide a fix.
 
                     {/* Payment Info - shown for paid invoices */}
                     {(selectedInvoice.status === 'PAID' || selectedInvoice.supplierRef || selectedInvoice.paymentProofUrl) && (
-                      <div className="p-4 rounded-lg bg-green-50 border border-green-500/30">
-                        <p className="text-sm text-green-400 mb-3 font-medium flex items-center gap-1">
+                      <div className="p-4 rounded-lg bg-[#c99b4a]/10 border border-[#c99b4a]/30">
+                        <p className="text-sm text-[#c99b4a] mb-3 font-medium flex items-center gap-1">
                           <CheckCircle size={14} />
                           פרטי תשלום
                         </p>
@@ -2733,7 +2733,7 @@ Please analyze this error and provide a fix.
                           </div>
                         )}
                         {selectedInvoice.paymentProofUrl && (
-                          <div className="mt-3 pt-3 border-t border-green-500/30">
+                          <div className="mt-3 pt-3 border-t border-[#c99b4a]/30">
                             <label className="text-[#8b7c69] text-xs block mb-2">מסמך אישור העברה</label>
                             {selectedInvoice.paymentProofUrl.toLowerCase().endsWith('.pdf') ? (
                               <div className="flex gap-2">
@@ -2749,7 +2749,7 @@ Please analyze this error and provide a fix.
                                 <a
                                   href={selectedInvoice.paymentProofUrl}
                                   download
-                                  className="px-3 py-1.5 rounded-lg bg-green-500 text-white hover:bg-green-400 transition-colors flex items-center gap-1.5 text-sm"
+                                  className="px-3 py-1.5 rounded-lg bg-[#c99b4a]/100 text-white hover:bg-[#c99b4a] transition-colors flex items-center gap-1.5 text-sm"
                                 >
                                   <Download size={14} />
                                   הורד
@@ -2855,7 +2855,7 @@ Please analyze this error and provide a fix.
                           <button
                             onClick={() => handleRestoreInvoice(invoice.id)}
                             disabled={restoringInvoice === invoice.id}
-                            className="w-full px-3 py-2 bg-green-50 border border-green-200 text-green-600 rounded-lg hover:bg-green-100 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 text-sm font-medium"
+                            className="w-full px-3 py-2 bg-[#c99b4a]/10 border border-[#c99b4a]/20 text-[#c99b4a] rounded-lg hover:bg-[#c99b4a]/15 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 text-sm font-medium"
                           >
                             {restoringInvoice === invoice.id ? (
                               <Loader2 size={16} className="animate-spin" />
@@ -2920,7 +2920,7 @@ Please analyze this error and provide a fix.
                           <button
                             onClick={() => handleRestoreUser(user.id, user.name)}
                             disabled={restoringUser === user.id}
-                            className="px-4 py-2 bg-green-500/20 border border-green-500/30 text-green-400 rounded-lg hover:bg-green-500/30 transition-colors flex items-center gap-2 disabled:opacity-50"
+                            className="px-4 py-2 bg-[#c99b4a]/20 border border-[#c99b4a]/30 text-[#c99b4a] rounded-lg hover:bg-[#c99b4a]/30 transition-colors flex items-center gap-2 disabled:opacity-50"
                           >
                             {restoringUser === user.id ? (
                               <Loader2 size={16} className="animate-spin" />
@@ -2972,21 +2972,21 @@ Please analyze this error and provide a fix.
                 <div
                   className={`mb-6 bg-white border rounded-2xl p-6 ${
                     latestScan.isHealthy
-                      ? 'border-green-500/30'
+                      ? 'border-[#c99b4a]/30'
                       : 'border-red-500/30'
                   }`}
                 >
                   <div className="text-center py-4">
                     <div
                       className={`text-4xl mb-2 ${
-                        latestScan.isHealthy ? 'text-green-400' : 'text-red-400'
+                        latestScan.isHealthy ? 'text-[#c99b4a]' : 'text-red-400'
                       }`}
                     >
                       {latestScan.isHealthy ? '✅' : '⚠️'}
                     </div>
                     <h2
                       className={`text-2xl font-bold ${
-                        latestScan.isHealthy ? 'text-green-400' : 'text-red-400'
+                        latestScan.isHealthy ? 'text-[#c99b4a]' : 'text-red-400'
                       }`}
                     >
                       {latestScan.isHealthy ? 'דוח סטטוס מערכת' : 'התראת מערכת'}
@@ -3005,10 +3005,10 @@ Please analyze this error and provide a fix.
                       <p className="text-3xl font-bold text-[#2b241d]">{latestScan.checksRun}</p>
                     </div>
                   </div>
-                  <div className="bg-green-50 backdrop-blur border border-green-500/30 rounded-xl p-4">
+                  <div className="bg-[#c99b4a]/10 backdrop-blur border border-[#c99b4a]/30 rounded-xl p-4">
                     <div className="text-center">
-                      <p className="text-green-400/70 text-sm">עברו</p>
-                      <p className="text-3xl font-bold text-green-400">{latestScan.checksPassed}</p>
+                      <p className="text-[#c99b4a]/70 text-sm">עברו</p>
+                      <p className="text-3xl font-bold text-[#c99b4a]">{latestScan.checksPassed}</p>
                     </div>
                   </div>
                   <div className="bg-yellow-500/10 backdrop-blur border border-yellow-500/30 rounded-xl p-4">
@@ -3031,7 +3031,7 @@ Please analyze this error and provide a fix.
                   <div className="space-y-2">
                     {(Array.isArray(latestScan.results) ? latestScan.results : []).map((result, i) => {
                       const statusConfig = {
-                        ok: { bg: 'bg-green-500/20', border: 'border-green-500/30', icon: '✅' },
+                        ok: { bg: 'bg-[#c99b4a]/20', border: 'border-[#c99b4a]/30', icon: '✅' },
                         warning: { bg: 'bg-yellow-500/20', border: 'border-yellow-500/30', icon: '⚠️' },
                         error: { bg: 'bg-red-500/20', border: 'border-red-500/30', icon: '❌' },
                       };
@@ -3194,7 +3194,7 @@ Please analyze this error and provide a fix.
                 <div className="space-y-2 max-h-[600px] overflow-y-auto custom-scrollbar">
                   {logs.length === 0 ? (
                     <div className="text-center py-12">
-                      <CheckCircle className="w-16 h-16 mx-auto text-green-400 mb-4" />
+                      <CheckCircle className="w-16 h-16 mx-auto text-[#c99b4a] mb-4" />
                       <p className="text-[#2b241d] font-medium">אין תקלות פתוחות</p>
                       <p className="text-[#8b7c69] text-sm">המערכת תקינה</p>
                     </div>
@@ -3236,7 +3236,7 @@ Please analyze this error and provide a fix.
                               <div className="flex items-center gap-3 mt-2 text-xs text-[#a89b8a]">
                                 <span>{new Date(log.createdAt).toLocaleString('he-IL')}</span>
                                 {log.resolved && (
-                                  <span className="text-green-400 flex items-center gap-1">
+                                  <span className="text-[#c99b4a] flex items-center gap-1">
                                     <CheckCircle size={12} />
                                     טופל
                                   </span>
@@ -3279,7 +3279,7 @@ Please analyze this error and provide a fix.
                       {!selectedLog.resolved && (
                         <button
                           onClick={() => handleResolve(selectedLog.id)}
-                          className="px-3 py-1.5 bg-green-500/20 border border-green-500/30 text-green-400 rounded-lg hover:bg-green-500/30 transition-colors text-sm flex items-center gap-2"
+                          className="px-3 py-1.5 bg-[#c99b4a]/20 border border-[#c99b4a]/30 text-[#c99b4a] rounded-lg hover:bg-[#c99b4a]/30 transition-colors text-sm flex items-center gap-2"
                         >
                           <CheckCircle size={16} />
                           סמן כטופל

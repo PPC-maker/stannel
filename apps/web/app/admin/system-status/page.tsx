@@ -136,7 +136,7 @@ export default function SystemStatusPage() {
   const getStatusIcon = (status: 'healthy' | 'degraded' | 'down') => {
     switch (status) {
       case 'healthy':
-        return <CheckCircle className="text-green-500" size={24} />;
+        return <CheckCircle className="text-[#c99b4a]" size={24} />;
       case 'degraded':
         return <AlertTriangle className="text-yellow-500" size={24} />;
       case 'down':
@@ -147,7 +147,7 @@ export default function SystemStatusPage() {
   const getStatusColor = (status: 'healthy' | 'degraded' | 'down') => {
     switch (status) {
       case 'healthy':
-        return 'bg-green-500/20 border-green-500/30';
+        return 'bg-[#c99b4a]/20 border-[#c99b4a]/30';
       case 'degraded':
         return 'bg-yellow-500/20 border-yellow-500/30';
       case 'down':
@@ -224,7 +224,7 @@ export default function SystemStatusPage() {
                 disabled={sendingAlert || alertSent}
                 className={`px-4 py-2 rounded-lg transition-colors flex items-center gap-2 ${
                   alertSent
-                    ? 'bg-green-500 text-white'
+                    ? 'bg-[#c99b4a]/100 text-white'
                     : 'bg-gold-400 text-primary-900 hover:bg-gold-500'
                 }`}
               >
@@ -269,7 +269,7 @@ export default function SystemStatusPage() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4">
                     {health?.overall === 'healthy' ? (
-                      <Wifi className="text-green-500" size={48} />
+                      <Wifi className="text-[#c99b4a]" size={48} />
                     ) : health?.overall === 'degraded' ? (
                       <AlertTriangle className="text-yellow-500" size={48} />
                     ) : (
@@ -353,7 +353,7 @@ export default function SystemStatusPage() {
                   <GlassCard key={index} hover={false}>
                     <div className="flex items-start gap-3">
                       <div className={`p-2 rounded-lg ${
-                        service.status === 'healthy' ? 'bg-green-500/20' :
+                        service.status === 'healthy' ? 'bg-[#c99b4a]/20' :
                         service.status === 'degraded' ? 'bg-yellow-500/20' : 'bg-red-500/20'
                       }`}>
                         {getServiceIcon(service.name)}
@@ -407,7 +407,7 @@ export default function SystemStatusPage() {
                     rel="noopener noreferrer"
                     className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors"
                   >
-                    <Server className="text-green-500" />
+                    <Server className="text-[#c99b4a]" />
                     <div>
                       <p className="font-medium text-gray-900">Cloud Run</p>
                       <p className="text-sm text-gray-500">API Server</p>

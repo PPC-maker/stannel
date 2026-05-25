@@ -50,7 +50,7 @@ const STATUS_CONFIG: Record<string, { label: string; color: string; bg: string }
   PENDING_ADMIN: { label: 'ממתין לאישור', color: 'text-blue-400', bg: 'bg-blue-500/20' },
   PENDING_SUPPLIER_PAY: { label: 'ממתין לתשלום', color: 'text-yellow-400', bg: 'bg-yellow-500/20' },
   OVERDUE: { label: 'באיחור', color: 'text-red-400', bg: 'bg-red-500/20' },
-  PAID: { label: 'שולם', color: 'text-emerald-400', bg: 'bg-emerald-500/20' },
+  PAID: { label: 'שולם', color: 'text-[#c99b4a]', bg: 'bg-[#c99b4a]/20' },
   CREDITED: { label: 'זוכה', color: 'text-purple-400', bg: 'bg-purple-500/20' },
   REJECTED: { label: 'נדחה', color: 'text-red-400', bg: 'bg-red-500/20' },
 };
@@ -244,18 +244,18 @@ export default function SupplierDashboardPage() {
           <Link href="/supplier/invoices?filter=paid">
           <motion.div
             whileHover={{ scale: 1.02, y: -2 }}
-            className="bg-white border border-green-100 rounded-2xl p-5 relative overflow-hidden group cursor-pointer"
+            className="bg-white border border-[#c99b4a]/20 rounded-2xl p-5 relative overflow-hidden group cursor-pointer"
           >
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-green-400 to-teal-500" />
-            <div className="absolute -left-4 -bottom-4 w-20 h-20 bg-green-50 rounded-full blur-xl group-hover:bg-green-100 transition-colors" />
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#c99b4a] to-[#d4af37]" />
+            <div className="absolute -left-4 -bottom-4 w-20 h-20 bg-[#c99b4a]/10 rounded-full blur-xl group-hover:bg-[#c99b4a]/15 transition-colors" />
             <div className="relative">
               <div className="flex items-center justify-between mb-3">
-                <div className="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center">
-                  <CheckCircle className="text-green-600" size={22} />
+                <div className="w-10 h-10 rounded-xl bg-[#c99b4a]/10 flex items-center justify-center">
+                  <CheckCircle className="text-[#c99b4a]" size={22} />
                 </div>
-                <TrendingUp size={16} className="text-emerald-400" />
+                <TrendingUp size={16} className="text-[#c99b4a]" />
               </div>
-              <p className="text-[#8b7c69] text-sm mb-1 flex items-center gap-1">חשבוניות ששולמו <ChevronDown size={12} className="rotate-[-90deg] text-emerald-400 opacity-0 group-hover:opacity-100 transition-opacity" /></p>
+              <p className="text-[#8b7c69] text-sm mb-1 flex items-center gap-1">חשבוניות ששולמו <ChevronDown size={12} className="rotate-[-90deg] text-[#c99b4a] opacity-0 group-hover:opacity-100 transition-opacity" /></p>
               {statsLoading ? (
                 <Loader2 className="w-6 h-6 animate-spin text-[#c99b4a]" />
               ) : (
@@ -366,7 +366,7 @@ export default function SupplierDashboardPage() {
                   <div className="flex gap-2">
                     <button
                       onClick={() => handleMeetingAction(meeting.id, 'approved')}
-                      className="flex-1 py-2 bg-emerald-500/20 text-emerald-400 rounded-xl text-sm font-medium hover:bg-emerald-500/30 transition-colors"
+                      className="flex-1 py-2 bg-[#c99b4a]/20 text-[#c99b4a] rounded-xl text-sm font-medium hover:bg-[#c99b4a]/30 transition-colors"
                     >
                       אישור
                     </button>
@@ -488,7 +488,7 @@ export default function SupplierDashboardPage() {
 
             {invoicesLoading ? (
               <div className="text-center py-12">
-                <Loader2 className="w-8 h-8 mx-auto text-emerald-400 animate-spin" />
+                <Loader2 className="w-8 h-8 mx-auto text-[#c99b4a] animate-spin" />
               </div>
             ) : invoices.length === 0 ? (
               <div className="text-center py-12">
@@ -545,7 +545,7 @@ export default function SupplierDashboardPage() {
                               className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-colors ${
                                 isOverdue
                                   ? 'bg-red-500/20 text-red-400 hover:bg-red-500/30 border border-red-500/30'
-                                  : 'bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 border border-emerald-500/30'
+                                  : 'bg-[#c99b4a]/20 text-[#c99b4a] hover:bg-[#c99b4a]/30 border border-[#c99b4a]/30'
                               }`}
                             >
                               <CreditCard size={16} />

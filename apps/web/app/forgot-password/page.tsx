@@ -46,7 +46,7 @@ export default function ForgotPasswordPage() {
           <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-8">
             {/* Header */}
             <div className="text-center mb-8">
-              <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-400/20">
+              <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-[#c99b4a] to-[#d4af37] flex items-center justify-center shadow-lg shadow-[#c99b4a]/20">
                 <span className="text-white font-bold text-2xl">S</span>
               </div>
               <h1 className="text-2xl font-bold text-white mb-2">שכחתם סיסמה?</h1>
@@ -60,8 +60,8 @@ export default function ForgotPasswordPage() {
                 animate={{ opacity: 1, scale: 1 }}
                 className="text-center"
               >
-                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-emerald-500/20 flex items-center justify-center">
-                  <CheckCircle className="text-emerald-400" size={32} />
+                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-[#c99b4a]/20 flex items-center justify-center">
+                  <CheckCircle className="text-[#c99b4a]" size={32} />
                 </div>
                 <h2 className="text-xl font-bold text-white mb-2">האימייל נשלח!</h2>
                 <p className="text-white/60 mb-6">
@@ -82,7 +82,7 @@ export default function ForgotPasswordPage() {
                   </button>
                   <Link
                     href="/login"
-                    className="block w-full bg-emerald-500 text-white rounded-xl py-3 text-center hover:bg-emerald-600 transition-colors font-medium"
+                    className="block w-full bg-[#c99b4a] text-white rounded-xl py-3 text-center hover:bg-[#c99b4a] transition-colors font-medium"
                   >
                     חזרה להתחברות
                   </Link>
@@ -112,7 +112,7 @@ export default function ForgotPasswordPage() {
                         type="email"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 pr-12 text-white placeholder:text-white/40 focus:border-emerald-400 focus:ring-1 focus:ring-emerald-400 transition-all"
+                        className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 pr-12 text-white placeholder:text-white/40 focus:border-[#c99b4a] focus:ring-1 focus:ring-[#c99b4a] transition-all"
                         placeholder="your@email.com"
                         required
                         dir="ltr"
@@ -124,7 +124,7 @@ export default function ForgotPasswordPage() {
                   <button
                     type="submit"
                     disabled={isLoading}
-                    className="w-full bg-emerald-500 text-white rounded-xl py-4 text-lg hover:bg-emerald-600 transition-colors font-medium flex items-center justify-center gap-2 disabled:opacity-50"
+                    className="w-full bg-[#c99b4a] text-white rounded-xl py-4 text-lg hover:bg-[#c99b4a] transition-colors font-medium flex items-center justify-center gap-2 disabled:opacity-50"
                   >
                     {isLoading ? (
                       <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -140,7 +140,7 @@ export default function ForgotPasswordPage() {
                 {/* Back to login */}
                 <p className="text-center mt-6 text-white/60">
                   נזכרתם בסיסמה?{' '}
-                  <Link href="/login" className="text-emerald-400 hover:text-emerald-300 transition-colors font-medium">
+                  <Link href="/login" className="text-[#c99b4a] hover:text-[#c99b4a] transition-colors font-medium">
                     חזרה להתחברות
                   </Link>
                 </p>

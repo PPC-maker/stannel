@@ -36,7 +36,7 @@ interface AuditLog {
 }
 
 const ACTION_CONFIG: Record<string, { icon: typeof User; color: string; label: string }> = {
-  USER_ACTIVATED: { icon: UserCheck, color: 'text-green-400', label: 'הפעלת משתמש' },
+  USER_ACTIVATED: { icon: UserCheck, color: 'text-[#c99b4a]', label: 'הפעלת משתמש' },
   USER_DEACTIVATED: { icon: User, color: 'text-yellow-400', label: 'השבתת משתמש' },
   USER_DELETED: { icon: Trash2, color: 'text-red-400', label: 'מחיקת משתמש' },
   ADMIN_LOGIN_AS_USER: { icon: Eye, color: 'text-blue-400', label: 'כניסה כמשתמש' },
@@ -48,7 +48,7 @@ const ACTION_CONFIG: Record<string, { icon: typeof User; color: string; label: s
   INVOICES_BULK_DELETED: { icon: Trash2, color: 'text-red-400', label: 'מחיקה מרובה' },
   RECYCLE_BIN_CLEANUP: { icon: Trash2, color: 'text-orange-400', label: 'ניקוי סל מחזור' },
   CONTRACT_CREATED: { icon: FileText, color: 'text-purple-400', label: 'יצירת חוזה' },
-  SYSTEM_LOG_RESOLVED: { icon: Shield, color: 'text-green-400', label: 'טיפול בשגיאה' },
+  SYSTEM_LOG_RESOLVED: { icon: Shield, color: 'text-[#c99b4a]', label: 'טיפול בשגיאה' },
   SYSTEM_SCAN_RUN: { icon: Shield, color: 'text-blue-400', label: 'סריקת מערכת' },
   HEALTH_REPORT_SENT: { icon: FileText, color: 'text-purple-400', label: 'שליחת דוח בריאות' },
   SCHEDULED_TASK_RUN: { icon: RefreshCw, color: 'text-blue-400', label: 'הפעלת משימה' },
