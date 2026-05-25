@@ -70,7 +70,7 @@ export default function GoalsPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.05 }}
-              className={`bg-white border ${stat.borderColor} rounded-2xl p-5`}
+              className={`bg-[#f7f3f2] border ${stat.borderColor} rounded-2xl p-5`}
             >
               <div className="flex items-start justify-between">
                 <div>
@@ -147,7 +147,7 @@ export default function GoalsPage() {
               </p>
             </div>
           ) : (
-            <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-12 text-center">
+            <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-12 text-center">
               <Target size={48} className="mx-auto text-[#a89b8a] mb-4" />
               <p className="text-[#8b7c69] text-lg">אין יעד פעיל כרגע</p>
               <p className="text-[#a89b8a] text-sm mt-1">פנה למנהל המערכת להגדרת יעד</p>
@@ -161,7 +161,7 @@ export default function GoalsPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
         >
-          <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
+          <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
             <h2 className="text-xl font-semibold text-[#2b241d] mb-6 flex items-center gap-2">
               <Award size={20} className="text-[#c99b4a]" />
               היסטוריית בונוסים

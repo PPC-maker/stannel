@@ -84,7 +84,7 @@ export default function PrivacyPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6 mb-6"
+          className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6 mb-6"
         >
           <div className="flex items-start gap-4">
             <div className="w-12 h-12 rounded-xl bg-[#c99b4a]/10 flex items-center justify-center flex-shrink-0">
@@ -113,7 +113,7 @@ export default function PrivacyPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.15 + index * 0.05 }}
-            className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6 mb-4"
+            className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6 mb-4"
           >
             <div className="flex items-start gap-4">
               <div className="w-12 h-12 rounded-xl bg-[#c99b4a]/10 flex items-center justify-center flex-shrink-0">
@@ -139,7 +139,7 @@ export default function PrivacyPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6 mb-4"
+          className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6 mb-4"
         >
           <div className="flex items-start gap-4">
             <div className="w-12 h-12 rounded-xl bg-amber-500/20 flex items-center justify-center flex-shrink-0">
@@ -172,7 +172,7 @@ export default function PrivacyPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.45 }}
-          className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6 mb-4"
+          className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6 mb-4"
         >
           <div className="flex items-start gap-4">
             <div className="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center flex-shrink-0">

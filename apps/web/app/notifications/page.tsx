@@ -327,7 +327,7 @@ export default function NotificationsPage() {
           </div>
         </motion.div>
 
-        <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl overflow-hidden">
+        <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl overflow-hidden">
           {isLoading ? (
             <div className="space-y-0 divide-y divide-[rgba(201,155,74,0.08)]">
               {[...Array(3)].map((_, i) => (

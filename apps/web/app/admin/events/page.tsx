@@ -269,25 +269,25 @@ export default function ManageEventsPage() {
           transition={{ delay: 0.1 }}
           className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6"
         >
-          <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-3 sm:p-6">
+          <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-3 sm:p-6">
             <div className="text-center">
               <p className="text-[#a89b8a] text-xs sm:text-sm">סה״כ אירועים</p>
               <p className="text-2xl sm:text-3xl font-bold text-[#2b241d]">{events?.length || 0}</p>
             </div>
           </div>
-          <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-3 sm:p-6 bg-[#c99b4a]/10">
+          <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-3 sm:p-6 bg-[#c99b4a]/10">
             <div className="text-center">
               <p className="text-[#c99b4a]/70 text-xs sm:text-sm">אירועים קרובים</p>
               <p className="text-2xl sm:text-3xl font-bold text-[#c99b4a]">{upcomingEvents.length}</p>
             </div>
           </div>
-          <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-3 sm:p-6 bg-blue-50">
+          <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-3 sm:p-6 bg-blue-50">
             <div className="text-center">
               <p className="text-blue-400/70 text-xs sm:text-sm">אירועים שעברו</p>
               <p className="text-2xl sm:text-3xl font-bold text-blue-400">{pastEvents.length}</p>
             </div>
           </div>
-          <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-3 sm:p-6 bg-[#c99b4a]/15">
+          <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-3 sm:p-6 bg-[#c99b4a]/15">
             <div className="text-center">
               <p className="text-[#c99b4a]/70 text-xs sm:text-sm">סה״כ נרשמים</p>
               <p className="text-2xl sm:text-3xl font-bold text-[#c99b4a]">
@@ -303,7 +303,7 @@ export default function ManageEventsPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
         >
-          <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
+          <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
             <h2 className="text-xl font-semibold text-[#2b241d] mb-4 flex items-center gap-2">
               <Calendar className="text-[#c99b4a]" size={20} />
               רשימת אירועים
@@ -434,7 +434,7 @@ export default function ManageEventsPage() {
               animate={{ opacity: 1, scale: 1 }}
               className="w-full max-w-lg max-h-[90vh] overflow-y-auto"
             >
-              <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
+              <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-xl font-semibold text-[#2b241d]">
                     {editingEvent ? 'עריכת אירוע' : 'יצירת אירוע חדש'}

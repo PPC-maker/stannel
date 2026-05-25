@@ -160,7 +160,7 @@ export default function ManageGoalsPage() {
           transition={{ delay: 0.1 }}
           className="mb-6"
         >
-          <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
+          <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
             <div className="flex items-center gap-4">
               <label className="flex items-center gap-2 cursor-pointer">
                 <input
@@ -177,13 +177,13 @@ export default function ManageGoalsPage() {
 
         {/* Stats */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-          <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
+          <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
             <div className="text-center">
               <p className="text-[#a89b8a] text-sm">סה״כ יעדים</p>
               <p className="text-3xl font-bold text-[#2b241d]">{goals.length}</p>
             </div>
           </div>
-          <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6 bg-[#c99b4a]/10">
+          <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6 bg-[#c99b4a]/10">
             <div className="text-center">
               <p className="text-[#c99b4a]/70 text-sm">הושגו</p>
               <p className="text-3xl font-bold text-[#c99b4a]">
@@ -191,7 +191,7 @@ export default function ManageGoalsPage() {
               </p>
             </div>
           </div>
-          <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6 bg-yellow-50">
+          <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6 bg-yellow-50">
             <div className="text-center">
               <p className="text-yellow-400/70 text-sm">בתהליך</p>
               <p className="text-3xl font-bold text-yellow-400">
@@ -199,7 +199,7 @@ export default function ManageGoalsPage() {
               </p>
             </div>
           </div>
-          <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6 bg-[#c99b4a]/15">
+          <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6 bg-[#c99b4a]/15">
             <div className="text-center">
               <p className="text-[#c99b4a]/70 text-sm">סה״כ יעדים (₪)</p>
               <p className="text-3xl font-bold text-[#c99b4a]">
@@ -215,7 +215,7 @@ export default function ManageGoalsPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
         >
-          <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
+          <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
             {isLoading ? (
               <div className="text-center py-12">
                 <Loader2 className="w-10 h-10 mx-auto text-[#c99b4a] animate-spin" />
@@ -353,7 +353,7 @@ export default function ManageGoalsPage() {
               animate={{ opacity: 1, scale: 1 }}
               className="w-full max-w-lg"
             >
-              <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
+              <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
                 <h2 className="text-xl font-semibold text-[#2b241d] mb-6">הוספת יעד חדש</h2>
                 <form
                   onSubmit={(e) => {

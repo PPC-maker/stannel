@@ -280,7 +280,7 @@ export default function ManageServiceProvidersPage() {
 
         {/* Search & Filter */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="mb-6">
-          <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
+          <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
             <div className="flex flex-wrap gap-4">
               <div className="flex-1 min-w-[200px]">
                 <div className="relative">
@@ -310,7 +310,7 @@ export default function ManageServiceProvidersPage() {
 
         {/* Stats */}
         <div className="grid grid-cols-3 gap-4 mb-6">
-          <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-5">
+          <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-5">
             <p className="text-[#a89b8a] text-sm">סה״כ</p>
             <p className="text-3xl font-bold text-[#2b241d]">{providers.length}</p>
           </div>
@@ -326,7 +326,7 @@ export default function ManageServiceProvidersPage() {
 
         {/* Providers List */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
-          <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
+          <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
             {isLoading ? (
               <div className="text-center py-12">
                 <Loader2 className="w-10 h-10 mx-auto text-[#c99b4a] animate-spin" />
@@ -348,7 +348,7 @@ export default function ManageServiceProvidersPage() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.03 }}
-                    className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl overflow-hidden hover:shadow-lg transition-all"
+                    className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl overflow-hidden hover:shadow-lg transition-all"
                     style={{ boxShadow: '0 4px 16px rgba(64,38,18,0.06)' }}
                   >
                     {/* Image / Logo area - 3/4 width */}

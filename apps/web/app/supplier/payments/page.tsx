@@ -74,7 +74,7 @@ export default function SupplierPaymentsPage() {
               </p>
             </div>
           </div>
-          <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
+          <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
             <div className="text-center">
               <p className="text-[#8b7c69] text-sm font-semibold mb-1">מספר תשלומים</p>
               <p className="text-3xl font-bold text-[#2b241d]">
@@ -90,7 +90,7 @@ export default function SupplierPaymentsPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
         >
-          <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
+          <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
             <h2 className="text-xl font-bold text-[#2b241d] mb-6 flex items-center gap-2">
               <Receipt className="text-[#c99b4a]" size={20} />
               היסטוריית תשלומים
@@ -114,7 +114,7 @@ export default function SupplierPaymentsPage() {
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.03 }}
-                    className="p-4 bg-white border border-[rgba(201,155,74,0.08)] rounded-xl hover:bg-[#f7f3f2] transition-colors"
+                    className="p-4 bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-xl hover:bg-[#f7f3f2] transition-colors"
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-4">

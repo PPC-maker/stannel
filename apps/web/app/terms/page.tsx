@@ -27,7 +27,7 @@ export default function TermsPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6 sm:p-10"
+          className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6 sm:p-10"
         >
           <div className="prose prose-stone max-w-none text-[#5a4e41] leading-relaxed text-sm sm:text-base" dir="rtl">
 

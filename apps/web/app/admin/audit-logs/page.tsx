@@ -141,7 +141,7 @@ export default function AuditLogsPage() {
           transition={{ delay: 0.1 }}
           className="mb-6"
         >
-          <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
+          <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
             <button
               onClick={() => setShowFilters(!showFilters)}
               className="flex items-center justify-between w-full text-[#2b241d]"
@@ -195,7 +195,7 @@ export default function AuditLogsPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
           >
-            <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-4 sm:p-6">
+            <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-4 sm:p-6">
               <h2 className="text-xl font-semibold text-[#2b241d] mb-4 flex items-center gap-2">
                 <FileText className="text-[#c99b4a]" size={20} />
                 פעולות אחרונות ({filteredLogs.length})
@@ -331,7 +331,7 @@ export default function AuditLogsPage() {
             transition={{ delay: 0.3 }}
             className="hidden lg:block"
           >
-            <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6 h-fit sticky top-6 overflow-hidden">
+            <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6 h-fit sticky top-6 overflow-hidden">
               <h2 className="text-lg font-semibold text-[#2b241d] mb-4 flex items-center gap-2">
                 <Eye className="text-[#c99b4a]" size={20} />
                 פרטי הפעולה

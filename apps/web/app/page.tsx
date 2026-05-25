@@ -122,7 +122,7 @@ export default function HomePage() {
             </Link>
             <Link
               href="/login"
-              className="inline-flex items-center justify-center gap-2 bg-white border border-[rgba(201,155,74,0.2)] text-[#2b241d] px-8 py-4 rounded-2xl font-semibold text-lg hover:bg-[#f7f3f2] transition-all"
+              className="inline-flex items-center justify-center gap-2 bg-[#f7f3f2] border border-[rgba(201,155,74,0.2)] text-[#2b241d] px-8 py-4 rounded-2xl font-semibold text-lg hover:bg-[#f7f3f2] transition-all"
             >
               <span>התחברות</span>
             </Link>
@@ -175,7 +175,7 @@ export default function HomePage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
-                className={`bg-white border ${item.borderColor} rounded-3xl p-8 text-center hover:scale-105 transition-all group`}
+                className={`bg-[#f7f3f2] border ${item.borderColor} rounded-3xl p-8 text-center hover:scale-105 transition-all group`}
                 style={{ boxShadow: '0 8px 24px rgba(64,38,18,0.08)' }}
               >
                 <div className={`w-16 h-16 mx-auto mb-6 rounded-2xl ${item.color} flex items-center justify-center`}>
@@ -213,7 +213,7 @@ export default function HomePage() {
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
-                className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6 text-center hover:bg-[#f7f3f2] transition-all"
+                className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6 text-center hover:bg-[#f7f3f2] transition-all"
                 style={{ boxShadow: '0 8px 24px rgba(64,38,18,0.08)' }}
               >
                 <div className={`w-14 h-14 mx-auto mb-4 rounded-xl ${supplier.color} flex items-center justify-center`}>
@@ -308,7 +308,7 @@ export default function HomePage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
-                className="bg-white border border-[rgba(201,155,74,0.08)] rounded-3xl p-8"
+                className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-3xl p-8"
                 style={{ boxShadow: '0 8px 24px rgba(64,38,18,0.08)' }}
               >
                 <div className="flex items-center gap-4 mb-6">
@@ -338,7 +338,7 @@ export default function HomePage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-white py-12 px-6 border-t border-[rgba(201,155,74,0.08)]">
+      <footer className="bg-[#f7f3f2] py-12 px-6 border-t border-[rgba(201,155,74,0.08)]">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
             {/* Logo & Description */}

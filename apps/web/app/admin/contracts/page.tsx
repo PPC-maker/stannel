@@ -176,19 +176,19 @@ export default function ManageContractsPage() {
 
         {/* Stats */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-          <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6 text-center">
+          <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6 text-center">
             <p className="text-[#a89b8a] text-sm">סה״כ חוזים</p>
             <p className="text-3xl font-bold text-[#2b241d]">{contracts?.length || 0}</p>
           </div>
-          <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6 bg-[#c99b4a]/10 text-center">
+          <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6 bg-[#c99b4a]/10 text-center">
             <p className="text-[#c99b4a]/70 text-sm">פעילים</p>
             <p className="text-3xl font-bold text-[#c99b4a]">{contracts?.filter((c: Contract) => isContractActive(c)).length || 0}</p>
           </div>
-          <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6 bg-purple-50 text-center">
+          <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6 bg-purple-50 text-center">
             <p className="text-purple-600/70 text-sm">פרימיום</p>
             <p className="text-3xl font-bold text-purple-600">{contracts?.filter((c: Contract) => c.type === 'PREMIUM').length || 0}</p>
           </div>
-          <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6 bg-[#c99b4a]/10 text-center">
+          <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6 bg-[#c99b4a]/10 text-center">
             <p className="text-[#c99b4a]/70 text-sm">בלעדיים</p>
             <p className="text-3xl font-bold text-[#c99b4a]">{contracts?.filter((c: Contract) => c.type === 'EXCLUSIVE').length || 0}</p>
           </div>
@@ -196,7 +196,7 @@ export default function ManageContractsPage() {
 
         {/* Contracts List */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
-          <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
+          <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
             <h2 className="text-xl font-semibold text-[#2b241d] mb-4 flex items-center gap-2">
               <FileText className="text-[#c99b4a]" size={20} />
               רשימת חוזים
@@ -288,7 +288,7 @@ export default function ManageContractsPage() {
                 className="w-full max-w-lg"
                 onClick={(e) => e.stopPropagation()}
               >
-                <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6 shadow-2xl">
+                <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6 shadow-2xl">
                   <div className="flex items-center justify-between mb-6">
                     <h2 className="text-xl font-bold text-[#2b241d] flex items-center gap-2">
                       <FileText className="text-[#c99b4a]" size={22} />
@@ -388,7 +388,7 @@ export default function ManageContractsPage() {
           {showForm && (
             <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
               <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="w-full max-w-md">
-                <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6 shadow-2xl max-h-[85vh] overflow-y-auto">
+                <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6 shadow-2xl max-h-[85vh] overflow-y-auto">
                   <div className="flex items-center justify-between mb-6">
                     <h2 className="text-xl font-bold text-[#2b241d]">יצירת חוזה חדש</h2>
                     <button onClick={() => setShowForm(false)} className="text-[#8b7c69] hover:text-[#2b241d] p-1"><X size={22} /></button>

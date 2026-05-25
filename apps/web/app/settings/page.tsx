@@ -138,7 +138,7 @@ export default function SettingsPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6"
+            className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6"
           >
             <div className="flex items-center gap-4 mb-6">
               <div className="relative group">
@@ -193,7 +193,7 @@ export default function SettingsPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6"
+            className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6"
           >
             <div className="flex items-center gap-3 mb-6">
               <Bell size={24} className="text-[#c99b4a]" />
@@ -231,7 +231,7 @@ export default function SettingsPage() {
                     }`}
                   >
                     <span
-                      className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all ${
+                      className={`absolute top-1 w-4 h-4 rounded-full bg-[#f7f3f2] transition-all ${
                         notifications[item.key as keyof typeof notifications]
                           ? 'right-1'
                           : 'right-7'
@@ -248,7 +248,7 @@ export default function SettingsPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6"
+            className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6"
           >
             <div className="flex items-center gap-3 mb-6">
               <Globe size={24} className="text-[#c99b4a]" />
@@ -271,7 +271,7 @@ export default function SettingsPage() {
                   }`}
                 >
                   <span
-                    className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all ${
+                    className={`absolute top-1 w-4 h-4 rounded-full bg-[#f7f3f2] transition-all ${
                       darkMode ? 'right-1' : 'right-7'
                     }`}
                   />
@@ -302,7 +302,7 @@ export default function SettingsPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6"
+            className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6"
           >
             <div className="flex items-center gap-3 mb-6">
               <Shield size={24} className="text-[#c99b4a]" />
@@ -359,7 +359,7 @@ export default function SettingsPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}
-            className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6"
+            className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6"
           >
             <div className="flex items-center gap-3 mb-6">
               <Server size={24} className="text-[#c99b4a]" />
@@ -408,7 +408,7 @@ export default function SettingsPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6 }}
-            className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6"
+            className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6"
           >
             <div className="flex items-center gap-3 mb-6">
               <Database size={24} className="text-[#c99b4a]" />
@@ -461,7 +461,7 @@ export default function SettingsPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.7 }}
-            className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6"
+            className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6"
           >
             <div className="flex items-center gap-3 mb-4">
               <FileCode size={24} className="text-[#c99b4a]" />
@@ -486,7 +486,7 @@ export default function SettingsPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.8 }}
-            className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6"
+            className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6"
           >
             <button
               onClick={() => setShowLogoutConfirm(true)}

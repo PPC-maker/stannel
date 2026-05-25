@@ -137,7 +137,7 @@ export default function SupplierInvoicesPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="flex items-center justify-between mb-6 bg-white border border-[rgba(201,155,74,0.08)] rounded-xl p-4"
+          className="flex items-center justify-between mb-6 bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-xl p-4"
         >
           <div className="flex items-center gap-4">
             <span className="text-[#8b7c69] text-sm font-semibold">
@@ -159,7 +159,7 @@ export default function SupplierInvoicesPage() {
               <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="absolute top-full right-0 mt-1 w-full bg-white border border-[rgba(201,155,74,0.08)] rounded-lg overflow-hidden z-10 shadow-xl"
+                className="absolute top-full right-0 mt-1 w-full bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-lg overflow-hidden z-10 shadow-xl"
               >
                 {STATUS_OPTIONS.map((option) => (
                   <button
@@ -187,7 +187,7 @@ export default function SupplierInvoicesPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
         >
-          <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
+          <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
             {isLoading ? (
               <div className="text-center py-12">
                 <Loader2 className="w-8 h-8 mx-auto text-[#c99b4a] animate-spin" />
@@ -306,7 +306,7 @@ export default function SupplierInvoicesPage() {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="w-full max-w-md bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6 shadow-2xl"
+              className="w-full max-w-md bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6 shadow-2xl"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center justify-between mb-6">

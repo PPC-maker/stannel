@@ -56,7 +56,7 @@ export default function SuppliersDirectoryPage() {
               placeholder="חיפוש ספקים..."
               value={search}
               onChange={(e) => handleSearch(e.target.value)}
-              className="w-full bg-white border border-[rgba(201,155,74,0.15)] rounded-xl sm:rounded-2xl px-4 py-3 sm:px-5 sm:py-4 pr-10 sm:pr-12 text-sm sm:text-base text-[#2b241d] placeholder:text-[#a89b8a] focus:border-[#c99b4a]/50 focus:outline-none focus:ring-2 focus:ring-[#c99b4a]/20 transition-all text-right"
+              className="w-full bg-[#f7f3f2] border border-[rgba(201,155,74,0.15)] rounded-xl sm:rounded-2xl px-4 py-3 sm:px-5 sm:py-4 pr-10 sm:pr-12 text-sm sm:text-base text-[#2b241d] placeholder:text-[#a89b8a] focus:border-[#c99b4a]/50 focus:outline-none focus:ring-2 focus:ring-[#c99b4a]/20 transition-all text-right"
             />
           </div>
         </motion.div>
@@ -158,7 +158,7 @@ function SupplierCard({ supplier, index }: { supplier: any; index: number }) {
       transition={{ delay: index * 0.1 }}
     >
       <Link href={`/suppliers/${supplier.id}`}>
-        <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl sm:rounded-3xl overflow-hidden hover:border-[#c99b4a]/30 hover:bg-[#faf8f5] transition-all group cursor-pointer p-3 sm:p-5">
+        <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl sm:rounded-3xl overflow-hidden hover:border-[#c99b4a]/30 hover:bg-[#faf8f5] transition-all group cursor-pointer p-3 sm:p-5">
           {/* Logo */}
           <div className="flex items-center justify-center mb-3 sm:mb-4">
             {logoImage ? (

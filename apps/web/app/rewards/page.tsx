@@ -206,7 +206,7 @@ export default function RewardsPage() {
         </motion.div>
 
         {/* Header */}
-        <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-4 sm:p-6 mb-4 sm:mb-6">
+        <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-4 sm:p-6 mb-4 sm:mb-6">
           <h1 className="text-2xl sm:text-3xl font-bold text-[#2b241d]">חנות ההטבות</h1>
           <p className="text-[#8b7c69] mt-1 text-sm sm:text-base">ממשו את הנקודות שצברתם להטבות מגוונות</p>
         </div>
@@ -228,7 +228,7 @@ export default function RewardsPage() {
                   className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-5 py-2 sm:py-3 rounded-xl border transition-all text-sm sm:text-base ${
                     isSelected
                       ? 'bg-[#c99b4a]/15 border-[#c99b4a]/30 text-[#c99b4a]'
-                      : 'bg-white border-[rgba(201,155,74,0.08)] text-[#8b7c69] hover:bg-white/90 hover:text-[#2b241d]'
+                      : 'bg-[#f7f3f2] border-[rgba(201,155,74,0.08)] text-[#8b7c69] hover:bg-white/90 hover:text-[#2b241d]'
                   }`}
                 >
                   {cat === 'all' && <Gift size={20} />}
@@ -264,7 +264,7 @@ export default function RewardsPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {productsLoading ? (
             [...Array(6)].map((_, i) => (
-              <div key={i} className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl overflow-hidden animate-pulse">
+              <div key={i} className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl overflow-hidden animate-pulse">
                 <div className="h-48 bg-[#c99b4a]/10" />
                 <div className="p-6">
                   <div className="h-5 w-3/4 bg-[#c99b4a]/10 rounded mb-2" />
@@ -289,7 +289,7 @@ export default function RewardsPage() {
                 transition={{ delay: index * 0.08 }}
               >
                 <div
-                  className={`bg-white border rounded-2xl overflow-hidden group hover:bg-white/90 transition-all cursor-pointer ${
+                  className={`bg-[#f7f3f2] border rounded-2xl overflow-hidden group hover:bg-white/90 transition-all cursor-pointer ${
                     selectedProduct === product.id ? 'border-[#c99b4a]/50 ring-1 ring-[#c99b4a]/30' : 'border-[rgba(201,155,74,0.08)]'
                   }`}
                   onClick={() => setSelectedProduct(product.id)}
@@ -435,7 +435,7 @@ export default function RewardsPage() {
 
         {/* Empty State */}
         {!productsLoading && products.length === 0 && (
-          <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-12 text-center">
+          <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-12 text-center">
             <Gift size={48} className="mx-auto text-[#a89b8a] mb-4" />
             <p className="text-[#8b7c69]">אין מוצרים זמינים כרגע</p>
           </div>

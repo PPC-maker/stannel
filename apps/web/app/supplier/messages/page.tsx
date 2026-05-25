@@ -180,7 +180,7 @@ export default function SupplierMessagesPage() {
             { id: 'unread' as const, label: `לא נקרא (${unreadCount})` },
             { id: 'read' as const, label: `נקרא (${messages.length - unreadCount})` },
           ].map(f => (
-            <button key={f.id} onClick={() => setFilter(f.id)} className={`px-3 py-1.5 rounded-lg text-xs sm:text-sm transition-colors ${filter === f.id ? 'bg-[#c99b4a] text-white' : 'bg-white text-[#8b7c69] hover:bg-[#f7f3f2]'}`}>
+            <button key={f.id} onClick={() => setFilter(f.id)} className={`px-3 py-1.5 rounded-lg text-xs sm:text-sm transition-colors ${filter === f.id ? 'bg-[#c99b4a] text-white' : 'bg-[#f7f3f2] text-[#8b7c69] hover:bg-[#f7f3f2]'}`}>
               {f.label}
             </button>
           ))}
@@ -190,7 +190,7 @@ export default function SupplierMessagesPage() {
         {loading ? (
           <div className="text-center py-16"><Loader2 className="w-8 h-8 mx-auto animate-spin text-[#c99b4a]" /></div>
         ) : filteredMessages.length === 0 ? (
-          <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-12 text-center">
+          <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-12 text-center">
             <MessageSquare size={48} className="mx-auto text-[#a89b8a]/40 mb-4" />
             <p className="text-[#8b7c69] text-lg">{filter === 'unread' ? 'אין הודעות חדשות' : 'אין הודעות'}</p>
           </div>
@@ -208,7 +208,7 @@ export default function SupplierMessagesPage() {
                     setSelectedMessage(msg);
                     if (!msg.isRead) handleMarkAsRead(msg.id);
                   }}
-                  className={`bg-white border rounded-xl p-4 cursor-pointer transition-all hover:bg-[#f7f3f2] ${
+                  className={`bg-[#f7f3f2] border rounded-xl p-4 cursor-pointer transition-all hover:bg-[#f7f3f2] ${
                     !msg.isRead ? 'border-[#c99b4a]/20 bg-[#c99b4a]/5' : 'border-[rgba(201,155,74,0.08)]'
                   } ${selectedMessage?.id === msg.id ? 'ring-2 ring-[#c99b4a]/30' : ''}`}
                 >

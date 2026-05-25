@@ -143,7 +143,7 @@ export default function AdminAnalyticsPage() {
             { label: 'SLA', value: slaData ? `${slaData.complianceRate}%` : '...', color: 'text-blue-400', border: 'border-blue-500/30' },
           ].map((stat, i) => (
             <motion.div key={i} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}>
-              <div className={`bg-white border ${stat.border} rounded-xl p-3 sm:p-4 text-center`}>
+              <div className={`bg-[#f7f3f2] border ${stat.border} rounded-xl p-3 sm:p-4 text-center`}>
                 <p className="text-[#a89b8a] text-[10px] sm:text-xs mb-1">{stat.label}</p>
                 <p className={`text-lg sm:text-xl font-bold ${stat.color}`}>{trendsLoading ? <Loader2 className="w-5 h-5 mx-auto animate-spin" /> : String(stat.value)}</p>
               </div>
@@ -182,7 +182,7 @@ export default function AdminAnalyticsPage() {
           {activeTab === 'overview' && (
             <div className="grid lg:grid-cols-2 gap-6">
               {/* Top Architects */}
-              <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
+              <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="text-lg font-semibold text-[#2b241d] flex items-center gap-2">
                     <Users size={18} className="text-[#c99b4a]" />
@@ -215,7 +215,7 @@ export default function AdminAnalyticsPage() {
               </div>
 
               {/* Top Suppliers */}
-              <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
+              <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
                 <div className="flex items-center justify-between mb-4">
                   <h2 className="text-lg font-semibold text-[#2b241d] flex items-center gap-2">
                     <Building2 size={18} className="text-[#c99b4a]" />
@@ -268,7 +268,7 @@ export default function AdminAnalyticsPage() {
 
           {/* Architects Tab */}
           {activeTab === 'architects' && (
-            <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
+            <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-lg font-semibold text-[#2b241d]">דוח אדריכלים ({filteredArchitects.length})</h2>
                 <button
@@ -318,7 +318,7 @@ export default function AdminAnalyticsPage() {
 
           {/* Suppliers Tab */}
           {activeTab === 'suppliers' && (
-            <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
+            <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-lg font-semibold text-[#2b241d]">דוח ספקים ({filteredSuppliers.length})</h2>
                 <button
@@ -362,7 +362,7 @@ export default function AdminAnalyticsPage() {
           {/* Commissions Tab */}
           {activeTab === 'commissions' && (
             <div className="space-y-6">
-              <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
+              <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-lg font-semibold text-[#2b241d] flex items-center gap-2">
                     <DollarSign size={18} className="text-[#c99b4a]" />
@@ -433,7 +433,7 @@ export default function AdminAnalyticsPage() {
 
           {/* SLA Tab */}
           {activeTab === 'sla' && (
-            <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
+            <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-lg font-semibold text-[#2b241d] flex items-center gap-2">
                   <Clock size={18} className="text-blue-400" />

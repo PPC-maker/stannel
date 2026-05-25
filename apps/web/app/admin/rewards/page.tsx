@@ -289,14 +289,14 @@ export default function AdminRewardsPage() {
           transition={{ delay: 0.1 }}
           className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8"
         >
-          <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
+          <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
             <div className="text-center">
               <Package className="mx-auto text-[#c99b4a] mb-2" size={24} />
               <p className="text-2xl font-bold text-[#2b241d]">{products.length}</p>
               <p className="text-[#8b7c69] text-sm">סה"כ מוצרים</p>
             </div>
           </div>
-          <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
+          <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
             <div className="text-center">
               <Gift className="mx-auto text-[#c99b4a] mb-2" size={24} />
               <p className="text-2xl font-bold text-[#2b241d]">
@@ -318,7 +318,7 @@ export default function AdminRewardsPage() {
               <Loader2 className="w-8 h-8 mx-auto text-[#c99b4a] animate-spin" />
             </div>
           ) : products.length === 0 ? (
-            <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6 text-center py-12">
+            <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6 text-center py-12">
               <Gift size={48} className="mx-auto text-[#a89b8a] mb-4" />
               <p className="text-[#8b7c69]">אין מוצרים עדיין</p>
               <p className="text-[#a89b8a] text-sm mt-1">לחץ על "הוסף מוצר" כדי להתחיל</p>
@@ -326,10 +326,10 @@ export default function AdminRewardsPage() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {products.map((product: Product) => (
-                <div key={product.id} className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl overflow-hidden group">
+                <div key={product.id} className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl overflow-hidden group">
                   {/* Product Image - Click to view */}
                   <div
-                    className="relative w-full h-64 bg-white cursor-pointer overflow-hidden"
+                    className="relative w-full h-64 bg-[#f7f3f2] cursor-pointer overflow-hidden"
                     onClick={() => handleView(product)}
                   >
                     {product.imageUrl ? (
@@ -419,7 +419,7 @@ export default function AdminRewardsPage() {
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto"
+            className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto"
           >
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-bold text-[#2b241d]">
@@ -517,9 +517,9 @@ export default function AdminRewardsPage() {
                       onChange={(e) => setForm({ ...form, category: e.target.value })}
                       className="w-full bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-xl px-4 py-3 text-[#2b241d] appearance-none cursor-pointer"
                     >
-                      <option value="" className="bg-white">בחר קטגוריה</option>
+                      <option value="" className="bg-[#f7f3f2]">בחר קטגוריה</option>
                       {(categoriesData?.data || []).map((cat: string) => (
-                        <option key={cat} value={cat} className="bg-white">{cat}</option>
+                        <option key={cat} value={cat} className="bg-[#f7f3f2]">{cat}</option>
                       ))}
                     </select>
                     <button
@@ -626,7 +626,7 @@ export default function AdminRewardsPage() {
               initial={{ opacity: 0, scale: 0.9, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden shadow-2xl"
+              className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden shadow-2xl"
             >
               {/* Image Header */}
               <div className="relative h-64 bg-gradient-to-br from-[#f7f3f2] to-[#f0ebe6]">

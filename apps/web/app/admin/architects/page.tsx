@@ -158,25 +158,25 @@ export default function AdminArchitectsPage() {
 
         {/* Stats */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
-          <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-4 sm:p-6">
+          <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-4 sm:p-6">
             <div className="text-center">
               <p className="text-[#a89b8a] text-xs sm:text-sm">סה״כ אדריכלים</p>
               <p className="text-2xl sm:text-3xl font-bold text-[#2b241d]">{stats.total}</p>
             </div>
           </div>
-          <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-4 sm:p-6 bg-[#c99b4a]/10">
+          <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-4 sm:p-6 bg-[#c99b4a]/10">
             <div className="text-center">
               <p className="text-[#c99b4a]/70 text-xs sm:text-sm">פעילים</p>
               <p className="text-2xl sm:text-3xl font-bold text-[#c99b4a]">{stats.active}</p>
             </div>
           </div>
-          <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-4 sm:p-6 bg-[#c99b4a]/15">
+          <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-4 sm:p-6 bg-[#c99b4a]/15">
             <div className="text-center overflow-hidden">
               <p className="text-[#c99b4a]/70 text-xs sm:text-sm">סה״כ נקודות</p>
               <p className={`font-bold text-[#c99b4a] ${String(stats.totalPoints).length > 6 ? 'text-lg sm:text-2xl' : 'text-2xl sm:text-3xl'}`}>{stats.totalPoints.toLocaleString()}</p>
             </div>
           </div>
-          <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-4 sm:p-6 bg-blue-50">
+          <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-4 sm:p-6 bg-blue-50">
             <div className="text-center overflow-hidden">
               <p className="text-blue-400/70 text-xs sm:text-sm">סה״כ הרוויחו</p>
               <p className={`font-bold text-blue-400 ${String(stats.totalEarned).length > 6 ? 'text-lg sm:text-2xl' : 'text-2xl sm:text-3xl'}`}>₪{stats.totalEarned.toLocaleString()}</p>
@@ -191,7 +191,7 @@ export default function AdminArchitectsPage() {
           transition={{ delay: 0.1 }}
           className="mb-6"
         >
-          <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
+          <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
             <div className="flex flex-wrap gap-4">
               <div className="flex-1 min-w-[200px]">
                 <div className="relative">
@@ -224,7 +224,7 @@ export default function AdminArchitectsPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
         >
-          <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
+          <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
             {loading ? (
               <div className="text-center py-12">
                 <Loader2 className="w-10 h-10 mx-auto text-[#c99b4a] animate-spin" />
@@ -322,7 +322,7 @@ export default function AdminArchitectsPage() {
               animate={{ opacity: 1, scale: 1 }}
               className="w-full max-w-lg"
             >
-              <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
+              <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
                 <div className="flex items-start justify-between mb-6">
                   <h2 className="text-xl font-semibold text-[#2b241d]">פרטי אדריכל</h2>
                   <button

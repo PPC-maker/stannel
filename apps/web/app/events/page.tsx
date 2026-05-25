@@ -153,7 +153,7 @@ export default function EventsPage() {
                     key={meeting.id}
                     initial={{ opacity: 0, x: -10 }}
                     animate={{ opacity: 1, x: 0 }}
-                    className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-4 hover:bg-[#f7f3f2] transition-colors"
+                    className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-4 hover:bg-[#f7f3f2] transition-colors"
                   >
                     <div className="flex items-start justify-between mb-2">
                       <div className="flex-1">
@@ -197,7 +197,7 @@ export default function EventsPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.15 }}
-            className="mb-6 bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6 text-center"
+            className="mb-6 bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6 text-center"
           >
             <Building2 size={32} className="mx-auto text-[#a89b8a]/40 mb-2" />
             <p className="text-[#a89b8a] text-sm">אין פגישות מתוכננות</p>
@@ -209,7 +209,7 @@ export default function EventsPage() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {isLoading ? (
             [...Array(6)].map((_, i) => (
-              <div key={i} className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl overflow-hidden animate-pulse">
+              <div key={i} className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl overflow-hidden animate-pulse">
                 <div className="h-48 bg-[#f7f3f2]" />
                 <div className="p-6">
                   <div className="h-6 w-3/4 bg-[#f7f3f2] rounded mb-2" />
@@ -239,7 +239,7 @@ export default function EventsPage() {
                 transition={{ delay: index * 0.08 }}
               >
                 <div
-                  className={`bg-white border rounded-2xl overflow-hidden group hover:bg-[#f7f3f2] transition-all ${
+                  className={`bg-[#f7f3f2] border rounded-2xl overflow-hidden group hover:bg-[#f7f3f2] transition-all ${
                     registered ? 'border-[#c99b4a]/30 ring-1 ring-[#c99b4a]/30' : 'border-[rgba(201,155,74,0.08)]'
                   }`}
                 >
@@ -342,7 +342,7 @@ export default function EventsPage() {
 
         {/* Empty State */}
         {!isLoading && events.length === 0 && (
-          <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-12 text-center">
+          <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-12 text-center">
             <Calendar size={48} className="mx-auto text-[#a89b8a]/40 mb-4" />
             <p className="text-[#8b7c69]">אין אירועים קרובים כרגע</p>
           </div>

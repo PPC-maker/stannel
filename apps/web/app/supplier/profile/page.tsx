@@ -278,7 +278,7 @@ export default function SupplierProfilePage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6"
+              className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6"
             >
               <h2 className="text-lg font-semibold text-[#2b241d] mb-6 flex items-center gap-2">
                 <Building2 size={20} className="text-[#c99b4a]" />
@@ -316,7 +316,7 @@ export default function SupplierProfilePage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.15 }}
-              className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6"
+              className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6"
             >
               <h2 className="text-lg font-semibold text-[#2b241d] mb-6 flex items-center gap-2">
                 <Phone size={20} className="text-[#c99b4a]" />
@@ -375,7 +375,7 @@ export default function SupplierProfilePage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
-              className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6"
+              className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6"
             >
               <h2 className="text-lg font-semibold text-[#2b241d] mb-6 flex items-center gap-2">
                 <Globe size={20} className="text-[#c99b4a]" />
@@ -451,7 +451,7 @@ export default function SupplierProfilePage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.25 }}
-              className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6"
+              className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6"
             >
               <h2 className="text-lg font-semibold text-[#2b241d] mb-6 flex items-center gap-2">
                 <ImageIcon size={20} className="text-[#c99b4a]" />

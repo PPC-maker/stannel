@@ -210,7 +210,7 @@ export default function ProfilePage() {
           transition={{ duration: 0.3 }}
           className={`mb-8 rounded-2xl ${highlightProfile ? 'ring-2 ring-[#c99b4a] ring-offset-2 ring-offset-transparent' : ''}`}
         >
-          <div className={`bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-4 sm:p-6 relative overflow-visible transition-all duration-300 ${highlightProfile ? 'border-[#c99b4a] border-2' : ''}`}>
+          <div className={`bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-4 sm:p-6 relative overflow-visible transition-all duration-300 ${highlightProfile ? 'border-[#c99b4a] border-2' : ''}`}>
             <div className="flex flex-col md:flex-row items-center md:items-start gap-4 sm:gap-6">
               {/* Avatar */}
               <div className="relative group">
@@ -354,7 +354,7 @@ export default function ProfilePage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
-              className={`bg-white border-l-4 ${stat.borderColor} border border-[rgba(201,155,74,0.08)] rounded-2xl p-4 text-center`}
+              className={`bg-[#f7f3f2] border-l-4 ${stat.borderColor} border border-[rgba(201,155,74,0.08)] rounded-2xl p-4 text-center`}
             >
               <stat.icon size={24} className={`mx-auto mb-2 ${stat.color}`} />
               <p className="text-2xl font-bold text-[#2b241d] mb-1">{stat.value}</p>
@@ -370,7 +370,7 @@ export default function ProfilePage() {
             animate={{ opacity: 1, x: 0 }}
             className="md:col-span-2"
           >
-            <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
+            <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
               <h2 className="text-xl font-semibold text-[#2b241d] mb-4 flex items-center gap-2">
                 <TrendingUp size={20} className="text-[#c99b4a]" />
                 פעילות אחרונה
@@ -408,7 +408,7 @@ export default function ProfilePage() {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
           >
-            <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
+            <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
               <h2 className="text-xl font-semibold text-[#2b241d] mb-4 flex items-center gap-2">
                 <Shield size={20} className="text-[#c99b4a]" />
                 הגדרות מהירות

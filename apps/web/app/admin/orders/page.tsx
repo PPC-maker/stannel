@@ -81,7 +81,7 @@ export default function AdminOrdersPage() {
 
         {/* Stats */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="grid grid-cols-3 gap-2 sm:gap-4 mb-6">
-          <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-3 sm:p-5 text-center overflow-hidden">
+          <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-3 sm:p-5 text-center overflow-hidden">
             <p className="text-[#a89b8a] text-xs sm:text-sm">סה״כ הזמנות</p>
             <p className="text-xl sm:text-3xl font-bold text-[#2b241d]">{orders.length}</p>
           </div>
@@ -97,7 +97,7 @@ export default function AdminOrdersPage() {
 
         {/* Search */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="mb-6">
-          <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-4">
+          <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-4">
             <div className="relative">
               <Search className="absolute right-3 top-1/2 -translate-y-1/2 text-[#a89b8a]" size={18} />
               <input
@@ -113,7 +113,7 @@ export default function AdminOrdersPage() {
 
         {/* Orders List */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
-          <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
+          <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
             <h2 className="text-xl font-semibold text-[#2b241d] mb-4 flex items-center gap-2">
               <Package className="text-[#c99b4a]" size={20} />
               רשימת הזמנות ({filtered.length})
@@ -141,7 +141,7 @@ export default function AdminOrdersPage() {
                   >
                     <div className="flex items-start gap-4">
                       {/* Product image */}
-                      <div className="w-16 h-16 rounded-xl bg-white border border-[rgba(201,155,74,0.08)] flex-shrink-0 overflow-hidden flex items-center justify-center">
+                      <div className="w-16 h-16 rounded-xl bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] flex-shrink-0 overflow-hidden flex items-center justify-center">
                         {order.product.imageUrl ? (
                           <img src={order.product.imageUrl} alt={order.product.name} className="w-full h-full object-cover" />
                         ) : (

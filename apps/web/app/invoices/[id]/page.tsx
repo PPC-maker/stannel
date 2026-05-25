@@ -32,7 +32,7 @@ export default function InvoiceDetailPage() {
     return (
       <div className="min-h-screen">
         <div className="px-4 max-w-4xl mx-auto pt-8 relative z-10 pb-24">
-          <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-8 text-center">
+          <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-8 text-center">
             <AlertTriangle size={48} className="mx-auto text-red-400 mb-4" />
             <h1 className="text-2xl font-bold text-[#2b241d] mb-2">חשבונית לא נמצאה</h1>
             <p className="text-[#8b7c69] mb-6">החשבונית המבוקשת לא נמצאה או שאין לך הרשאה לצפות בה</p>
@@ -67,7 +67,7 @@ export default function InvoiceDetailPage() {
         <div className="grid lg:grid-cols-2 gap-6">
           {/* Invoice Image */}
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-            <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
+            <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
               <h2 className="text-lg font-semibold text-[#2b241d] mb-4 flex items-center gap-2">
                 <FileText size={20} className="text-[#c99b4a]" />
                 תמונת החשבונית
@@ -113,7 +113,7 @@ export default function InvoiceDetailPage() {
 
           {/* Invoice Details */}
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
-            <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6 space-y-6">
+            <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6 space-y-6">
               <h2 className="text-lg font-semibold text-[#2b241d]">פרטי העסקה</h2>
 
               {/* Status */}

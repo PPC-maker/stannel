@@ -244,7 +244,7 @@ export default function SupplierDashboardPage() {
           <Link href="/supplier/invoices?filter=paid">
           <motion.div
             whileHover={{ scale: 1.02, y: -2 }}
-            className="bg-white border border-[#c99b4a]/20 rounded-2xl p-5 relative overflow-hidden group cursor-pointer"
+            className="bg-[#f7f3f2] border border-[#c99b4a]/20 rounded-2xl p-5 relative overflow-hidden group cursor-pointer"
           >
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#c99b4a] to-[#d4af37]" />
             <div className="absolute -left-4 -bottom-4 w-20 h-20 bg-[#c99b4a]/10 rounded-full blur-xl group-hover:bg-[#c99b4a]/15 transition-colors" />
@@ -276,7 +276,7 @@ export default function SupplierDashboardPage() {
           <Link href="/supplier/invoices?filter=pending">
           <motion.div
             whileHover={{ scale: 1.02, y: -2 }}
-            className={`bg-white border rounded-2xl p-5 relative overflow-hidden group cursor-pointer ${
+            className={`bg-[#f7f3f2] border rounded-2xl p-5 relative overflow-hidden group cursor-pointer ${
               (stats?.pendingPayments?.count || pendingInvoices.length) > 0
                 ? 'border-amber-300 ring-1 ring-amber-200'
                 : 'border-amber-100'
@@ -315,7 +315,7 @@ export default function SupplierDashboardPage() {
           {/* Trust Score */}
           <motion.div
             whileHover={{ scale: 1.02, y: -2 }}
-            className="bg-white border border-blue-100 rounded-2xl p-5 relative overflow-hidden group"
+            className="bg-[#f7f3f2] border border-blue-100 rounded-2xl p-5 relative overflow-hidden group"
           >
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-400 to-indigo-500" />
             <div className="absolute -left-4 -bottom-4 w-20 h-20 bg-blue-50 rounded-full blur-xl group-hover:bg-blue-100 transition-colors" />
@@ -348,7 +348,7 @@ export default function SupplierDashboardPage() {
             </h3>
             <div className="space-y-3">
               {pendingMeetings.map((meeting: any) => (
-                <div key={meeting.id} className="bg-white border border-amber-200 rounded-2xl p-4">
+                <div key={meeting.id} className="bg-[#f7f3f2] border border-amber-200 rounded-2xl p-4">
                   <div className="flex items-start justify-between mb-3">
                     <div>
                       <p className="text-[#2b241d] font-medium">{meeting.subject}</p>
@@ -393,7 +393,7 @@ export default function SupplierDashboardPage() {
           <Link href="/supplier/profile" className="group">
             <motion.div
               whileHover={{ scale: 1.02 }}
-              className="p-6 bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl hover:bg-[#f7f3f2] hover:border-[#c99b4a]/30 transition-all text-center relative overflow-hidden"
+              className="p-6 bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl hover:bg-[#f7f3f2] hover:border-[#c99b4a]/30 transition-all text-center relative overflow-hidden"
             >
               <div className="absolute inset-0 bg-gradient-to-br from-[#c99b4a]/0 to-[#c99b4a]/0 group-hover:from-[#c99b4a]/5 group-hover:to-transparent transition-all" />
               <div className="relative">
@@ -408,7 +408,7 @@ export default function SupplierDashboardPage() {
           <Link href="/supplier/payments" className="group">
             <motion.div
               whileHover={{ scale: 1.02 }}
-              className="p-6 bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl hover:bg-[#f7f3f2] hover:border-[#c99b4a]/30 transition-all text-center relative overflow-hidden"
+              className="p-6 bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl hover:bg-[#f7f3f2] hover:border-[#c99b4a]/30 transition-all text-center relative overflow-hidden"
             >
               <div className="absolute inset-0 bg-gradient-to-br from-[#c99b4a]/0 to-[#c99b4a]/0 group-hover:from-[#c99b4a]/5 group-hover:to-transparent transition-all" />
               <div className="relative">
@@ -423,7 +423,7 @@ export default function SupplierDashboardPage() {
           <Link href="/supplier/invoices" className="group">
             <motion.div
               whileHover={{ scale: 1.02 }}
-              className="p-6 bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl hover:bg-[#f7f3f2] hover:border-[#c99b4a]/30 transition-all text-center relative overflow-hidden"
+              className="p-6 bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl hover:bg-[#f7f3f2] hover:border-[#c99b4a]/30 transition-all text-center relative overflow-hidden"
             >
               <div className="absolute inset-0 bg-gradient-to-br from-[#c99b4a]/0 to-[#c99b4a]/0 group-hover:from-[#c99b4a]/5 group-hover:to-transparent transition-all" />
               <div className="relative">
@@ -443,7 +443,7 @@ export default function SupplierDashboardPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
         >
-          <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
+          <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-semibold text-[#2b241d] flex items-center gap-2">
                 <Receipt className="text-[#c99b4a]" size={20} />
@@ -464,7 +464,7 @@ export default function SupplierDashboardPage() {
                   <motion.div
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="absolute top-full right-0 mt-1 w-full bg-white border border-[rgba(201,155,74,0.08)] rounded-xl overflow-hidden z-10 shadow-xl"
+                    className="absolute top-full right-0 mt-1 w-full bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-xl overflow-hidden z-10 shadow-xl"
                   >
                     {STATUS_OPTIONS.map((option) => (
                       <button
@@ -512,7 +512,7 @@ export default function SupplierDashboardPage() {
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: index * 0.03 }}
                       whileHover={{ scale: 1.01 }}
-                      className={`p-4 bg-white border border-[rgba(201,155,74,0.08)] rounded-xl hover:bg-[#f7f3f2] transition-all ${isOverdue ? 'border-red-200 bg-red-50' : ''}`}
+                      className={`p-4 bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-xl hover:bg-[#f7f3f2] transition-all ${isOverdue ? 'border-red-200 bg-red-50' : ''}`}
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4">
@@ -577,7 +577,7 @@ export default function SupplierDashboardPage() {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="w-full max-w-md bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6 shadow-2xl"
+              className="w-full max-w-md bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6 shadow-2xl"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center justify-between mb-6">

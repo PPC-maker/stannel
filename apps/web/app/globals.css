@@ -131,7 +131,7 @@ html, body {
 
 /* ===== Premium Cards ===== */
 .glass-card {
-  background: #ffffff;
+  background: #f7f3f2;
   border: 1px solid rgba(201,155,74,0.08);
   border-radius: 20px;
   box-shadow: 0 8px 24px rgba(64,38,18,0.08), 0 2px 6px rgba(64,38,18,0.04);
@@ -163,7 +163,7 @@ html, body {
 
 /* ===== Light page card (replaces glass on light bg) ===== */
 .light-card {
-  background: #ffffff;
+  background: #f7f3f2;
   border: 1px solid rgba(201,155,74,0.08);
   border-radius: 20px;
   box-shadow: 0 8px 24px rgba(64,38,18,0.08), 0 2px 6px rgba(64,38,18,0.04);

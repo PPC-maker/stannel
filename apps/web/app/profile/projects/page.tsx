@@ -361,7 +361,7 @@ export default function ProjectsManagementPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.05 }}
-                className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl overflow-hidden"
+                className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl overflow-hidden"
               >
                 <div className="flex">
                   {/* Project Image */}
@@ -435,11 +435,11 @@ export default function ProjectsManagementPage() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-white rounded-3xl w-full max-w-lg max-h-[90vh] overflow-y-auto"
+              className="bg-[#f7f3f2] rounded-3xl w-full max-w-lg max-h-[90vh] overflow-y-auto"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Modal Header */}
-              <div className="sticky top-0 bg-white px-6 py-4 border-b border-[rgba(201,155,74,0.08)] flex items-center justify-between">
+              <div className="sticky top-0 bg-[#f7f3f2] px-6 py-4 border-b border-[rgba(201,155,74,0.08)] flex items-center justify-between">
                 <h2 className="text-xl font-bold text-[#2b241d]">
                   {editingProject ? 'עריכת פרויקט' : 'פרויקט חדש'}
                 </h2>
@@ -572,7 +572,7 @@ export default function ProjectsManagementPage() {
               </div>
 
               {/* Modal Footer */}
-              <div className="sticky bottom-0 bg-white px-6 py-4 border-t border-[rgba(201,155,74,0.08)] flex gap-3">
+              <div className="sticky bottom-0 bg-[#f7f3f2] px-6 py-4 border-t border-[rgba(201,155,74,0.08)] flex gap-3">
                 <button
                   onClick={closeModal}
                   className="flex-1 py-3 bg-[#f7f3f2] text-[#2b241d] rounded-xl font-medium hover:bg-[#f0ebe6] transition-colors"

@@ -415,7 +415,7 @@ export default function ToolsPage() {
                 className={`flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-medium transition-all ${
                   activeTab === tab.key
                     ? 'bg-[#c99b4a] text-white'
-                    : 'bg-white text-[#8b7c69] hover:bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)]'
+                    : 'bg-[#f7f3f2] text-[#8b7c69] hover:bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)]'
                 }`}
               >
                 <tab.icon size={18} />
@@ -432,7 +432,7 @@ export default function ToolsPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
           >
-            <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
+            <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
               {/* Color System Title */}
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-semibold text-[#2b241d] flex items-center gap-2">
@@ -457,7 +457,7 @@ export default function ToolsPage() {
                   className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
                     colorSystem === 'nirlat'
                       ? 'bg-[#c99b4a] text-white'
-                      : 'bg-white text-[#8b7c69] hover:bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)]'
+                      : 'bg-[#f7f3f2] text-[#8b7c69] hover:bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)]'
                   }`}
                 >
                   צבעי נירלאט
@@ -467,7 +467,7 @@ export default function ToolsPage() {
                   className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
                     colorSystem === 'ral'
                       ? 'bg-[#c99b4a] text-white'
-                      : 'bg-white text-[#8b7c69] hover:bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)]'
+                      : 'bg-[#f7f3f2] text-[#8b7c69] hover:bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)]'
                   }`}
                 >
                   צבעי מתכת לפי טבלת RAL
@@ -477,7 +477,7 @@ export default function ToolsPage() {
                   className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
                     colorSystem === 'wood'
                       ? 'bg-amber-600 text-white'
-                      : 'bg-white text-[#8b7c69] hover:bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)]'
+                      : 'bg-[#f7f3f2] text-[#8b7c69] hover:bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)]'
                   }`}
                 >
                   צבע עץ חצי שקוף
@@ -559,7 +559,7 @@ export default function ToolsPage() {
 
               {/* RAL Colors Grid */}
               {colorSystem === 'ral' && (
-                <div className="bg-white rounded-xl p-4 overflow-x-auto">
+                <div className="bg-[#f7f3f2] rounded-xl p-4 overflow-x-auto">
                   <div className="grid grid-cols-6 md:grid-cols-8 lg:grid-cols-10 gap-1 min-w-[600px]">
                     {RAL_COLORS.map((color, index) => (
                       <button
@@ -635,7 +635,7 @@ export default function ToolsPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
           >
-            <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
+            <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-semibold text-[#2b241d] flex items-center gap-2">
                   <Users size={20} className="text-[#c99b4a]" />
@@ -650,7 +650,7 @@ export default function ToolsPage() {
                   className={`px-4 py-2 rounded-xl text-sm transition-colors ${
                     !selectedCategory
                       ? 'bg-[#c99b4a] text-white'
-                      : 'bg-white text-[#8b7c69] hover:bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)]'
+                      : 'bg-[#f7f3f2] text-[#8b7c69] hover:bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)]'
                   }`}
                 >
                   הכל
@@ -662,7 +662,7 @@ export default function ToolsPage() {
                     className={`px-4 py-2 rounded-xl text-sm transition-colors ${
                       selectedCategory === cat.value
                         ? 'bg-[#c99b4a] text-white'
-                        : 'bg-white text-[#8b7c69] hover:bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)]'
+                        : 'bg-[#f7f3f2] text-[#8b7c69] hover:bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)]'
                     }`}
                   >
                     {cat.label}

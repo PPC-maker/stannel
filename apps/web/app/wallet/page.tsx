@@ -240,7 +240,7 @@ function RewardsCarousel({ products, metalGradient, goldShadowLight }: { product
           <Link
             key={product.id || i}
             href="/rewards"
-            className="flex-shrink-0 block rounded-2xl overflow-hidden group bg-white"
+            className="flex-shrink-0 block rounded-2xl overflow-hidden group bg-[#f7f3f2]"
             style={{ width: '60%', scrollSnapAlign: 'start', boxShadow: goldShadowLight }}
           >
             <div className="relative h-48 overflow-hidden">
@@ -536,7 +536,7 @@ export default function WalletPage() {
               { label: 'הטבות', icon: Gift, href: '/rewards' },
             ].map((item) => (
               <Link key={item.href} href={item.href} className="flex-1 flex flex-col items-center gap-2 py-3 rounded-2xl hover:bg-white/50 transition-all group">
-                <div className="w-11 h-11 rounded-[14px] flex items-center justify-center bg-white" style={{ boxShadow: '0 2px 8px rgba(64,38,18,0.06)' }}>
+                <div className="w-11 h-11 rounded-[14px] flex items-center justify-center bg-[#f7f3f2]" style={{ boxShadow: '0 2px 8px rgba(64,38,18,0.06)' }}>
                   <item.icon size={20} className="text-[#7a5a44] group-hover:text-[#5a3d2a] transition-colors" strokeWidth={1.6} />
                 </div>
                 <span className="text-[11px] font-bold text-[#2b241d]">{item.label}</span>
@@ -586,7 +586,7 @@ export default function WalletPage() {
           ].map((stat, i) => {
             const IconComp = stat.icon;
             return (
-              <div key={i} className="rounded-[16px] py-3.5 px-2 flex flex-col items-center gap-2 bg-white" style={{ boxShadow: '0 4px 12px rgba(64,38,18,0.08)', border: '1px solid #f0e6d2' }}>
+              <div key={i} className="rounded-[16px] py-3.5 px-2 flex flex-col items-center gap-2 bg-[#f7f3f2]" style={{ boxShadow: '0 4px 12px rgba(64,38,18,0.08)', border: '1px solid #f0e6d2' }}>
                 <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ background: metalGradient }}>
                   <IconComp size={19} className="text-white" />
                 </div>
@@ -606,7 +606,7 @@ export default function WalletPage() {
               { label: 'חשבוניות ששולמו', value: adminStats.totalPaidInvoices.toString(), href: '/invoices?filter=paid' },
               { label: 'עמלה (2%)', value: `₪${adminStats.adminCommission.toLocaleString()}`, href: '/admin?tab=invoices' },
             ].map((stat, i) => (
-              <Link key={i} href={stat.href} className="bg-white rounded-2xl p-4 group hover:border-[#C9A961]/30 border border-[#F2EAD8] transition-all" style={{ boxShadow: goldShadowLight }}>
+              <Link key={i} href={stat.href} className="bg-[#f7f3f2] rounded-2xl p-4 group hover:border-[#C9A961]/30 border border-[#F2EAD8] transition-all" style={{ boxShadow: goldShadowLight }}>
                 <div className="flex items-center justify-between mb-1">
                   <p className="text-[#8B6F3A] text-xs">{stat.label}</p>
                   <ChevronLeft size={14} className="text-[#C9A961] opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -662,7 +662,7 @@ export default function WalletPage() {
                 transition={{ duration: 0.3 }}
                 className="overflow-hidden"
               >
-                <div className="bg-white rounded-2xl p-4 border border-[#F2EAD8]" style={{ boxShadow: goldShadowLight }}>
+                <div className="bg-[#f7f3f2] rounded-2xl p-4 border border-[#F2EAD8]" style={{ boxShadow: goldShadowLight }}>
                   {activeCategory === 'suppliers' ? (
                     <div>
                       <h3 className="text-sm font-medium text-[#4A3A1F] mb-3">כל הספקים במערכת</h3>

@@ -1319,7 +1319,7 @@ Please analyze this error and provide a fix.
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
-          className="mb-4 sm:mb-8 bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-4 sm:p-6"
+          className="mb-4 sm:mb-8 bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-4 sm:p-6"
         >
           <div>
             <h1 className="text-xl sm:text-3xl font-display font-bold text-[#2b241d] flex items-center gap-2 sm:gap-3">
@@ -1346,7 +1346,7 @@ Please analyze this error and provide a fix.
           className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6"
         >
           <Link href="/admin/analytics" className="group">
-            <div className="p-4 bg-white border border-[rgba(201,155,74,0.08)] rounded-xl hover:bg-[#f0ebe6] transition-all">
+            <div className="p-4 bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-xl hover:bg-[#f0ebe6] transition-all">
               <div className="flex items-center gap-3">
                 <div className="p-2 rounded-lg bg-purple-500/20">
                   <BarChart3 size={20} className="text-purple-400" />
@@ -1359,7 +1359,7 @@ Please analyze this error and provide a fix.
             </div>
           </Link>
           <Link href="/admin/architects" className="group">
-            <div className="p-4 bg-white border border-[rgba(201,155,74,0.08)] rounded-xl hover:bg-[#f0ebe6] transition-all">
+            <div className="p-4 bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-xl hover:bg-[#f0ebe6] transition-all">
               <div className="flex items-center gap-3">
                 <div className="p-2 rounded-lg bg-blue-500/20">
                   <Users size={20} className="text-blue-400" />
@@ -1372,7 +1372,7 @@ Please analyze this error and provide a fix.
             </div>
           </Link>
           <Link href="/admin/orders" className="group">
-            <div className="p-4 bg-white border border-[rgba(201,155,74,0.08)] rounded-xl hover:bg-[#f0ebe6] transition-all">
+            <div className="p-4 bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-xl hover:bg-[#f0ebe6] transition-all">
               <div className="flex items-center gap-3">
                 <div className="p-2 rounded-lg bg-[#c99b4a]/20">
                   <ShoppingBag size={20} className="text-[#c99b4a]" />
@@ -1385,7 +1385,7 @@ Please analyze this error and provide a fix.
             </div>
           </Link>
           <Link href="/admin/service-providers" className="group">
-            <div className="p-4 bg-white border border-[rgba(201,155,74,0.08)] rounded-xl hover:bg-[#f0ebe6] transition-all">
+            <div className="p-4 bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-xl hover:bg-[#f0ebe6] transition-all">
               <div className="flex items-center gap-3">
                 <div className="p-2 rounded-lg bg-[#c99b4a]/20">
                   <Building2 size={20} className="text-[#c99b4a]" />
@@ -1398,7 +1398,7 @@ Please analyze this error and provide a fix.
             </div>
           </Link>
           <Link href="/admin/goals" className="group">
-            <div className="p-4 bg-white border border-[rgba(201,155,74,0.08)] rounded-xl hover:bg-[#f0ebe6] transition-all">
+            <div className="p-4 bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-xl hover:bg-[#f0ebe6] transition-all">
               <div className="flex items-center gap-3">
                 <div className="p-2 rounded-lg bg-amber-500/20">
                   <Target size={20} className="text-amber-400" />
@@ -1411,7 +1411,7 @@ Please analyze this error and provide a fix.
             </div>
           </Link>
           <Link href="/admin/contracts" className="group">
-            <div className="p-4 bg-white border border-[rgba(201,155,74,0.08)] rounded-xl hover:bg-[#f0ebe6] transition-all">
+            <div className="p-4 bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-xl hover:bg-[#f0ebe6] transition-all">
               <div className="flex items-center gap-3">
                 <div className="p-2 rounded-lg bg-cyan-500/20">
                   <FileText size={20} className="text-cyan-400" />
@@ -1424,7 +1424,7 @@ Please analyze this error and provide a fix.
             </div>
           </Link>
           <Link href="/admin/audit-logs" className="group">
-            <div className="p-4 bg-white border border-[rgba(201,155,74,0.08)] rounded-xl hover:bg-[#f0ebe6] transition-all">
+            <div className="p-4 bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-xl hover:bg-[#f0ebe6] transition-all">
               <div className="flex items-center gap-3">
                 <div className="p-2 rounded-lg bg-orange-500/20">
                   <Clock size={20} className="text-orange-400" />
@@ -1437,7 +1437,7 @@ Please analyze this error and provide a fix.
             </div>
           </Link>
           <Link href="/admin/rewards" className="group">
-            <div className="p-4 bg-white border border-[rgba(201,155,74,0.08)] rounded-xl hover:bg-[#f0ebe6] transition-all">
+            <div className="p-4 bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-xl hover:bg-[#f0ebe6] transition-all">
               <div className="flex items-center gap-3">
                 <div className="p-2 rounded-lg bg-amber-500/20">
                   <Gift size={20} className="text-amber-400" />
@@ -1450,7 +1450,7 @@ Please analyze this error and provide a fix.
             </div>
           </Link>
           <Link href="/admin/events" className="group">
-            <div className="p-4 bg-white border border-[rgba(201,155,74,0.08)] rounded-xl hover:bg-[#f0ebe6] transition-all">
+            <div className="p-4 bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-xl hover:bg-[#f0ebe6] transition-all">
               <div className="flex items-center gap-3">
                 <div className="p-2 rounded-lg bg-pink-500/20">
                   <Calendar size={20} className="text-pink-400" />
@@ -1554,7 +1554,7 @@ Please analyze this error and provide a fix.
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
           >
-            <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
+            <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
               <div className="mb-6">
                 <h2 className="text-xl font-semibold text-[#2b241d] flex items-center gap-2 mb-3">
                   <Users className="text-[#c99b4a]" />
@@ -1829,7 +1829,7 @@ Please analyze this error and provide a fix.
 
                     return (
                       <div key={user.id} className={`rounded-xl border transition-colors ${
-                        isExpanded ? 'border-[#c99b4a]/30 bg-[#f7f3f2]' : 'border-[rgba(201,155,74,0.08)] bg-white'
+                        isExpanded ? 'border-[#c99b4a]/30 bg-[#f7f3f2]' : 'border-[rgba(201,155,74,0.08)] bg-[#f7f3f2]'
                       } ${!user.isActive ? 'border-yellow-500/20' : ''}`}>
                         {/* User Card Header */}
                         <div
@@ -2184,7 +2184,7 @@ Please analyze this error and provide a fix.
             animate={{ opacity: 1, y: 0 }}
           >
             {/* Search & Filter Bar */}
-            <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-4 mb-6">
+            <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-4 mb-6">
               <div className="flex flex-col sm:flex-row gap-3">
                 <div className="flex-1 relative">
                   <Search size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#a89b8a]" />
@@ -2220,7 +2220,7 @@ Please analyze this error and provide a fix.
 
             <div className="grid lg:grid-cols-2 gap-6">
               {/* Architects Folders */}
-              <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-3 sm:p-6">
+              <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-3 sm:p-6">
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-xl font-semibold text-[#2b241d] flex items-center gap-2">
                     <FolderOpen className="text-[#c99b4a]" />
@@ -2403,7 +2403,7 @@ Please analyze this error and provide a fix.
               </div>
 
               {/* Selected Invoice Details */}
-              <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6 h-fit sticky top-6">
+              <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6 h-fit sticky top-6">
                 <h2 className="text-lg font-semibold text-[#2b241d] mb-4 flex items-center gap-2">
                   <FileText className="text-[#c99b4a]" size={20} />
                   פרטי החשבונית
@@ -2794,7 +2794,7 @@ Please analyze this error and provide a fix.
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
           >
-            <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
+            <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-xl font-semibold text-[#2b241d] flex items-center gap-2">
                   <Trash className="text-red-400" />
@@ -2970,7 +2970,7 @@ Please analyze this error and provide a fix.
               <>
                 {/* Scan Status Banner */}
                 <div
-                  className={`mb-6 bg-white border rounded-2xl p-6 ${
+                  className={`mb-6 bg-[#f7f3f2] border rounded-2xl p-6 ${
                     latestScan.isHealthy
                       ? 'border-[#c99b4a]/30'
                       : 'border-red-500/30'
@@ -2999,7 +2999,7 @@ Please analyze this error and provide a fix.
 
                 {/* Scan Stats */}
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-                  <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-xl p-4">
+                  <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-xl p-4">
                     <div className="text-center">
                       <p className="text-[#a89b8a] text-sm">בדיקות</p>
                       <p className="text-3xl font-bold text-[#2b241d]">{latestScan.checksRun}</p>
@@ -3026,7 +3026,7 @@ Please analyze this error and provide a fix.
                 </div>
 
                 {/* Scan Results */}
-                <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
+                <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
                   <h3 className="text-lg font-semibold text-[#2b241d] mb-4">תוצאות הסריקה</h3>
                   <div className="space-y-2">
                     {(Array.isArray(latestScan.results) ? latestScan.results : []).map((result, i) => {
@@ -3063,7 +3063,7 @@ Please analyze this error and provide a fix.
                 </div>
               </>
             ) : (
-              <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
+              <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6">
                 <div className="text-center py-16">
                   <Search className="w-16 h-16 mx-auto text-[#a89b8a]/30 mb-4" />
                   <p className="text-[#8b7c69]">אין דוחות סריקה</p>
@@ -3090,7 +3090,7 @@ Please analyze this error and provide a fix.
                   { label: 'שגיאות', value: stats.errors, icon: AlertTriangle, color: 'text-orange-400' },
                   { label: 'אזהרות', value: stats.warnings, icon: Info, color: 'text-yellow-300' },
                 ].map((stat, i) => (
-                  <div key={i} className="bg-white border border-[rgba(201,155,74,0.08)] rounded-xl p-4">
+                  <div key={i} className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-xl p-4">
                     <div className="flex items-center gap-3">
                       <div className={`p-2 rounded-lg bg-[#f7f3f2]`}>
                         <stat.icon size={20} className={stat.color} />
@@ -3106,7 +3106,7 @@ Please analyze this error and provide a fix.
             )}
 
             {/* Filters */}
-            <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6 mb-6">
+            <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6 mb-6">
               <button
                 type="button"
                 onClick={() => setShowFilters(!showFilters)}
@@ -3185,7 +3185,7 @@ Please analyze this error and provide a fix.
 
             {/* Logs List */}
             <div className="grid lg:grid-cols-2 gap-6">
-              <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6 h-fit">
+              <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6 h-fit">
                 <h2 className="text-lg font-semibold text-[#2b241d] mb-4 flex items-center gap-2">
                   <AlertCircle className="text-[#c99b4a]" size={20} />
                   לוגים ({logs.length})
@@ -3252,7 +3252,7 @@ Please analyze this error and provide a fix.
               </div>
 
               {/* Selected Log Details */}
-              <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6 h-fit sticky top-6">
+              <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6 h-fit sticky top-6">
                 <h2 className="text-lg font-semibold text-[#2b241d] mb-4 flex items-center gap-2">
                   <FileText className="text-[#c99b4a]" size={20} />
                   פרטי הלוג

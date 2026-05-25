@@ -115,7 +115,7 @@ export default function InvoiceUploadPage() {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
           >
-            <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-8 text-center">
+            <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-8 text-center">
               <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-[#c99b4a] to-[#9e7746] flex items-center justify-center">
                 <CheckCircle size={40} className="text-white" />
               </div>
@@ -168,7 +168,7 @@ export default function InvoiceUploadPage() {
             animate={{ opacity: 1, y: 0 }}
             className="mb-6"
           >
-            <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-8 text-center">
+            <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-8 text-center">
               <Building2 size={48} className="mx-auto text-[#c99b4a] mb-4" />
               <h2 className="text-xl font-semibold text-[#2b241d] mb-2">אין ספקים זמינים</h2>
               <p className="text-[#8b7c69] mb-4">
@@ -209,7 +209,7 @@ export default function InvoiceUploadPage() {
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-4 sm:p-6"
+              className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-4 sm:p-6"
             >
               <h2 className="text-base sm:text-lg font-semibold text-[#2b241d] mb-3 sm:mb-4">תמונת החשבונית</h2>
 
@@ -303,7 +303,7 @@ export default function InvoiceUploadPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-4 sm:p-6"
+              className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-4 sm:p-6"
             >
               <h2 className="text-base sm:text-lg font-semibold text-[#2b241d] mb-3 sm:mb-4">פרטי העסקה</h2>
 
@@ -311,18 +311,18 @@ export default function InvoiceUploadPage() {
                 <div>
                   <label className="block text-[#8b7c69] text-sm mb-2">ספק</label>
                   {suppliersLoading ? (
-                    <div className="w-full bg-white border border-[rgba(201,155,74,0.12)] rounded-xl px-4 py-3 text-[#a89b8a] animate-pulse">
+                    <div className="w-full bg-[#f7f3f2] border border-[rgba(201,155,74,0.12)] rounded-xl px-4 py-3 text-[#a89b8a] animate-pulse">
                       טוען ספקים...
                     </div>
                   ) : (
                     <select
                       value={supplierId}
                       onChange={(e) => setSupplierId(e.target.value)}
-                      className="w-full bg-white border border-[rgba(201,155,74,0.12)] rounded-xl px-4 py-3 text-[#2b241d] focus:border-[#c99b4a] transition-all appearance-none cursor-pointer"
+                      className="w-full bg-[#f7f3f2] border border-[rgba(201,155,74,0.12)] rounded-xl px-4 py-3 text-[#2b241d] focus:border-[#c99b4a] transition-all appearance-none cursor-pointer"
                     >
-                      <option value="" className="bg-white">בחרו ספק...</option>
+                      <option value="" className="bg-[#f7f3f2]">בחרו ספק...</option>
                       {suppliers.map(s => (
-                        <option key={s.id} value={s.id} className="bg-white">
+                        <option key={s.id} value={s.id} className="bg-[#f7f3f2]">
                           {s.companyName}
                         </option>
                       ))}
@@ -336,7 +336,7 @@ export default function InvoiceUploadPage() {
                     type="number"
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
-                    className="w-full bg-white border border-[rgba(201,155,74,0.12)] rounded-xl px-4 py-3 text-[#2b241d] text-xl font-bold focus:border-[#c99b4a] transition-all"
+                    className="w-full bg-[#f7f3f2] border border-[rgba(201,155,74,0.12)] rounded-xl px-4 py-3 text-[#2b241d] text-xl font-bold focus:border-[#c99b4a] transition-all"
                     placeholder="0.00"
                     dir="ltr"
                   />

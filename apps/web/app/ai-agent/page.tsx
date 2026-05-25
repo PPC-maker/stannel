@@ -84,7 +84,7 @@ export default function AiAgentPage() {
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-6 bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-6"
+          className="text-center mb-6 bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6"
         >
           <div className="flex items-center justify-center gap-3 mb-2">
             <div className="w-12 h-12 rounded-xl bg-[#c99b4a]/10 flex items-center justify-center">
@@ -100,7 +100,7 @@ export default function AiAgentPage() {
         </motion.div>
 
         {/* Chat Container */}
-        <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl flex flex-col h-[60vh] min-h-[400px]">
+        <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl flex flex-col h-[60vh] min-h-[400px]">
           {/* Messages Area */}
           <div className="flex-1 overflow-y-auto p-4 space-y-4">
             {messages.length === 0 ? (

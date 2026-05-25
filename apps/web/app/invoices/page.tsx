@@ -51,7 +51,7 @@ export default function InvoicesPage() {
     <div className="min-h-screen">
       <div className="relative z-10 px-4 sm:px-6 pt-8 pb-24 max-w-7xl mx-auto">
         {/* Header */}
-        <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-4 sm:p-6 mb-6">
+        <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-4 sm:p-6 mb-6">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
               <h1 className="text-2xl sm:text-3xl font-bold text-[#2b241d]">חשבוניות</h1>
@@ -84,7 +84,7 @@ export default function InvoicesPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.05 }}
-              className={`bg-white border ${stat.borderColor} rounded-xl sm:rounded-2xl p-2 sm:p-4 text-center`}
+              className={`bg-[#f7f3f2] border ${stat.borderColor} rounded-xl sm:rounded-2xl p-2 sm:p-4 text-center`}
             >
               <p className={`text-lg sm:text-2xl font-bold ${stat.color}`}>{stat.value}</p>
               <p className="text-[#8b7c69] text-[10px] sm:text-sm">{stat.label}</p>
@@ -93,7 +93,7 @@ export default function InvoicesPage() {
         </div>
 
         {/* Filters */}
-        <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-3 sm:p-4 mb-4 sm:mb-6">
+        <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-3 sm:p-4 mb-4 sm:mb-6">
           <div className="flex flex-col gap-3">
             <div className="relative">
               <Search className="absolute right-3 top-1/2 -translate-y-1/2 text-[#a89b8a]" size={18} />
@@ -102,7 +102,7 @@ export default function InvoicesPage() {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="חיפוש לפי שם, ספק או מספר..."
-                className="w-full bg-white border border-[rgba(201,155,74,0.12)] rounded-xl px-3 py-2.5 pr-10 text-sm text-[#2b241d] placeholder:text-[#a89b8a] focus:border-[#c99b4a]/50 focus:outline-none transition-all"
+                className="w-full bg-[#f7f3f2] border border-[rgba(201,155,74,0.12)] rounded-xl px-3 py-2.5 pr-10 text-sm text-[#2b241d] placeholder:text-[#a89b8a] focus:border-[#c99b4a]/50 focus:outline-none transition-all"
               />
             </div>
             <div className="flex gap-2 overflow-x-auto" style={{ scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}>
@@ -132,7 +132,7 @@ export default function InvoicesPage() {
         <div className="space-y-3">
           {isLoading ? (
             [...Array(5)].map((_, i) => (
-              <div key={i} className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-3 sm:p-4 animate-pulse">
+              <div key={i} className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-3 sm:p-4 animate-pulse">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#f7f3f2] rounded-xl flex-shrink-0" />
                   <div className="flex-1 min-w-0">
@@ -158,7 +158,7 @@ export default function InvoicesPage() {
                 transition={{ delay: Math.min(i * 0.03, 0.3) }}
               >
                 <Link href={`/invoices/${invoice.id}`}>
-                  <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-3 sm:p-4 hover:bg-[#f7f3f2] transition-all cursor-pointer">
+                  <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-3 sm:p-4 hover:bg-[#f7f3f2] transition-all cursor-pointer">
                     {/* Top row: icon + name + amount */}
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-[#f7f3f2] flex items-center justify-center flex-shrink-0">
@@ -195,7 +195,7 @@ export default function InvoicesPage() {
           })}
 
           {filteredInvoices.length === 0 && !isLoading && (
-            <div className="bg-white border border-[rgba(201,155,74,0.08)] rounded-2xl p-12 text-center">
+            <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-12 text-center">
               <FileText size={48} className="mx-auto text-[#a89b8a] mb-4" />
               <p className="text-[#8b7c69]">לא נמצאו חשבוניות</p>
             </div>
