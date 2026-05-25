@@ -339,10 +339,7 @@ export default function RewardsPage() {
                           {product.pointCost.toLocaleString('he-IL')} נק׳
                         </span>
                         {product.stock > 0 && (
-                          <span className={`text-xs px-2 py-1 rounded ${
-                            product.stock > 5 ? 'bg-green-100 text-green-700' :
-                            'bg-yellow-100 text-yellow-700'
-                          }`}>
+                          <span className="text-xs px-2 py-1 rounded bg-[#c99b4a]/15 text-[#c99b4a]">
                             מלאי: {product.stock}
                           </span>
                         )}
