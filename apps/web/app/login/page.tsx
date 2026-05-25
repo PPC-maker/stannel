@@ -127,7 +127,7 @@ export default function LoginPage() {
             for architects & designers
           </h2>
           <p className="text-[#C9A961]/70 mt-3 text-base font-medium tracking-widest">
-            Connect. Create. Be part of the industry.
+            Connect, Create, Be part of the industry.
           </p>
         </motion.div>
 
