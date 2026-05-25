@@ -241,7 +241,7 @@ export default function ManageGoalsPage() {
                       animate={{ opacity: 1, y: 0 }}
                       className={`p-4 rounded-xl border ${
                         isCompleted
-                          ? 'border-[#c99b4a]/30 bg-[#c99b4a]/100/10'
+                          ? 'border-[#c99b4a]/30 bg-[#c99b4a]/10'
                           : isExpired
                           ? 'border-red-500/30 bg-red-500/10'
                           : goal.isActive

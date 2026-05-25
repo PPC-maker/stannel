@@ -2749,7 +2749,7 @@ Please analyze this error and provide a fix.
                                 <a
                                   href={selectedInvoice.paymentProofUrl}
                                   download
-                                  className="px-3 py-1.5 rounded-lg bg-[#c99b4a]/100 text-white hover:bg-[#c99b4a] transition-colors flex items-center gap-1.5 text-sm"
+                                  className="px-3 py-1.5 rounded-lg bg-[#c99b4a] text-white hover:bg-[#c99b4a] transition-colors flex items-center gap-1.5 text-sm"
                                 >
                                   <Download size={14} />
                                   הורד

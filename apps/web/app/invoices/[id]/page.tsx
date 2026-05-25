@@ -177,7 +177,7 @@ export default function InvoiceDetailPage() {
               {/* AI Validation */}
               {invoice.aiStatus && (
                 <div className={`p-4 rounded-xl border ${
-                  invoice.aiStatus === 'MATCH' ? 'bg-[#c99b4a]/100/10 border-[#c99b4a]/30' :
+                  invoice.aiStatus === 'MATCH' ? 'bg-[#c99b4a]/10 border-[#c99b4a]/30' :
                   invoice.aiStatus === 'MISMATCH' ? 'bg-red-500/10 border-red-500/30' :
                   'bg-yellow-500/10 border-yellow-500/30'
                 }`}>

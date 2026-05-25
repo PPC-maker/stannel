@@ -339,7 +339,7 @@ export default function ManageEventsPage() {
                           ? 'border-red-500/30 bg-red-500/5'
                           : isPast
                           ? 'border-[rgba(201,155,74,0.08)] bg-[#f7f3f2] opacity-60'
-                          : 'border-[#c99b4a]/30 bg-[#c99b4a]/100/5'
+                          : 'border-[#c99b4a]/30 bg-[#c99b4a]/5'
                       }`}
                     >
                       {/* Top row: image + title + actions */}

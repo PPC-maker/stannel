@@ -139,7 +139,7 @@ export default function GoalsPage() {
                   initial={{ width: 0 }}
                   animate={{ width: `${progressPercent}%` }}
                   transition={{ duration: 1, ease: 'easeOut' }}
-                  className={`h-full rounded-full ${activeGoal.targetMet ? 'bg-[#c99b4a]/100' : 'bg-[#c99b4a]'}`}
+                  className={`h-full rounded-full ${activeGoal.targetMet ? 'bg-[#c99b4a]' : 'bg-[#c99b4a]'}`}
                 />
               </div>
               <p className="text-[#a89b8a] text-sm mt-2">

@@ -105,7 +105,7 @@ export default function OnboardingPage() {
                 <div
                   className={`w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all ${
                     index < currentStep
-                      ? 'bg-[#c99b4a]/100 text-white'
+                      ? 'bg-[#c99b4a] text-white'
                       : index === currentStep
                       ? 'bg-gold-400 text-primary-900'
                       : 'bg-gray-200 text-gray-600'
@@ -116,7 +116,7 @@ export default function OnboardingPage() {
                 {index < steps.length - 1 && (
                   <div
                     className={`w-16 h-1 mx-1 rounded-full transition-all ${
-                      index < currentStep ? 'bg-[#c99b4a]/100' : 'bg-gray-200'
+                      index < currentStep ? 'bg-[#c99b4a]' : 'bg-gray-200'
                     }`}
                   />
                 )}

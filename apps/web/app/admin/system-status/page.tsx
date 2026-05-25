@@ -224,7 +224,7 @@ export default function SystemStatusPage() {
                 disabled={sendingAlert || alertSent}
                 className={`px-4 py-2 rounded-lg transition-colors flex items-center gap-2 ${
                   alertSent
-                    ? 'bg-[#c99b4a]/100 text-white'
+                    ? 'bg-[#c99b4a] text-white'
                     : 'bg-gold-400 text-primary-900 hover:bg-gold-500'
                 }`}
               >
