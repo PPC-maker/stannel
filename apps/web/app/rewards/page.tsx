@@ -295,14 +295,14 @@ export default function RewardsPage() {
                   onClick={() => setSelectedProduct(product.id)}
                 >
                   {/* Product Image */}
-                  <div className="relative h-64 sm:h-72 overflow-hidden bg-[#c99b4a]/5">
+                  <div className="relative w-full bg-[#c99b4a]/5" style={{ aspectRatio: '1/1' }}>
                     {product.imageUrl ? (
                       <ImageWithLoader
                         src={product.imageUrl}
                         alt={product.name}
                         fill
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                        className="object-cover group-hover:scale-105 transition-transform duration-500"
+                        className="object-contain group-hover:scale-105 transition-transform duration-500"
                       />
                     ) : (
                       <div className="w-full h-full bg-[#c99b4a]/5 flex items-center justify-center">
