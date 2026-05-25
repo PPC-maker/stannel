@@ -31,7 +31,7 @@ const googleAuthSchema = z.object({
 });
 
 export async function authRoutes(server: FastifyInstance) {
-  // Stricter rate limiting for auth endpoints (10 attempts per 5 minutes)
+  // Stricter rate limiting for auth endpoints (20 attempts per 5 minutes)
   server.addHook('onRequest', async (request, reply) => {
     // Only apply to POST auth endpoints (login/register/verify)
     if (request.method === 'POST') {
@@ -39,7 +39,7 @@ export async function authRoutes(server: FastifyInstance) {
       const now = Date.now();
       if (!authAttempts[key]) authAttempts[key] = [];
       authAttempts[key] = authAttempts[key].filter(t => now - t < 300000); // 5 min window
-      if (authAttempts[key].length >= 10) {
+      if (authAttempts[key].length >= 20) {
         return reply.code(429).send({ error: 'יותר מדי ניסיונות. נסה שוב בעוד 5 דקות.' });
       }
       authAttempts[key].push(now);
