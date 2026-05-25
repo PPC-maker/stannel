@@ -115,7 +115,7 @@ export default function LoginPage() {
           <h2 className="text-2xl md:text-3xl text-white font-semibold leading-snug tracking-wide" style={{ fontFamily: "'Playfair Display', serif" }}>
             for architects & designers
           </h2>
-          <p className="text-[#C9A961]/70 mt-3 text-base font-medium tracking-widest">
+          <p className="text-[#C9A961]/70 mt-3 text-base font-medium tracking-widest" dir="ltr">
             Connect, Create, Be part of the industry.
           </p>
         </motion.div>
@@ -236,7 +236,7 @@ function translateFirebaseError(error: string): string {
     'auth/wrong-password': 'סיסמה שגויה',
     'auth/invalid-email': 'כתובת אימייל לא תקינה',
     'auth/user-disabled': 'החשבון מושבת',
-    'auth/too-many-requests': 'יותר מדי ניסיונות. נסו שוב מאוחר יותר',
+    'auth/too-many-requests': 'יותר מדי ניסיונות. נסה שוב בעוד 5 דקות.',
     'auth/network-request-failed': 'בעיית רשת. בדקו את החיבור לאינטרנט',
     'auth/popup-closed-by-user': 'החלון נסגר. נסו שוב',
     'auth/popup-blocked': 'החלון נחסם. אנא אפשרו חלונות קופצים',
