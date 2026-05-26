@@ -7,7 +7,7 @@ import ImageWithLoader from '@/components/ui/ImageWithLoader';
 import { Gift, Star, ShoppingCart, Loader2, Coins, Banknote } from 'lucide-react';
 import { useWalletBalance, useRewardProducts, useRedeemReward, useWalletCard } from '@/lib/api-hooks';
 import { useAuth } from '@/lib/auth-context';
-import { useAuthGuard, AuthGuardLoader } from '@/lib/useAuthGuard';
+import { AuthGuardLoader } from '@/lib/useAuthGuard';
 import Swal from 'sweetalert2';
 
 const rankEmojis: Record<string, string> = {
@@ -34,8 +34,7 @@ function calculateCashCompletion(userPoints: number, productPointCost: number, p
 }
 
 export default function RewardsPage() {
-  const { isReady } = useAuthGuard();
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const [selectedProduct, setSelectedProduct] = useState<string | null>(null);
   const [redeemingId, setRedeemingId] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -45,7 +44,7 @@ export default function RewardsPage() {
   const { data: productsResponse, isLoading: productsLoading } = useRewardProducts();
   const redeemMutation = useRedeemReward();
 
-  if (!isReady) {
+  if (authLoading) {
     return <AuthGuardLoader />;
   }
 
