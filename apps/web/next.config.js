@@ -53,7 +53,7 @@ const nextConfig = {
         // Prevent CDN from caching HTML pages for too long
         source: '/((?!_next/static|_next/image|favicon.ico|logoNew|bg_top).*)',
         headers: [
-          { key: 'Cache-Control', value: 'public, max-age=0, s-maxage=60, stale-while-revalidate=30' },
+          { key: 'Cache-Control', value: 'public, max-age=0, s-maxage=300, stale-while-revalidate=60' },
         ],
       },
     ];
