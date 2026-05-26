@@ -14,8 +14,21 @@ export default function Error({
 
   const errorMsg = (error.message || '') + (error.digest || '');
   const isAuthError = errorMsg.includes('401') || errorMsg.includes('403') || errorMsg.includes('Unauthorized') || errorMsg.includes('Forbidden') || errorMsg.includes('Missing authorization') || errorMsg.includes('not authenticated') || errorMsg.includes('#310');
+  const isChunkError = errorMsg.includes('ChunkLoadError') || errorMsg.includes('Loading chunk') || errorMsg.includes('Failed to fetch dynamically imported module');
 
   useEffect(() => {
+    // Auto-recover from chunk loading errors (happens after deploy)
+    if (isChunkError) {
+      const hasRetried = sessionStorage.getItem('chunk-retry');
+      if (!hasRetried) {
+        sessionStorage.setItem('chunk-retry', '1');
+        window.location.reload();
+        return;
+      }
+      // Clear retry flag after successful recovery
+      sessionStorage.removeItem('chunk-retry');
+    }
+
     // If auth error, redirect to login immediately
     if (isAuthError) {
       window.location.href = '/login?reason=auth';

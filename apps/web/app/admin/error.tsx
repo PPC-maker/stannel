@@ -15,6 +15,19 @@ export default function AdminError({
   const [dots, setDots] = useState('');
 
   useEffect(() => {
+    // Auto-recover from chunk loading errors (happens after deploy)
+    const errorMsg = (error.message || '') + (error.digest || '');
+    const isChunkError = errorMsg.includes('ChunkLoadError') || errorMsg.includes('Loading chunk') || errorMsg.includes('Failed to fetch dynamically imported module');
+    if (isChunkError) {
+      const hasRetried = sessionStorage.getItem('chunk-retry');
+      if (!hasRetried) {
+        sessionStorage.setItem('chunk-retry', '1');
+        window.location.reload();
+        return;
+      }
+      sessionStorage.removeItem('chunk-retry');
+    }
+
     console.error('Admin panel error:', error);
 
     // Report error via email
