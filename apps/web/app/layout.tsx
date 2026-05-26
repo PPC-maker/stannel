@@ -59,6 +59,27 @@ export default function RootLayout({
 }) {
   return (
     <html lang="he" dir="rtl" className={assistant.variable} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: `
+          (function(){
+            var v='stannel-v5';
+            if(localStorage.getItem('app-version')!==v){
+              localStorage.setItem('app-version',v);
+              if('serviceWorker' in navigator){
+                navigator.serviceWorker.getRegistrations().then(function(r){
+                  r.forEach(function(reg){reg.unregister()});
+                });
+              }
+              if('caches' in window){
+                caches.keys().then(function(k){
+                  k.forEach(function(key){caches.delete(key)});
+                });
+              }
+              location.reload();
+            }
+          })();
+        `}} />
+      </head>
       <body className="min-h-screen antialiased" suppressHydrationWarning>
 
         <Providers>
