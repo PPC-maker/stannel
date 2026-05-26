@@ -1,13 +1,11 @@
-const CACHE_NAME = 'stannel-v1';
+const CACHE_NAME = 'stannel-v2';
 const STATIC_ASSETS = [
-  '/login',
-  '/logoNew.png',
   '/logoNew.png',
   '/bg_top.jpg',
   '/manifest.json',
 ];
 
-// Install - cache static assets
+// Install - cache static assets only
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
@@ -17,7 +15,7 @@ self.addEventListener('install', (event) => {
   self.skipWaiting();
 });
 
-// Activate - clean old caches
+// Activate - clean ALL old caches
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) => {
@@ -29,7 +27,7 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-// Fetch - network first, fallback to cache
+// Fetch - network first for everything, cache only images/fonts
 self.addEventListener('fetch', (event) => {
   const { request } = event;
 
@@ -39,27 +37,21 @@ self.addEventListener('fetch', (event) => {
   // For API calls - always network
   if (request.url.includes('/api/')) return;
 
-  // For navigation requests (pages) - network first, cache fallback
+  // For navigation requests (pages) - always network, no cache
   if (request.mode === 'navigate') {
     event.respondWith(
-      fetch(request)
-        .then((response) => {
-          const clone = response.clone();
-          caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
-          return response;
-        })
-        .catch(() => caches.match(request))
+      fetch(request).catch(() => caches.match(request))
     );
     return;
   }
 
-  // For static assets (images, fonts, css, js) - cache first, network fallback
-  if (
-    request.destination === 'image' ||
-    request.destination === 'font' ||
-    request.destination === 'style' ||
-    request.destination === 'script'
-  ) {
+  // NEVER cache JS/CSS chunks - they change on every deploy
+  if (request.destination === 'script' || request.destination === 'style') {
+    return;
+  }
+
+  // For images and fonts only - cache first, network fallback
+  if (request.destination === 'image' || request.destination === 'font') {
     event.respondWith(
       caches.match(request).then((cached) => {
         if (cached) return cached;
