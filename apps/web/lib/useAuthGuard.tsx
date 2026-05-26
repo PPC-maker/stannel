@@ -95,23 +95,19 @@ export function useSupplierGuard() {
  */
 export function AuthGuardLoader() {
   return (
-    <div className="fixed inset-0 z-[100] bg-gradient-to-br from-[#0a1f18] via-[#0f2620] to-[#142e24] flex flex-col items-center justify-center">
-      <div className="absolute inset-0 opacity-10" style={{
-        backgroundImage: `radial-gradient(circle at 25% 25%, rgba(45, 90, 61, 0.4) 0%, transparent 50%),
-                          radial-gradient(circle at 75% 75%, rgba(45, 90, 61, 0.3) 0%, transparent 50%)`,
-      }} />
+    <div className="fixed inset-0 z-[100] bg-[#f7f3f2] flex flex-col items-center justify-center">
       <div className="relative z-10 flex flex-col items-center gap-8">
         <div className="relative">
-          <div className="absolute inset-0 rounded-full bg-[#d4af37]/20 blur-3xl animate-pulse" style={{ transform: 'scale(2)' }} />
+          <div className="absolute inset-0 rounded-full bg-[#c99b4a]/15 blur-3xl animate-pulse" style={{ transform: 'scale(2)' }} />
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/logoNewWhite.png" alt="Stannel Club" className="h-20 w-auto relative z-10" style={{ animation: 'logoFadeIn 0.8s ease-out forwards' }} />
+          <img src="/logoNew.png" alt="Stannel Club" className="h-20 w-auto relative z-10" style={{ animation: 'logoFadeIn 0.8s ease-out forwards' }} />
         </div>
-        <p className="text-white/60 text-sm font-medium tracking-wider" style={{ animation: 'textFadeIn 1s ease-out 0.3s both' }}>
+        <p className="text-[#8b7c69] text-sm font-medium tracking-wider" style={{ animation: 'textFadeIn 1s ease-out 0.3s both' }}>
           אנחנו עוברים לדף המבוקש...
         </p>
-        <div className="w-48 h-1 bg-white/10 rounded-full overflow-hidden" style={{ animation: 'textFadeIn 1s ease-out 0.5s both' }}>
+        <div className="w-48 h-1 bg-[#c99b4a]/10 rounded-full overflow-hidden" style={{ animation: 'textFadeIn 1s ease-out 0.5s both' }}>
           <div className="h-full rounded-full" style={{
-            background: 'linear-gradient(90deg, #2d5a3d, #d4af37, #2d5a3d)',
+            background: 'linear-gradient(90deg, #c99b4a, #d4af37, #c99b4a)',
             backgroundSize: '200% 100%',
             animation: 'shimmerBar 1.5s ease-in-out infinite',
           }} />
