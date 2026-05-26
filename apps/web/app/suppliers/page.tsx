@@ -214,7 +214,7 @@ function SupplierCard({ supplier, index }: { supplier: any; index: number }) {
             )}
             {supplier.website && (
               <a
-                href={supplier.website}
+                href={supplier.website.startsWith('http') ? supplier.website : `https://${supplier.website}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={(e) => e.stopPropagation()}

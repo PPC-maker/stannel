@@ -220,7 +220,7 @@ export default function SupplierDetailPage() {
             </a>
           )}
           {supplier.website && (
-            <a href={supplier.website} target="_blank" rel="noopener noreferrer" className="w-14 h-14 rounded-full bg-[#f7f3f2] border border-[rgba(201,155,74,0.15)] flex items-center justify-center shadow-sm hover:bg-[#faf8f5] transition-colors">
+            <a href={supplier.website.startsWith('http') ? supplier.website : `https://${supplier.website}`} target="_blank" rel="noopener noreferrer" className="w-14 h-14 rounded-full bg-[#f7f3f2] border border-[rgba(201,155,74,0.15)] flex items-center justify-center shadow-sm hover:bg-[#faf8f5] transition-colors">
               <Globe size={22} className="text-[#c99b4a]" />
             </a>
           )}
