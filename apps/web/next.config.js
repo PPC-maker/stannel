@@ -40,6 +40,18 @@ const nextConfig = {
   },
   // Enable standalone output for Cloud Run production builds
   output: 'standalone',
+  // Force no-cache on SW and prevent stale chunks
+  async headers() {
+    return [
+      {
+        source: '/sw.js',
+        headers: [
+          { key: 'Cache-Control', value: 'no-cache, no-store, must-revalidate' },
+          { key: 'Service-Worker-Allowed', value: '/' },
+        ],
+      },
+    ];
+  },
 };
 
 module.exports = nextConfig;

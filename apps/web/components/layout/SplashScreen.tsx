@@ -30,9 +30,20 @@ export default function SplashScreen() {
     // Safety timeout - remove after 4 seconds max
     const safetyTimer = setTimeout(hideSplash, 4000);
 
-    // Register Service Worker
+    // Force update Service Worker and clear old caches
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js').catch(() => {});
+      // Clear all old caches first
+      if ('caches' in window) {
+        caches.keys().then((keys) => {
+          keys.forEach((key) => {
+            if (key !== 'stannel-v2') caches.delete(key);
+          });
+        });
+      }
+      // Register/update SW
+      navigator.serviceWorker.register('/sw.js', { updateViaCache: 'none' })
+        .then((reg) => { reg.update(); })
+        .catch(() => {});
     }
 
     return () => {
