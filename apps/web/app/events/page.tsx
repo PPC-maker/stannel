@@ -21,7 +21,7 @@ function isValidImageUrl(url: string | undefined): boolean {
 }
 
 import { useEvents, useRegisterForEvent } from '@/lib/api-hooks';
-import { useAuthGuard, AuthGuardLoader } from '@/lib/useAuthGuard';
+// Auth guard removed - events are public
 import Swal from 'sweetalert2';
 
 function formatDate(dateStr: string): string {
@@ -34,7 +34,7 @@ function formatDate(dateStr: string): string {
 }
 
 export default function EventsPage() {
-  const { isReady } = useAuthGuard();
+  const isReady = true;
   const { user } = useAuth();
   const [registeredEvents, setRegisteredEvents] = useState<string[]>([]);
   const [registeringId, setRegisteringId] = useState<string | null>(null);
@@ -50,9 +50,7 @@ export default function EventsPage() {
   });
   const meetings = (meetingsData?.data || []).filter((m: any) => m.status !== 'cancelled');
 
-  if (!isReady) {
-    return <AuthGuardLoader />;
-  }
+  // Events page is public - no auth required
 
   const events = (eventsResponse as any)?.data || eventsResponse || [];
 

@@ -6,12 +6,13 @@ import ImageWithLoader from '@/components/ui/ImageWithLoader';
 import Link from 'next/link';
 import { Search, Building2, MapPin, Phone, Globe, ChevronLeft, Loader2, MessageCircle, Calendar } from 'lucide-react';
 import { useSuppliersDirectory } from '@/lib/api-hooks';
-import { useAuthGuard, AuthGuardLoader } from '@/lib/useAuthGuard';
+import { useAuth } from '@/lib/auth-context';
 import { meetingsApi } from '@stannel/api-client';
 import Swal from 'sweetalert2';
 
 export default function SuppliersDirectoryPage() {
-  const { isReady } = useAuthGuard();
+  const { user, loading: authLoading } = useAuth();
+  const isReady = !authLoading;
   const [search, setSearch] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
 
@@ -24,8 +25,8 @@ export default function SuppliersDirectoryPage() {
     setTimeout(() => setDebouncedSearch(value), 300);
   };
 
-  if (!isReady) {
-    return <AuthGuardLoader />;
+  if (authLoading) {
+    return <div className="min-h-screen" />;
   }
 
   return (
