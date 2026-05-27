@@ -1,12 +1,13 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
 import ImageWithLoader from '@/components/ui/ImageWithLoader';
 import { Gift, Star, ShoppingCart, Loader2, Coins, Banknote } from 'lucide-react';
-import { useWalletBalance, useRewardProducts, useRedeemReward, useWalletCard } from '@/lib/api-hooks';
+import { useWalletBalance, useRedeemReward, useWalletCard } from '@/lib/api-hooks';
 import { useAuth } from '@/lib/auth-context';
 import { AuthGuardLoader } from '@/lib/useAuthGuard';
+import { rewardsApi } from '@stannel/api-client';
 import Swal from 'sweetalert2';
 
 const rankEmojis: Record<string, string> = {
@@ -41,8 +42,18 @@ export default function RewardsPage() {
   const isArchitect = !authLoading && user?.role === 'ARCHITECT';
   const { data: balance } = useWalletBalance(isArchitect);
   const { data: card } = useWalletCard(isArchitect);
-  const { data: productsResponse, isLoading: productsLoading } = useRewardProducts();
   const redeemMutation = useRedeemReward();
+
+  // Fetch products after render (useEffect) to avoid React #310 during client-side navigation
+  const [allProducts, setAllProducts] = useState<any[]>([]);
+  const [productsLoading, setProductsLoading] = useState(true);
+  useEffect(() => {
+    setProductsLoading(true);
+    rewardsApi.getProducts()
+      .then((res: any) => setAllProducts(res?.data || res || []))
+      .catch(() => setAllProducts([]))
+      .finally(() => setProductsLoading(false));
+  }, []);
 
   if (authLoading) {
     return <AuthGuardLoader />;
@@ -50,7 +61,6 @@ export default function RewardsPage() {
 
   const points = balance?.points || 0;
   const rank = card?.rank || user?.rank || 'BRONZE';
-  const allProducts = (productsResponse as any)?.data || productsResponse || [];
 
   // Use categories from products in DB
   const categorizedProducts = useMemo(() => {
