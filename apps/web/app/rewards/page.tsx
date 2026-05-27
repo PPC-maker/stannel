@@ -4,10 +4,11 @@ import { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
 import ImageWithLoader from '@/components/ui/ImageWithLoader';
 import { Gift, Star, ShoppingCart, Loader2, Coins, Banknote } from 'lucide-react';
-import { useWalletBalance, useRedeemReward, useWalletCard } from '@/lib/api-hooks';
+import { useRedeemReward } from '@/lib/api-hooks';
 import { useAuth } from '@/lib/auth-context';
 import { AuthGuardLoader } from '@/lib/useAuthGuard';
-import { rewardsApi } from '@stannel/api-client';
+import { rewardsApi, walletApi } from '@stannel/api-client';
+import type { WalletBalance, DigitalCard } from '@stannel/types';
 import Swal from 'sweetalert2';
 
 const rankEmojis: Record<string, string> = {
@@ -40,13 +41,14 @@ export default function RewardsPage() {
   const [selectedCategory, setSelectedCategory] = useState('all');
 
   const isArchitect = !authLoading && user?.role === 'ARCHITECT';
-  const { data: balance } = useWalletBalance(isArchitect);
-  const { data: card } = useWalletCard(isArchitect);
   const redeemMutation = useRedeemReward();
 
-  // Fetch products after render (useEffect) to avoid React #310 during client-side navigation
+  const [balance, setBalance] = useState<WalletBalance | null>(null);
+  const [card, setCard] = useState<DigitalCard | null>(null);
   const [allProducts, setAllProducts] = useState<any[]>([]);
   const [productsLoading, setProductsLoading] = useState(true);
+
+  // Fetch products — always (public endpoint)
   useEffect(() => {
     setProductsLoading(true);
     rewardsApi.getProducts()
@@ -54,6 +56,13 @@ export default function RewardsPage() {
       .catch(() => setAllProducts([]))
       .finally(() => setProductsLoading(false));
   }, []);
+
+  // Fetch wallet data only for architects, after auth resolves
+  useEffect(() => {
+    if (!isArchitect) return;
+    walletApi.getBalance().then(setBalance).catch(() => {});
+    walletApi.getCard().then(setCard).catch(() => {});
+  }, [isArchitect]);
 
   if (authLoading) {
     return <AuthGuardLoader />;
