@@ -20,7 +20,7 @@ export function Providers({ children }: { children: ReactNode }) {
             staleTime: 30 * 1000, // 30 שניות - נתונים מתעדכנים יותר מהר
             gcTime: 10 * 60 * 1000, // 10 דקות - cache
             refetchOnWindowFocus: true, // מרפרש בחזרה לחלון
-            refetchOnMount: 'always', // תמיד מרפרש ב-mount
+            refetchOnMount: true, // מרפרש ב-mount רק אם data ישן
             refetchOnReconnect: true,
             retry: 1,
           },
