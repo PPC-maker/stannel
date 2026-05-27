@@ -53,7 +53,16 @@ export function useWebSocket() {
         try {
           const message: WebSocketMessage = JSON.parse(event.data);
 
-          // Invalidate relevant queries based on message type
+          // Defer query invalidation to avoid React error #310:
+          // "Cannot update a component while rendering a different component".
+          // invalidateQueries triggers useSyncExternalStore updates which conflict
+          // with in-progress renders if called synchronously from a WebSocket handler.
+          const invalidate = (...keys: string[]) => {
+            setTimeout(() => {
+              keys.forEach((key) => queryClient.invalidateQueries({ queryKey: [key] }));
+            }, 0);
+          };
+
           switch (message.type) {
             case 'invoice:created':
             case 'invoice:updated':
@@ -61,33 +70,21 @@ export function useWebSocket() {
             case 'invoice:rejected':
             case 'invoice:deleted':
             case 'invoice:restored':
-              // Invalidate all invoice-related queries
-              queryClient.invalidateQueries({ queryKey: ['invoices'] });
-              queryClient.invalidateQueries({ queryKey: ['invoice'] });
-              queryClient.invalidateQueries({ queryKey: ['supplier'] });
-              queryClient.invalidateQueries({ queryKey: ['dashboard'] });
-              queryClient.invalidateQueries({ queryKey: ['wallet'] });
-              queryClient.invalidateQueries({ queryKey: ['architect'] });
+              invalidate('invoices', 'invoice', 'supplier', 'dashboard', 'wallet', 'architect');
               break;
 
             case 'user:activated':
-              // Invalidate user-related queries
-              queryClient.invalidateQueries({ queryKey: ['users'] });
-              queryClient.invalidateQueries({ queryKey: ['admin'] });
+              invalidate('users', 'admin');
               break;
 
             case 'notification:new':
-              // Invalidate notification queries for real-time updates
-              queryClient.invalidateQueries({ queryKey: ['notifications'] });
-              queryClient.invalidateQueries({ queryKey: ['unreadNotificationsCount'] });
-              // Trigger navbar badge refresh
+              invalidate('notifications', 'unreadNotificationsCount');
               window.dispatchEvent(new Event('notification-read'));
               break;
 
             case 'pong':
             case 'auth:ok':
             case 'auth:error':
-              // No action needed
               break;
           }
         } catch {

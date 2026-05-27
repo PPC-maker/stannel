@@ -1,17 +1,24 @@
 'use client';
 
-import dynamic from 'next/dynamic';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import { AuthGuardLoader } from '@/lib/useAuthGuard';
 
-// Dynamic import with ssr: false — the rewards content renders ONLY on the client,
-// AFTER hydration is complete. This prevents React error #310 which occurs when
-// useSyncExternalStore (used by React Query in parent providers) triggers a state
-// update during the SSR hydration render phase.
-const RewardsContent = dynamic(() => import('./RewardsContent'), {
-  ssr: false,
-  loading: () => <AuthGuardLoader />,
-});
+// Lazy-load rewards content — only renders AFTER component has mounted,
+// guaranteeing hydration is fully complete before any hooks run.
+const RewardsContent = lazy(() => import('./RewardsContent'));
 
 export default function RewardsPage() {
-  return <RewardsContent />;
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return <AuthGuardLoader />;
+
+  return (
+    <Suspense fallback={<AuthGuardLoader />}>
+      <RewardsContent />
+    </Suspense>
+  );
 }
