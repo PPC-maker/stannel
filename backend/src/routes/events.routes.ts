@@ -2,7 +2,7 @@
 
 import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import prisma from '../lib/prisma.js';
-import { authMiddleware } from '../middleware/auth.middleware.js';
+import { authMiddleware, optionalAuthMiddleware } from '../middleware/auth.middleware.js';
 import { z } from 'zod';
 
 const registerSchema = z.object({
@@ -10,9 +10,9 @@ const registerSchema = z.object({
 });
 
 export async function eventsRoutes(server: FastifyInstance) {
-  // Get all events
+  // Get all events — public, registration status shown when logged in
   server.get('/', {
-    preHandler: [authMiddleware],
+    preHandler: [optionalAuthMiddleware],
   }, async (request: FastifyRequest) => {
     const query = request.query as { page?: string; pageSize?: string; upcoming?: string };
     const page = parseInt(query.page || '1');
@@ -33,20 +33,29 @@ export async function eventsRoutes(server: FastifyInstance) {
       prisma.event.count({ where }),
     ]);
 
-    // Add registration status for current user
-    const registrations = await prisma.eventRegistration.findMany({
-      where: {
-        userId: request.user!.id,
-        eventId: { in: events.map(e => e.id) },
-      },
-    });
-
-    const eventsWithStatus = events.map(event => ({
-      ...event,
-      isRegistered: registrations.some(r => r.eventId === event.id),
-      registrationStatus: registrations.find(r => r.eventId === event.id)?.status,
-      spotsLeft: event.capacity - event.registeredCount,
-    }));
+    // Add registration status only when user is logged in
+    let eventsWithStatus;
+    if (request.user) {
+      const registrations = await prisma.eventRegistration.findMany({
+        where: {
+          userId: request.user.id,
+          eventId: { in: events.map(e => e.id) },
+        },
+      });
+      eventsWithStatus = events.map(event => ({
+        ...event,
+        isRegistered: registrations.some(r => r.eventId === event.id),
+        registrationStatus: registrations.find(r => r.eventId === event.id)?.status || null,
+        spotsLeft: event.capacity - event.registeredCount,
+      }));
+    } else {
+      eventsWithStatus = events.map(event => ({
+        ...event,
+        isRegistered: false,
+        registrationStatus: null,
+        spotsLeft: event.capacity - event.registeredCount,
+      }));
+    }
 
     return {
       data: eventsWithStatus,
@@ -57,9 +66,9 @@ export async function eventsRoutes(server: FastifyInstance) {
     };
   });
 
-  // Get single event
+  // Get single event — public, registration status shown when logged in
   server.get('/:id', {
-    preHandler: [authMiddleware],
+    preHandler: [optionalAuthMiddleware],
   }, async (request: FastifyRequest, reply: FastifyReply) => {
     const { id } = request.params as { id: string };
 
@@ -71,24 +80,31 @@ export async function eventsRoutes(server: FastifyInstance) {
       return reply.code(404).send({ error: 'Event not found' });
     }
 
-    const registration = await prisma.eventRegistration.findUnique({
-      where: {
-        eventId_userId: {
-          eventId: id,
-          userId: request.user!.id,
+    let isRegistered = false;
+    let registrationStatus = null;
+
+    if (request.user) {
+      const registration = await prisma.eventRegistration.findUnique({
+        where: {
+          eventId_userId: {
+            eventId: id,
+            userId: request.user.id,
+          },
         },
-      },
-    });
+      });
+      isRegistered = !!registration;
+      registrationStatus = registration?.status || null;
+    }
 
     return {
       ...event,
-      isRegistered: !!registration,
-      registrationStatus: registration?.status,
+      isRegistered,
+      registrationStatus,
       spotsLeft: event.capacity - event.registeredCount,
     };
   });
 
-  // Register for event
+  // Register for event — requires auth
   server.post('/register', {
     preHandler: [authMiddleware],
   }, async (request: FastifyRequest, reply: FastifyReply) => {
@@ -142,7 +158,7 @@ export async function eventsRoutes(server: FastifyInstance) {
     return registration;
   });
 
-  // Cancel registration
+  // Cancel registration — requires auth
   server.delete('/:id/cancel', {
     preHandler: [authMiddleware],
   }, async (request: FastifyRequest, reply: FastifyReply) => {
@@ -176,7 +192,7 @@ export async function eventsRoutes(server: FastifyInstance) {
     return { success: true, message: 'Registration cancelled' };
   });
 
-  // Get my events
+  // Get my events — requires auth
   server.get('/my', {
     preHandler: [authMiddleware],
   }, async (request: FastifyRequest) => {

@@ -115,3 +115,38 @@ export async function requireSupplier(request: FastifyRequest, reply: FastifyRep
 export async function requireAdmin(request: FastifyRequest, reply: FastifyReply) {
   return requireRole(UserRole.ADMIN)(request, reply);
 }
+
+// Optional auth — attaches user if token present, continues anonymously if not
+export async function optionalAuthMiddleware(
+  request: FastifyRequest,
+  _reply: FastifyReply
+) {
+  const authHeader = request.headers.authorization;
+  if (!authHeader || !authHeader.startsWith('Bearer ')) return;
+
+  const token = authHeader.replace('Bearer ', '');
+  try {
+    const decoded = await getAuth().verifyIdToken(token);
+    const user = await prisma.user.findUnique({
+      where: { firebaseUid: decoded.uid },
+      include: {
+        architectProfile: { select: { id: true, pointsBalance: true, cashBalance: true } },
+        supplierProfile: { select: { id: true, companyName: true } },
+      },
+    });
+    if (user && user.isActive) {
+      request.user = {
+        id: user.id,
+        firebaseUid: user.firebaseUid,
+        email: user.email,
+        name: user.name,
+        role: user.role as UserRole,
+        isActive: user.isActive,
+        architectProfile: user.architectProfile || undefined,
+        supplierProfile: user.supplierProfile || undefined,
+      };
+    }
+  } catch {
+    // Invalid token — continue as anonymous
+  }
+}

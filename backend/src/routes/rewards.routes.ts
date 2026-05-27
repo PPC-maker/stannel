@@ -12,10 +12,8 @@ const redeemSchema = z.object({
 });
 
 export async function rewardsRoutes(server: FastifyInstance) {
-  // Get all products
-  server.get('/products', {
-    preHandler: [authMiddleware],
-  }, async (request: FastifyRequest) => {
+  // Get all products — public
+  server.get('/products', async (request: FastifyRequest) => {
     const query = request.query as { page?: string; pageSize?: string; supplierId?: string };
     const page = parseInt(query.page || '1');
     const pageSize = parseInt(query.pageSize || '20');
@@ -52,10 +50,8 @@ export async function rewardsRoutes(server: FastifyInstance) {
     };
   });
 
-  // Get single product
-  server.get('/products/:id', {
-    preHandler: [authMiddleware],
-  }, async (request: FastifyRequest, reply: FastifyReply) => {
+  // Get single product — public
+  server.get('/products/:id', async (request: FastifyRequest, reply: FastifyReply) => {
     const { id } = request.params as { id: string };
 
     const product = await prisma.product.findUnique({

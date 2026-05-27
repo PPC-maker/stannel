@@ -20,17 +20,14 @@ export const eventsApi = {
     if (params?.pageSize) searchParams.set('pageSize', String(params.pageSize));
     if (params?.upcoming !== undefined) searchParams.set('upcoming', String(params.upcoming));
 
+    // Public route — send auth header if available for registration status
     const response = await fetchWithAuth(`${config.baseUrl}/events?${searchParams}`, {
       method: 'GET',
       headers: getHeaders(),
     });
 
-    if (response.status === 401) {
-      throw new Error('פג תוקף החיבור. אנא התחבר/י מחדש למערכת.');
-    }
-
     if (!response.ok) {
-      const error = await response.json();
+      const error = await response.json().catch(() => ({}));
       throw new Error(error.message || 'שגיאה בטעינת האירועים. נסה לרענן את הדף.');
     }
 
@@ -38,17 +35,14 @@ export const eventsApi = {
   },
 
   async getById(id: string): Promise<EventWithRegistration> {
+    // Public route — send auth header if available for registration status
     const response = await fetchWithAuth(`${config.baseUrl}/events/${id}`, {
       method: 'GET',
       headers: getHeaders(),
     });
 
-    if (response.status === 401) {
-      throw new Error('פג תוקף החיבור. אנא התחבר/י מחדש למערכת.');
-    }
-
     if (!response.ok) {
-      const error = await response.json();
+      const error = await response.json().catch(() => ({}));
       throw new Error(error.message || 'שגיאה בטעינת האירוע. נסה לרענן את הדף.');
     }
 

@@ -1,43 +1,29 @@
-import { View, Text, ScrollView, StyleSheet, Pressable } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, Pressable, ActivityIndicator } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Image } from 'expo-image';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import GlassCard from '@/components/GlassCard';
-
-const mockProducts = [
-  {
-    id: '1',
-    name: 'כרטיס מתנה IKEA',
-    imageUrl: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400',
-    pointCost: 5000,
-    stock: 10,
-  },
-  {
-    id: '2',
-    name: 'Apple AirPods Pro',
-    imageUrl: 'https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?w=400',
-    pointCost: 15000,
-    stock: 3,
-  },
-  {
-    id: '3',
-    name: 'יום ספא יוקרתי',
-    imageUrl: 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=400',
-    pointCost: 8000,
-    stock: 5,
-  },
-  {
-    id: '4',
-    name: 'ארוחה זוגית',
-    imageUrl: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400',
-    pointCost: 6000,
-    stock: 8,
-  },
-];
-
-const userPoints = 12500;
+import { useRewardProducts, useWalletBalance } from '@/lib/api-hooks';
 
 export default function RewardsScreen() {
+  const { data: productsResponse, isLoading: productsLoading } = useRewardProducts();
+  const { data: balance, isLoading: balanceLoading } = useWalletBalance();
+
+  const isLoading = productsLoading || balanceLoading;
+  const products = productsResponse?.data || [];
+  const userPoints = balance?.points || 0;
+
+  if (isLoading) {
+    return (
+      <SafeAreaView style={styles.container} edges={['top']}>
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#d4af37" />
+          <Text style={styles.loadingText}>טוען הטבות...</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
@@ -55,20 +41,34 @@ export default function RewardsScreen() {
           </View>
         </GlassCard>
 
+        {/* Empty state */}
+        {products.length === 0 && (
+          <GlassCard style={styles.emptyCard}>
+            <MaterialCommunityIcons name="gift-outline" size={48} color="rgba(255,255,255,0.3)" />
+            <Text style={styles.emptyText}>אין מוצרים זמינים כרגע</Text>
+          </GlassCard>
+        )}
+
         {/* Products Grid */}
         <View style={styles.productsGrid}>
-          {mockProducts.map((product) => {
+          {products.map((product: any) => {
             const canAfford = userPoints >= product.pointCost;
             return (
               <Pressable key={product.id} style={styles.productCard}>
                 <GlassCard style={styles.productCardInner}>
                   <View style={styles.productImageContainer}>
-                    <Image
-                      source={{ uri: product.imageUrl }}
-                      style={styles.productImage}
-                      contentFit="cover"
-                    />
-                    {product.stock <= 3 && (
+                    {product.imageUrl ? (
+                      <Image
+                        source={{ uri: product.imageUrl }}
+                        style={styles.productImage}
+                        contentFit="cover"
+                      />
+                    ) : (
+                      <View style={[styles.productImage, styles.productImagePlaceholder]}>
+                        <MaterialCommunityIcons name="gift" size={32} color="rgba(255,255,255,0.3)" />
+                      </View>
+                    )}
+                    {product.stock <= 3 && product.stock > 0 && (
                       <View style={styles.stockBadge}>
                         <Text style={styles.stockText}>נשארו {product.stock}</Text>
                       </View>
@@ -80,8 +80,11 @@ export default function RewardsScreen() {
                     )}
                   </View>
                   <Text style={styles.productName} numberOfLines={1}>{product.name}</Text>
+                  {product.supplier?.companyName && (
+                    <Text style={styles.supplierName} numberOfLines={1}>{product.supplier.companyName}</Text>
+                  )}
                   <View style={styles.productFooter}>
-                    <Text style={styles.productPrice}>{product.pointCost.toLocaleString()} נק׳</Text>
+                    <Text style={styles.productPrice}>{product.pointCost?.toLocaleString()} נק׳</Text>
                     <View style={[
                       styles.affordBadge,
                       { backgroundColor: canAfford ? 'rgba(16,185,129,0.2)' : 'rgba(239,68,68,0.2)' }
@@ -107,6 +110,16 @@ export default function RewardsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 16,
+  },
+  loadingText: {
+    color: 'rgba(255,255,255,0.6)',
+    fontSize: 16,
   },
   scrollContent: {
     padding: 20,
@@ -136,6 +149,15 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#d4af37',
   },
+  emptyCard: {
+    padding: 40,
+    alignItems: 'center',
+    gap: 12,
+  },
+  emptyText: {
+    color: 'rgba(255,255,255,0.5)',
+    fontSize: 16,
+  },
   productsGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -155,6 +177,11 @@ const styles = StyleSheet.create({
   productImage: {
     width: '100%',
     height: '100%',
+  },
+  productImagePlaceholder: {
+    backgroundColor: 'rgba(255,255,255,0.05)',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   stockBadge: {
     position: 'absolute',
@@ -185,7 +212,13 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     fontSize: 14,
     padding: 12,
-    paddingBottom: 8,
+    paddingBottom: 2,
+  },
+  supplierName: {
+    color: 'rgba(255,255,255,0.4)',
+    fontSize: 11,
+    paddingHorizontal: 12,
+    paddingBottom: 6,
   },
   productFooter: {
     flexDirection: 'row',

@@ -20,17 +20,14 @@ export const rewardsApi = {
     if (params?.pageSize) searchParams.set('pageSize', String(params.pageSize));
     if (params?.supplierId) searchParams.set('supplierId', params.supplierId);
 
-    const response = await fetchWithAuth(`${config.baseUrl}/rewards/products?${searchParams}`, {
+    // Public route — no auth required to browse products
+    const response = await fetch(`${config.baseUrl}/rewards/products?${searchParams}`, {
       method: 'GET',
-      headers: getHeaders(),
+      headers: { 'Content-Type': 'application/json' },
     });
 
-    if (response.status === 401) {
-      throw new Error('פג תוקף החיבור. אנא התחבר/י מחדש למערכת.');
-    }
-
     if (!response.ok) {
-      const error = await response.json();
+      const error = await response.json().catch(() => ({}));
       throw new Error(error.message || 'שגיאה בטעינת המוצרים. נסה לרענן את הדף.');
     }
 
@@ -38,17 +35,14 @@ export const rewardsApi = {
   },
 
   async getProductById(id: string): Promise<Product> {
-    const response = await fetchWithAuth(`${config.baseUrl}/rewards/products/${id}`, {
+    // Public route — no auth required
+    const response = await fetch(`${config.baseUrl}/rewards/products/${id}`, {
       method: 'GET',
-      headers: getHeaders(),
+      headers: { 'Content-Type': 'application/json' },
     });
 
-    if (response.status === 401) {
-      throw new Error('פג תוקף החיבור. אנא התחבר/י מחדש למערכת.');
-    }
-
     if (!response.ok) {
-      const error = await response.json();
+      const error = await response.json().catch(() => ({}));
       throw new Error(error.message || 'שגיאה בטעינת המוצר. נסה לרענן את הדף.');
     }
 

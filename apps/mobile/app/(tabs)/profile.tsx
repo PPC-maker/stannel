@@ -2,18 +2,36 @@ import { View, Text, ScrollView, StyleSheet, Pressable } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import { router } from 'expo-router';
 import GlassCard from '@/components/GlassCard';
+import { useAuth } from '@/lib/auth-context';
+import { useDashboardStats, useInvoices } from '@/lib/api-hooks';
 
 const menuItems = [
-  { icon: 'account-edit', label: 'עריכת פרופיל', route: '/profile/edit' },
   { icon: 'bell-outline', label: 'התראות', route: '/notifications' },
-  { icon: 'shield-check', label: 'אבטחה', route: '/security' },
-  { icon: 'help-circle-outline', label: 'עזרה ותמיכה', route: '/help' },
   { icon: 'file-document-outline', label: 'תנאי שימוש', route: '/terms' },
   { icon: 'information-outline', label: 'אודות', route: '/about' },
 ];
 
+const rankEmoji: Record<string, string> = {
+  BRONZE: '🥉',
+  SILVER: '🥈',
+  GOLD: '🥇',
+  PLATINUM: '💎',
+};
+
 export default function ProfileScreen() {
+  const { user, logout } = useAuth();
+  const { data: stats } = useDashboardStats();
+  const { data: invoices } = useInvoices();
+
+  const points = stats?.points || 0;
+  const rank = stats?.rank || 'BRONZE';
+  const invoiceCount = Array.isArray(invoices) ? invoices.length : 0;
+  const initials = user?.name
+    ? user.name.split(' ').map((w: string) => w[0]).slice(0, 2).join('')
+    : 'ST';
+
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
@@ -24,27 +42,27 @@ export default function ProfileScreen() {
               colors={['#1a3a6b', '#0f2750']}
               style={styles.avatar}
             >
-              <Text style={styles.avatarText}>יי</Text>
+              <Text style={styles.avatarText}>{initials}</Text>
             </LinearGradient>
             <View style={styles.rankBadge}>
-              <Text style={styles.rankEmoji}>🥇</Text>
+              <Text style={styles.rankEmoji}>{rankEmoji[rank] || '🥉'}</Text>
             </View>
           </View>
-          <Text style={styles.userName}>ישראל ישראלי</Text>
-          <Text style={styles.userEmail}>israel@example.com</Text>
+          <Text style={styles.userName}>{user?.name || 'אורח'}</Text>
+          <Text style={styles.userEmail}>{user?.email || ''}</Text>
           <View style={styles.userStats}>
             <View style={styles.userStat}>
-              <Text style={styles.userStatValue}>12,500</Text>
+              <Text style={styles.userStatValue}>{points.toLocaleString()}</Text>
               <Text style={styles.userStatLabel}>נקודות</Text>
             </View>
             <View style={styles.statDivider} />
             <View style={styles.userStat}>
-              <Text style={styles.userStatValue}>15</Text>
+              <Text style={styles.userStatValue}>{invoiceCount}</Text>
               <Text style={styles.userStatLabel}>חשבוניות</Text>
             </View>
             <View style={styles.statDivider} />
             <View style={styles.userStat}>
-              <Text style={styles.userStatValue}>GOLD</Text>
+              <Text style={styles.userStatValue}>{rank}</Text>
               <Text style={styles.userStatLabel}>דרגה</Text>
             </View>
           </View>
@@ -60,6 +78,7 @@ export default function ProfileScreen() {
                 styles.menuItem,
                 i < menuItems.length - 1 && styles.menuItemBorder,
               ]}
+              onPress={() => router.push(item.route as any)}
             >
               <View style={styles.menuItemLeft}>
                 <View style={styles.menuItemIcon}>
@@ -73,7 +92,7 @@ export default function ProfileScreen() {
         </GlassCard>
 
         {/* Logout */}
-        <Pressable style={styles.logoutBtn}>
+        <Pressable style={styles.logoutBtn} onPress={logout}>
           <MaterialCommunityIcons name="logout" size={20} color="#ef4444" />
           <Text style={styles.logoutText}>התנתקות</Text>
         </Pressable>
