@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { motion } from 'framer-motion';
 import Link from 'next/link';
 import ImageWithLoader from '@/components/ui/ImageWithLoader';
 import { Gift, Star, ShoppingCart, Loader2, Coins, Banknote } from 'lucide-react';
@@ -179,11 +178,7 @@ export default function RewardsPage() {
     <div className="min-h-screen">
       <div className="relative z-10 px-4 sm:px-6 pt-8 pb-24 max-w-7xl mx-auto">
         {/* Balance Banner */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-gradient-to-br from-[#c99b4a]/15 to-[#c99b4a]/25 border border-[#c99b4a]/30 rounded-2xl sm:rounded-3xl p-4 sm:p-6 mb-4 sm:mb-8"
-        >
+        <div className="bg-gradient-to-br from-[#c99b4a]/15 to-[#c99b4a]/25 border border-[#c99b4a]/30 rounded-2xl sm:rounded-3xl p-4 sm:p-6 mb-4 sm:mb-8">
           <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-3 sm:gap-4">
               <div className="w-10 h-10 sm:w-14 sm:h-14 rounded-xl bg-[#c99b4a]/20 flex items-center justify-center flex-shrink-0">
@@ -202,7 +197,7 @@ export default function RewardsPage() {
               <p className="text-lg sm:text-2xl font-semibold text-[#2b241d]">{rankEmojis[rank]} {rank}</p>
             </div>
           </div>
-        </motion.div>
+        </div>
 
         {/* Header */}
         <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-4 sm:p-6 mb-4 sm:mb-6">
@@ -245,16 +240,12 @@ export default function RewardsPage() {
 
         {/* Selected Category Title */}
         {selectedCategory !== 'all' && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mb-6"
-          >
+          <div className="mb-6">
             <h2 className="text-xl font-semibold text-[#2b241d] flex items-center gap-2">
               <Gift size={24} className="text-[#c99b4a]" />
               {selectedCategory}
             </h2>
-          </motion.div>
+          </div>
         )}
 
         {/* Products Grid */}
