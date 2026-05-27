@@ -22,20 +22,16 @@ import {
   MapPin,
 } from 'lucide-react';
 import { useSupplierDetail } from '@/lib/api-hooks';
-import { useAuthGuard, AuthGuardLoader } from '@/lib/useAuthGuard';
 import { meetingsApi } from '@stannel/api-client';
 import Swal from 'sweetalert2';
 
 export default function SupplierDetailPage() {
-  const { isReady } = useAuthGuard();
   const params = useParams();
   const supplierId = params.id as string;
 
-  const { data: supplier, isLoading, error } = useSupplierDetail(supplierId, isReady);
+  const { data: supplier, isLoading, error } = useSupplierDetail(supplierId, true);
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-
-  if (!isReady) return <AuthGuardLoader />;
 
   if (isLoading) {
     return (

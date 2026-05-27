@@ -50,10 +50,10 @@ const nextConfig = {
         ],
       },
       {
-        // Prevent CDN from caching HTML pages for too long
+        // Never let CDN cache HTML — chunk hashes change on every deploy
         source: '/((?!_next/static|_next/image|favicon.ico|logoNew|bg_top).*)',
         headers: [
-          { key: 'Cache-Control', value: 'public, max-age=0, s-maxage=300, stale-while-revalidate=60' },
+          { key: 'Cache-Control', value: 'public, max-age=0, s-maxage=0, must-revalidate' },
         ],
       },
     ];

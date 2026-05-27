@@ -42,7 +42,9 @@ export const metadata: Metadata = {
     'mobile-web-app-capable': 'yes',
   },
   icons: {
+    icon: '/logoNew.png',
     apple: '/logoNew.png',
+    shortcut: '/logoNew.png',
   },
   openGraph: {
     title: 'STANNEL | פלטפורמת ניהול מועדון לקוחות',
@@ -62,7 +64,7 @@ export default function RootLayout({
       <head>
         <script dangerouslySetInnerHTML={{ __html: `
           (function(){
-            var v='stannel-v5';
+            var v='stannel-v6';
             if(localStorage.getItem('app-version')!==v){
               localStorage.setItem('app-version',v);
               if('serviceWorker' in navigator){
