@@ -31,15 +31,14 @@ const googleAuthSchema = z.object({
 });
 
 export async function authRoutes(server: FastifyInstance) {
-  // Stricter rate limiting for auth endpoints (20 attempts per 5 minutes)
+  // Rate limiting only for login/register (not verify — verify is called on every page load)
   server.addHook('onRequest', async (request, reply) => {
-    // Only apply to POST auth endpoints (login/register/verify)
-    if (request.method === 'POST') {
+    if (request.method === 'POST' && !request.url.includes('/verify')) {
       const key = `auth:${request.ip}`;
       const now = Date.now();
       if (!authAttempts[key]) authAttempts[key] = [];
       authAttempts[key] = authAttempts[key].filter(t => now - t < 300000); // 5 min window
-      if (authAttempts[key].length >= 20) {
+      if (authAttempts[key].length >= 50) {
         return reply.code(429).send({ error: 'יותר מדי ניסיונות. נסה שוב בעוד 5 דקות.' });
       }
       authAttempts[key].push(now);
