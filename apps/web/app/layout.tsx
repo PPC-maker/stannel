@@ -64,7 +64,7 @@ export default function RootLayout({
       <head>
         <script dangerouslySetInnerHTML={{ __html: `
           (function(){
-            var v='stannel-v7';
+            var v='stannel-build-${process.env.NEXT_PUBLIC_BUILD_TIME}';
             if(localStorage.getItem('app-version')!==v){
               localStorage.setItem('app-version',v);
               if('serviceWorker' in navigator){

@@ -1,4 +1,8 @@
 /** @type {import('next').NextConfig} */
+
+// Unique build ID baked into every deploy — changes on every build
+const BUILD_TIME = Date.now().toString();
+
 const nextConfig = {
   experimental: {
     turbo: {
@@ -9,6 +13,10 @@ const nextConfig = {
         },
       },
     },
+  },
+  // Expose build time so layout.tsx can use it as a cache-bust version
+  env: {
+    NEXT_PUBLIC_BUILD_TIME: BUILD_TIME,
   },
   images: {
     remotePatterns: [
@@ -50,10 +58,20 @@ const nextConfig = {
         ],
       },
       {
-        // Never let CDN cache HTML — chunk hashes change on every deploy
+        // Webpack runtime chunk: same filename across builds but different content.
+        // Must NOT be cached by Firebase CDN or browser, otherwise old chunk
+        // registry references cause 404s for new page chunks.
+        source: '/_next/static/chunks/webpack-:hash.js',
+        headers: [
+          { key: 'Cache-Control', value: 'no-cache, no-store, must-revalidate' },
+        ],
+      },
+      {
+        // HTML pages: no-store so Firebase CDN and browsers never cache HTML.
+        // Chunk hashes change every deploy; stale HTML = stale chunk URLs = 404s.
         source: '/((?!_next/static|_next/image|favicon.ico|logoNew|bg_top).*)',
         headers: [
-          { key: 'Cache-Control', value: 'public, max-age=0, s-maxage=0, must-revalidate' },
+          { key: 'Cache-Control', value: 'no-store, no-cache, must-revalidate' },
         ],
       },
     ];
