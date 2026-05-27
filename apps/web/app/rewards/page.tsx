@@ -4,7 +4,6 @@ import { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
 import ImageWithLoader from '@/components/ui/ImageWithLoader';
 import { Gift, Star, ShoppingCart, Loader2, Coins, Banknote } from 'lucide-react';
-import { useRedeemReward } from '@/lib/api-hooks';
 import { useAuth } from '@/lib/auth-context';
 import { AuthGuardLoader } from '@/lib/useAuthGuard';
 import { rewardsApi, walletApi } from '@stannel/api-client';
@@ -41,7 +40,6 @@ export default function RewardsPage() {
   const [selectedCategory, setSelectedCategory] = useState('all');
 
   const isArchitect = !authLoading && user?.role === 'ARCHITECT';
-  const redeemMutation = useRedeemReward();
 
   const [balance, setBalance] = useState<WalletBalance | null>(null);
   const [card, setCard] = useState<DigitalCard | null>(null);
@@ -169,7 +167,7 @@ export default function RewardsPage() {
 
     setRedeemingId(productId);
     try {
-      await redeemMutation.mutateAsync({ productId, cashPayment: useCash ? completion.cashNeeded : 0 });
+      await rewardsApi.redeem({ productId, cashAmount: useCash ? completion.cashNeeded : 0 });
       Swal.fire({
         title: useCash ? 'הבקשה נשלחה!' : 'המוצר נרכש בהצלחה!',
         text: useCash ? `פנייתך נשלחה למנהל. תשלום: ₪${completion.cashNeeded} + ${completion.useAllPoints.toLocaleString()} נקודות` : 'המימוש בוצע בהצלחה',
