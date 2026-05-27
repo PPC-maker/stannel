@@ -39,8 +39,9 @@ export default function RewardsPage() {
   const [redeemingId, setRedeemingId] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState('all');
 
-  const { data: balance } = useWalletBalance();
-  const { data: card } = useWalletCard();
+  const isLoggedIn = !authLoading && !!user;
+  const { data: balance } = useWalletBalance(isLoggedIn);
+  const { data: card } = useWalletCard(isLoggedIn);
   const { data: productsResponse, isLoading: productsLoading } = useRewardProducts();
   const redeemMutation = useRedeemReward();
 
