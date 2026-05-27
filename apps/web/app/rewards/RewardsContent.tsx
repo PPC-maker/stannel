@@ -388,21 +388,10 @@ export default function RewardsContent() {
                           </button>
                         ) : product.stock > 0 ? (
                           <button
-                            disabled={isRedeeming}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleRedeem(product.id, true);
-                            }}
-                            className="flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center justify-center gap-2 bg-[#c99b4a] text-white hover:bg-[#9e7746]"
+                            disabled
+                            className="flex-1 px-4 py-2 rounded-lg text-sm font-medium bg-[#c99b4a]/10 text-[#a89b8a] cursor-not-allowed"
                           >
-                            {isRedeeming ? (
-                              <Loader2 size={16} className="animate-spin" />
-                            ) : (
-                              <>
-                                <Banknote size={16} />
-                                <span>מימוש עם ₪{completion.cashNeeded}</span>
-                              </>
-                            )}
+                            אין מספיק נקודות
                           </button>
                         ) : (
                           <button
