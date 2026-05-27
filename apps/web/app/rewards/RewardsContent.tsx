@@ -347,20 +347,6 @@ export default function RewardsContent() {
                         )}
                       </div>
 
-                      {/* Cash completion info */}
-                      {!affordable && product.stock > 0 && (
-                        <div className="bg-[#c99b4a]/10 border border-[#c99b4a]/20 rounded-xl p-4">
-                          <div className="flex items-center gap-2 text-[#c99b4a] mb-2 font-semibold text-base">
-                            <Coins size={18} />
-                            <span>חסרים {completion.missingPoints.toLocaleString()} נק׳</span>
-                          </div>
-                          <div className="flex items-center gap-2 text-[#8B6F3A] font-bold text-lg">
-                            <Banknote size={18} />
-                            <span>השלם עם ₪{completion.cashNeeded.toLocaleString()}</span>
-                          </div>
-                        </div>
-                      )}
-
                       {/* Share + Action Buttons */}
                       <div className="flex gap-2">
                         <button
