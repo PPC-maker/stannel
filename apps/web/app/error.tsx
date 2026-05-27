@@ -13,7 +13,7 @@ export default function Error({
   const [dots, setDots] = useState('');
 
   const errorMsg = (error.message || '') + (error.digest || '');
-  const isAuthError = errorMsg.includes('401') || errorMsg.includes('403') || errorMsg.includes('Unauthorized') || errorMsg.includes('Forbidden') || errorMsg.includes('Missing authorization') || errorMsg.includes('not authenticated') || errorMsg.includes('#310');
+  const isAuthError = errorMsg.includes('401') || errorMsg.includes('403') || errorMsg.includes('Unauthorized') || errorMsg.includes('Forbidden') || errorMsg.includes('Missing authorization') || errorMsg.includes('not authenticated');
   const isChunkError = errorMsg.includes('ChunkLoadError') || errorMsg.includes('Loading chunk') || errorMsg.includes('Failed to fetch dynamically imported module');
 
   useEffect(() => {

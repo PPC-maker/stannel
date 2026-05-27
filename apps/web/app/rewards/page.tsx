@@ -219,12 +219,10 @@ export default function RewardsPage() {
               const label = cat === 'all' ? 'הכל' : cat;
 
               return (
-                <motion.button
+                <button
                   key={cat}
                   onClick={() => setSelectedCategory(cat)}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-5 py-2 sm:py-3 rounded-xl border transition-all text-sm sm:text-base ${
+                  className={`flex items-center gap-1.5 sm:gap-2 px-3 sm:px-5 py-2 sm:py-3 rounded-xl border transition-all text-sm sm:text-base active:scale-95 ${
                     isSelected
                       ? 'bg-[#c99b4a]/15 border-[#c99b4a]/30 text-[#c99b4a]'
                       : 'bg-[#f7f3f2] border-[rgba(201,155,74,0.08)] text-[#8b7c69] hover:bg-white/90 hover:text-[#2b241d]'
@@ -239,7 +237,7 @@ export default function RewardsPage() {
                       {count}
                     </span>
                   )}
-                </motion.button>
+                </button>
               );
             })}
           </div>
@@ -281,11 +279,8 @@ export default function RewardsPage() {
             const completion = calculateCashCompletion(points, product.pointCost, product.pointsPerShekel || 100);
 
             return (
-              <motion.div
+              <div
                 key={product.id}
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.08 }}
               >
                 <div
                   className={`bg-[#f7f3f2] border rounded-2xl overflow-hidden group hover:bg-white/90 transition-all cursor-pointer ${
@@ -427,7 +422,7 @@ export default function RewardsPage() {
                     </div>
                   </div>
                 </div>
-              </motion.div>
+              </div>
             );
           })}
         </div>
