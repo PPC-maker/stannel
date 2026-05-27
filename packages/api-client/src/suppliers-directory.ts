@@ -46,17 +46,14 @@ export const suppliersDirectoryApi = {
     if (params?.pageSize) searchParams.set('pageSize', params.pageSize.toString());
     if (params?.search) searchParams.set('search', params.search);
 
-    const response = await fetchWithAuth(`${config.baseUrl}/suppliers?${searchParams}`, {
+    // Public route - no auth required
+    const response = await fetch(`${config.baseUrl}/suppliers?${searchParams}`, {
       method: 'GET',
-      headers: getHeaders(),
+      headers: { 'Content-Type': 'application/json' },
     });
 
-    if (response.status === 401) {
-      throw new Error('פג תוקף החיבור. אנא התחבר/י מחדש למערכת.');
-    }
-
     if (!response.ok) {
-      const error = await response.json();
+      const error = await response.json().catch(() => ({}));
       throw new Error(error.message || 'שגיאה בטעינת הספקים. נסה לרענן את הדף.');
     }
 
@@ -64,17 +61,14 @@ export const suppliersDirectoryApi = {
   },
 
   async getById(id: string): Promise<SupplierDetail> {
-    const response = await fetchWithAuth(`${config.baseUrl}/suppliers/${id}`, {
+    // Public route - no auth required
+    const response = await fetch(`${config.baseUrl}/suppliers/${id}`, {
       method: 'GET',
-      headers: getHeaders(),
+      headers: { 'Content-Type': 'application/json' },
     });
 
-    if (response.status === 401) {
-      throw new Error('פג תוקף החיבור. אנא התחבר/י מחדש למערכת.');
-    }
-
     if (!response.ok) {
-      const error = await response.json();
+      const error = await response.json().catch(() => ({}));
       throw new Error(error.message || 'שגיאה בטעינת פרטי הספק. נסה לרענן את הדף.');
     }
 

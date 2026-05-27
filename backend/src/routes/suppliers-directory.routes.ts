@@ -5,11 +5,11 @@ import prisma from '../lib/prisma.js';
 import { authMiddleware } from '../middleware/auth.middleware.js';
 
 export async function suppliersDirectoryRoutes(server: FastifyInstance) {
-  // Apply auth middleware - architects need to be logged in to view suppliers
-  server.addHook('preHandler', authMiddleware);
+  // GET routes are public - anyone can browse suppliers
+  // POST routes (meeting requests) require auth - applied per-route below
 
   // Get all suppliers for directory (public listing)
-  server.get('/', async (request: FastifyRequest, reply: FastifyReply) => {
+  server.get('/', async (_request: FastifyRequest, reply: FastifyReply) => {
     try {
       console.log('Fetching suppliers...');
 
@@ -54,9 +54,18 @@ export async function suppliersDirectoryRoutes(server: FastifyInstance) {
       const { id } = request.params as { id: string };
       console.log('Fetching supplier by User ID:', id);
 
-      // Find user with supplier role
+      // Normalize website lookup: strip protocol/www so "tribu.com" matches "https://www.tribu.com"
+      const websiteVariants = [`https://${id}`, `https://www.${id}`, `http://${id}`, `http://www.${id}`, id];
+
+      // Find user with supplier role — by UUID first, then by website domain fallback
       const user = await prisma.user.findFirst({
-        where: { id, role: 'SUPPLIER' },
+        where: {
+          role: 'SUPPLIER',
+          OR: [
+            { id },
+            { supplierProfile: { website: { in: websiteVariants } } },
+          ],
+        },
         include: {
           supplierProfile: {
             include: {
@@ -100,8 +109,8 @@ export async function suppliersDirectoryRoutes(server: FastifyInstance) {
     }
   });
 
-  // Send meeting request to supplier
-  server.post('/:id/meeting-request', async (request: FastifyRequest, reply: FastifyReply) => {
+  // Send meeting request to supplier — requires auth
+  server.post('/:id/meeting-request', { preHandler: [authMiddleware] }, async (request: FastifyRequest, reply: FastifyReply) => {
     const { id } = request.params as { id: string };
     const { phone, message } = request.body as { phone: string; message?: string };
 
