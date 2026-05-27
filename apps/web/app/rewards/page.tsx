@@ -49,7 +49,6 @@ export default function RewardsPage() {
     return <AuthGuardLoader />;
   }
 
-  const isArchitect = user?.role === 'ARCHITECT';
   const points = balance?.points || 0;
   const rank = card?.rank || user?.rank || 'BRONZE';
   const allProducts = (productsResponse as any)?.data || productsResponse || [];
