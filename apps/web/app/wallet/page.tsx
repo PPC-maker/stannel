@@ -547,33 +547,13 @@ export default function WalletPage() {
 
         {/* ── Benefits Banner ── */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="mb-3">
-          <div className="relative rounded-[20px] overflow-hidden h-[200px]" style={{ boxShadow: '0 16px 40px rgba(64,38,18,0.22)' }}>
-            <ImageWithLoader
-              src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80"
+          <Link href="/rewards" className="block rounded-[20px] overflow-hidden">
+            <img
+              src="/stunnel-hatavot1.jpeg"
               alt="הטבות בלעדיות"
-              fill
-              sizes="(max-width: 512px) 100vw, 512px"
-              className="object-cover brightness-[0.85] contrast-[1.1]"
+              className="w-full h-auto rounded-[20px]"
             />
-            {/* Cinematic overlay */}
-            <div className="absolute inset-0" style={{ background: 'linear-gradient(to left, rgba(0,0,0,0.05), rgba(0,0,0,0.55))' }} />
-            <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 60%)' }} />
-
-            {/* Star badge */}
-            <div className="absolute top-3 left-3 w-9 h-9 rounded-full flex items-center justify-center" style={{ background: 'rgba(201,155,74,0.35)', backdropFilter: 'blur(6px)', boxShadow: '0 4px 12px rgba(201,155,74,0.2)' }}>
-              <Star size={17} className="text-[#e6cc8d] fill-[#e6cc8d]" />
-            </div>
-
-            {/* Top label */}
-            <p className="absolute top-4 right-4 text-white/50 text-xs font-medium tracking-wide">הטבות שמחכות לחבר</p>
-
-            {/* CTA only */}
-            <div className="absolute bottom-0 right-0 p-5">
-              <Link href="/rewards" className="text-[#e6cc8d] text-[15px] font-bold hover:text-white transition-colors">
-                ← לכל ההטבות
-              </Link>
-            </div>
-          </div>
+          </Link>
         </motion.div>
 
         {/* ── Stats Grid (4 bronze/white cards) ── */}
