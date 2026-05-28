@@ -20,7 +20,7 @@ export default function ImageWithLoader({ spinnerSize = 28, className, onLoad, .
       {!loaded && (
         <div className="absolute inset-0 z-[1] flex items-center justify-center bg-white/5">
           <div
-            className="rounded-full border-2 border-white/20 border-t-white/70 animate-spin"
+            className="rounded-full border-2 border-[#c99b4a]/30 border-t-[#c99b4a] animate-spin"
             style={{ width: spinnerSize, height: spinnerSize }}
           />
         </div>
@@ -57,7 +57,7 @@ export function ImgWithLoader({
       {!loaded && (
         <div className="absolute inset-0 z-[1] flex items-center justify-center bg-white/5">
           <div
-            className="rounded-full border-2 border-white/20 border-t-white/70 animate-spin"
+            className="rounded-full border-2 border-[#c99b4a]/30 border-t-[#c99b4a] animate-spin"
             style={{ width: spinnerSize, height: spinnerSize }}
           />
         </div>
