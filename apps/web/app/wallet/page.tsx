@@ -548,10 +548,14 @@ export default function WalletPage() {
         {/* ── Benefits Banner ── */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="mb-3">
           <Link href="/rewards" className="block rounded-[20px] overflow-hidden">
-            <img
+            <Image
               src="/stunnel-hatavot22.jpg"
               alt="הטבות בלעדיות"
+              width={800}
+              height={533}
               className="w-full h-auto rounded-[20px]"
+              quality={75}
+              priority
             />
           </Link>
         </motion.div>
