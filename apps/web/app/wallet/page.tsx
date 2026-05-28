@@ -549,7 +549,7 @@ export default function WalletPage() {
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }} className="mb-3">
           <Link href="/rewards" className="block rounded-[20px] overflow-hidden">
             <img
-              src="/stunnel-hatavot1.jpeg"
+              src="/stunnel-hatavot22.jpg"
               alt="הטבות בלעדיות"
               className="w-full h-auto rounded-[20px]"
             />
