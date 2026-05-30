@@ -3,7 +3,8 @@
 import { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
 import ImageWithLoader from '@/components/ui/ImageWithLoader';
-import { Gift, Star, ShoppingCart, Loader2, Coins, Banknote } from 'lucide-react';
+import { Gift, Star, ShoppingCart, Loader2, Coins, Banknote, X, ChevronDown } from 'lucide-react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useAuth } from '@/lib/auth-context';
 import { AuthGuardLoader } from '@/lib/useAuthGuard';
 import { rewardsApi, walletApi } from '@stannel/api-client';
@@ -294,7 +295,7 @@ export default function RewardsContent() {
                   className={`bg-[#f7f3f2] border rounded-2xl overflow-hidden group hover:bg-white/90 transition-all cursor-pointer ${
                     selectedProduct === product.id ? 'border-[#c99b4a]/50 ring-1 ring-[#c99b4a]/30' : 'border-[rgba(201,155,74,0.08)]'
                   }`}
-                  onClick={() => setSelectedProduct(product.id)}
+                  onClick={() => setSelectedProduct(selectedProduct === product.id ? null : product.id)}
                 >
                   {/* Product Image */}
                   <div className="relative w-full bg-[#c99b4a]/5" style={{ aspectRatio: '1/1' }}>
@@ -407,6 +408,46 @@ export default function RewardsContent() {
                     </div>
                   </div>
                 </div>
+
+                {/* Expanded Product Details */}
+                <AnimatePresence>
+                  {selectedProduct === product.id && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="overflow-hidden"
+                    >
+                      <div className="bg-[#f7f3f2] border border-[#c99b4a]/20 border-t-0 rounded-b-2xl p-4 sm:p-6 space-y-3">
+                        <div className="flex items-center justify-between">
+                          <h4 className="text-[#2b241d] font-bold text-lg">{product.name}</h4>
+                          <button onClick={(e) => { e.stopPropagation(); setSelectedProduct(null); }} className="text-[#8b7c69] hover:text-[#2b241d]">
+                            <X size={18} />
+                          </button>
+                        </div>
+                        {product.description && (
+                          <p className="text-[#8b7c69] text-sm leading-relaxed">{product.description}</p>
+                        )}
+                        <div className="grid grid-cols-2 gap-3">
+                          <div className="bg-[#c99b4a]/10 rounded-xl p-3 text-center">
+                            <p className="text-[#c99b4a] text-xs mb-1">עלות בנקודות</p>
+                            <p className="text-[#2b241d] font-bold text-lg">{product.pointCost?.toLocaleString('he-IL')}</p>
+                          </div>
+                          <div className="bg-[#c99b4a]/10 rounded-xl p-3 text-center">
+                            <p className="text-[#c99b4a] text-xs mb-1">מלאי</p>
+                            <p className="text-[#2b241d] font-bold text-lg">{product.stock > 0 ? product.stock : 'אזל'}</p>
+                          </div>
+                        </div>
+                        {product.category && (
+                          <div className="flex items-center gap-2 text-sm text-[#8b7c69]">
+                            <span className="px-2 py-1 bg-[#c99b4a]/10 rounded-lg text-[#c99b4a] text-xs font-medium">{product.category}</span>
+                          </div>
+                        )}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             );
           })}
