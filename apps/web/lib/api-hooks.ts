@@ -485,6 +485,17 @@ export function useAdminRedemptions() {
   });
 }
 
+export function useUpdateRedemptionStatus() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, status, adminNotes }: { id: string; status: string; adminNotes?: string }) =>
+      adminApi.updateRedemptionStatus(id, { status, adminNotes }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin', 'redemptions'] });
+    },
+  });
+}
+
 // Contracts hooks (Admin)
 export function useContracts() {
   return useQuery({

@@ -38,14 +38,23 @@ export interface Product {
   createdAt: Date;
 }
 
+export type RedemptionStatus = 'pending' | 'processing' | 'shipped' | 'completed' | 'cancelled';
+
 export interface Redemption {
   id: string;
   productId: string;
   architectId: string;
   pointsUsed: number;
   cashPaid: number;
+  status: RedemptionStatus;
+  adminNotes?: string;
   createdAt: Date;
+  updatedAt: Date;
   product?: Product;
+  architect?: {
+    id: string;
+    user: { name: string; email: string; phone?: string };
+  };
 }
 
 export interface RedeemRequest {

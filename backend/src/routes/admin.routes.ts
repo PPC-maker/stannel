@@ -1023,7 +1023,20 @@ export async function adminRoutes(server: FastifyInstance) {
   server.get('/redemptions', async (request: FastifyRequest) => {
     const redemptions = await prisma.redemption.findMany({
       include: {
-        product: { select: { name: true, pointCost: true, imageUrl: true } },
+        product: {
+          select: {
+            name: true,
+            pointCost: true,
+            imageUrl: true,
+            supplierId: true,
+            supplier: {
+              select: {
+                companyName: true,
+                user: { select: { email: true } },
+              },
+            },
+          },
+        },
         architect: {
           include: {
             user: { select: { name: true, email: true, phone: true } },
@@ -1034,6 +1047,53 @@ export async function adminRoutes(server: FastifyInstance) {
     });
 
     return redemptions;
+  });
+
+  // Update redemption status
+  server.patch('/redemptions/:id/status', async (request: FastifyRequest, reply) => {
+    const { id } = request.params as { id: string };
+    const { status, adminNotes } = request.body as { status: string; adminNotes?: string };
+
+    const validStatuses = ['pending', 'processing', 'shipped', 'completed', 'cancelled'];
+    if (!validStatuses.includes(status)) {
+      return reply.status(400).send({ message: 'סטטוס לא תקין' });
+    }
+
+    const redemption = await prisma.redemption.update({
+      where: { id },
+      data: { status, ...(adminNotes !== undefined && { adminNotes }) },
+      include: {
+        product: { select: { name: true } },
+        architect: { include: { user: { select: { id: true, name: true } } } },
+      },
+    });
+
+    // Notify architect about status change
+    const statusLabels: Record<string, string> = {
+      pending: 'ממתין',
+      processing: 'בטיפול',
+      shipped: 'נשלח',
+      completed: 'הושלם',
+      cancelled: 'בוטל',
+    };
+    try {
+      if (redemption.architect?.user?.id) {
+        await prisma.notification.create({
+          data: {
+            recipientId: redemption.architect.user.id,
+            type: 'REDEMPTION',
+            title: 'סטטוס ההזמנה עודכן',
+            message: `ההזמנה "${redemption.product.name}" עודכנה לסטטוס: ${statusLabels[status] || status}`,
+            relatedEntity: 'redemption',
+            relatedId: redemption.id,
+          },
+        });
+      }
+    } catch (e) {
+      console.error('Failed to notify architect about status change:', e);
+    }
+
+    return redemption;
   });
 
   // Create goal

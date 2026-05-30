@@ -293,6 +293,59 @@ export const loyaltyService = {
       console.error('Failed to send admin notification for redemption:', notifError);
     }
 
+    // Send email to architect + supplier + in-app notification to architect
+    try {
+      const { emailService } = await import('./email.service.js');
+      const architectUser = await prisma.user.findFirst({
+        where: { architectProfile: { id: architectId } },
+        select: { id: true, name: true, email: true },
+      });
+
+      // Email to architect
+      if (architectUser?.email) {
+        await emailService.sendRedemptionConfirmation(
+          architectUser.email,
+          product.name,
+          pointsToUse,
+          requiredCash
+        );
+      }
+
+      // In-app notification to architect
+      if (architectUser?.id) {
+        await prisma.notification.create({
+          data: {
+            recipientId: architectUser.id,
+            type: 'REDEMPTION',
+            title: 'ההטבה נוצלה בהצלחה!',
+            message: `מימשת את "${product.name}" (${pointsToUse.toLocaleString()} נק׳). נציג יצור איתך קשר בקרוב.`,
+            relatedEntity: 'redemption',
+            relatedId: redemption.id,
+          },
+        });
+      }
+
+      // Email to supplier (if product has a supplier)
+      if (product.supplierId) {
+        const supplier = await prisma.supplierProfile.findUnique({
+          where: { id: product.supplierId },
+          include: { user: { select: { email: true, name: true } } },
+        });
+        if (supplier?.user?.email) {
+          const architectName = architectUser?.name || 'אדריכל';
+          const date = new Date().toLocaleDateString('he-IL');
+          await emailService.sendRedemptionSupplierAlert(
+            supplier.user.email,
+            product.name,
+            architectName,
+            date
+          );
+        }
+      }
+    } catch (emailError) {
+      console.error('Failed to send redemption emails:', emailError);
+    }
+
     return redemption;
   },
 

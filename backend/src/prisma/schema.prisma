@@ -250,12 +250,16 @@ model Redemption {
   architect       ArchitectProfile @relation(fields: [architectId], references: [id])
   pointsUsed      Float
   cashPaid        Float     @default(0)
+  status          String    @default("pending")  // pending, processing, shipped, completed, cancelled
+  adminNotes      String?
   createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @default(now()) @updatedAt
 
   @@index([architectId])
   @@index([productId])
   @@index([architectId, createdAt])
   @@index([createdAt])
+  @@index([status])
 }
 
 model CardTransaction {

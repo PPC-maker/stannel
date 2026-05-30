@@ -743,6 +743,113 @@ export const emailService = {
       html,
     });
   },
+
+  // Send redemption confirmation email to architect
+  async sendRedemptionConfirmation(
+    email: string,
+    productName: string,
+    pointsUsed: number,
+    cashPaid: number
+  ): Promise<boolean> {
+    const cashLine = cashPaid > 0 ? `<li>השלמה במזומן: ₪${cashPaid.toLocaleString()}</li>` : '';
+    const html = `
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ההטבה נוצלה בהצלחה</title>
+</head>
+<body style="font-family: 'Segoe UI', Arial, sans-serif; background-color: #060f1f; margin: 0; padding: 20px;">
+  <div style="max-width: 600px; margin: 0 auto; background: linear-gradient(135deg, rgba(26, 58, 107, 0.9) 0%, rgba(15, 35, 71, 0.95) 100%); border-radius: 16px; overflow: hidden; box-shadow: 0 8px 32px rgba(0,0,0,0.4); border: 1px solid rgba(212, 175, 55, 0.3);">
+    <div style="background: linear-gradient(135deg, #1a3a6b 0%, #0f2347 100%); padding: 40px; text-align: center; border-bottom: 2px solid rgba(212, 175, 55, 0.4);">
+      <div style="width: 80px; height: 80px; margin: 0 auto 20px; background: linear-gradient(135deg, #d4af37 0%, #f5d77e 100%); border-radius: 20px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 20px rgba(212, 175, 55, 0.4);">
+        <span style="color: #1a3a6b; font-size: 40px; font-weight: bold;">S</span>
+      </div>
+      <h1 style="color: #d4af37; margin: 0; font-size: 28px; font-weight: bold;">ההטבה נוצלה בהצלחה!</h1>
+    </div>
+    <div style="padding: 40px;">
+      <div style="background: rgba(255,255,255,0.07); border-radius: 12px; padding: 25px; margin-bottom: 25px; border: 1px solid rgba(255,255,255,0.15);">
+        <h2 style="color: white; margin: 0 0 15px 0; font-size: 20px;">פרטי ההטבה</h2>
+        <ul style="color: rgba(255,255,255,0.8); margin: 0; padding-right: 20px; font-size: 15px; line-height: 2;">
+          <li>מוצר: <strong>${escapeHtml(productName)}</strong></li>
+          <li>נקודות שנוצלו: ${pointsUsed.toLocaleString()} נק׳</li>
+          ${cashLine}
+        </ul>
+      </div>
+      <div style="background: rgba(212, 175, 55, 0.1); border-radius: 12px; padding: 20px; border: 1px solid rgba(212, 175, 55, 0.2);">
+        <p style="color: rgba(255,255,255,0.9); margin: 0; font-size: 16px; text-align: center; line-height: 1.8;">
+          נציג יצור איתך קשר בקרוב לתיאום מסירת ההטבה
+        </p>
+      </div>
+    </div>
+    <div style="background: rgba(0,0,0,0.3); padding: 25px; text-align: center; border-top: 1px solid rgba(255,255,255,0.1);">
+      <p style="color: rgba(255,255,255,0.5); font-size: 13px; margin: 0;">© 2026 STANNEL. כל הזכויות שמורות.</p>
+    </div>
+  </div>
+</body>
+</html>
+    `;
+
+    return this.send({
+      to: email,
+      subject: '🎁 STANNEL - ההטבה נוצלה בהצלחה!',
+      html,
+    });
+  },
+
+  // Send redemption alert email to supplier
+  async sendRedemptionSupplierAlert(
+    email: string,
+    productName: string,
+    architectName: string,
+    date: string
+  ): Promise<boolean> {
+    const html = `
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>הזמנה חדשה למוצר שלך</title>
+</head>
+<body style="font-family: 'Segoe UI', Arial, sans-serif; background-color: #060f1f; margin: 0; padding: 20px;">
+  <div style="max-width: 600px; margin: 0 auto; background: linear-gradient(135deg, rgba(26, 58, 107, 0.9) 0%, rgba(15, 35, 71, 0.95) 100%); border-radius: 16px; overflow: hidden; box-shadow: 0 8px 32px rgba(0,0,0,0.4); border: 1px solid rgba(212, 175, 55, 0.3);">
+    <div style="background: linear-gradient(135deg, #1a3a6b 0%, #0f2347 100%); padding: 40px; text-align: center; border-bottom: 2px solid rgba(212, 175, 55, 0.4);">
+      <div style="width: 80px; height: 80px; margin: 0 auto 20px; background: linear-gradient(135deg, #d4af37 0%, #f5d77e 100%); border-radius: 20px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 20px rgba(212, 175, 55, 0.4);">
+        <span style="color: #1a3a6b; font-size: 40px; font-weight: bold;">S</span>
+      </div>
+      <h1 style="color: #d4af37; margin: 0; font-size: 28px; font-weight: bold;">הזמנה חדשה למוצר שלך</h1>
+    </div>
+    <div style="padding: 40px;">
+      <div style="background: rgba(255,255,255,0.07); border-radius: 12px; padding: 25px; margin-bottom: 25px; border: 1px solid rgba(255,255,255,0.15);">
+        <h2 style="color: white; margin: 0 0 15px 0; font-size: 20px;">פרטי ההזמנה</h2>
+        <ul style="color: rgba(255,255,255,0.8); margin: 0; padding-right: 20px; font-size: 15px; line-height: 2;">
+          <li>מוצר: <strong>${escapeHtml(productName)}</strong></li>
+          <li>לקוח: ${escapeHtml(architectName)}</li>
+          <li>תאריך: ${escapeHtml(date)}</li>
+        </ul>
+      </div>
+      <div style="background: rgba(212, 175, 55, 0.1); border-radius: 12px; padding: 20px; border: 1px solid rgba(212, 175, 55, 0.2);">
+        <p style="color: rgba(255,255,255,0.9); margin: 0; font-size: 16px; text-align: center; line-height: 1.8;">
+          היכנס למערכת STANNEL לפרטים נוספים ולתיאום מול הלקוח
+        </p>
+      </div>
+    </div>
+    <div style="background: rgba(0,0,0,0.3); padding: 25px; text-align: center; border-top: 1px solid rgba(255,255,255,0.1);">
+      <p style="color: rgba(255,255,255,0.5); font-size: 13px; margin: 0;">© 2026 STANNEL. כל הזכויות שמורות.</p>
+    </div>
+  </div>
+</body>
+</html>
+    `;
+
+    return this.send({
+      to: email,
+      subject: '📦 STANNEL - הזמנה חדשה למוצר שלך',
+      html,
+    });
+  },
 };
 
 // Helper function to escape HTML and prevent XSS in email templates

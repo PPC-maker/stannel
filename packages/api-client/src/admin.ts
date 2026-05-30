@@ -634,6 +634,21 @@ export const adminApi = {
     return res.json();
   },
 
+  async updateRedemptionStatus(id: string, data: { status: string; adminNotes?: string }): Promise<any> {
+    const res = await fetchWithAuth(`${config.baseUrl}/admin/redemptions/${id}/status`, {
+      method: 'PATCH',
+      headers: getHeaders(),
+      body: JSON.stringify(data),
+    });
+
+    if (!res.ok) {
+      const error = await res.json().catch(() => ({ message: 'שגיאה בעדכון סטטוס ההזמנה' }));
+      throw new Error(error.message || 'שגיאה בעדכון סטטוס ההזמנה');
+    }
+
+    return res.json();
+  },
+
   // Contracts
   async getContracts(): Promise<any[]> {
     const res = await fetchWithAuth(`${config.baseUrl}/admin/contracts`, {

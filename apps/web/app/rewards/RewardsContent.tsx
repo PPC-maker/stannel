@@ -169,8 +169,8 @@ export default function RewardsContent() {
     try {
       await rewardsApi.redeem({ productId, cashAmount: useCash ? completion.cashNeeded : 0 });
       Swal.fire({
-        title: useCash ? 'הבקשה נשלחה!' : 'המוצר נרכש בהצלחה!',
-        text: useCash ? `פנייתך נשלחה למנהל. תשלום: ₪${completion.cashNeeded} + ${completion.useAllPoints.toLocaleString()} נקודות` : 'המימוש בוצע בהצלחה',
+        title: 'ההטבה נוצלה בהצלחה!',
+        text: 'נציג יצור איתך קשר בקרוב לתיאום מסירת ההטבה',
         icon: 'success',
         confirmButtonText: 'אישור',
         background: '#f7f3f2',
@@ -305,6 +305,8 @@ export default function RewardsContent() {
                         fill
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                         className="object-contain group-hover:scale-105 transition-transform duration-500"
+                        priority={index < 6}
+                        loading={index < 6 ? 'eager' : 'lazy'}
                       />
                     ) : (
                       <div className="w-full h-full bg-[#c99b4a]/5 flex items-center justify-center">
