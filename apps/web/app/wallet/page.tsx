@@ -100,9 +100,8 @@ const quickActionCategories = [
     icon: Headphones,
     color: 'bg-[#c99b4a]',
     iconColor: 'text-[#c99b4a]',
-    items: [
-      { label: 'צור קשר', href: '/contact', icon: Headphones },
-    ],
+    directHref: 'https://wa.me/9720508817788',
+    items: [],
   },
 ];
 
@@ -615,7 +614,7 @@ export default function WalletPage() {
               const IconComponent = category.icon;
               const isActive = activeCategory === category.id;
               return (
-                <button key={category.id} onClick={() => (category as any).directHref ? window.location.assign((category as any).directHref) : setActiveCategory(isActive ? null : category.id)} className="flex flex-col items-center gap-2 quick-action-btn">
+                <button key={category.id} onClick={() => (category as any).directHref ? window.open((category as any).directHref, '_blank') : setActiveCategory(isActive ? null : category.id)} className="flex flex-col items-center gap-2 quick-action-btn">
                   <div
                     className={`flex items-center justify-center transition-all duration-300 ${
                       isActive ? 'scale-110' : ''
