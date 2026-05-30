@@ -395,7 +395,7 @@ export default function RewardsContent() {
                             className="flex-1 px-4 py-2 rounded-lg text-sm font-medium bg-[#c99b4a]/10 text-[#a89b8a] cursor-not-allowed leading-snug"
                           >
                             <span className="block">אין מספיק נקודות</span>
-                            <span className="block text-[10px] text-[#c99b4a]/70">עוד קצת וזה יכול להיות שלך</span>
+                            <span className="block text-xs text-[#c99b4a]/70">עוד קצת וזה יכול להיות שלך</span>
                           </button>
                         ) : (
                           <button
