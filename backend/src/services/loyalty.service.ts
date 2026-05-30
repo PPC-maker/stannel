@@ -325,22 +325,26 @@ export const loyaltyService = {
         });
       }
 
-      // Email to supplier (if product has a supplier)
-      if (product.supplierId) {
+      // Email to supplier - use product.supplierEmail first, fallback to supplier profile
+      const architectName = architectUser?.name || 'אדריכל';
+      const date = new Date().toLocaleDateString('he-IL');
+      let supplierEmailAddr = (product as any).supplierEmail;
+
+      if (!supplierEmailAddr && product.supplierId) {
         const supplier = await prisma.supplierProfile.findUnique({
           where: { id: product.supplierId },
-          include: { user: { select: { email: true, name: true } } },
+          include: { user: { select: { email: true } } },
         });
-        if (supplier?.user?.email) {
-          const architectName = architectUser?.name || 'אדריכל';
-          const date = new Date().toLocaleDateString('he-IL');
-          await emailService.sendRedemptionSupplierAlert(
-            supplier.user.email,
-            product.name,
-            architectName,
-            date
-          );
-        }
+        supplierEmailAddr = supplier?.user?.email;
+      }
+
+      if (supplierEmailAddr) {
+        await emailService.sendRedemptionSupplierAlert(
+          supplierEmailAddr,
+          product.name,
+          architectName,
+          date
+        );
       }
     } catch (emailError) {
       console.error('Failed to send redemption emails:', emailError);

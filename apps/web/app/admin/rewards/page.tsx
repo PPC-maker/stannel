@@ -37,6 +37,7 @@ interface Product {
   isActive: boolean;
   createdAt: string;
   category?: string;
+  supplierEmail?: string;
 }
 
 export default function AdminRewardsPage() {
@@ -56,6 +57,7 @@ export default function AdminRewardsPage() {
     stock: 10,
     imageUrl: '',
     category: '',
+    supplierEmail: '',
   });
   const [newCategory, setNewCategory] = useState('');
   const [showNewCategory, setShowNewCategory] = useState(false);
@@ -162,6 +164,7 @@ export default function AdminRewardsPage() {
       stock: 10,
       imageUrl: '',
       category: '',
+      supplierEmail: '',
     });
     setNewCategory('');
     setShowNewCategory(false);
@@ -182,6 +185,7 @@ export default function AdminRewardsPage() {
       stock: product.stock,
       imageUrl: product.imageUrl || '',
       category: product.category || '',
+      supplierEmail: (product as any).supplierEmail || '',
     });
     setShowModal(true);
   };
@@ -588,6 +592,20 @@ export default function AdminRewardsPage() {
                   min="0"
                   className="w-full bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-xl px-4 py-3 text-[#2b241d]"
                 />
+              </div>
+
+              {/* Supplier Email */}
+              <div>
+                <label className="block text-sm font-medium text-[#8b7c69] mb-2">מייל ספק ההטבה <span className="text-[#a89b8a] text-xs font-normal">(אופציונלי)</span></label>
+                <input
+                  type="email"
+                  value={form.supplierEmail}
+                  onChange={(e) => setForm({ ...form, supplierEmail: e.target.value })}
+                  placeholder="supplier@example.com"
+                  dir="ltr"
+                  className="w-full bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-xl px-4 py-3 text-[#2b241d] placeholder:text-[#a89b8a]"
+                />
+                <p className="text-[#a89b8a] text-xs mt-1">המייל שיקבל התראה כשמישהו מממש את ההטבה הזו</p>
               </div>
 
               {/* Submit */}

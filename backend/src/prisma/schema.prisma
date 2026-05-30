@@ -232,6 +232,7 @@ model Product {
   pointsPerShekel Float     @default(100) // Exchange rate: how many points = 1 shekel (for cash completion)
   stock           Int       @default(0)
   isActive        Boolean   @default(true)
+  supplierEmail   String?                 // Email to notify when product is redeemed
   supplierId      String?
   supplier        SupplierProfile? @relation(fields: [supplierId], references: [id])
   createdAt       DateTime  @default(now())

@@ -1571,6 +1571,7 @@ Please analyze this error and provide a fix.
       imageUrl?: string;
       supplierId?: string;
       category?: string;
+      supplierEmail?: string;
     };
 
     if (!body.name || body.pointCost === undefined || body.stock === undefined) {
@@ -1586,6 +1587,7 @@ Please analyze this error and provide a fix.
         stock: body.stock,
         imageUrl: body.imageUrl,
         supplierId: body.supplierId,
+        supplierEmail: body.supplierEmail || null,
         category: body.category || 'כללי',
         isActive: true,
       },
@@ -1615,6 +1617,7 @@ Please analyze this error and provide a fix.
       imageUrl?: string;
       isActive?: boolean;
       category?: string;
+      supplierEmail?: string;
     };
 
     const product = await prisma.product.update({
