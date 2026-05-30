@@ -390,13 +390,21 @@ export default function RewardsContent() {
                             )}
                           </button>
                         ) : product.stock > 0 ? (
-                          <button
-                            disabled
-                            className="flex-1 px-4 py-2 rounded-lg text-sm font-medium bg-[#c99b4a]/10 text-[#a89b8a] cursor-not-allowed leading-snug"
-                          >
-                            <span className="block">אין מספיק נקודות</span>
-                            <span className="block text-xs text-[#c99b4a]/70">עוד קצת וזה יכול להיות שלך</span>
-                          </button>
+                          <div className="flex-1 px-3 py-2 rounded-lg bg-[#c99b4a]/10">
+                            <div className="flex items-center justify-between mb-1.5">
+                              <span className="text-[11px] font-medium text-[#c99b4a]">עוד קצת וזה שלך</span>
+                              <span className="text-[10px] text-[#a89b8a]">{Math.min(100, Math.round((points / product.pointCost) * 100))}%</span>
+                            </div>
+                            <div className="w-full h-2 bg-[#e8dcc8] rounded-full overflow-hidden">
+                              <div
+                                className="h-full rounded-full transition-all duration-500"
+                                style={{
+                                  width: `${Math.min(100, Math.round((points / product.pointCost) * 100))}%`,
+                                  background: 'linear-gradient(90deg, #c99b4a, #e6cc8d)',
+                                }}
+                              />
+                            </div>
+                          </div>
                         ) : (
                           <button
                             disabled
