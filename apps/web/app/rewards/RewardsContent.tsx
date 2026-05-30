@@ -390,20 +390,19 @@ export default function RewardsContent() {
                             )}
                           </button>
                         ) : product.stock > 0 ? (
-                          <div className="flex-1 px-3 py-2 rounded-lg bg-[#c99b4a]/10">
-                            <div className="flex items-center justify-between mb-1.5">
-                              <span className="text-[11px] font-medium text-[#c99b4a]">עוד קצת וזה שלך</span>
-                              <span className="text-[10px] text-[#a89b8a]">{Math.min(100, Math.round((points / product.pointCost) * 100))}%</span>
-                            </div>
-                            <div className="w-full h-2 bg-[#e8dcc8] rounded-full overflow-hidden">
+                          <div className="flex-1 px-4 py-3 rounded-xl bg-[#c99b4a]/10 border border-[#c99b4a]/20">
+                            <p className="text-sm font-bold text-[#c99b4a] mb-2 text-center">עוד קצת וזה שלך!</p>
+                            <div className="w-full h-4 bg-[#e8dcc8] rounded-full overflow-hidden mb-1.5">
                               <div
                                 className="h-full rounded-full transition-all duration-500"
                                 style={{
                                   width: `${Math.min(100, Math.round((points / product.pointCost) * 100))}%`,
                                   background: 'linear-gradient(90deg, #c99b4a, #e6cc8d)',
+                                  boxShadow: '0 0 8px rgba(201,155,74,0.4)',
                                 }}
                               />
                             </div>
+                            <p className="text-center text-xs font-bold text-[#8b7c69]">{Math.min(100, Math.round((points / product.pointCost) * 100))}% מהדרך</p>
                           </div>
                         ) : (
                           <button
