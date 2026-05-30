@@ -157,6 +157,28 @@ server.get('/health', async () => {
   return { status: 'ok', timestamp: new Date().toISOString() };
 });
 
+// Public WhatsApp config endpoint
+server.get('/api/v1/config/whatsapp', async (request) => {
+  const { role } = request.query as { role?: string };
+  const defaultNumber = '9720508817788';
+
+  try {
+    const configs = await prisma.systemConfig.findMany({
+      where: { key: { in: ['whatsapp_default', 'whatsapp_architects', 'whatsapp_suppliers'] } },
+    });
+    const configMap: Record<string, string> = {};
+    for (const c of configs) configMap[c.key] = c.value;
+
+    let number = configMap['whatsapp_default'] || defaultNumber;
+    if (role === 'ARCHITECT' && configMap['whatsapp_architects']) number = configMap['whatsapp_architects'];
+    if (role === 'SUPPLIER' && configMap['whatsapp_suppliers']) number = configMap['whatsapp_suppliers'];
+
+    return { number };
+  } catch {
+    return { number: defaultNumber };
+  }
+});
+
 
 // WebSocket endpoint - registered after plugins in start()
 function registerWebSocket() {

@@ -62,6 +62,7 @@ import {
   Camera,
   KeyRound,
   ShoppingBag,
+  Settings,
 } from 'lucide-react';
 import Swal from 'sweetalert2';
 import Link from 'next/link';
@@ -1458,6 +1459,19 @@ Please analyze this error and provide a fix.
                 <div>
                   <p className="text-[#2b241d] font-medium group-hover:text-[#c99b4a] transition-colors">אירועים</p>
                   <p className="text-[#a89b8a] text-xs">ניהול אירועים</p>
+                </div>
+              </div>
+            </div>
+          </Link>
+          <Link href="/admin/settings" className="group">
+            <div className="p-4 bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-xl hover:bg-[#f0ebe6] transition-all">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-[#c99b4a]/20">
+                  <Settings size={20} className="text-[#c99b4a]" />
+                </div>
+                <div>
+                  <p className="text-[#2b241d] font-medium group-hover:text-[#c99b4a] transition-colors">הגדרות</p>
+                  <p className="text-[#a89b8a] text-xs">וואטסאפ ויצירת קשר</p>
                 </div>
               </div>
             </div>

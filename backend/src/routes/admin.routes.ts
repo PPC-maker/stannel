@@ -2216,4 +2216,35 @@ Please analyze this error and provide a fix.
       });
     }
   });
+
+  // ── System Config (WhatsApp numbers, etc.) ──
+
+  server.get('/config', async () => {
+    const configs = await prisma.systemConfig.findMany();
+    // Return as key-value object
+    const result: Record<string, string> = {};
+    for (const c of configs) {
+      result[c.key] = c.value;
+    }
+    return result;
+  });
+
+  server.patch('/config', async (request: FastifyRequest) => {
+    const updates = request.body as Record<string, string>;
+
+    const allowedKeys = ['whatsapp_default', 'whatsapp_architects', 'whatsapp_suppliers'];
+    const results: any[] = [];
+
+    for (const [key, value] of Object.entries(updates)) {
+      if (!allowedKeys.includes(key)) continue;
+      const config = await prisma.systemConfig.upsert({
+        where: { key },
+        update: { value },
+        create: { key, value },
+      });
+      results.push(config);
+    }
+
+    return { success: true, updated: results };
+  });
 }

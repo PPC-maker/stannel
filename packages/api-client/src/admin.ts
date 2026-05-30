@@ -649,6 +649,24 @@ export const adminApi = {
     return res.json();
   },
 
+  async getConfig(): Promise<Record<string, string>> {
+    const res = await fetchWithAuth(`${config.baseUrl}/admin/config`, {
+      headers: getHeaders(),
+    });
+    if (!res.ok) throw new Error('שגיאה בטעינת ההגדרות');
+    return res.json();
+  },
+
+  async updateConfig(data: Record<string, string>): Promise<any> {
+    const res = await fetchWithAuth(`${config.baseUrl}/admin/config`, {
+      method: 'PATCH',
+      headers: getHeaders(),
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) throw new Error('שגיאה בעדכון ההגדרות');
+    return res.json();
+  },
+
   // Contracts
   async getContracts(): Promise<any[]> {
     const res = await fetchWithAuth(`${config.baseUrl}/admin/contracts`, {

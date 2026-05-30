@@ -663,3 +663,10 @@ model Meeting {
   @@index([supplierId])
   @@index([status])
 }
+
+model SystemConfig {
+  key         String    @id
+  value       String
+  description String?
+  updatedAt   DateTime  @default(now()) @updatedAt
+}

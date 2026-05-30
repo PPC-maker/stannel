@@ -100,7 +100,7 @@ const quickActionCategories = [
     icon: Headphones,
     color: 'bg-[#c99b4a]',
     iconColor: 'text-[#c99b4a]',
-    directHref: 'https://wa.me/9720508817788',
+    directHref: 'whatsapp',
     items: [],
   },
 ];
@@ -388,8 +388,18 @@ export default function WalletPage() {
   const { data: productsResponse } = useRewardProducts();
   const rewardProducts = (productsResponse as any)?.data || productsResponse || [];
   const [adminStats, setAdminStats] = useState<any>(null);
+  const [whatsappNumber, setWhatsappNumber] = useState('9720508817788');
 
   const { data: allSuppliers, isLoading: suppliersLoading } = useSuppliersDirectory({});
+
+  // Fetch role-based WhatsApp number
+  useEffect(() => {
+    if (!user?.role) return;
+    fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:7070'}/api/v1/config/whatsapp?role=${user.role}`)
+      .then(r => r.json())
+      .then(data => { if (data.number) setWhatsappNumber(data.number); })
+      .catch(() => {});
+  }, [user?.role]);
 
   const fetchAdminStats = () => {
     if (!isAdmin) return;
@@ -614,7 +624,7 @@ export default function WalletPage() {
               const IconComponent = category.icon;
               const isActive = activeCategory === category.id;
               return (
-                <button key={category.id} onClick={() => (category as any).directHref ? window.open((category as any).directHref, '_blank') : setActiveCategory(isActive ? null : category.id)} className="flex flex-col items-center gap-2 quick-action-btn">
+                <button key={category.id} onClick={() => (category as any).directHref ? ((category as any).directHref === 'whatsapp' ? window.open(`https://wa.me/${whatsappNumber}`, '_blank') : window.open((category as any).directHref, '_blank')) : setActiveCategory(isActive ? null : category.id)} className="flex flex-col items-center gap-2 quick-action-btn">
                   <div
                     className={`flex items-center justify-center transition-all duration-300 ${
                       isActive ? 'scale-110' : ''
