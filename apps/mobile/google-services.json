@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1094694418275",
+    "project_id": "stannel-app",
+    "storage_bucket": "stannel-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1094694418275:android:a98d649bc549b4dd63c556",
+        "android_client_info": {
+          "package_name": "com.stannel.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1094694418275-s2d2j9boa071aabmemo26vng6buoptoj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDj2RNLbSFlqbayn3LhuoNSG9MtvOk_Vug"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1094694418275-s2d2j9boa071aabmemo26vng6buoptoj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
