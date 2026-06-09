@@ -7,18 +7,6 @@ substitutions:
   _TAG: latest
 
 steps:
-  # ============ DB MIGRATION ============
-  - name: 'node:20-slim'
-    id: 'db-push'
-    entrypoint: 'bash'
-    args:
-      - '-c'
-      - |
-        npm install -g prisma@6.19.3
-        cd backend
-        prisma db push --schema=src/prisma/schema.prisma --skip-generate --accept-data-loss
-    secretEnv: ['DATABASE_URL']
-
   # ============ BACKEND ============
   - name: 'gcr.io/cloud-builders/docker'
     id: 'build-backend'
@@ -70,7 +58,7 @@ steps:
       - 'NODE_ENV=production,GOOGLE_CLOUD_PROJECT=stannel-app,FIREBASE_PROJECT_ID=stannel-app'
       - '--set-secrets'
       - 'DATABASE_URL=database-url:latest,FIREBASE_PRIVATE_KEY=firebase-private-key:latest,FIREBASE_CLIENT_EMAIL=firebase-client-email:latest,GEMINI_API_KEY=gemini-api-key:latest'
-    waitFor: ['db-push', 'push-backend']
+    waitFor: ['push-backend']
 
   # ============ WEB ============
   - name: 'gcr.io/cloud-builders/docker'
@@ -122,11 +110,6 @@ steps:
 images:
   - '${_REGION}-docker.pkg.dev/${_PROJECT_ID}/stannel/backend:${_TAG}'
   - '${_REGION}-docker.pkg.dev/${_PROJECT_ID}/stannel/web:${_TAG}'
-
-availableSecrets:
-  secretManager:
-    - versionName: projects/${_PROJECT_ID}/secrets/database-url/versions/latest
-      env: 'DATABASE_URL'
 
 options:
   logging: CLOUD_LOGGING_ONLY
