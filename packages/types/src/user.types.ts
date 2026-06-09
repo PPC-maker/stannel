@@ -24,7 +24,7 @@ export interface User {
   role: UserRole;
   rank: UserRank;
   isActive: boolean;
-  profileImage?: string;
+  profileImage?: string | null;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -46,8 +46,16 @@ export interface SupplierProfile {
   id: string;
   userId: string;
   companyName: string;
-  trustScore: number;
-  qualityScore: number;
+  description?: string;
+  phone?: string;
+  address?: string;
+  website?: string;
+  facebook?: string;
+  instagram?: string;
+  linkedin?: string;
+  businessImages?: string[];
+  trustScore?: number;
+  qualityScore?: number;
 }
 
 export interface AuthUser extends User {
