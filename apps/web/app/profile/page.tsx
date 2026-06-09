@@ -153,10 +153,9 @@ export default function ProfilePage() {
         address: editData.address,
       });
       setIsEditing(false);
-      // Clear URL params
-      router.replace('/profile');
-      // Refresh the page to show updated data
-      window.location.reload();
+      setShowPhotoModal(false);
+      // Clear URL params and refresh to show updated data
+      window.location.href = '/profile';
     } catch (error) {
       console.error('Failed to update profile:', error);
     }
@@ -184,8 +183,9 @@ export default function ProfilePage() {
     try {
       await authApi.uploadProfileImage(file);
       setShowPhotoModal(false);
-      // Refresh the page to show new image
-      window.location.reload();
+      // Clear URL params and refresh to show new image
+      router.replace('/profile');
+      window.location.href = '/profile';
     } catch (error: any) {
       console.error('Failed to upload profile image:', error);
       setUploadError(error.message || 'שגיאה בהעלאת התמונה');
@@ -555,6 +555,25 @@ export default function ProfilePage() {
                     </>
                   )}
                 </button>
+
+                {currentUser.avatar && (
+                  <button
+                    onClick={async () => {
+                      try {
+                        await authApi.updateProfile({ profileImage: null });
+                        setShowPhotoModal(false);
+                        window.location.href = '/profile';
+                      } catch (error) {
+                        console.error('Failed to remove profile image:', error);
+                      }
+                    }}
+                    disabled={isUploading}
+                    className="w-full border border-red-300 text-red-500 py-3 px-6 rounded-xl font-semibold hover:bg-red-50 transition-all disabled:opacity-50 mb-3"
+                  >
+                    <X size={18} className="inline ml-2" />
+                    הסר תמונה
+                  </button>
+                )}
 
                 <p className="text-[#a89b8a] text-sm">
                   JPG, PNG או GIF. מקסימום 5MB.

@@ -139,7 +139,7 @@ export default function LoginPage() {
               <Mail className="absolute right-5 top-1/2 -translate-y-1/2 text-[#C9A961]/60 z-10" size={24} />
               <input
                 type="email"
-                placeholder="אימייל / טלפון"
+                placeholder="כתובת אימייל"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -165,7 +165,7 @@ export default function LoginPage() {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute left-5 top-1/2 -translate-y-1/2 text-white/40 hover:text-[#C9A961] transition-colors"
+                className="absolute left-5 top-1/2 -translate-y-1/2 text-[#1a1a1a]/40 hover:text-[#C9A961] transition-colors"
               >
                 {showPassword ? <EyeOff size={22} /> : <Eye size={22} />}
               </button>

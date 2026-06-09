@@ -18,8 +18,19 @@ const registerSchema = z.object({
   firebaseToken: z.string(),
 });
 
-// Auth rate limiting tracker
+// Auth rate limiting tracker (with periodic cleanup to prevent memory leaks)
 const authAttempts: Record<string, number[]> = {};
+
+// Cleanup stale IPs every 10 minutes
+setInterval(() => {
+  const now = Date.now();
+  for (const key of Object.keys(authAttempts)) {
+    authAttempts[key] = authAttempts[key].filter(t => now - t < 300000);
+    if (authAttempts[key].length === 0) {
+      delete authAttempts[key];
+    }
+  }
+}, 10 * 60 * 1000);
 
 const verifySchema = z.object({
   token: z.string(),
@@ -297,7 +308,7 @@ export async function authRoutes(server: FastifyInstance) {
     phone: z.string().max(20).optional().nullable(),
     company: z.string().max(200).optional().nullable(),
     address: z.string().max(500).optional().nullable(),
-    profileImage: z.string().url().max(2000).optional(),
+    profileImage: z.string().url().max(2000).optional().nullable(),
   });
 
   server.patch('/profile', { preHandler: [authMiddleware] }, async (request: FastifyRequest, reply: FastifyReply) => {
@@ -314,7 +325,7 @@ export async function authRoutes(server: FastifyInstance) {
         ...(body.phone !== undefined && { phone: body.phone || null }),
         ...(body.company !== undefined && { company: body.company || null }),
         ...(body.address !== undefined && { address: body.address || null }),
-        ...(body.profileImage && { profileImage: body.profileImage }),
+        ...(body.profileImage !== undefined && { profileImage: body.profileImage || null }),
       },
       include: {
         architectProfile: true,
@@ -363,6 +374,132 @@ export async function authRoutes(server: FastifyInstance) {
     } catch (error) {
       console.error('[Auth] Profile image upload error:', error);
       return reply.code(500).send({ error: 'Failed to upload profile image' });
+    }
+  });
+
+  // Get user preferences
+  server.get('/preferences', { preHandler: [authMiddleware] }, async (request: FastifyRequest) => {
+    const user = await prisma.user.findUnique({
+      where: { id: request.user!.id },
+      select: {
+        prefEmailNotifications: true,
+        prefPushNotifications: true,
+        prefSmsNotifications: true,
+        prefDarkMode: true,
+        prefLanguage: true,
+      },
+    });
+    return user;
+  });
+
+  // Update user preferences
+  const preferencesSchema = z.object({
+    prefEmailNotifications: z.boolean().optional(),
+    prefPushNotifications: z.boolean().optional(),
+    prefSmsNotifications: z.boolean().optional(),
+    prefDarkMode: z.boolean().optional(),
+    prefLanguage: z.string().max(5).optional(),
+  });
+
+  server.patch('/preferences', { preHandler: [authMiddleware] }, async (request: FastifyRequest, reply: FastifyReply) => {
+    const parsed = preferencesSchema.safeParse(request.body);
+    if (!parsed.success) {
+      return reply.code(400).send({ error: 'Invalid input', details: parsed.error.errors });
+    }
+
+    const updated = await prisma.user.update({
+      where: { id: request.user!.id },
+      data: parsed.data,
+      select: {
+        prefEmailNotifications: true,
+        prefPushNotifications: true,
+        prefSmsNotifications: true,
+        prefDarkMode: true,
+        prefLanguage: true,
+      },
+    });
+
+    return updated;
+  });
+
+  // Request password reset via email (sent through our SMTP)
+  server.post('/request-password-reset', async (request: FastifyRequest, reply: FastifyReply) => {
+    const { email } = request.body as { email: string };
+
+    if (!email) {
+      return reply.code(400).send({ error: 'אימייל הוא שדה חובה' });
+    }
+
+    try {
+      // Check if user exists in our system
+      const user = await prisma.user.findUnique({ where: { email: email.toLowerCase().trim() } });
+      // Always return success to prevent email enumeration
+      if (!user || !user.firebaseUid) {
+        return { success: true };
+      }
+
+      // Generate password reset link via Firebase Admin
+      const { getAuth } = await import('firebase-admin/auth');
+      const resetLink = await getAuth().generatePasswordResetLink(email);
+
+      // Send via our SMTP
+      const { emailService } = await import('../services/email.service.js');
+      const emailSent = await emailService.send({
+        to: email,
+        subject: '🔐 איפוס סיסמה - STANNEL',
+        html: `
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="font-family: 'Segoe UI', Arial, sans-serif; background-color: #060f1f; margin: 0; padding: 20px;">
+  <div style="max-width: 600px; margin: 0 auto; background: linear-gradient(135deg, rgba(26, 58, 107, 0.9) 0%, rgba(15, 35, 71, 0.95) 100%); border-radius: 16px; overflow: hidden; box-shadow: 0 8px 32px rgba(0,0,0,0.4); border: 1px solid rgba(212, 175, 55, 0.3);">
+    <div style="background: linear-gradient(135deg, #1a3a6b 0%, #0f2347 100%); padding: 40px; text-align: center; border-bottom: 2px solid rgba(212, 175, 55, 0.4);">
+      <div style="width: 80px; height: 80px; margin: 0 auto 20px; background: linear-gradient(135deg, #d4af37 0%, #f5d77e 100%); border-radius: 20px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 20px rgba(212, 175, 55, 0.4);">
+        <span style="color: #1a3a6b; font-size: 40px; font-weight: bold;">S</span>
+      </div>
+      <h1 style="color: #d4af37; margin: 0; font-size: 28px;">איפוס סיסמה</h1>
+    </div>
+    <div style="padding: 40px;">
+      <div style="background: rgba(255,255,255,0.07); border-radius: 12px; padding: 25px; margin-bottom: 25px; border: 1px solid rgba(255,255,255,0.15);">
+        <h2 style="color: white; margin: 0 0 15px 0; font-size: 20px;">שלום ${user.name || ''}! 👋</h2>
+        <p style="color: rgba(255,255,255,0.8); margin: 0; font-size: 16px; line-height: 1.6;">
+          קיבלנו בקשה לאיפוס הסיסמה שלך. לחץ על הכפתור למטה כדי לבחור סיסמה חדשה.
+        </p>
+      </div>
+      <div style="text-align: center; margin: 30px 0;">
+        <a href="${resetLink}" style="display: inline-block; background: linear-gradient(135deg, #d4af37 0%, #f5d77e 100%); color: #1a3a6b; padding: 16px 48px; border-radius: 12px; font-size: 18px; font-weight: bold; text-decoration: none; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);">
+          איפוס סיסמה
+        </a>
+      </div>
+      <div style="background: rgba(212, 175, 55, 0.1); border-radius: 12px; padding: 20px; border: 1px solid rgba(212, 175, 55, 0.2);">
+        <p style="color: rgba(255,255,255,0.6); margin: 0; font-size: 14px; text-align: center;">
+          אם לא ביקשת לאפס את הסיסמה, ניתן להתעלם מהודעה זו.
+          <br/>הקישור תקף לשעה אחת בלבד.
+        </p>
+      </div>
+    </div>
+    <div style="background: rgba(0,0,0,0.3); padding: 25px; text-align: center; border-top: 1px solid rgba(255,255,255,0.1);">
+      <p style="color: rgba(255,255,255,0.5); font-size: 13px; margin: 0;">© 2026 STANNEL. כל הזכויות שמורות.</p>
+    </div>
+  </div>
+</body>
+</html>
+        `,
+      });
+
+      if (emailSent) {
+        console.log(`[Auth] Password reset email sent to ${email}`);
+      } else {
+        console.error(`[Auth] PASSWORD RESET EMAIL FAILED for ${email} - check GMAIL_APP_PASSWORD env var`);
+      }
+      return { success: true };
+    } catch (err: any) {
+      console.error('[Auth] Password reset error:', err);
+      // Still return success to prevent email enumeration
+      return { success: true };
     }
   });
 }

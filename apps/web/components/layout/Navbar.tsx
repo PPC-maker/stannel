@@ -221,18 +221,15 @@ export default function Navbar() {
                     </div>
                   )}
 
-                  {/* Public links - always visible */}
-                  {publicLinks.map((link) => (
-                    <Link
-                      key={link.href}
-                      href={link.href}
-                      onClick={() => setIsProfileOpen(false)}
-                      className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-[#FDF6E3] text-gray-700 hover:text-[#8B6F3A] transition-colors"
-                    >
-                      <link.icon size={18} className="text-[#C9A961]" />
-                      <span className="font-medium">{link.label}</span>
-                    </Link>
-                  ))}
+                  {/* Home link */}
+                  <Link
+                    href={user ? (user.role === 'SUPPLIER' ? '/supplier' : user.role === 'ADMIN' ? '/admin' : '/wallet') : '/'}
+                    onClick={() => setIsProfileOpen(false)}
+                    className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-[#FDF6E3] text-gray-700 hover:text-[#8B6F3A] transition-colors"
+                  >
+                    <Home size={18} className="text-[#C9A961]" />
+                    <span className="font-medium">דף הבית</span>
+                  </Link>
 
                   {user ? (
                     <>
@@ -316,7 +313,7 @@ export default function Navbar() {
                               popup: 'animate__animated animate__fadeOutUp animate__faster'
                             }
                           });
-                          router.push('/');
+                          router.push('/login');
                         }}
                         className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-red-50 text-gray-700 hover:text-red-600 transition-colors w-full"
                       >

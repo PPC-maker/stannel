@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import ImageWithLoader from '@/components/ui/ImageWithLoader';
 import Link from 'next/link';
@@ -18,6 +18,10 @@ export default function SuppliersDirectoryPage() {
 
   const { data, isLoading } = useSuppliersDirectory({ search: debouncedSearch }, isReady);
   const suppliers = data?.data || [];
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   // Debounce search
   const handleSearch = (value: string) => {

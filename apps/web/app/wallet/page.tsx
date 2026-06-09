@@ -528,7 +528,7 @@ export default function WalletPage() {
               <div className="flex items-center justify-end">
                 <span className="text-[#e6cc8d]/80 text-xs flex items-center gap-1.5">
                   <Sparkles size={12} className="text-[#e6cc8d]" />
-                  Admin כניסה מהירה
+                  {user?.name || 'חבר מועדון'}
                 </span>
               </div>
             </div>

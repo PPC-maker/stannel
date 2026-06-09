@@ -1,10 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/lib/auth-context';
 import { useAuthGuard, AuthGuardLoader } from '@/lib/useAuthGuard';
+import { authApi } from '@stannel/api-client';
 import {
   User,
   Bell,
@@ -40,16 +41,107 @@ export default function SettingsPage() {
   const { user, logout } = useAuth();
   const [notifications, setNotifications] = useState({
     email: true,
-    push: true,
+    push: false,
     sms: false,
   });
   const [darkMode, setDarkMode] = useState(true);
   const [language, setLanguage] = useState('he');
+  const [prefsLoaded, setPrefsLoaded] = useState(false);
   const [showLanguageModal, setShowLanguageModal] = useState(false);
+
+  // Load preferences from API on mount
+  useEffect(() => {
+    if (!isReady) return;
+    authApi.getPreferences().then((prefs) => {
+      setNotifications({
+        email: prefs.prefEmailNotifications,
+        push: prefs.prefPushNotifications,
+        sms: prefs.prefSmsNotifications,
+      });
+      setDarkMode(prefs.prefDarkMode);
+      setLanguage(prefs.prefLanguage);
+      setPrefsLoaded(true);
+    }).catch(() => {
+      setPrefsLoaded(true); // use defaults on error
+    });
+  }, [isReady]);
+
+  // Save a single preference to API
+  const savePreference = useCallback(async (data: Record<string, boolean | string>) => {
+    try {
+      await authApi.updatePreferences(data);
+    } catch (err) {
+      console.error('Failed to save preference:', err);
+    }
+  }, []);
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [show2FAModal, setShow2FAModal] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [passwordLoading, setPasswordLoading] = useState(false);
+  const [passwordError, setPasswordError] = useState<string | null>(null);
+
+  const handleChangePassword = async () => {
+    setPasswordError(null);
+
+    if (!currentPassword || !newPassword || !confirmPassword) {
+      setPasswordError('יש למלא את כל השדות');
+      return;
+    }
+    if (newPassword.length < 6) {
+      setPasswordError('הסיסמה החדשה חייבת להכיל לפחות 6 תווים');
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      setPasswordError('הסיסמאות אינן תואמות');
+      return;
+    }
+
+    setPasswordLoading(true);
+    try {
+      const { getFirebaseAuth } = await import('@/lib/firebase');
+      const { EmailAuthProvider, reauthenticateWithCredential, updatePassword } = await import('firebase/auth');
+      const auth = getFirebaseAuth();
+      const firebaseUser = auth?.currentUser;
+      if (!firebaseUser || !firebaseUser.email) {
+        setPasswordError('לא נמצא משתמש מחובר');
+        return;
+      }
+
+      // Re-authenticate
+      const credential = EmailAuthProvider.credential(firebaseUser.email, currentPassword);
+      await reauthenticateWithCredential(firebaseUser, credential);
+
+      // Update password
+      await updatePassword(firebaseUser, newPassword);
+
+      setShowPasswordModal(false);
+      setCurrentPassword('');
+      setNewPassword('');
+      setConfirmPassword('');
+      Swal.fire({
+        title: 'הסיסמה עודכנה בהצלחה',
+        icon: 'success',
+        confirmButtonText: 'אישור',
+        background: '#FFFFFF',
+        color: '#1E293B',
+      });
+    } catch (err: any) {
+      const code = err?.code || '';
+      if (code === 'auth/wrong-password' || code === 'auth/invalid-credential') {
+        setPasswordError('הסיסמה הנוכחית שגויה');
+      } else if (code === 'auth/too-many-requests') {
+        setPasswordError('יותר מדי ניסיונות. נסה שוב מאוחר יותר');
+      } else {
+        setPasswordError('שגיאה בעדכון הסיסמה. נסה שוב');
+      }
+    } finally {
+      setPasswordLoading(false);
+    }
+  };
 
   if (!isReady) {
     return <AuthGuardLoader />;
@@ -94,7 +186,7 @@ export default function SettingsPage() {
     name: user?.name || 'משתמש',
     email: user?.email || 'user@example.com',
     phone: user?.phone || '-',
-    company: user?.supplierProfile?.companyName || '-',
+    company: user?.company || user?.supplierProfile?.companyName || '-',
     role: user?.role === 'ARCHITECT' ? 'אדריכל' : user?.role === 'SUPPLIER' ? 'ספק' : 'משתמש',
     avatar: user?.profileImage,
   };
@@ -218,12 +310,13 @@ export default function SettingsPage() {
                     </div>
                   </div>
                   <button
-                    onClick={() =>
-                      setNotifications((prev) => ({
-                        ...prev,
-                        [item.key]: !prev[item.key as keyof typeof prev],
-                      }))
-                    }
+                    onClick={() => {
+                      const key = item.key as keyof typeof notifications;
+                      const newValue = !notifications[key];
+                      setNotifications((prev) => ({ ...prev, [key]: newValue }));
+                      const prefKey = key === 'email' ? 'prefEmailNotifications' : key === 'push' ? 'prefPushNotifications' : 'prefSmsNotifications';
+                      savePreference({ [prefKey]: newValue });
+                    }}
                     className={`w-12 h-6 rounded-full transition-colors relative ${
                       notifications[item.key as keyof typeof notifications]
                         ? 'bg-[#c99b4a]'
@@ -265,7 +358,11 @@ export default function SettingsPage() {
                   </div>
                 </div>
                 <button
-                  onClick={() => setDarkMode(!darkMode)}
+                  onClick={() => {
+                    const newValue = !darkMode;
+                    setDarkMode(newValue);
+                    savePreference({ prefDarkMode: newValue });
+                  }}
                   className={`w-12 h-6 rounded-full transition-colors relative ${
                     darkMode ? 'bg-[#c99b4a]' : 'bg-[#d4cdc4]'
                   }`}
@@ -528,6 +625,7 @@ export default function SettingsPage() {
                     key={lang.code}
                     onClick={() => {
                       setLanguage(lang.code);
+                      savePreference({ prefLanguage: lang.code });
                       setShowLanguageModal(false);
                     }}
                     className={`w-full flex items-center justify-between p-4 rounded-xl transition-colors ${
@@ -571,10 +669,17 @@ export default function SettingsPage() {
                 </button>
               </div>
               <div className="space-y-4">
+                {passwordError && (
+                  <div className="p-3 bg-red-50 border border-red-200 text-red-600 rounded-xl text-sm text-center">
+                    {passwordError}
+                  </div>
+                )}
                 <div>
                   <label className="block text-[#8b7c69] text-sm mb-2">סיסמה נוכחית</label>
                   <input
                     type="password"
+                    value={currentPassword}
+                    onChange={(e) => setCurrentPassword(e.target.value)}
                     className="w-full bg-[#f7f3f2] border border-[rgba(201,155,74,0.15)] rounded-xl px-4 py-3 text-[#2b241d] placeholder:text-[#a89b8a] focus:border-[#c99b4a] focus:bg-white transition-all"
                     placeholder="הזן סיסמה נוכחית"
                   />
@@ -583,6 +688,8 @@ export default function SettingsPage() {
                   <label className="block text-[#8b7c69] text-sm mb-2">סיסמה חדשה</label>
                   <input
                     type="password"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
                     className="w-full bg-[#f7f3f2] border border-[rgba(201,155,74,0.15)] rounded-xl px-4 py-3 text-[#2b241d] placeholder:text-[#a89b8a] focus:border-[#c99b4a] focus:bg-white transition-all"
                     placeholder="הזן סיסמה חדשה"
                   />
@@ -591,12 +698,18 @@ export default function SettingsPage() {
                   <label className="block text-[#8b7c69] text-sm mb-2">אימות סיסמה חדשה</label>
                   <input
                     type="password"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
                     className="w-full bg-[#f7f3f2] border border-[rgba(201,155,74,0.15)] rounded-xl px-4 py-3 text-[#2b241d] placeholder:text-[#a89b8a] focus:border-[#c99b4a] focus:bg-white transition-all"
                     placeholder="הזן שוב סיסמה חדשה"
                   />
                 </div>
-                <button className="w-full bg-gradient-to-r from-[#c99b4a] to-[#9e7746] text-white py-3 px-6 rounded-xl font-semibold hover:from-[#9e7746] hover:to-[#86643a] transition-all mt-4">
-                  עדכן סיסמה
+                <button
+                  onClick={handleChangePassword}
+                  disabled={passwordLoading}
+                  className="w-full bg-gradient-to-r from-[#c99b4a] to-[#9e7746] text-white py-3 px-6 rounded-xl font-semibold hover:from-[#9e7746] hover:to-[#86643a] transition-all mt-4 disabled:opacity-50"
+                >
+                  {passwordLoading ? 'מעדכן...' : 'עדכן סיסמה'}
                 </button>
               </div>
             </motion.div>

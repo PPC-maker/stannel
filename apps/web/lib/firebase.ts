@@ -112,10 +112,18 @@ export async function loginWithGoogle() {
   const auth = getFirebaseAuth();
   if (!auth) throw new Error('Firebase not configured');
   const provider = new GoogleAuthProvider();
+  provider.addScope('profile');
+  provider.addScope('email');
   provider.setCustomParameters({ prompt: 'select_account' });
-  const result = await signInWithPopup(auth, provider);
-  const token = await result.user.getIdToken();
-  return { user: result.user, token };
+  try {
+    const result = await signInWithPopup(auth, provider);
+    const token = await result.user.getIdToken();
+    return { user: result.user, token };
+  } catch (error: unknown) {
+    const firebaseError = error as { code?: string; message?: string };
+    console.error('[Firebase] Google login error:', firebaseError.code, firebaseError.message);
+    throw error;
+  }
 }
 
 export async function logout() {
@@ -152,7 +160,11 @@ export async function loginWithCustomToken(customToken: string) {
 export async function resetPassword(email: string): Promise<void> {
   const auth = getFirebaseAuth();
   if (!auth) throw new Error('Firebase not configured');
-  await sendPasswordResetEmail(auth, email);
+  const actionCodeSettings = {
+    url: typeof window !== 'undefined' ? `${window.location.origin}/login` : 'https://stannel.co.il/login',
+    handleCodeInApp: false,
+  };
+  await sendPasswordResetEmail(auth, email, actionCodeSettings);
 }
 
 export { auth, app };
