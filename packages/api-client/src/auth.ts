@@ -135,7 +135,42 @@ export const authApi = {
     return response.json();
   },
 
+  async getPreferences(): Promise<UserPreferences> {
+    const response = await fetchWithAuth(`${config.baseUrl}/auth/preferences`, {
+      method: 'GET',
+      headers: getHeaders(),
+    });
+
+    if (!response.ok) {
+      throw new Error('שגיאה בטעינת ההעדפות');
+    }
+
+    return response.json();
+  },
+
+  async updatePreferences(data: Partial<UserPreferences>): Promise<UserPreferences> {
+    const response = await fetchWithAuth(`${config.baseUrl}/auth/preferences`, {
+      method: 'PATCH',
+      headers: getHeaders(),
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      throw new Error('שגיאה בשמירת ההעדפות');
+    }
+
+    return response.json();
+  },
+
   logout() {
     setAuthToken(null);
   },
 };
+
+export interface UserPreferences {
+  prefEmailNotifications: boolean;
+  prefPushNotifications: boolean;
+  prefSmsNotifications: boolean;
+  prefDarkMode: boolean;
+  prefLanguage: string;
+}

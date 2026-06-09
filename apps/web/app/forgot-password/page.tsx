@@ -4,28 +4,52 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Mail, ArrowRight, AlertCircle, CheckCircle } from 'lucide-react';
-import { resetPassword } from '@/lib/firebase';
+import { config } from '@stannel/api-client';
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const [resendCountdown, setResendCountdown] = useState(0);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const sendResetEmail = async (emailToSend: string) => {
     setIsLoading(true);
     setError(null);
 
     try {
-      await resetPassword(email);
+      const res = await fetch(`${config.baseUrl}/auth/request-password-reset`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: emailToSend.trim() }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || 'שליחת האימייל נכשלה');
+      }
       setSuccess(true);
+      // Start 60s cooldown for resend
+      setResendCountdown(60);
+      const interval = setInterval(() => {
+        setResendCountdown((prev) => {
+          if (prev <= 1) {
+            clearInterval(interval);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'שליחת האימייל נכשלה';
       setError(translateFirebaseError(message));
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    await sendResetEmail(email);
   };
 
   return (
@@ -67,18 +91,27 @@ export default function ForgotPasswordPage() {
                 <p className="text-white/60 mb-6">
                   בדקו את תיבת הדואר שלכם ({email}) ולחצו על הקישור לאיפוס הסיסמה.
                 </p>
-                <p className="text-white/40 text-sm mb-6">
-                  לא קיבלתם? בדקו בתיקיית הספאם או נסו שוב.
-                </p>
+                <div className="text-white/40 text-sm mb-6 space-y-2">
+                  <p>לא קיבלתם? בדקו את הדברים הבאים:</p>
+                  <ul className="text-right list-disc list-inside space-y-1">
+                    <li>בדקו בתיקיית <strong className="text-white/60">ספאם / דואר זבל</strong></li>
+                    <li>המייל מגיע מ-<span dir="ltr" className="text-white/60">STANNEL</span></li>
+                    <li>וודאו שהאימייל שהזנתם נכון</li>
+                  </ul>
+                </div>
                 <div className="space-y-3">
                   <button
-                    onClick={() => {
-                      setSuccess(false);
-                      setEmail('');
-                    }}
-                    className="w-full bg-white/10 border border-white/20 rounded-xl py-3 text-white hover:bg-white/20 transition-colors font-medium"
+                    onClick={() => sendResetEmail(email)}
+                    disabled={isLoading || resendCountdown > 0}
+                    className="w-full bg-white/10 border border-white/20 rounded-xl py-3 text-white hover:bg-white/20 transition-colors font-medium disabled:opacity-50"
                   >
-                    שליחה חוזרת
+                    {isLoading ? (
+                      <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin mx-auto" />
+                    ) : resendCountdown > 0 ? (
+                      `שליחה חוזרת (${resendCountdown}s)`
+                    ) : (
+                      'שליחה חוזרת'
+                    )}
                   </button>
                   <Link
                     href="/login"

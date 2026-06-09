@@ -18,18 +18,8 @@ export function useAuthGuard() {
   useEffect(() => {
     if (!loading && !user && !alertShown.current) {
       alertShown.current = true;
-      Swal.fire({
-        title: 'שים לב',
-        text: 'אתה לא מחובר למערכת. התחבר כדי לצפות בדף זה.',
-        icon: 'info',
-        confirmButtonText: 'להתחברות',
-        confirmButtonColor: '#d4af37',
-        background: '#1a2e2a',
-        color: '#fff',
-        allowOutsideClick: false,
-      }).then(() => {
-        router.replace('/login');
-      });
+      // Just redirect to login without popup - the login page speaks for itself
+      router.replace('/login');
     }
   }, [user, loading, router]);
 

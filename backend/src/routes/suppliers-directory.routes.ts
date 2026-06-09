@@ -9,12 +9,26 @@ export async function suppliersDirectoryRoutes(server: FastifyInstance) {
   // POST routes (meeting requests) require auth - applied per-route below
 
   // Get all suppliers for directory (public listing)
-  server.get('/', async (_request: FastifyRequest, reply: FastifyReply) => {
+  server.get('/', async (request: FastifyRequest, reply: FastifyReply) => {
     try {
-      console.log('Fetching suppliers...');
+      const { search } = request.query as { search?: string };
+      console.log('Fetching suppliers...', search ? `search: "${search}"` : '');
+
+      const whereClause: any = { role: 'SUPPLIER', isDeleted: false };
+
+      if (search && search.trim()) {
+        const term = search.trim();
+        whereClause.OR = [
+          { name: { contains: term, mode: 'insensitive' } },
+          { company: { contains: term, mode: 'insensitive' } },
+          { supplierProfile: { companyName: { contains: term, mode: 'insensitive' } } },
+          { supplierProfile: { description: { contains: term, mode: 'insensitive' } } },
+          { supplierProfile: { address: { contains: term, mode: 'insensitive' } } },
+        ];
+      }
 
       const suppliers = await prisma.user.findMany({
-        where: { role: 'SUPPLIER', isDeleted: false },
+        where: whereClause,
         include: { supplierProfile: true },
       });
 

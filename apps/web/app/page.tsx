@@ -1,12 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
-import { CheckCircle, ArrowLeft, Users, Gift, Building2, Star, ChevronLeft, Instagram, Facebook, Globe } from 'lucide-react';
-import { useAuth } from '@/lib/auth-context';
+import { ArrowLeft, Users, Gift, Building2, Star, ChevronLeft, Instagram, Facebook, Globe } from 'lucide-react';
 
 // Why choose us features - with unique colors
 const whyChooseUs = [
@@ -75,20 +73,12 @@ const projects = [
 
 export default function HomePage() {
   const [mounted, setMounted] = useState(false);
-  const { user, loading } = useAuth();
-  const router = useRouter();
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  useEffect(() => {
-    if (!loading && !user) {
-      router.replace('/login');
-    }
-  }, [loading, user, router]);
-
-  if (!mounted || loading || !user) {
+  if (!mounted) {
     return <div className="min-h-screen" />;
   }
 
