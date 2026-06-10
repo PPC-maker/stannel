@@ -27,6 +27,8 @@ export default function BottomNav() {
 
   return (
     <nav
+      id="web-bottom-nav"
+      className="web-bottom-nav"
       aria-label="ניווט תחתון"
       style={{
         position: 'fixed',

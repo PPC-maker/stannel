@@ -121,7 +121,7 @@ export default function Navbar() {
   const isDarkPage = !isLightPage;
 
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+    <nav id="web-top-nav" className={`web-top-nav fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
       isDarkPage
         ? isScrolled
           ? 'bg-[#4A3A1F]/40 backdrop-blur-xl border-b border-white/10 shadow-lg shadow-black/20'
