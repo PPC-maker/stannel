@@ -93,7 +93,7 @@ export default function AdminOrdersPage() {
   if (!isReady) return <AuthGuardLoader />;
 
   return (
-    <div className="min-h-screen -mt-16 pt-8 pb-24">
+    <div className="min-h-screen pt-8 pb-24">
       <div className="px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         {/* Header */}
         <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="mb-8">

@@ -1005,7 +1005,7 @@ export default function AdminPage() {
   const handleCreateSupplier = async () => {
     // Step 1: Basic info
     const step1 = await Swal.fire({
-      title: 'הוספת ספק חדש (1/3)',
+      title: 'הוספת ספק חדש (1/4)',
       html: `
         <div style="text-align: right; direction: rtl;">
           <div style="margin-bottom: 12px;">
@@ -1053,7 +1053,7 @@ export default function AdminPage() {
 
     // Step 2: Business info
     const step2 = await Swal.fire({
-      title: 'פרטי עסק (2/3)',
+      title: 'פרטי עסק (2/4)',
       html: `
         <div style="text-align: right; direction: rtl;">
           <div style="margin-bottom: 12px;">
@@ -1097,7 +1097,7 @@ export default function AdminPage() {
 
     // Step 3: Social + Commission
     const step3 = await Swal.fire({
-      title: 'רשתות חברתיות ועמלה (3/3)',
+      title: 'רשתות חברתיות ועמלה (3/4)',
       html: `
         <div style="text-align: right; direction: rtl;">
           <div style="margin-bottom: 12px;">
@@ -1145,7 +1145,7 @@ export default function AdminPage() {
         color: '#2b241d',
       });
 
-      await adminApi.createSupplier({
+      const newSupplier = await adminApi.createSupplier({
         email: step1.value.email,
         password: step1.value.password,
         name: step1.value.name,
@@ -1162,7 +1162,90 @@ export default function AdminPage() {
         },
       });
 
+      const supplierId = newSupplier?.id;
+
       await fetchAllUsers();
+
+      // Step 4: Image upload (optional)
+      if (supplierId) {
+        const step4 = await Swal.fire({
+          title: 'העלאת תמונות (4/4)',
+          html: `
+            <div style="text-align: right; direction: rtl;">
+              <div style="margin-bottom: 16px;">
+                <label style="display: block; margin-bottom: 8px; font-size: 14px; color: #8b7c69; font-weight: 600;">תמונת פרופיל / לוגו</label>
+                <div style="position: relative;">
+                  <input id="swal-profile-image" type="file" accept="image/*" style="width: 100%; padding: 10px; border: 2px dashed rgba(201,155,74,0.3); border-radius: 12px; background: rgba(201,155,74,0.05); cursor: pointer; font-size: 13px; color: #8b7c69;" />
+                </div>
+              </div>
+              <div style="margin-bottom: 12px;">
+                <label style="display: block; margin-bottom: 8px; font-size: 14px; color: #8b7c69; font-weight: 600;">תמונות עסקיות (עד 10)</label>
+                <div style="position: relative;">
+                  <input id="swal-business-images" type="file" accept="image/*" multiple style="width: 100%; padding: 10px; border: 2px dashed rgba(201,155,74,0.3); border-radius: 12px; background: rgba(201,155,74,0.05); cursor: pointer; font-size: 13px; color: #8b7c69;" />
+                </div>
+              </div>
+              <p style="font-size: 12px; color: #a89b8a; margin-top: 8px;">* ניתן לדלג ולהעלות תמונות מאוחר יותר</p>
+            </div>
+          `,
+          showCancelButton: true,
+          confirmButtonText: 'העלה תמונות',
+          cancelButtonText: 'דלג',
+          confirmButtonColor: '#c99b4a',
+          background: '#f7f3f2',
+          color: '#2b241d',
+          preConfirm: () => {
+            const profileInput = document.getElementById('swal-profile-image') as HTMLInputElement;
+            const businessInput = document.getElementById('swal-business-images') as HTMLInputElement;
+            const profileFile = profileInput?.files?.[0] || null;
+            const businessFiles = businessInput?.files ? Array.from(businessInput.files).slice(0, 10) : [];
+            if (!profileFile && businessFiles.length === 0) {
+              Swal.showValidationMessage('בחרו לפחות תמונה אחת או לחצו על "דלג"');
+              return false;
+            }
+            return { profileFile, businessFiles };
+          },
+        });
+
+        if (step4.isConfirmed && step4.value) {
+          Swal.fire({
+            title: 'מעלה תמונות...',
+            allowOutsideClick: false,
+            didOpen: () => Swal.showLoading(),
+            background: '#f7f3f2',
+            color: '#2b241d',
+          });
+
+          try {
+            const { fetchWithAuth: fetchAuth, getMultipartHeaders: getMH, config: apiConfig } = await import('@stannel/api-client');
+
+            // Upload profile image
+            if (step4.value.profileFile) {
+              const formData = new FormData();
+              formData.append('file', step4.value.profileFile);
+              await fetchAuth(`${apiConfig.baseUrl}/admin/users/${supplierId}/update-profile-image`, {
+                method: 'POST',
+                headers: getMH() as Record<string, string>,
+                body: formData,
+              });
+            }
+
+            // Upload business images
+            for (const file of step4.value.businessFiles) {
+              const formData = new FormData();
+              formData.append('file', file);
+              await fetchAuth(`${apiConfig.baseUrl}/admin/users/${supplierId}/upload-business-image`, {
+                method: 'POST',
+                headers: getMH() as Record<string, string>,
+                body: formData,
+              });
+            }
+
+            await fetchAllUsers();
+          } catch (imgError) {
+            console.error('Error uploading images:', imgError);
+          }
+        }
+      }
 
       Swal.fire({
         title: 'הספק נוצר בהצלחה!',
@@ -1304,7 +1387,7 @@ Please analyze this error and provide a fix.
 
   if (loading) {
     return (
-      <div className="min-h-screen -mt-16 pt-8 flex items-center justify-center">
+      <div className="min-h-screen pt-8 flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
           <Loader2 className="w-10 h-10 text-[#c99b4a] animate-spin" />
           <p className="text-[#8b7c69]">טוען נתוני מערכת...</p>
@@ -1314,7 +1397,7 @@ Please analyze this error and provide a fix.
   }
 
   return (
-    <div className="min-h-screen -mt-16 pt-8">
+    <div className="min-h-screen pt-8">
       <div className="px-3 sm:px-6 pt-20 sm:pt-24 pb-24 max-w-7xl mx-auto">
         {/* Header */}
         <motion.div

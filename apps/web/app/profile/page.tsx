@@ -312,27 +312,29 @@ export default function ProfilePage() {
 
               {/* Edit Button */}
               {isEditing ? (
-                <div className="absolute top-4 left-4 flex gap-2">
+                <div className="absolute top-4 right-4 flex gap-2">
+                  <button
+                    onClick={handleSaveProfile}
+                    className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#c99b4a] hover:bg-[#9e7746] transition-colors text-white text-sm font-medium"
+                  >
+                    <Save size={16} />
+                    <span>שמור</span>
+                  </button>
                   <button
                     onClick={() => {
                       setIsEditing(false);
                       router.replace('/profile');
                     }}
-                    className="p-2 rounded-lg bg-[#f7f3f2] hover:bg-[#ede6e0] transition-colors"
+                    className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#f7f3f2] hover:bg-[#ede6e0] transition-colors text-[#8b7c69] text-sm font-medium"
                   >
-                    <X size={18} className="text-[#8b7c69]" />
-                  </button>
-                  <button
-                    onClick={handleSaveProfile}
-                    className="p-2 rounded-lg bg-[#c99b4a] hover:bg-[#9e7746] transition-colors"
-                  >
-                    <Save size={18} className="text-white" />
+                    <X size={16} />
+                    <span>ביטול</span>
                   </button>
                 </div>
               ) : (
                 <button
                   onClick={() => setIsEditing(true)}
-                  className="absolute top-4 left-4 p-2 rounded-lg bg-[#f7f3f2] hover:bg-[#ede6e0] transition-colors"
+                  className="absolute top-4 right-4 p-2 rounded-lg bg-[#f7f3f2] hover:bg-[#ede6e0] transition-colors"
                 >
                   <Edit3 size={18} className="text-[#8b7c69]" />
                 </button>

@@ -108,7 +108,7 @@ export default function AdminAnalyticsPage() {
   ];
 
   return (
-    <div className="min-h-screen -mt-16 pt-8">
+    <div className="min-h-screen pt-8">
       <div className="px-4 sm:px-6 max-w-7xl mx-auto relative z-10 pb-24">
         {/* Header */}
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-6">
