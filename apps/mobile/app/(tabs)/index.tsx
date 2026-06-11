@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect, useCallback } from 'react';
-import { View, StyleSheet, ActivityIndicator, BackHandler, Platform, StatusBar, TouchableOpacity, Text } from 'react-native';
+import { View, StyleSheet, BackHandler, Platform, StatusBar, TouchableOpacity, Text, ActivityIndicator } from 'react-native';
 import { WebView } from 'react-native-webview';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { HIDE_WEB_NAV_JS, WEB_URL } from '../../lib/webview-inject';
@@ -14,10 +14,15 @@ const TABS = [
 
 export default function MainScreen() {
   const webViewRef = useRef<WebView>(null);
-  const [loading, setLoading] = useState(true);
+  const [initialLoad, setInitialLoad] = useState(true);
   const [activeTab, setActiveTab] = useState('home');
   const [canGoBack, setCanGoBack] = useState(false);
-  const [currentUrl, setCurrentUrl] = useState(`${WEB_URL}/wallet`);
+
+  // Safety timeout - hide loader after 3 seconds no matter what
+  useEffect(() => {
+    const timer = setTimeout(() => setInitialLoad(false), 3000);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Android back button
   useEffect(() => {
@@ -34,27 +39,23 @@ export default function MainScreen() {
 
   const handleTabPress = useCallback((tab: typeof TABS[0]) => {
     setActiveTab(tab.key);
-    const targetUrl = `${WEB_URL}${tab.path}`;
     if (webViewRef.current) {
-      webViewRef.current.injectJavaScript(`window.location.href = '${targetUrl}'; true;`);
+      webViewRef.current.injectJavaScript(`window.location.href = '${WEB_URL}${tab.path}'; true;`);
     }
   }, []);
 
   const handleNavigationStateChange = useCallback((navState: any) => {
     setCanGoBack(navState.canGoBack);
-    setCurrentUrl(navState.url || '');
+    const url = navState.url || '';
+
+    // Hide initial loader once any page loads
+    if (!navState.loading) setInitialLoad(false);
 
     // Update active tab based on URL
-    const url = navState.url || '';
     if (url.includes('/rewards')) setActiveTab('rewards');
     else if (url.includes('/invoices')) setActiveTab('invoices');
     else if (url.includes('/profile')) setActiveTab('profile');
     else if (url.includes('/wallet')) setActiveTab('home');
-
-    // If redirected to login, navigate to login
-    if (url.includes('/login') && !url.includes('stannelclub.co.il/login')) {
-      // Stay in WebView - let the user login within the same WebView
-    }
   }, []);
 
   return (
@@ -62,10 +63,9 @@ export default function MainScreen() {
       <StatusBar barStyle="dark-content" />
       <WebView
         ref={webViewRef}
-        source={{ uri: `${WEB_URL}/wallet` }}
+        source={{ uri: `${WEB_URL}/login` }}
         style={styles.webview}
-        onLoadStart={() => setLoading(true)}
-        onLoadEnd={() => setLoading(false)}
+        onLoadEnd={() => setInitialLoad(false)}
         onNavigationStateChange={handleNavigationStateChange}
         injectedJavaScript={HIDE_WEB_NAV_JS}
         javaScriptEnabled={true}
@@ -78,12 +78,13 @@ export default function MainScreen() {
         cacheMode="LOAD_DEFAULT"
         pullToRefreshEnabled={true}
         allowsInlineMediaPlayback={true}
-        mediaPlaybackRequiresUserAction={false}
         mixedContentMode="compatibility"
         originWhitelist={['*']}
         userAgent="STANNEL-App/1.0"
       />
-      {loading && (
+
+      {/* Initial load spinner - only on first load, auto-hides after 3s */}
+      {initialLoad && (
         <View style={styles.loaderOverlay}>
           <ActivityIndicator size="large" color="#C9A961" />
         </View>
@@ -127,7 +128,8 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#f7f3f2' },
   webview: { flex: 1 },
   loaderOverlay: {
-    ...StyleSheet.absoluteFillObject,
+    position: 'absolute',
+    top: 0, left: 0, right: 0, bottom: 85,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#f7f3f2',
