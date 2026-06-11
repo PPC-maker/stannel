@@ -70,6 +70,18 @@ body.stannel-mobile-app {
   padding-bottom: 0 !important;
 }
 
+/* Hide browser's built-in password reveal button */
+input::-ms-reveal,
+input::-ms-clear,
+input::-webkit-credentials-auto-fill-button,
+input::-webkit-clear-button {
+  display: none !important;
+  -webkit-appearance: none !important;
+}
+input[type="password"]::-webkit-textfield-decoration-container {
+  display: none !important;
+}
+
 /* Force dark text in login inputs - fix mobile white-on-white */
 .login-input {
   background-color: rgba(255, 255, 255, 0.92) !important;

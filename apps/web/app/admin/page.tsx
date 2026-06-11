@@ -980,13 +980,6 @@ export default function AdminPage() {
     if (!result.isConfirmed) return;
 
     try {
-      const user = allUsers.find(u => u.id === userId);
-      if (!user?.supplierProfile) return;
-
-      const currentImages = user.supplierProfile.businessImages || [];
-      const updatedImages = currentImages.filter(img => img !== imageUrl);
-
-      // Delete image via admin API
       const { fetchWithAuth: fetchAuth, config: apiConfig, getHeaders: getH2 } = await import('@stannel/api-client');
       await fetchAuth(`${apiConfig.baseUrl}/admin/users/${userId}/delete-image`, {
         method: 'POST',

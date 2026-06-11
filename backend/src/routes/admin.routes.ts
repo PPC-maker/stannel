@@ -817,7 +817,7 @@ export async function adminRoutes(server: FastifyInstance) {
     return { success: true, deletedCount: result.count };
   });
 
-  // Delete supplier image (admin)
+  // Delete user/supplier image (admin)
   server.post('/users/:id/delete-image', async (request: FastifyRequest, reply: FastifyReply) => {
     const { id } = request.params as { id: string };
     const { imageUrl } = request.body as { imageUrl: string };
@@ -827,28 +827,49 @@ export async function adminRoutes(server: FastifyInstance) {
       include: { supplierProfile: true },
     });
 
-    if (!user?.supplierProfile) {
-      return reply.code(404).send({ error: 'Supplier profile not found' });
+    if (!user) {
+      return reply.code(404).send({ error: 'User not found' });
     }
 
-    const currentImages = user.supplierProfile.businessImages || [];
-    const updatedImages = (currentImages as string[]).filter((img: string) => img !== imageUrl);
+    // Check if it's the user's profile image
+    if (user.profileImage === imageUrl) {
+      await prisma.user.update({
+        where: { id },
+        data: { profileImage: null },
+      });
+    }
 
-    await prisma.supplierProfile.update({
-      where: { id: user.supplierProfile.id },
-      data: { businessImages: updatedImages },
-    });
+    // Check if it's a supplier business image
+    if (user.supplierProfile) {
+      const currentImages = user.supplierProfile.businessImages || [];
+      const updatedImages = (currentImages as string[]).filter((img: string) => img !== imageUrl);
+
+      if (updatedImages.length !== (currentImages as string[]).length) {
+        await prisma.supplierProfile.update({
+          where: { id: user.supplierProfile.id },
+          data: { businessImages: updatedImages },
+        });
+      }
+
+      // Check if it's the supplier profile image
+      if (user.supplierProfile.profileImage === imageUrl) {
+        await prisma.supplierProfile.update({
+          where: { id: user.supplierProfile.id },
+          data: { profileImage: null },
+        });
+      }
+    }
 
     await prisma.auditLog.create({
       data: {
         userId: request.user!.id,
-        action: 'SUPPLIER_IMAGE_DELETED',
+        action: 'USER_IMAGE_DELETED',
         entityId: id,
         metadata: { deletedImage: imageUrl },
       },
     });
 
-    return { success: true, remainingImages: updatedImages.length };
+    return { success: true };
   });
 
   // Upload business image for supplier (admin)
