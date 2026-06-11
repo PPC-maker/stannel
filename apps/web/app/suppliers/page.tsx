@@ -77,7 +77,7 @@ export default function SuppliersDirectoryPage() {
             <p className="text-[#8b7c69] text-base">לא נמצאו ספקים</p>
           </div>
         ) : (
-          <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-5">
+          <div className="grid grid-cols-2 gap-3 sm:gap-5">
             {suppliers.map((supplier, index) => (
               <SupplierCard key={supplier.id} supplier={supplier} index={index} />
             ))}
