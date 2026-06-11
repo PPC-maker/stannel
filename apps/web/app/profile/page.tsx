@@ -235,7 +235,7 @@ export default function ProfilePage() {
                 >
                   <Camera size={16} className="text-white" />
                 </button>
-                <div className={`absolute -top-2 -right-2 px-3 py-1 bg-gradient-to-r ${getTierBg(currentUser.tier)} rounded-full border`}>
+                <div className={`absolute -top-2 -left-2 px-3 py-1 bg-gradient-to-r ${getTierBg(currentUser.tier)} rounded-full border z-10`}>
                   <span className={`text-xs font-bold ${getTierColor(currentUser.tier)}`}>{currentUser.tier}</span>
                 </div>
               </div>
