@@ -6,9 +6,9 @@ import { HIDE_WEB_NAV_JS, WEB_URL } from '../../lib/webview-inject';
 
 const TABS = [
   { key: 'rewards', path: '/rewards', label: 'הטבות', icon: 'gift' as const },
-  { key: 'invoices', path: '/invoices', label: 'חשבוניות', icon: 'file-document-outline' as const },
+  { key: 'suppliers', path: '/suppliers', label: 'ספקים', icon: 'magnify' as const },
   { key: 'home', path: '/wallet', label: 'בית', icon: 'home' as const, isCenter: true },
-  { key: 'wallet', path: '/wallet', label: 'ארנק', icon: 'wallet-outline' as const },
+  { key: 'invoices', path: '/invoices', label: 'חשבוניות', icon: 'file-document-outline' as const },
   { key: 'profile', path: '/profile', label: 'פרופיל', icon: 'account-circle' as const },
 ];
 
@@ -53,6 +53,7 @@ export default function MainScreen() {
 
     // Update active tab based on URL
     if (url.includes('/rewards')) setActiveTab('rewards');
+    else if (url.includes('/suppliers')) setActiveTab('suppliers');
     else if (url.includes('/invoices')) setActiveTab('invoices');
     else if (url.includes('/profile')) setActiveTab('profile');
     else if (url.includes('/wallet')) setActiveTab('home');
