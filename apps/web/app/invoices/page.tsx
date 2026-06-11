@@ -74,7 +74,7 @@ export default function InvoicesPage() {
         {/* Stats Cards */}
         <div className="grid grid-cols-4 gap-2 sm:gap-4 mb-4 sm:mb-6">
           {[
-            { label: 'סה״כ', value: stats.total, color: 'text-[#c99b4a]', borderColor: 'border-[rgba(201,155,74,0.08)]' },
+            { label: 'סה״כ', value: stats.total, color: 'text-[#c99b4a]', borderColor: 'border-[#c99b4a]/30' },
             { label: 'ממתינות', value: stats.pending, color: 'text-yellow-400', borderColor: 'border-yellow-500/30' },
             { label: 'אושרו', value: stats.approved, color: 'text-[#c99b4a]', borderColor: 'border-[#c99b4a]/30' },
             { label: 'נדחו', value: stats.rejected, color: 'text-red-400', borderColor: 'border-red-500/30' },

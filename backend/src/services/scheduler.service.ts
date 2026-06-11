@@ -71,6 +71,16 @@ function getNext2AM(): Date {
   return next;
 }
 
+function getNext3AM(): Date {
+  const now = new Date();
+  const next = new Date(now);
+  next.setHours(3, 0, 0, 0);
+  if (next <= now) {
+    next.setDate(next.getDate() + 1);
+  }
+  return next;
+}
+
 function getNextRunTime(name: string): Date {
   switch (name) {
     case 'weekly-health-report':
@@ -81,6 +91,8 @@ function getNextRunTime(name: string): Date {
       return getNext1AM();
     case 'financial-integrity-check':
       return getNext2AM();
+    case 'recycle-bin-cleanup':
+      return getNext3AM();
     default:
       // Default to next hour
       const next = new Date();
@@ -140,6 +152,36 @@ export const schedulerService = {
       handler: async () => {
         console.log('[Scheduler] Running financial integrity check...');
         await financialSecurityService.runIntegrityCheck();
+      },
+    });
+
+    // Recycle bin cleanup - permanently delete invoices older than 30 days
+    this.registerTask({
+      name: 'recycle-bin-cleanup',
+      cronExpression: '0 3 * * *', // Every day at 3:00 AM
+      lastRun: null,
+      nextRun: getNextRunTime('recycle-bin-cleanup'),
+      enabled: true,
+      handler: async () => {
+        console.log('[Scheduler] Running recycle bin cleanup...');
+        const { PrismaClient } = await import('@prisma/client');
+        const prisma = new PrismaClient();
+        try {
+          const thirtyDaysAgo = new Date();
+          thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+          const result = await prisma.invoice.deleteMany({
+            where: {
+              isDeleted: true,
+              deletedAt: { lt: thirtyDaysAgo },
+            },
+          });
+          console.log(`[Scheduler] Recycle bin cleanup: permanently deleted ${result.count} invoices`);
+        } catch (err) {
+          console.error('[Scheduler] Recycle bin cleanup failed:', err);
+        } finally {
+          await prisma.$disconnect();
+        }
       },
     });
 
