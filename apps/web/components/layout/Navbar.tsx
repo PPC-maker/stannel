@@ -127,8 +127,8 @@ export default function Navbar() {
           ? 'bg-[#4A3A1F]/40 backdrop-blur-xl border-b border-white/10 shadow-lg shadow-black/20'
           : 'bg-transparent'
         : 'bg-[#FEFCF7]/95 backdrop-blur-md shadow-sm border-b border-[#C9A961]/20'
-    }`} style={{ paddingTop: 'env(safe-area-inset-top, 0px)', WebkitBackdropFilter: isScrolled || !isDarkPage ? 'blur(16px)' : undefined }}>
-      <div className={`w-full px-5 sm:px-8 lg:px-10 flex items-center justify-center relative ${isDarkPage ? 'h-[80px] sm:h-[92px]' : 'h-[68px] sm:h-[82px]'}`}>
+    }`} style={{ paddingTop: 'max(env(safe-area-inset-top, 0px), 8px)', WebkitBackdropFilter: isScrolled || !isDarkPage ? 'blur(16px)' : undefined }}>
+      <div className={`w-full px-5 sm:px-8 lg:px-10 flex items-center justify-center relative ${isDarkPage ? 'h-[80px] sm:h-[92px]' : 'h-[72px] sm:h-[82px]'}`}>
         {/* Back/Forward Navigation - Left side (RTL: appears on left) */}
         {pathname !== '/' && pathname !== '/login' && pathname !== '/register' && (
         <div className="absolute left-6 top-1/2 -translate-y-1/2 flex items-center gap-1" suppressHydrationWarning>
