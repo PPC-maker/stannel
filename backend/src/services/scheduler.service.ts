@@ -172,8 +172,7 @@ export const schedulerService = {
 
           const result = await prisma.invoice.deleteMany({
             where: {
-              isDeleted: true,
-              deletedAt: { lt: thirtyDaysAgo },
+              deletedAt: { not: null, lt: thirtyDaysAgo },
             },
           });
           console.log(`[Scheduler] Recycle bin cleanup: permanently deleted ${result.count} invoices`);

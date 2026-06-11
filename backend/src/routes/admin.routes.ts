@@ -851,13 +851,7 @@ export async function adminRoutes(server: FastifyInstance) {
         });
       }
 
-      // Check if it's the supplier profile image
-      if (user.supplierProfile.profileImage === imageUrl) {
-        await prisma.supplierProfile.update({
-          where: { id: user.supplierProfile.id },
-          data: { profileImage: null },
-        });
-      }
+      // Note: SupplierProfile doesn't have profileImage field, only businessImages
     }
 
     await prisma.auditLog.create({
