@@ -45,6 +45,7 @@ const nextConfig = {
       },
     ],
     formats: ['image/avif', 'image/webp'],
+    minimumCacheTTL: 86400,
   },
   // Enable standalone output for Cloud Run production builds
   output: 'standalone',

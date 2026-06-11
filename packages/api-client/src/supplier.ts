@@ -1,6 +1,7 @@
 // Supplier API Client
 
 import { config, getHeaders, getAuthToken, fetchWithAuth } from './config';
+import type { SupplierProfile as BaseSupplierProfile, SupplierGoal as BaseSupplierGoal } from '@stannel/types';
 
 export interface SupplierInvoice {
   id: string;
@@ -41,16 +42,8 @@ export interface CommissionHistory {
   };
 }
 
-export interface SupplierGoal {
-  id: string;
-  targetAmount: number;
-  currentAmount: number;
-  bonusPoints: number;
-  period: 'MONTHLY' | 'QUARTERLY';
-  startDate: string;
-  endDate: string;
-  isActive: boolean;
-}
+// Re-export base type (dates may be string when from API)
+export type SupplierGoal = BaseSupplierGoal;
 
 export interface SupplierProduct {
   id: string;
@@ -62,16 +55,8 @@ export interface SupplierProduct {
   stock: number;
 }
 
-export interface SupplierProfile {
-  id: string;
-  companyName: string;
-  description?: string;
-  phone?: string;
-  address?: string;
-  website?: string;
-  facebook?: string;
-  instagram?: string;
-  linkedin?: string;
+// API response extends base with user relation
+export interface SupplierProfile extends Omit<BaseSupplierProfile, 'userId' | 'trustScore' | 'qualityScore'> {
   businessImages: string[];
   user: { name: string; email: string };
 }

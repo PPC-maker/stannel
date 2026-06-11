@@ -7,6 +7,9 @@
   "scripts": {
     "type-check": "tsc --noEmit"
   },
+  "dependencies": {
+    "@stannel/types": "workspace:*"
+  },
   "devDependencies": {
     "typescript": "^5.7.0"
   }

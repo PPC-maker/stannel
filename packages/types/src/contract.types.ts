@@ -21,10 +21,11 @@ export interface SupplierGoal {
   id: string;
   supplierId: string;
   targetAmount: number;
+  currentAmount?: number;
   bonusPoints: number;
   period: 'MONTHLY' | 'QUARTERLY';
-  startDate: Date;
-  endDate: Date;
+  startDate: Date | string;
+  endDate: Date | string;
   isActive: boolean;
 }
 

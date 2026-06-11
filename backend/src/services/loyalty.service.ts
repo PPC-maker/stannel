@@ -2,6 +2,7 @@
 
 import prisma from '../lib/prisma.js';
 import { notificationService } from './notification.service.js';
+import { financialSecurityService } from './financial-security.service.js';
 
 // Commission rate constants
 const COMMISSION_RATE = 0.02;    // 2% for each side (4% total)
@@ -58,6 +59,17 @@ export const loyaltyService = {
         },
       }),
     ]);
+
+    // Financial security: record & audit the credit transaction
+    const creditContext = { userId: invoice.architectId, endpoint: 'invoices/credit' };
+    financialSecurityService.recordTransaction(invoice.architectId, architectPoints);
+    await financialSecurityService.auditLog(
+      'INVOICE_CREDIT',
+      invoice.architectId,
+      architectPoints,
+      { invoiceId, amount: invoice.amount, commission: architectCommission },
+      creditContext
+    );
 
     // Check for goal bonuses
     await this.checkGoalBonuses(invoice.architectId, invoice.supplierId);
@@ -182,6 +194,29 @@ export const loyaltyService = {
     if (!product.isActive) throw new Error('Product not available');
     if (product.stock < 1) throw new Error('Product out of stock');
 
+    // Financial security: check for duplicate redemption
+    const isDuplicate = await financialSecurityService.checkDuplicate(
+      architect.userId,
+      product.pointCost,
+      'REDEMPTION',
+      productId
+    );
+    if (isDuplicate) {
+      throw new Error('בקשה כפולה. נסה שוב בעוד מספר דקות.');
+    }
+
+    // Financial security: validate transaction limits & balance
+    const context = { userId: architect.userId, endpoint: 'rewards/redeem' };
+    const validation = await financialSecurityService.validateTransaction(
+      architect.userId,
+      product.pointCost,
+      'REDEMPTION',
+      context
+    );
+    if (!validation.valid) {
+      throw new Error(validation.reason || 'Transaction validation failed');
+    }
+
     const userPoints = architect.pointsBalance;
     const pointsPerShekel = product.pointsPerShekel || 100;
 
@@ -264,6 +299,22 @@ export const loyaltyService = {
 
       return redemption;
     });
+
+    // Financial security: record transaction & verify balance integrity
+    financialSecurityService.recordTransaction(architect.userId, pointsToUse);
+    await financialSecurityService.verifyBalanceIntegrity(
+      architect.userId,
+      -pointsToUse,
+      'REDEMPTION',
+      context
+    );
+    await financialSecurityService.auditLog(
+      'REDEMPTION',
+      architect.userId,
+      pointsToUse,
+      { productId, productName: product.name, cashPaid: requiredCash },
+      context
+    );
 
     // Send notification to all admin users about the redemption
     try {

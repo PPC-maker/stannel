@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useSupplierGuard, AuthGuardLoader } from '@/lib/useAuthGuard';
-import { supplierApi } from '@stannel/api-client';
+import { supplierApi, authApi } from '@stannel/api-client';
 import {
   Building2,
   ArrowRight,
@@ -30,7 +30,10 @@ export default function SupplierProfilePage() {
   const [isSaving, setIsSaving] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [uploadingProfileImage, setUploadingProfileImage] = useState(false);
+  const [profileImage, setProfileImage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const profileImageInputRef = useRef<HTMLInputElement>(null);
 
   // Form state
   const [formData, setFormData] = useState({
@@ -70,6 +73,7 @@ export default function SupplierProfilePage() {
         linkedin: profile.linkedin || '',
       });
       setImages(profile.businessImages || []);
+      setProfileImage((profile as any).user?.profileImage || null);
     } catch (error) {
       console.error('Failed to load profile:', error);
     } finally {
@@ -80,6 +84,39 @@ export default function SupplierProfilePage() {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleProfileImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploadingProfileImage(true);
+    try {
+      const result = await authApi.uploadProfileImage(file);
+      setProfileImage(result.imageUrl);
+      Swal.fire({
+        title: 'תמונת הפרופיל עודכנה!',
+        icon: 'success',
+        timer: 1500,
+        showConfirmButton: false,
+        background: '#f7f3f2',
+        color: '#2b241d',
+      });
+    } catch (error: any) {
+      Swal.fire({
+        title: 'שגיאה',
+        text: error.message || 'לא ניתן להעלות תמונת פרופיל',
+        icon: 'error',
+        confirmButtonColor: '#c99b4a',
+        background: '#f7f3f2',
+        color: '#2b241d',
+      });
+    } finally {
+      setUploadingProfileImage(false);
+      if (profileImageInputRef.current) {
+        profileImageInputRef.current.value = '';
+      }
+    }
   };
 
   const handleSave = async () => {
@@ -273,6 +310,51 @@ export default function SupplierProfilePage() {
           </div>
         ) : (
           <div className="space-y-6">
+            {/* Profile Image */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.05 }}
+              className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6"
+            >
+              <h2 className="text-lg font-semibold text-[#2b241d] mb-6 flex items-center gap-2">
+                <Camera size={20} className="text-[#c99b4a]" />
+                תמונת פרופיל / לוגו
+              </h2>
+              <div className="flex items-center gap-6">
+                <div className="relative group">
+                  <div className="w-24 h-24 rounded-full overflow-hidden border-3 border-[rgba(201,155,74,0.2)]">
+                    {profileImage ? (
+                      <Image src={profileImage} alt="פרופיל" fill className="object-cover" unoptimized />
+                    ) : (
+                      <div className="w-full h-full bg-gradient-to-br from-[#c99b4a] to-[#9e7746] flex items-center justify-center text-white text-3xl font-bold">
+                        {formData.companyName?.charAt(0) || 'S'}
+                      </div>
+                    )}
+                  </div>
+                  <label className="absolute inset-0 rounded-full cursor-pointer flex items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity">
+                    {uploadingProfileImage ? (
+                      <Loader2 size={24} className="text-white animate-spin" />
+                    ) : (
+                      <Camera size={24} className="text-white" />
+                    )}
+                    <input
+                      ref={profileImageInputRef}
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={handleProfileImageUpload}
+                      disabled={uploadingProfileImage}
+                    />
+                  </label>
+                </div>
+                <div>
+                  <p className="text-[#2b241d] font-semibold">{formData.companyName || 'שם העסק'}</p>
+                  <p className="text-[#a89b8a] text-sm">העבירו את העכבר על התמונה להחלפה</p>
+                </div>
+              </div>
+            </motion.div>
+
             {/* Basic Info */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}

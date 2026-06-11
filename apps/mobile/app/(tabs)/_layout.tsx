@@ -26,9 +26,9 @@ export default function TabLayout() {
       <Tabs.Screen
         name="invoices"
         options={{
-          title: 'גלו',
+          title: 'חשבוניות',
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="magnify" color={color} size={size} />
+            <MaterialCommunityIcons name="file-document-outline" color={color} size={size} />
           ),
         }}
       />
@@ -46,9 +46,9 @@ export default function TabLayout() {
       <Tabs.Screen
         name="wallet"
         options={{
-          title: 'פרויקטים',
+          title: 'ארנק',
           tabBarIcon: ({ color, size }) => (
-            <MaterialCommunityIcons name="view-grid-outline" color={color} size={size} />
+            <MaterialCommunityIcons name="wallet-outline" color={color} size={size} />
           ),
         }}
       />
@@ -67,16 +67,22 @@ export default function TabLayout() {
 
 const styles = StyleSheet.create({
   tabBar: {
-    backgroundColor: 'rgba(6,15,31,0.95)',
-    borderTopColor: 'rgba(255,255,255,0.1)',
-    borderTopWidth: 1,
+    backgroundColor: '#1f2024',
+    borderTopLeftRadius: 26,
+    borderTopRightRadius: 26,
+    borderTopWidth: 0,
     paddingBottom: 25,
     paddingTop: 10,
     height: 85,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -10 },
+    shadowOpacity: 0.3,
+    shadowRadius: 30,
+    elevation: 20,
   },
   tabBarLabel: {
     fontSize: 11,
-    fontWeight: '500',
+    fontWeight: '600',
   },
   tabBarItem: {
     paddingTop: 5,

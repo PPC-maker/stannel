@@ -851,6 +851,47 @@ export async function adminRoutes(server: FastifyInstance) {
     return { success: true, remainingImages: updatedImages.length };
   });
 
+  // Upload business image for supplier (admin)
+  server.post('/users/:id/upload-business-image', async (request: FastifyRequest, reply: FastifyReply) => {
+    const { id } = request.params as { id: string };
+
+    const user = await prisma.user.findUnique({
+      where: { id },
+      include: { supplierProfile: true },
+    });
+
+    if (!user?.supplierProfile) {
+      return reply.code(404).send({ error: 'Supplier profile not found' });
+    }
+
+    const data = await request.file();
+    if (!data) {
+      return reply.code(400).send({ error: 'No file uploaded' });
+    }
+
+    const buffer = await data.toBuffer();
+    const { storageService } = await import('../services/storage.service.js');
+    const url = await storageService.uploadSupplierImage(buffer, user.supplierProfile.id, data.filename);
+
+    const currentImages = (user.supplierProfile.businessImages || []) as string[];
+
+    await prisma.supplierProfile.update({
+      where: { id: user.supplierProfile.id },
+      data: { businessImages: [...currentImages, url] },
+    });
+
+    await prisma.auditLog.create({
+      data: {
+        userId: request.user!.id,
+        action: 'SUPPLIER_IMAGE_UPLOADED',
+        entityId: id,
+        metadata: { newImage: url },
+      },
+    });
+
+    return { success: true, url };
+  });
+
   // Update user profile image (admin)
   server.post('/users/:id/update-profile-image', async (request: FastifyRequest, reply: FastifyReply) => {
     const { id } = request.params as { id: string };

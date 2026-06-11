@@ -218,7 +218,7 @@ export async function supplierRoutes(server: FastifyInstance) {
     const profile = await prisma.supplierProfile.findUnique({
       where: { id: request.user!.supplierProfile!.id },
       include: {
-        user: { select: { name: true, email: true } },
+        user: { select: { name: true, email: true, profileImage: true } },
       },
     });
 
