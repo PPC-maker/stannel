@@ -25,6 +25,9 @@ export default function BottomNav() {
 
   if (shouldHide) return null;
 
+  // Hide when loaded inside the mobile app WebView
+  if (typeof navigator !== 'undefined' && navigator.userAgent.includes('STANNEL-App')) return null;
+
   return (
     <nav
       id="web-bottom-nav"

@@ -4,6 +4,9 @@ import { useEffect } from 'react';
 
 export default function SplashScreen() {
   useEffect(() => {
+    // Skip splash screen inside mobile app WebView
+    if (navigator.userAgent.includes('STANNEL-App')) return;
+
     // Create splash screen element
     const splash = document.createElement('div');
     splash.id = 'splash-screen';

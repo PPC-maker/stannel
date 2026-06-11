@@ -98,7 +98,10 @@ export default function AccessibilityWidget() {
     updateSetting(key, !settings[key]);
   };
 
-  if (!mounted) {
+  // Hide when loaded inside the mobile app WebView
+  const isMobileApp = typeof navigator !== 'undefined' && navigator.userAgent.includes('STANNEL-App');
+
+  if (!mounted || isMobileApp) {
     return null;
   }
 

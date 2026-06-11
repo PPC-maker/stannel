@@ -115,10 +115,15 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Hide when loaded inside the mobile app WebView
+  const isMobileApp = typeof navigator !== 'undefined' && navigator.userAgent.includes('STANNEL-App');
+
   // All pages now use light background (wallet style) except login
   const isLoginPage = pathname === '/login' || pathname === '/register';
   const isLightPage = !isLoginPage;
   const isDarkPage = !isLightPage;
+
+  if (isMobileApp) return null;
 
   return (
     <nav id="web-top-nav" className={`web-top-nav fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${

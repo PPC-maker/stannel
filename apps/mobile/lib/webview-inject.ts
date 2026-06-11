@@ -36,4 +36,4 @@ export const HIDE_WEB_NAV_JS = `
 })();
 `;
 
-export const WEB_URL = 'https://stannel-web-1094694418275.me-west1.run.app';
+export const WEB_URL = 'https://stannelclub.co.il';

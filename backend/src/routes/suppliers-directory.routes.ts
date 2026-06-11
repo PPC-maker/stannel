@@ -188,7 +188,7 @@ export async function suppliersDirectoryRoutes(server: FastifyInstance) {
                 ${message ? `<tr><td style="padding: 8px; color: #6c757d;">הודעה:</td><td style="padding: 8px;">${message}</td></tr>` : ''}
               </table>
               <div style="text-align: center; margin-top: 24px;">
-                <a href="https://stannel-web-t5yfdlp7wq-zf.a.run.app/supplier/messages" style="background: #10b981; color: white; padding: 12px 32px; border-radius: 8px; text-decoration: none; font-weight: bold;">צפה בהודעות</a>
+                <a href="https://stannelclub.co.il/supplier/messages" style="background: #10b981; color: white; padding: 12px 32px; border-radius: 8px; text-decoration: none; font-weight: bold;">צפה בהודעות</a>
               </div>
             </div>
           </div>

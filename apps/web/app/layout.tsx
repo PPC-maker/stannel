@@ -83,6 +83,11 @@ export default function RootLayout({
         `}} />
       </head>
       <body className="min-h-screen antialiased" suppressHydrationWarning>
+        <script dangerouslySetInnerHTML={{ __html: `
+          if(navigator.userAgent.includes('STANNEL-App')){
+            document.body.classList.add('stannel-mobile-app');
+          }
+        `}} />
 
         <Providers>
           {/* Main app shell */}
