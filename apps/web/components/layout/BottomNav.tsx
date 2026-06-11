@@ -36,22 +36,24 @@ export default function BottomNav() {
       style={{
         position: 'fixed',
         bottom: 0,
-        left: '50%',
-        transform: 'translateX(-50%)',
-        width: '100%',
-        maxWidth: 520,
+        left: 0,
+        right: 0,
         zIndex: 50,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-around',
         background: 'linear-gradient(180deg, #1f2024, #141518)',
-        padding: '14px 24px 22px',
-        paddingBottom: 'calc(22px + env(safe-area-inset-bottom, 0px))',
         boxShadow: '0 -10px 30px rgba(0, 0, 0, 0.30)',
         borderTopLeftRadius: 26,
         borderTopRightRadius: 26,
       }}
     >
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-around',
+        maxWidth: 520,
+        margin: '0 auto',
+        padding: '14px 24px 22px',
+        paddingBottom: 'calc(22px + env(safe-area-inset-bottom, 0px))',
+      }}>
       {navItems.map((item) => {
         const Icon = item.icon;
         const isActive = pathname === item.href || (item.href !== '/wallet' && pathname.startsWith(item.href));
@@ -104,6 +106,7 @@ export default function BottomNav() {
           </Link>
         );
       })}
+      </div>
     </nav>
   );
 }
