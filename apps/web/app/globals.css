@@ -53,16 +53,12 @@
   padding: 0;
 }
 
-/* Mobile app WebView overrides - remove nav padding */
-body.stannel-mobile-app main {
-  padding-top: 0 !important;
-  margin-top: 0 !important;
-}
-body.stannel-mobile-app #web-top-nav,
+/* Mobile app WebView overrides - hide only bottom nav, keep top nav */
 body.stannel-mobile-app #web-bottom-nav,
-body.stannel-mobile-app .web-top-nav,
 body.stannel-mobile-app .web-bottom-nav,
+body.stannel-mobile-app nav[aria-label="ניווט תחתון"],
 body.stannel-mobile-app .accessibility-widget,
+body.stannel-mobile-app button[aria-label="פתח תפריט נגישות"],
 body.stannel-mobile-app #splash-screen {
   display: none !important;
 }
