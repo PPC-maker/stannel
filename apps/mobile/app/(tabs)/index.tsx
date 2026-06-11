@@ -17,6 +17,7 @@ export default function MainScreen() {
   const [initialLoad, setInitialLoad] = useState(true);
   const [activeTab, setActiveTab] = useState('home');
   const [canGoBack, setCanGoBack] = useState(false);
+  const [isAuthPage, setIsAuthPage] = useState(true);
 
   // Safety timeout - hide loader after 3 seconds no matter what
   useEffect(() => {
@@ -50,6 +51,10 @@ export default function MainScreen() {
 
     // Hide initial loader once any page loads
     if (!navState.loading) setInitialLoad(false);
+
+    // Hide footer on auth pages
+    const authPages = ['/login', '/register', '/forgot-password', '/terms', '/about'];
+    setIsAuthPage(authPages.some(p => url.includes(p)));
 
     // Update active tab based on URL
     if (url.includes('/rewards')) setActiveTab('rewards');
@@ -91,8 +96,8 @@ export default function MainScreen() {
         </View>
       )}
 
-      {/* Native Tab Bar */}
-      <View style={styles.tabBar}>
+      {/* Native Tab Bar - hidden on auth pages */}
+      {!isAuthPage && <View style={styles.tabBar}>
         {TABS.map((tab) => {
           const isActive = activeTab === tab.key;
 
@@ -120,7 +125,7 @@ export default function MainScreen() {
             </TouchableOpacity>
           );
         })}
-      </View>
+      </View>}
     </View>
   );
 }
