@@ -67,6 +67,11 @@ export default function RewardsContent() {
     return <AuthGuardLoader />;
   }
 
+  if (!user) {
+    if (typeof window !== 'undefined') window.location.href = '/login';
+    return <AuthGuardLoader />;
+  }
+
   const points = balance?.points || 0;
   const rank = card?.rank || user?.rank || 'BRONZE';
 
