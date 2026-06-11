@@ -231,7 +231,7 @@ export default function ProfilePage() {
                 </div>
                 <button
                   onClick={() => setShowPhotoModal(true)}
-                  className="absolute bottom-2 right-2 w-8 h-8 bg-[#c99b4a] rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-[#9e7746]"
+                  className="absolute -bottom-1 -left-1 w-8 h-8 bg-[#c99b4a] rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-[#9e7746] shadow-md"
                 >
                   <Camera size={16} className="text-white" />
                 </button>
