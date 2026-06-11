@@ -113,6 +113,7 @@ export default function SupplierDetailPage() {
 
   return (
     <div className="min-h-screen pb-28">
+      <div className="max-w-lg mx-auto">
       {/* Back button */}
       <div className="px-4 pt-2 pb-2">
         <Link href="/suppliers" className="w-10 h-10 rounded-full bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] flex items-center justify-center shadow-sm">
@@ -250,6 +251,7 @@ export default function SupplierDetailPage() {
           </motion.div>
         )}
       </AnimatePresence>
+      </div>
     </div>
   );
 }

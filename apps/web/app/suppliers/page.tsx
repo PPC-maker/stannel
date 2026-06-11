@@ -47,7 +47,7 @@ export default function SuppliersDirectoryPage() {
       </div>
 
       {/* Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-8 pb-40 relative z-10">
+      <div className="max-w-lg mx-auto px-4 sm:px-6 py-4 sm:py-8 pb-40 relative z-10">
         {/* Search */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
