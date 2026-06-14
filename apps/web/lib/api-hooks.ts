@@ -156,6 +156,18 @@ export function useRegisterForEvent() {
   });
 }
 
+export function useCancelEventRegistration() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (eventId: string) => eventsApi.cancelRegistration(eventId),
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['events'] });
+      queryClient.invalidateQueries({ queryKey: ['my-events'] });
+    },
+  });
+}
+
 // Dashboard stats hook
 export function useDashboardStats(enabled: boolean = true) {
   return useQuery({

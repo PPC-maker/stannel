@@ -20,7 +20,7 @@ function isValidImageUrl(url: string | undefined): boolean {
   }
 }
 
-import { useEvents, useRegisterForEvent } from '@/lib/api-hooks';
+import { useEvents, useRegisterForEvent, useCancelEventRegistration } from '@/lib/api-hooks';
 import { eventsApi } from '@stannel/api-client';
 // Auth guard removed - events are public
 import Swal from 'sweetalert2';
@@ -42,6 +42,7 @@ export default function EventsPage() {
 
   const { data: eventsResponse, isLoading } = useEvents();
   const registerMutation = useRegisterForEvent();
+  const cancelMutation = useCancelEventRegistration();
 
   // Fetch user's registered events from server on mount
   const { data: myEventsData } = useQuery({
@@ -107,6 +108,47 @@ export default function EventsPage() {
           color: '#2b241d',
         });
       }
+    } finally {
+      setRegisteringId(null);
+    }
+  };
+
+  const handleCancel = async (eventId: string) => {
+    const result = await Swal.fire({
+      title: 'ביטול הרשמה',
+      text: 'האם אתה בטוח שברצונך לבטל את ההרשמה לאירוע?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'כן, בטל הרשמה',
+      cancelButtonText: 'לא',
+      confirmButtonColor: '#ef4444',
+      background: '#f7f3f2',
+      color: '#2b241d',
+    });
+    if (!result.isConfirmed) return;
+
+    setRegisteringId(eventId);
+    try {
+      await cancelMutation.mutateAsync(eventId);
+      setRegisteredEvents(prev => prev.filter(id => id !== eventId));
+      Swal.fire({
+        title: 'ההרשמה בוטלה',
+        text: 'ההרשמה לאירוע בוטלה בהצלחה',
+        icon: 'success',
+        confirmButtonText: 'אישור',
+        background: '#f7f3f2',
+        color: '#2b241d',
+        confirmButtonColor: '#c99b4a',
+      });
+    } catch (error: any) {
+      Swal.fire({
+        title: 'שגיאה',
+        text: error.message || 'שגיאה בביטול ההרשמה',
+        icon: 'error',
+        confirmButtonText: 'אישור',
+        background: '#f7f3f2',
+        color: '#2b241d',
+      });
     } finally {
       setRegisteringId(null);
     }
@@ -336,30 +378,40 @@ export default function EventsPage() {
                       <div className="text-[#c99b4a] font-bold">
                         +{event.pointsReward || 0} נק׳
                       </div>
-                      <button
-                        onClick={() => handleRegister(event.id)}
-                        disabled={full || registered || isRegistering}
-                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${
-                          registered
-                            ? 'bg-[#c99b4a]/20 text-[#c99b4a] cursor-default'
-                            : full
-                            ? 'bg-[#f7f3f2] text-[#a89b8a] cursor-not-allowed'
-                            : 'bg-[#c99b4a] text-white hover:bg-[#9e7746]'
-                        }`}
-                      >
-                        {isRegistering ? (
-                          <Loader2 size={16} className="animate-spin" />
-                        ) : registered ? (
-                          <>
-                            <CheckCircle size={16} />
-                            <span>נרשמת</span>
-                          </>
-                        ) : full ? (
-                          <span>מלא</span>
-                        ) : (
-                          <span>הרשמה</span>
-                        )}
-                      </button>
+                      {registered ? (
+                        <button
+                          onClick={() => handleCancel(event.id)}
+                          disabled={isRegistering}
+                          className="px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 bg-[#c99b4a]/20 text-[#c99b4a] hover:bg-red-100 hover:text-red-600"
+                        >
+                          {isRegistering ? (
+                            <Loader2 size={16} className="animate-spin" />
+                          ) : (
+                            <>
+                              <XCircle size={16} />
+                              <span>ביטול הרשמה</span>
+                            </>
+                          )}
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => handleRegister(event.id)}
+                          disabled={full || isRegistering}
+                          className={`px-4 py-2 rounded-lg text-sm font-medium transition-all flex items-center gap-2 ${
+                            full
+                              ? 'bg-[#f7f3f2] text-[#a89b8a] cursor-not-allowed'
+                              : 'bg-[#c99b4a] text-white hover:bg-[#9e7746]'
+                          }`}
+                        >
+                          {isRegistering ? (
+                            <Loader2 size={16} className="animate-spin" />
+                          ) : full ? (
+                            <span>מלא</span>
+                          ) : (
+                            <span>הרשמה</span>
+                          )}
+                        </button>
+                      )}
                     </div>
                   </div>
                 </div>
