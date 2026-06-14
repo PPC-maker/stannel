@@ -280,6 +280,25 @@ export default function ProfilePage() {
                         className="w-full bg-[#f7f3f2] border border-[rgba(201,155,74,0.15)] rounded-xl px-4 py-2 text-[#2b241d] placeholder:text-[#a89b8a] focus:border-[#c99b4a] focus:bg-white transition-all"
                       />
                     </div>
+                    <div className="flex gap-2 justify-center md:justify-start pt-2">
+                      <button
+                        onClick={handleSaveProfile}
+                        className="flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-[#c99b4a] hover:bg-[#9e7746] transition-colors text-white text-sm font-medium"
+                      >
+                        <Save size={16} />
+                        <span>שמור</span>
+                      </button>
+                      <button
+                        onClick={() => {
+                          setIsEditing(false);
+                          router.replace('/profile');
+                        }}
+                        className="flex items-center gap-1.5 px-5 py-2.5 rounded-xl border border-[rgba(201,155,74,0.2)] bg-white hover:bg-[#f7f3f2] transition-colors text-[#8b7c69] text-sm font-medium"
+                      >
+                        <X size={16} />
+                        <span>ביטול</span>
+                      </button>
+                    </div>
                   </div>
                 ) : (
                   <>
@@ -311,27 +330,7 @@ export default function ProfilePage() {
               </div>
 
               {/* Edit Button */}
-              {isEditing ? (
-                <div className="absolute top-4 right-4 flex gap-2">
-                  <button
-                    onClick={handleSaveProfile}
-                    className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#c99b4a] hover:bg-[#9e7746] transition-colors text-white text-sm font-medium"
-                  >
-                    <Save size={16} />
-                    <span>שמור</span>
-                  </button>
-                  <button
-                    onClick={() => {
-                      setIsEditing(false);
-                      router.replace('/profile');
-                    }}
-                    className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#f7f3f2] hover:bg-[#ede6e0] transition-colors text-[#8b7c69] text-sm font-medium"
-                  >
-                    <X size={16} />
-                    <span>ביטול</span>
-                  </button>
-                </div>
-              ) : (
+              {!isEditing && (
                 <button
                   onClick={() => setIsEditing(true)}
                   className="absolute top-4 right-4 p-2 rounded-lg bg-[#f7f3f2] hover:bg-[#ede6e0] transition-colors"
