@@ -62,7 +62,7 @@ export const eventsApi = {
 
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.message || 'שגיאה בהרשמה לאירוע. נסה שוב.');
+      throw new Error(error.error || error.message || 'שגיאה בהרשמה לאירוע. נסה שוב.');
     }
 
     return response.json();

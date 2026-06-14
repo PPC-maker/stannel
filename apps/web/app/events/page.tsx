@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ImgWithLoader } from '@/components/ui/ImageWithLoader';
 import { Calendar, MapPin, Users, Clock, CheckCircle, Loader2, Building2, FileText, XCircle } from 'lucide-react';
@@ -21,6 +21,7 @@ function isValidImageUrl(url: string | undefined): boolean {
 }
 
 import { useEvents, useRegisterForEvent } from '@/lib/api-hooks';
+import { eventsApi } from '@stannel/api-client';
 // Auth guard removed - events are public
 import Swal from 'sweetalert2';
 
@@ -41,6 +42,21 @@ export default function EventsPage() {
 
   const { data: eventsResponse, isLoading } = useEvents();
   const registerMutation = useRegisterForEvent();
+
+  // Fetch user's registered events from server on mount
+  const { data: myEventsData } = useQuery({
+    queryKey: ['my-events'],
+    queryFn: () => eventsApi.getMyEvents(),
+    enabled: !!user,
+  });
+
+  // Sync server registrations into local state
+  useEffect(() => {
+    if (myEventsData && Array.isArray(myEventsData)) {
+      const ids = myEventsData.map((e: any) => e.id);
+      setRegisteredEvents(ids);
+    }
+  }, [myEventsData]);
 
   const isArchitect = user?.role === 'ARCHITECT';
   const { data: meetingsData, isLoading: meetingsLoading } = useQuery({
@@ -69,14 +85,28 @@ export default function EventsPage() {
         confirmButtonColor: '#c99b4a',
       });
     } catch (error: any) {
-      Swal.fire({
-        title: 'שגיאה',
-        text: error.message || 'שגיאה בהרשמה לאירוע',
-        icon: 'error',
-        confirmButtonText: 'אישור',
-        background: '#f7f3f2',
-        color: '#2b241d',
-      });
+      const isAlreadyRegistered = error.message?.includes('Already registered') || error.message?.includes('כבר רשום');
+      if (isAlreadyRegistered) {
+        setRegisteredEvents(prev => prev.includes(eventId) ? prev : [...prev, eventId]);
+        Swal.fire({
+          title: 'כבר רשום!',
+          text: 'אתה כבר רשום לאירוע הזה',
+          icon: 'info',
+          confirmButtonText: 'אישור',
+          background: '#f7f3f2',
+          color: '#2b241d',
+          confirmButtonColor: '#c99b4a',
+        });
+      } else {
+        Swal.fire({
+          title: 'שגיאה',
+          text: error.message || 'שגיאה בהרשמה לאירוע',
+          icon: 'error',
+          confirmButtonText: 'אישור',
+          background: '#f7f3f2',
+          color: '#2b241d',
+        });
+      }
     } finally {
       setRegisteringId(null);
     }
