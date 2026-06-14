@@ -35,7 +35,7 @@ ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
 
 # Set API URL for build (NEXT_PUBLIC vars are embedded at build time)
-ENV NEXT_PUBLIC_API_URL=https://stannel-api-280659436731.me-west1.run.app
+ENV NEXT_PUBLIC_API_URL=https://stannel-api-1094694418275.me-west1.run.app
 
 # Firebase config
 ENV NEXT_PUBLIC_FIREBASE_API_KEY=AIzaSyB_qejW2mxuNLVnDKhIG7Bzrl8u5X4DH_w
