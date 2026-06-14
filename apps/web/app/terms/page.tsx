@@ -258,7 +258,7 @@ export default function TermsPage() {
 
         {/* Back Link */}
         <div className="text-center mt-6">
-          <Link href="/" className="inline-flex items-center gap-2 text-[#a89b8a] hover:text-[#2b241d] transition-colors text-sm">
+          <Link href="/login" className="inline-flex items-center gap-2 text-[#a89b8a] hover:text-[#2b241d] transition-colors text-sm">
             <ArrowRight size={16} />
             חזרה לדף הבית
           </Link>

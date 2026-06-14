@@ -559,7 +559,7 @@ export default function RegisterPage() {
                 <p className="text-white/60 text-lg font-medium mb-8">
                   החשבון שלך ממתין לאישור מנהל. נעדכן אותך במייל ברגע שהחשבון יאושר.
                 </p>
-                <Link href="/" className="inline-block bg-gradient-to-r from-[#c99b4a] to-[#d4af37] text-white px-8 py-4 rounded-xl font-bold text-xl tracking-wide hover:from-[#c99b4a] hover:to-[#d4af37] transition-all">
+                <Link href="/login" className="inline-block bg-gradient-to-r from-[#c99b4a] to-[#d4af37] text-white px-8 py-4 rounded-xl font-bold text-xl tracking-wide hover:from-[#c99b4a] hover:to-[#d4af37] transition-all">
                   חזרה לעמוד הראשי
                 </Link>
               </motion.div>

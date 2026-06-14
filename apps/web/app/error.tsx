@@ -151,7 +151,7 @@ export default function Error({
                 <span>נסה שוב</span>
               </button>
             )}
-            <a href="/" className="text-white/40 text-sm hover:text-white/60 transition-colors">חזרה לדף הבית</a>
+            <a href="/login" className="text-white/40 text-sm hover:text-white/60 transition-colors">חזרה לדף הבית</a>
           </div>
         </motion.div>
 

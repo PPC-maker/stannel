@@ -9,9 +9,7 @@ import { Menu, User, LogOut, Settings, Wallet, FileText, Gift, Calendar, Home, L
 import { useAuth } from '@/lib/auth-context';
 import Swal from 'sweetalert2';
 
-const publicLinks = [
-  { href: '/', label: 'דף הבית', icon: Home },
-];
+const publicLinks: { href: string; label: string; icon: typeof Home }[] = [];
 
 // Links for ARCHITECT users
 const architectLinks = [
@@ -220,16 +218,6 @@ export default function Navbar() {
                       <p className="text-sm text-gray-500">{user.email}</p>
                     </div>
                   )}
-
-                  {/* Home link */}
-                  <Link
-                    href={user ? (user.role === 'SUPPLIER' ? '/supplier' : user.role === 'ADMIN' ? '/admin' : '/wallet') : '/'}
-                    onClick={() => setIsProfileOpen(false)}
-                    className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-[#FDF6E3] text-gray-700 hover:text-[#8B6F3A] transition-colors"
-                  >
-                    <Home size={18} className="text-[#C9A961]" />
-                    <span className="font-medium">דף הבית</span>
-                  </Link>
 
                   {user ? (
                     <>

@@ -51,11 +51,11 @@ export default function AccessibilityPage() {
           className="mb-12"
         >
           <Link
-            href="/"
+            href="/login"
             className="text-gray-700 hover:text-gray-900 transition-colors inline-flex items-center gap-2 mb-6"
           >
             <ArrowRight size={20} />
-            <span>חזרה לדף הבית</span>
+            <span>חזרה</span>
           </Link>
           <h1 className="text-4xl md:text-5xl font-display font-bold text-gray-900 mb-4">
             הצהרת נגישות
