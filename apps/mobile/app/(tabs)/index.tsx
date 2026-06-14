@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect, useCallback } from 'react';
-import { View, StyleSheet, BackHandler, Platform, StatusBar, TouchableOpacity, Text, ActivityIndicator } from 'react-native';
-import { WebView } from 'react-native-webview';
+import { View, StyleSheet, BackHandler, Platform, StatusBar, TouchableOpacity, Text, ActivityIndicator, Linking } from 'react-native';
+import { WebView, WebViewNavigation } from 'react-native-webview';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { HIDE_WEB_NAV_JS, WEB_URL } from '../../lib/webview-inject';
 
@@ -45,6 +45,23 @@ export default function MainScreen() {
     }
   }, []);
 
+  // Keep internal links inside WebView, open external links in browser
+  const handleShouldStartLoad = useCallback((event: WebViewNavigation) => {
+    const { url } = event;
+    // Allow internal stannelclub.co.il URLs and about:blank
+    if (url.startsWith(WEB_URL) || url.startsWith('about:') || url === 'about:blank') {
+      return true;
+    }
+    // WhatsApp, phone, email - open externally
+    if (url.startsWith('https://wa.me') || url.startsWith('tel:') || url.startsWith('mailto:')) {
+      Linking.openURL(url);
+      return false;
+    }
+    // Any other external URL - open in browser
+    Linking.openURL(url);
+    return false;
+  }, []);
+
   const handleNavigationStateChange = useCallback((navState: any) => {
     setCanGoBack(navState.canGoBack);
     const url = navState.url || '';
@@ -86,6 +103,8 @@ export default function MainScreen() {
         allowsInlineMediaPlayback={true}
         mixedContentMode="compatibility"
         originWhitelist={['*']}
+        setSupportMultipleWindows={false}
+        onShouldStartLoadWithRequest={handleShouldStartLoad}
         userAgent="STANNEL-App/1.0"
       />
 
