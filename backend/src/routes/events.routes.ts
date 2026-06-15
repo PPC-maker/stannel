@@ -138,28 +138,34 @@ export async function eventsRoutes(server: FastifyInstance) {
       return reply.code(400).send({ error: 'Already registered for this event' });
     }
 
-    // Check capacity
-    const isWaitlist = event.registeredCount >= event.capacity;
+    // Check capacity using actual registration count (not cached field) to avoid race conditions
+    const actualCount = await prisma.eventRegistration.count({
+      where: { eventId: body.eventId, status: 'CONFIRMED' },
+    });
 
-    if (isWaitlist && !event.waitlistEnabled) {
-      return reply.code(400).send({ error: 'Event is full and waitlist is disabled' });
+    const isFull = actualCount >= event.capacity;
+
+    if (isFull && !event.waitlistEnabled) {
+      return reply.code(400).send({ error: 'האירוע מלא' });
+    }
+
+    if (isFull) {
+      return reply.code(400).send({ error: 'האירוע מלא, לא ניתן להירשם' });
     }
 
     const registration = await prisma.eventRegistration.create({
       data: {
         eventId: body.eventId,
         userId: request.user!.id,
-        status: isWaitlist ? 'WAITLIST' : 'CONFIRMED',
+        status: 'CONFIRMED',
       },
     });
 
-    // Update registered count if confirmed
-    if (!isWaitlist) {
-      await prisma.event.update({
-        where: { id: body.eventId },
-        data: { registeredCount: { increment: 1 } },
-      });
-    }
+    // Update registered count
+    await prisma.event.update({
+      where: { id: body.eventId },
+      data: { registeredCount: actualCount + 1 },
+    });
 
     return registration;
   });

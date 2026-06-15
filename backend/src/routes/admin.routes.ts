@@ -57,7 +57,7 @@ const updateEventSchema = z.object({
   location: z.string().optional(),
   capacity: z.number().int().positive().optional(),
   pointsCost: z.number().int().min(0).optional(),
-  imageUrl: z.string().optional().transform(s => s && s.length > 0 ? s : undefined),
+  imageUrl: z.string().optional().nullable().transform(s => s && s.length > 0 ? s : null),
   isHidden: z.boolean().optional(),
 });
 

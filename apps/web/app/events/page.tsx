@@ -157,7 +157,6 @@ export default function EventsPage() {
   };
 
   const isRegistered = (eventId: string) => registeredEvents.includes(eventId);
-  const isFull = (event: any) => (event.registeredCount || 0) >= event.capacity;
 
   return (
     <div className="min-h-screen">
@@ -299,8 +298,8 @@ export default function EventsPage() {
             ))
           ) : events.map((event: any, index: number) => {
             const registered = isRegistered(event.id);
-            const full = isFull(event);
-            const spotsLeft = (event.capacity || 0) - (event.registeredCount || 0);
+            const spotsLeft = event.spotsLeft ?? ((event.capacity || 0) - (event.registeredCount || 0));
+            const full = spotsLeft <= 0;
             const isRegistering = registeringId === event.id;
 
             return (
@@ -332,13 +331,13 @@ export default function EventsPage() {
                         VIP
                       </div>
                     )}
-                    {spotsLeft <= 5 && spotsLeft > 0 && (
-                      <div className="absolute top-3 left-3 bg-red-500 text-white text-xs px-2 py-1 rounded-full">
-                        נשארו {spotsLeft} מקומות!
+                    {spotsLeft <= 5 && spotsLeft > 0 && !registered && (
+                      <div className="absolute top-3 left-3 bg-red-500 text-white text-xs px-2 py-1 rounded-full z-[3]">
+                        {spotsLeft === 1 ? 'נשאר מקום אחרון!' : `נשארו ${spotsLeft} מקומות!`}
                       </div>
                     )}
-                    {full && (
-                      <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+                    {(full || (registered && spotsLeft <= 0)) && (
+                      <div className="absolute inset-0 bg-black/60 flex items-center justify-center z-[3]">
                         <span className="text-white/80 text-sm font-semibold">האירוע מלא</span>
                       </div>
                     )}
