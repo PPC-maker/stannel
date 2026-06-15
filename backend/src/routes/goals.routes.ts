@@ -181,7 +181,10 @@ export async function goalsRoutes(server: FastifyInstance) {
     const pageSize = parseInt(query.pageSize || '20');
     const activeOnly = query.activeOnly === 'true';
 
-    const where = activeOnly ? { isActive: true } : {};
+    const where = activeOnly ? {
+      isActive: true,
+      endDate: { gte: new Date() },
+    } : {};
 
     const [goals, total] = await Promise.all([
       prisma.architectGoal.findMany({
