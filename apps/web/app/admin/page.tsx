@@ -1358,7 +1358,7 @@ Please analyze this error and provide a fix.
   };
 
   // Filter users by search and status
-  const roleLabels: Record<string, string[]> = {
+  const roleSearchTerms: Record<string, string[]> = {
     ADMIN: ['מנהל', 'אדמין', 'admin'],
     ARCHITECT: ['אדריכל', 'architect'],
     SUPPLIER: ['ספק', 'supplier'],
@@ -1366,7 +1366,7 @@ Please analyze this error and provide a fix.
   const filteredUsers = userSearch.trim()
     ? allUsers.filter(u => {
         const term = userSearch.trim().toLowerCase();
-        const matchesRole = roleLabels[u.role]?.some(label => label.includes(term));
+        const matchesRole = roleSearchTerms[u.role]?.some(label => label.includes(term));
         return u.name.toLowerCase().includes(term)
           || u.email.toLowerCase().includes(term)
           || (u.phone && u.phone.includes(term))
