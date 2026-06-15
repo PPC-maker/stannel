@@ -1674,14 +1674,14 @@ Please analyze this error and provide a fix.
                   )}
                 </h2>
                 <div className="flex flex-col gap-2">
-                  <div className="relative">
+                  <div className="relative w-[90%] mx-auto">
                     <Search size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#a89b8a]" />
                     <input
                       type="text"
                       value={userSearch}
                       onChange={(e) => setUserSearch(e.target.value)}
                       placeholder="חיפוש לפי שם, אימייל, טלפון, תפקיד (ספק/אדריכל)..."
-                      className="w-full pr-10 pl-4 py-3 bg-white border border-[rgba(201,155,74,0.15)] rounded-xl text-[#2b241d] placeholder-[#a89b8a] focus:outline-none focus:border-[#c99b4a] transition-colors text-sm"
+                      className="w-full pr-10 pl-4 py-4 bg-white border border-[rgba(201,155,74,0.15)] rounded-xl text-[#2b241d] placeholder-[#a89b8a] focus:outline-none focus:border-[#c99b4a] transition-colors text-sm"
                     />
                   </div>
                   {pendingUsers.length > 0 && selectedUsers.size > 0 && (
