@@ -28,13 +28,13 @@ interface Architect {
   name: string;
   email: string;
   phone?: string;
+  company?: string;
   role: string;
   rank: string;
   isActive: boolean;
   createdAt: string;
   architectProfile?: {
     id: string;
-    company?: string;
     pointsBalance: number;
     cashBalance: number;
     totalEarned: number;
@@ -117,7 +117,7 @@ export default function AdminArchitectsPage() {
     const matchesSearch = !searchTerm ||
       a.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       a.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (a.architectProfile?.company && a.architectProfile.company.toLowerCase().includes(searchTerm.toLowerCase()));
+      (a.company && a.company.toLowerCase().includes(searchTerm.toLowerCase()));
     const matchesActive = filterActive === null || a.isActive === filterActive;
     return matchesSearch && matchesActive;
   });
@@ -260,9 +260,9 @@ export default function AdminArchitectsPage() {
                             <p className="text-[#a89b8a] text-sm flex items-center gap-1">
                               <Mail size={12} /> {architect.email}
                             </p>
-                            {architect.architectProfile?.company && (
+                            {architect.company && (
                               <p className="text-[#a89b8a]/70 text-xs flex items-center gap-1">
-                                <Building2 size={10} /> {architect.architectProfile.company}
+                                <Building2 size={10} /> {architect.company}
                               </p>
                             )}
                           </div>
@@ -359,7 +359,7 @@ export default function AdminArchitectsPage() {
                     </div>
                     <div className="p-3 bg-[#f7f3f2] rounded-lg">
                       <p className="text-[#a89b8a] text-sm">חברה</p>
-                      <p className="text-[#2b241d]">{selectedArchitect.architectProfile?.company || '-'}</p>
+                      <p className="text-[#2b241d]">{selectedArchitect.company || '-'}</p>
                     </div>
                     <div className="p-3 bg-[#f7f3f2] rounded-lg">
                       <p className="text-[#a89b8a] text-sm">הצטרף</p>

@@ -212,6 +212,7 @@ export default function AdminPage() {
   const [logs, setLogs] = useState<SystemLog[]>([]);
   const [stats, setStats] = useState<SystemLogStats | null>(null);
   const [allUsers, setAllUsers] = useState<AdminUser[]>([]);
+  const [userSearch, setUserSearch] = useState('');
   const [latestScan, setLatestScan] = useState<ScanReport | null>(null);
   const [invoices, setInvoices] = useState<AdminInvoice[]>([]);
   const [selectedInvoice, setSelectedInvoice] = useState<AdminInvoice | null>(null);
@@ -1356,7 +1357,17 @@ Please analyze this error and provide a fix.
     }
   };
 
-  // Filter users by status
+  // Filter users by search and status
+  const filteredUsers = userSearch.trim()
+    ? allUsers.filter(u => {
+        const term = userSearch.trim().toLowerCase();
+        return u.name.toLowerCase().includes(term)
+          || u.email.toLowerCase().includes(term)
+          || (u.phone && u.phone.includes(term))
+          || (u.company && u.company.toLowerCase().includes(term))
+          || (u.supplierProfile?.companyName && u.supplierProfile.companyName.toLowerCase().includes(term));
+      })
+    : allUsers;
   const pendingUsers = allUsers.filter(u => !u.isActive);
   const approvedUsers = allUsers.filter(u => u.isActive);
 
@@ -1656,6 +1667,16 @@ Please analyze this error and provide a fix.
                   )}
                 </h2>
                 <div className="flex flex-col gap-2">
+                  <div className="relative">
+                    <Search size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#a89b8a]" />
+                    <input
+                      type="text"
+                      value={userSearch}
+                      onChange={(e) => setUserSearch(e.target.value)}
+                      placeholder="חיפוש לפי שם, אימייל, טלפון..."
+                      className="w-full pr-10 pl-4 py-3 bg-white border border-[rgba(201,155,74,0.15)] rounded-xl text-[#2b241d] placeholder-[#a89b8a] focus:outline-none focus:border-[#c99b4a] transition-colors text-sm"
+                    />
+                  </div>
                   {pendingUsers.length > 0 && selectedUsers.size > 0 && (
                     <button
                       onClick={handleBulkApprove}
@@ -1676,7 +1697,7 @@ Please analyze this error and provide a fix.
                 </div>
               </div>
 
-              {allUsers.length === 0 ? (
+              {filteredUsers.length === 0 ? (
                 <div className="text-center py-16">
                   <Users className="w-20 h-20 mx-auto text-[#a89b8a]/30 mb-4" />
                   <p className="text-[#2b241d] text-xl font-medium">אין משתמשים במערכת</p>
@@ -1703,7 +1724,7 @@ Please analyze this error and provide a fix.
                       </tr>
                     </thead>
                     <tbody>
-                      {allUsers.map((user) => {
+                      {filteredUsers.map((user) => {
                         const isExpanded = expandedUserId === user.id;
                         const sp = user.supplierProfile;
                         const ap = user.architectProfile;
@@ -1907,7 +1928,7 @@ Please analyze this error and provide a fix.
 
                 {/* Mobile Cards */}
                 <div className="md:hidden space-y-3">
-                  {allUsers.map((user) => {
+                  {filteredUsers.map((user) => {
                     const isExpanded = expandedUserId === user.id;
                     const sp = user.supplierProfile;
                     const ap = user.architectProfile;
