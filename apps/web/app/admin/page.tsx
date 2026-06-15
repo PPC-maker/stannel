@@ -1358,14 +1358,21 @@ Please analyze this error and provide a fix.
   };
 
   // Filter users by search and status
+  const roleLabels: Record<string, string[]> = {
+    ADMIN: ['מנהל', 'אדמין', 'admin'],
+    ARCHITECT: ['אדריכל', 'architect'],
+    SUPPLIER: ['ספק', 'supplier'],
+  };
   const filteredUsers = userSearch.trim()
     ? allUsers.filter(u => {
         const term = userSearch.trim().toLowerCase();
+        const matchesRole = roleLabels[u.role]?.some(label => label.includes(term));
         return u.name.toLowerCase().includes(term)
           || u.email.toLowerCase().includes(term)
           || (u.phone && u.phone.includes(term))
           || (u.company && u.company.toLowerCase().includes(term))
-          || (u.supplierProfile?.companyName && u.supplierProfile.companyName.toLowerCase().includes(term));
+          || (u.supplierProfile?.companyName && u.supplierProfile.companyName.toLowerCase().includes(term))
+          || matchesRole;
       })
     : allUsers;
   const pendingUsers = allUsers.filter(u => !u.isActive);
@@ -1673,7 +1680,7 @@ Please analyze this error and provide a fix.
                       type="text"
                       value={userSearch}
                       onChange={(e) => setUserSearch(e.target.value)}
-                      placeholder="חיפוש לפי שם, אימייל, טלפון..."
+                      placeholder="חיפוש לפי שם, אימייל, טלפון, תפקיד (ספק/אדריכל)..."
                       className="w-full pr-10 pl-4 py-3 bg-white border border-[rgba(201,155,74,0.15)] rounded-xl text-[#2b241d] placeholder-[#a89b8a] focus:outline-none focus:border-[#c99b4a] transition-colors text-sm"
                     />
                   </div>
