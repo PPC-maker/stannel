@@ -159,11 +159,14 @@ export const systemScannerService = {
     for (const endpoint of endpoints) {
       try {
         const start = Date.now();
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 10000);
         const response = await fetch(`${API_BASE_URL}${endpoint.path}`, {
           method: endpoint.method,
           headers: { 'Content-Type': 'application/json' },
-          signal: AbortSignal.timeout(10000),
+          signal: controller.signal,
         });
+        clearTimeout(timeoutId);
         const responseTime = Date.now() - start;
 
         const statusOk = response.status === endpoint.expectedStatus;
@@ -393,10 +396,13 @@ export const systemScannerService = {
 
     // Test 3: Test unauthorized access protection
     try {
+      const controller3 = new AbortController();
+      const timeoutId3 = setTimeout(() => controller3.abort(), 5000);
       const response = await fetch(`${API_BASE_URL}/api/v1/admin/users`, {
         method: 'GET',
-        signal: AbortSignal.timeout(5000),
+        signal: controller3.signal,
       });
+      clearTimeout(timeoutId3);
 
       results.push({
         name: 'הגנת Admin',

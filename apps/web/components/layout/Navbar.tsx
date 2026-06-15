@@ -45,16 +45,11 @@ export default function Navbar() {
 
     const fetchUnread = async () => {
       try {
-        const { getAuthToken } = await import('@stannel/api-client');
+        const { notificationsApi, getAuthToken } = await import('@stannel/api-client');
         const token = getAuthToken();
         if (!token) return;
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:7070'}/api/v1/notifications/unread-count`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        if (res.ok) {
-          const data = await res.json();
-          setUnreadCount(data.count || 0);
-        }
+        const data = await notificationsApi.getUnreadCount();
+        setUnreadCount(data.count || 0);
       } catch {}
     };
 

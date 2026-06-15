@@ -2,6 +2,15 @@ import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import prisma from '../lib/prisma.js';
 import { authMiddleware, requireArchitect } from '../middleware/auth.middleware.js';
 import { notificationService } from '../services/notification.service.js';
+import { z } from 'zod';
+
+const createMeetingSchema = z.object({
+  supplierId: z.string().min(1, 'חסר מזהה ספק'),
+  date: z.string().refine((d) => !isNaN(Date.parse(d)), 'תאריך לא תקין'),
+  time: z.string().min(1, 'חסרה שעה'),
+  subject: z.string().min(1, 'חסר נושא'),
+  notes: z.string().optional(),
+});
 
 export async function meetingsRoutes(server: FastifyInstance) {
   server.addHook('preHandler', authMiddleware);
@@ -13,17 +22,11 @@ export async function meetingsRoutes(server: FastifyInstance) {
       return reply.code(403).send({ error: 'Only architects can request meetings' });
     }
 
-    const body = request.body as {
-      supplierId: string;
-      date: string;
-      time: string;
-      subject: string;
-      notes?: string;
-    };
-
-    if (!body.supplierId || !body.date || !body.time || !body.subject) {
-      return reply.code(400).send({ error: 'Missing required fields' });
+    const parsed = createMeetingSchema.safeParse(request.body);
+    if (!parsed.success) {
+      return reply.code(400).send({ error: parsed.error.errors[0]?.message || 'נתונים לא תקינים' });
     }
+    const body = parsed.data;
 
     const architect = await prisma.architectProfile.findUnique({
       where: { userId: user.id },

@@ -71,8 +71,8 @@ export default function MagazineCarousel({ style }: MagazineCarouselProps) {
             <Text style={styles.headerSubtitle}>השראה, טרנדים ועיצוב</Text>
           </View>
           <LinearGradient
-            colors={GOLD_METALLIC_STOPS as unknown as string[]}
-            locations={GOLD_METALLIC_LOCATIONS as unknown as number[]}
+            colors={[...GOLD_METALLIC_STOPS]}
+            locations={[...GOLD_METALLIC_LOCATIONS]}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
             style={styles.headerBadge}
@@ -99,8 +99,8 @@ export default function MagazineCarousel({ style }: MagazineCarouselProps) {
             />
             {i === 0 && (
               <LinearGradient
-                colors={GOLD_METALLIC_STOPS as unknown as string[]}
-                locations={GOLD_METALLIC_LOCATIONS as unknown as number[]}
+                colors={[...GOLD_METALLIC_STOPS]}
+                locations={[...GOLD_METALLIC_LOCATIONS]}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
                 style={styles.magazineBadge}
@@ -121,8 +121,8 @@ export default function MagazineCarousel({ style }: MagazineCarouselProps) {
         {articles.map((_, i) => (
           <TouchableOpacity key={i} onPress={() => setCurrentIndex(i)}>
             <LinearGradient
-              colors={i === currentIndex ? (GOLD_METALLIC_STOPS as unknown as string[]) : [CREAM.muted, CREAM.muted]}
-              locations={i === currentIndex ? (GOLD_METALLIC_LOCATIONS as unknown as number[]) : [0, 1]}
+              colors={i === currentIndex ? ([...GOLD_METALLIC_STOPS]) : [CREAM.muted, CREAM.muted]}
+              locations={i === currentIndex ? ([...GOLD_METALLIC_LOCATIONS]) : [0, 1]}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
               style={[styles.dot, i === currentIndex && styles.dotActive]}

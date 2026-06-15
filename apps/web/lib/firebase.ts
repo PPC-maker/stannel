@@ -161,7 +161,7 @@ export async function resetPassword(email: string): Promise<void> {
   const auth = getFirebaseAuth();
   if (!auth) throw new Error('Firebase not configured');
   const actionCodeSettings = {
-    url: typeof window !== 'undefined' ? `${window.location.origin}/login` : 'https://stannel.co.il/login',
+    url: typeof window !== 'undefined' ? `${window.location.origin}/login` : 'https://stannelclub.co.il/login',
     handleCodeInApp: false,
   };
   await sendPasswordResetEmail(auth, email, actionCodeSettings);

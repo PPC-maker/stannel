@@ -1,9 +1,9 @@
-import { View, StyleSheet, ViewStyle } from 'react-native';
+import { View, StyleSheet, ViewStyle, StyleProp } from 'react-native';
 import { ReactNode } from 'react';
 
 interface GlassCardProps {
   children: ReactNode;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
   gold?: boolean;
   dark?: boolean;
 }

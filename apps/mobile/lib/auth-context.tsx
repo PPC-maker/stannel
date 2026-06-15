@@ -3,7 +3,7 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
 import { authApi, setAuthToken } from '@stannel/api-client';
-import type { AuthUser } from '@stannel/types';
+import type { AuthUser, UserRole } from '@stannel/types';
 
 interface AuthContextType {
   firebaseUser: FirebaseAuthTypes.User | null;
@@ -21,7 +21,7 @@ interface RegisterData {
   password: string;
   name: string;
   phone?: string;
-  role: 'ARCHITECT' | 'SUPPLIER';
+  role: UserRole;
   companyName?: string;
 }
 

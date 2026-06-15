@@ -49,6 +49,8 @@ export default function EventsPage() {
     queryKey: ['my-events'],
     queryFn: () => eventsApi.getMyEvents(),
     enabled: !!user,
+    staleTime: 0,
+    refetchOnMount: 'always',
   });
 
   // Sync server registrations into local state
@@ -155,7 +157,7 @@ export default function EventsPage() {
   };
 
   const isRegistered = (eventId: string) => registeredEvents.includes(eventId);
-  const isFull = (event: any) => event.registered >= event.capacity;
+  const isFull = (event: any) => (event.registeredCount || 0) >= event.capacity;
 
   return (
     <div className="min-h-screen">
@@ -298,7 +300,7 @@ export default function EventsPage() {
           ) : events.map((event: any, index: number) => {
             const registered = isRegistered(event.id);
             const full = isFull(event);
-            const spotsLeft = (event.capacity || 0) - (event.registered || 0);
+            const spotsLeft = (event.capacity || 0) - (event.registeredCount || 0);
             const isRegistering = registeringId === event.id;
 
             return (
@@ -355,6 +357,12 @@ export default function EventsPage() {
 
                     {/* Event Details */}
                     <div className="space-y-2 mb-4">
+                      {(event.date || event.startDate) && (
+                        <div className="flex items-center gap-2 text-[#8b7c69] text-sm">
+                          <Calendar size={14} />
+                          <span>{formatDate(event.date || event.startDate)}</span>
+                        </div>
+                      )}
                       {event.time && (
                         <div className="flex items-center gap-2 text-[#8b7c69] text-sm">
                           <Clock size={14} />
@@ -369,14 +377,14 @@ export default function EventsPage() {
                       )}
                       <div className="flex items-center gap-2 text-[#8b7c69] text-sm">
                         <Users size={14} />
-                        <span>{event.registered || 0} / {event.capacity || '∞'} משתתפים</span>
+                        <span>{event.registeredCount || 0} / {event.capacity || '∞'} משתתפים</span>
                       </div>
                     </div>
 
                     {/* Points & Action */}
                     <div className="flex items-center justify-between pt-4 border-t border-[rgba(201,155,74,0.08)]">
                       <div className="text-[#c99b4a] font-bold">
-                        +{event.pointsReward || 0} נק׳
+                        +{event.pointsCost || 0} נק׳
                       </div>
                       {registered ? (
                         <button

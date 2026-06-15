@@ -16,6 +16,22 @@ export { supplierApi } from './supplier';
 export { suppliersDirectoryApi } from './suppliers-directory';
 export { meetingsApi } from './meetings';
 
+// Local imports for apiClient convenience object
+import { authApi } from './auth';
+import { invoicesApi } from './invoices';
+import { walletApi } from './wallet';
+import { rewardsApi } from './rewards';
+import { eventsApi } from './events';
+import { adminApi } from './admin';
+import { aiApi } from './ai';
+import { notificationsApi } from './notifications';
+import { goalsApi } from './goals';
+import { serviceProvidersApi } from './service-providers';
+import { analyticsApi } from './analytics';
+import { supplierApi } from './supplier';
+import { suppliersDirectoryApi } from './suppliers-directory';
+import { meetingsApi } from './meetings';
+
 // API Error class for better error handling
 export class ApiError extends Error {
   constructor(
@@ -30,40 +46,18 @@ export class ApiError extends Error {
 
 // Combined API client for convenience
 export const apiClient = {
-  get auth() {
-    return require('./auth').authApi;
-  },
-  get invoices() {
-    return require('./invoices').invoicesApi;
-  },
-  get wallet() {
-    return require('./wallet').walletApi;
-  },
-  get rewards() {
-    return require('./rewards').rewardsApi;
-  },
-  get events() {
-    return require('./events').eventsApi;
-  },
-  get admin() {
-    return require('./admin').adminApi;
-  },
-  get ai() {
-    return require('./ai').aiApi;
-  },
-  get notifications() {
-    return require('./notifications').notificationsApi;
-  },
-  get goals() {
-    return require('./goals').goalsApi;
-  },
-  get serviceProviders() {
-    return require('./service-providers').serviceProvidersApi;
-  },
-  get analytics() {
-    return require('./analytics').analyticsApi;
-  },
-  get supplier() {
-    return require('./supplier').supplierApi;
-  },
+  get auth() { return authApi; },
+  get invoices() { return invoicesApi; },
+  get wallet() { return walletApi; },
+  get rewards() { return rewardsApi; },
+  get events() { return eventsApi; },
+  get admin() { return adminApi; },
+  get ai() { return aiApi; },
+  get notifications() { return notificationsApi; },
+  get goals() { return goalsApi; },
+  get serviceProviders() { return serviceProvidersApi; },
+  get analytics() { return analyticsApi; },
+  get supplier() { return supplierApi; },
+  get suppliersDirectory() { return suppliersDirectoryApi; },
+  get meetings() { return meetingsApi; },
 };

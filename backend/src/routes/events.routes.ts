@@ -20,7 +20,8 @@ export async function eventsRoutes(server: FastifyInstance) {
 
     const where = {
       isHidden: false,
-      ...(query.upcoming === 'true' && { date: { gte: new Date() } }),
+      // By default show only upcoming events, unless explicitly requesting all
+      ...(query.upcoming !== 'false' && { date: { gte: new Date() } }),
     };
 
     const [events, total] = await Promise.all([
@@ -116,6 +117,11 @@ export async function eventsRoutes(server: FastifyInstance) {
 
     if (!event) {
       return reply.code(404).send({ error: 'Event not found' });
+    }
+
+    // Block registration for past events
+    if (new Date(event.date) < new Date()) {
+      return reply.code(400).send({ error: 'לא ניתן להירשם לאירוע שכבר עבר' });
     }
 
     // Check if already registered

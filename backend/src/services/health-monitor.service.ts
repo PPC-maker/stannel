@@ -69,9 +69,12 @@ export const healthMonitorService = {
   async checkApiHealth(): Promise<HealthCheck> {
     try {
       const port = process.env.PORT || '7070';
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000);
       const response = await fetch(`http://localhost:${port}/health`, {
-        signal: AbortSignal.timeout(5000),
+        signal: controller.signal,
       });
+      clearTimeout(timeoutId);
 
       if (response.ok) {
         return {

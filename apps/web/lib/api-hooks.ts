@@ -117,6 +117,8 @@ export function useEvents() {
   return useQuery({
     queryKey: ['events'],
     queryFn: () => eventsApi.getAll(),
+    staleTime: 0,
+    refetchOnMount: 'always',
   });
 }
 
@@ -152,6 +154,7 @@ export function useRegisterForEvent() {
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['events'] });
+      queryClient.invalidateQueries({ queryKey: ['my-events'] });
     },
   });
 }

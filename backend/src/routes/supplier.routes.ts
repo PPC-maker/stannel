@@ -74,7 +74,11 @@ export async function supplierRoutes(server: FastifyInstance) {
   // Confirm payment
   server.patch('/invoices/:id/confirm', async (request: FastifyRequest, reply: FastifyReply) => {
     const { id } = request.params as { id: string };
-    const body = confirmPaymentSchema.parse(request.body);
+    const parsed = confirmPaymentSchema.safeParse(request.body);
+    if (!parsed.success) {
+      return reply.code(400).send({ error: parsed.error.errors[0]?.message || 'נתונים לא תקינים' });
+    }
+    const body = parsed.data;
 
     const invoice = await prisma.invoice.findUnique({
       where: { id },
@@ -170,8 +174,12 @@ export async function supplierRoutes(server: FastifyInstance) {
   });
 
   // Add product
-  server.post('/catalog', async (request: FastifyRequest) => {
-    const body = productSchema.parse(request.body);
+  server.post('/catalog', async (request: FastifyRequest, reply: FastifyReply) => {
+    const parsed = productSchema.safeParse(request.body);
+    if (!parsed.success) {
+      return reply.code(400).send({ error: parsed.error.errors[0]?.message || 'נתונים לא תקינים' });
+    }
+    const body = parsed.data;
 
     const product = await prisma.product.create({
       data: {
@@ -193,7 +201,11 @@ export async function supplierRoutes(server: FastifyInstance) {
   // Update product
   server.patch('/catalog/:id', async (request: FastifyRequest, reply: FastifyReply) => {
     const { id } = request.params as { id: string };
-    const body = productSchema.partial().parse(request.body);
+    const parsed = productSchema.partial().safeParse(request.body);
+    if (!parsed.success) {
+      return reply.code(400).send({ error: parsed.error.errors[0]?.message || 'נתונים לא תקינים' });
+    }
+    const body = parsed.data;
 
     const product = await prisma.product.findUnique({ where: { id } });
 
@@ -226,8 +238,12 @@ export async function supplierRoutes(server: FastifyInstance) {
   });
 
   // Update supplier profile
-  server.put('/profile', async (request: FastifyRequest) => {
-    const body = updateProfileSchema.parse(request.body);
+  server.put('/profile', async (request: FastifyRequest, reply: FastifyReply) => {
+    const parsed = updateProfileSchema.safeParse(request.body);
+    if (!parsed.success) {
+      return reply.code(400).send({ error: parsed.error.errors[0]?.message || 'נתונים לא תקינים' });
+    }
+    const body = parsed.data;
 
     const updated = await prisma.supplierProfile.update({
       where: { id: request.user!.supplierProfile!.id },
