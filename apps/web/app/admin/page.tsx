@@ -186,6 +186,9 @@ const roleLabels: Record<string, string> = {
   ARCHITECT: 'אדריכל',
   SUPPLIER: 'ספק',
   ADMIN: 'מנהל',
+  architect: 'אדריכל',
+  supplier: 'ספק',
+  admin: 'מנהל',
 };
 
 export default function AdminPage() {
@@ -1757,7 +1760,7 @@ Please analyze this error and provide a fix.
                               </td>
                               <td className="py-4 px-4"><span className="text-[#8b7c69] flex items-center gap-2"><Mail size={14} className="text-[#a89b8a]" />{user.email}</span></td>
                               <td className="py-4 px-4"><span className="text-[#8b7c69] flex items-center gap-2"><Phone size={14} className="text-[#a89b8a]" />{user.phone || '-'}</span></td>
-                              <td className="py-4 px-4"><span className={`px-3 py-1 rounded-full text-sm ${user.role === 'ARCHITECT' ? 'bg-blue-500/20 text-blue-400' : user.role === 'ADMIN' ? 'bg-red-500/20 text-red-400' : 'bg-purple-500/20 text-purple-400'}`}>{roleLabels[user.role] || user.role}</span></td>
+                              <td className="py-4 px-4"><span className={`px-3 py-1 rounded-full text-sm ${user.role.toUpperCase() === 'ARCHITECT' ? 'bg-blue-500/20 text-blue-400' : user.role.toUpperCase() === 'ADMIN' ? 'bg-red-500/20 text-red-400' : 'bg-purple-500/20 text-purple-400'}`}>{roleLabels[user.role] || roleLabels[user.role.toUpperCase()] || user.role}</span></td>
                               <td className="py-4 px-4">
                                 {user.isActive ? <span className="px-3 py-1 rounded-full text-sm bg-green-500/20 text-green-400 flex items-center gap-1 w-fit"><CheckCircle size={14} />מאושר</span> : <span className="px-3 py-1 rounded-full text-sm bg-yellow-500/20 text-yellow-400 flex items-center gap-1 w-fit"><Clock size={14} />ממתין</span>}
                               </td>
@@ -1857,12 +1860,12 @@ Please analyze this error and provide a fix.
                                           <div className="flex items-center gap-2 text-[#8b7c69]"><span className="text-[#a89b8a] min-w-[80px]">נרשם:</span><span className="text-[#2b241d]">{new Date(user.createdAt).toLocaleString('he-IL')}</span></div>
                                           {user.activatedAt && <div className="flex items-center gap-2 text-[#8b7c69]"><span className="text-[#a89b8a] min-w-[80px]">אושר:</span><span className="text-[#2b241d]">{new Date(user.activatedAt).toLocaleString('he-IL')}</span></div>}
                                           {user.updatedAt && <div className="flex items-center gap-2 text-[#8b7c69]"><span className="text-[#a89b8a] min-w-[80px]">עודכן:</span><span className="text-[#2b241d]">{new Date(user.updatedAt).toLocaleString('he-IL')}</span></div>}
-                                          <div className="flex items-center gap-2 text-[#8b7c69]"><span className="text-[#a89b8a] min-w-[80px]">תפקיד:</span><span className={`px-2 py-0.5 rounded-full text-xs ${user.role === 'ARCHITECT' ? 'bg-blue-500/20 text-blue-400' : user.role === 'ADMIN' ? 'bg-red-500/20 text-red-400' : 'bg-purple-500/20 text-purple-400'}`}>{roleLabels[user.role] || user.role}</span></div>
+                                          <div className="flex items-center gap-2 text-[#8b7c69]"><span className="text-[#a89b8a] min-w-[80px]">תפקיד:</span><span className={`px-2 py-0.5 rounded-full text-xs ${user.role.toUpperCase() === 'ARCHITECT' ? 'bg-blue-500/20 text-blue-400' : user.role.toUpperCase() === 'ADMIN' ? 'bg-red-500/20 text-red-400' : 'bg-purple-500/20 text-purple-400'}`}>{roleLabels[user.role] || roleLabels[user.role.toUpperCase()] || user.role}</span></div>
                                           <div className="flex items-center gap-2 text-[#8b7c69]"><span className="text-[#a89b8a] min-w-[80px]">מזהה:</span><span className="text-[#a89b8a] text-xs font-mono" dir="ltr">{user.id}</span></div>
                                         </div>
                                       </div>
                                       <div className="space-y-4">
-                                        {user.role === 'SUPPLIER' && sp && (
+                                        {user.role.toUpperCase() === 'SUPPLIER' && sp && (
                                           <>
                                             <h4 className="text-[#2b241d] font-semibold flex items-center gap-2"><Building2 size={16} className="text-purple-400" />פרופיל ספק</h4>
                                             {editingUserId === user.id ? (
@@ -1892,7 +1895,7 @@ Please analyze this error and provide a fix.
                                             )}
                                           </>
                                         )}
-                                        {user.role === 'ARCHITECT' && ap && (
+                                        {user.role.toUpperCase() === 'ARCHITECT' && ap && (
                                           <>
                                             <h4 className="text-[#2b241d] font-semibold flex items-center gap-2"><Building2 size={16} className="text-blue-400" />פרופיל אדריכל</h4>
                                             <div className="space-y-2 text-sm">
@@ -1980,10 +1983,10 @@ Please analyze this error and provide a fix.
                             <div className="flex items-center gap-2 flex-wrap">
                               <span className="text-[#2b241d] font-semibold">{user.name}</span>
                               <span className={`px-2 py-0.5 rounded-full text-xs ${
-                                user.role === 'ARCHITECT' ? 'bg-blue-500/20 text-blue-400'
-                                : user.role === 'ADMIN' ? 'bg-red-500/20 text-red-400'
+                                user.role.toUpperCase() === 'ARCHITECT' ? 'bg-blue-500/20 text-blue-400'
+                                : user.role.toUpperCase() === 'ADMIN' ? 'bg-red-500/20 text-red-400'
                                 : 'bg-purple-500/20 text-purple-400'
-                              }`}>{roleLabels[user.role] || user.role}</span>
+                              }`}>{roleLabels[user.role] || roleLabels[user.role.toUpperCase()] || user.role}</span>
                               {user.isActive ? (
                                 <span className="px-2 py-0.5 rounded-full text-xs bg-green-500/20 text-green-400 flex items-center gap-1">
                                   <CheckCircle size={10} />
@@ -2124,10 +2127,10 @@ Please analyze this error and provide a fix.
                                   <div className="flex justify-between items-center">
                                     <span className="text-[#a89b8a]">תפקיד:</span>
                                     <span className={`px-2 py-0.5 rounded-full text-xs ${
-                                      user.role === 'ARCHITECT' ? 'bg-blue-500/20 text-blue-400'
-                                      : user.role === 'ADMIN' ? 'bg-red-500/20 text-red-400'
+                                      user.role.toUpperCase() === 'ARCHITECT' ? 'bg-blue-500/20 text-blue-400'
+                                      : user.role.toUpperCase() === 'ADMIN' ? 'bg-red-500/20 text-red-400'
                                       : 'bg-purple-500/20 text-purple-400'
-                                    }`}>{roleLabels[user.role] || user.role}</span>
+                                    }`}>{roleLabels[user.role] || roleLabels[user.role.toUpperCase()] || user.role}</span>
                                   </div>
                                   <div className="flex justify-between">
                                     <span className="text-[#a89b8a]">מזהה:</span>
@@ -2137,7 +2140,7 @@ Please analyze this error and provide a fix.
                               </div>
 
                               {/* Supplier Profile */}
-                              {user.role === 'SUPPLIER' && sp && (
+                              {user.role.toUpperCase() === 'SUPPLIER' && sp && (
                                 <div className="space-y-3">
                                   <h4 className="text-[#2b241d] font-medium flex items-center gap-2 text-sm">
                                     <Building2 size={14} className="text-purple-400" />
@@ -2196,7 +2199,7 @@ Please analyze this error and provide a fix.
                               )}
 
                               {/* Architect Profile */}
-                              {user.role === 'ARCHITECT' && ap && (
+                              {user.role.toUpperCase() === 'ARCHITECT' && ap && (
                                 <div className="space-y-2">
                                   <h4 className="text-[#2b241d] font-medium flex items-center gap-2 text-sm">
                                     <Building2 size={14} className="text-blue-400" />
@@ -3024,13 +3027,13 @@ Please analyze this error and provide a fix.
                         <div key={user.id} className="p-4 rounded-lg border border-[rgba(201,155,74,0.08)] bg-[#f7f3f2] flex items-center justify-between">
                           <div className="flex items-center gap-4">
                             <div className="p-2 rounded-lg bg-orange-500/20">
-                              {user.role === 'SUPPLIER' ? <Building2 size={20} className="text-orange-400" /> : <Users size={20} className="text-orange-400" />}
+                              {user.role.toUpperCase() === 'SUPPLIER' ? <Building2 size={20} className="text-orange-400" /> : <Users size={20} className="text-orange-400" />}
                             </div>
                             <div>
                               <p className="text-[#2b241d] font-medium">{user.name}</p>
                               <p className="text-[#8b7c69] text-sm">{user.email}</p>
                               <p className="text-[#a89b8a] text-xs">
-                                {user.role === 'SUPPLIER' ? 'ספק' : user.role === 'ARCHITECT' ? 'אדריכל' : user.role} •
+                                {user.role.toUpperCase() === 'SUPPLIER' ? 'ספק' : user.role.toUpperCase() === 'ARCHITECT' ? 'אדריכל' : user.role} •
                                 נמחק: {deletedDate.toLocaleDateString('he-IL')}
                               </p>
                             </div>
