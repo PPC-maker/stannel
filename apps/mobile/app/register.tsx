@@ -149,6 +149,14 @@ export default function RegisterScreen() {
                 </Text>
               </Pressable>
               <Pressable
+                style={[styles.roleBtn, role === UserRole.DESIGNER && styles.roleBtnActive]}
+                onPress={() => setRole(UserRole.DESIGNER)}
+              >
+                <Text style={[styles.roleBtnText, role === UserRole.DESIGNER && styles.roleBtnTextActive]}>
+                  מעצב
+                </Text>
+              </Pressable>
+              <Pressable
                 style={[styles.roleBtn, role === UserRole.SUPPLIER && styles.roleBtnActive]}
                 onPress={() => setRole(UserRole.SUPPLIER)}
               >
