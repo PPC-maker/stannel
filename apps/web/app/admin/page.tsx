@@ -1185,7 +1185,54 @@ export default function AdminPage() {
 
     if (!step1.isConfirmed || !step1.value) return;
 
-    // Step 2: Business info
+    const isSupplierRole = step1.value.role === 'SUPPLIER';
+
+    // For ARCHITECT/DESIGNER - skip business info and social steps, create directly
+    if (!isSupplierRole) {
+      try {
+        Swal.fire({
+          title: 'יוצר משתמש...',
+          allowOutsideClick: false,
+          didOpen: () => Swal.showLoading(),
+          background: '#f7f3f2',
+          color: '#2b241d',
+        });
+
+        await adminApi.createSupplier({
+          email: step1.value.email,
+          password: step1.value.password,
+          name: step1.value.name,
+          phone: step1.value.phone || undefined,
+          role: step1.value.role,
+          supplierProfile: {
+            companyName: step1.value.name, // placeholder for non-suppliers
+          },
+        });
+
+        await fetchAllUsers();
+        Swal.fire({
+          title: 'נוצר בהצלחה!',
+          text: `${step1.value.role === 'ARCHITECT' ? 'אדריכל' : 'מעצב'} ${step1.value.name} נוסף למערכת`,
+          icon: 'success',
+          confirmButtonText: 'סגור',
+          confirmButtonColor: '#c99b4a',
+          background: '#f7f3f2',
+          color: '#2b241d',
+        });
+      } catch (err: any) {
+        Swal.fire({
+          title: 'שגיאה',
+          text: err?.message || 'משהו השתבש בתהליך היצירה',
+          icon: 'error',
+          confirmButtonText: 'סגור',
+          background: '#f7f3f2',
+          color: '#2b241d',
+        });
+      }
+      return;
+    }
+
+    // Step 2: Business info (SUPPLIER only)
     const step2 = await Swal.fire({
       title: '',
       html: `

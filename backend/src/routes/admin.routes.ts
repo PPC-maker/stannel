@@ -553,14 +553,17 @@ export async function adminRoutes(server: FastifyInstance) {
       };
     };
 
-    console.log('[Create Supplier] body:', JSON.stringify({ email: body.email, name: body.name, hasPassword: !!body.password, companyName: body.supplierProfile?.companyName }));
-    if (!body.email || !body.password || !body.name || !body.supplierProfile?.companyName) {
+    const isSupplierRole = !body.role || body.role.toUpperCase() === 'SUPPLIER';
+    console.log('[Create User] body:', JSON.stringify({ email: body.email, name: body.name, role: body.role, hasPassword: !!body.password, companyName: body.supplierProfile?.companyName }));
+    if (!body.email || !body.password || !body.name) {
       const missing = [];
       if (!body.email) missing.push('אימייל');
       if (!body.password) missing.push('סיסמה');
       if (!body.name) missing.push('שם');
-      if (!body.supplierProfile?.companyName) missing.push('שם חברה');
       return reply.code(400).send({ error: `חסרים שדות חובה: ${missing.join(', ')}` });
+    }
+    if (isSupplierRole && !body.supplierProfile?.companyName) {
+      return reply.code(400).send({ error: 'שם חברה הוא שדה חובה לספקים' });
     }
 
     if (body.password.length < 6) {
@@ -582,40 +585,50 @@ export async function adminRoutes(server: FastifyInstance) {
         displayName: body.name,
       });
 
-      // Create User + SupplierProfile in a transaction
+      // Create User + Profile in a transaction
+      const role = (body.role || 'SUPPLIER').toUpperCase();
       const user = await prisma.$transaction(async (tx) => {
         const newUser = await tx.user.create({
           data: {
             email: body.email,
             name: body.name,
             phone: body.phone,
-            company: body.company,
+            company: body.company || body.supplierProfile?.companyName,
             address: body.address,
-            role: (body.role || 'SUPPLIER') as any,
+            role: role as any,
             isActive: true,
             activatedAt: new Date(),
             firebaseUid: firebaseUser.uid,
           },
         });
 
-        await tx.supplierProfile.create({
-          data: {
-            userId: newUser.id,
-            companyName: body.supplierProfile.companyName,
-            description: body.supplierProfile.description,
-            phone: body.supplierProfile.phone,
-            address: body.supplierProfile.address,
-            website: body.supplierProfile.website,
-            facebook: body.supplierProfile.facebook,
-            instagram: body.supplierProfile.instagram,
-            linkedin: body.supplierProfile.linkedin,
-            commissionRate: body.supplierProfile.commissionRate,
-          },
-        });
+        if (role === 'SUPPLIER') {
+          await tx.supplierProfile.create({
+            data: {
+              userId: newUser.id,
+              companyName: body.supplierProfile.companyName,
+              description: body.supplierProfile.description,
+              phone: body.supplierProfile.phone,
+              address: body.supplierProfile.address,
+              website: body.supplierProfile.website,
+              facebook: body.supplierProfile.facebook,
+              instagram: body.supplierProfile.instagram,
+              linkedin: body.supplierProfile.linkedin,
+              commissionRate: body.supplierProfile.commissionRate,
+            },
+          });
+        } else {
+          // ARCHITECT or DESIGNER - create architectProfile
+          await tx.architectProfile.create({
+            data: {
+              userId: newUser.id,
+            },
+          });
+        }
 
         return tx.user.findUnique({
           where: { id: newUser.id },
-          include: { supplierProfile: true },
+          include: { supplierProfile: true, architectProfile: true },
         });
       });
 
