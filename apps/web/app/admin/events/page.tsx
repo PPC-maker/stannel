@@ -151,9 +151,9 @@ export default function ManageEventsPage() {
       resetForm();
     } catch (error) {
       Swal.fire({
-        title: 'שגיאה',
-        text: 'אירעה שגיאה בשמירת האירוע',
-        icon: 'error',
+        title: 'שימו לב',
+        text: 'לא הצלחנו לשמור את האירוע. נסו שוב',
+        icon: 'warning',
         confirmButtonText: 'אישור',
         background: '#f7f3f2',
         color: '#2b241d',
@@ -172,9 +172,9 @@ export default function ManageEventsPage() {
       });
     } catch (error) {
       Swal.fire({
-        title: 'שגיאה',
-        text: 'אירעה שגיאה בעדכון הנראות',
-        icon: 'error',
+        title: 'שימו לב',
+        text: 'לא הצלחנו לעדכן את הנראות. נסו שוב',
+        icon: 'warning',
         confirmButtonText: 'אישור',
         background: '#f7f3f2',
         color: '#2b241d',
@@ -210,9 +210,9 @@ export default function ManageEventsPage() {
         });
       } catch (error) {
         Swal.fire({
-          title: 'שגיאה',
-          text: 'אירעה שגיאה במחיקת האירוע',
-          icon: 'error',
+          title: 'שימו לב',
+          text: 'לא הצלחנו למחוק את האירוע. נסו שוב',
+          icon: 'warning',
           confirmButtonText: 'אישור',
           background: '#f7f3f2',
           color: '#2b241d',

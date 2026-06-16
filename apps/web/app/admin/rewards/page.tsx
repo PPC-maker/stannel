@@ -90,9 +90,9 @@ export default function AdminRewardsPage() {
     },
     onError: (error: any) => {
       Swal.fire({
-        title: 'שגיאה',
+        title: 'שימו לב',
         text: error.message,
-        icon: 'error',
+        icon: 'warning',
         background: '#f7f3f2',
         color: '#2b241d',
         confirmButtonColor: '#c99b4a',
@@ -145,9 +145,9 @@ export default function AdminRewardsPage() {
     },
     onError: (error: any) => {
       Swal.fire({
-        title: 'שגיאה במחיקת המוצר',
+        title: 'לא ניתן למחוק את המוצר',
         text: error.message,
-        icon: 'error',
+        icon: 'warning',
         background: '#f7f3f2',
         color: '#2b241d',
         confirmButtonColor: '#c99b4a',
@@ -231,9 +231,9 @@ export default function AdminRewardsPage() {
       setForm({ ...form, imageUrl: result.url });
     } catch (error: any) {
       Swal.fire({
-        title: 'שגיאה בהעלאת תמונה',
+        title: 'לא ניתן להעלות תמונה',
         text: error.message,
-        icon: 'error',
+        icon: 'warning',
         background: '#f7f3f2',
         color: '#2b241d',
         confirmButtonColor: '#c99b4a',

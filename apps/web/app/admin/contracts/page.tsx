@@ -120,7 +120,7 @@ export default function ManageContractsPage() {
       setFormData(prev => ({ ...prev, documentUrl: result.url }));
       Swal.fire({ title: 'המסמך הועלה!', icon: 'success', timer: 1500, showConfirmButton: false, background: '#f7f3f2', color: '#2b241d' });
     } catch {
-      Swal.fire({ title: 'שגיאה', text: 'לא ניתן להעלות את המסמך', icon: 'error', background: '#f7f3f2', color: '#2b241d' });
+      Swal.fire({ title: 'שימו לב', text: 'לא ניתן להעלות את המסמך', icon: 'warning', background: '#f7f3f2', color: '#2b241d' });
       setDocFileName('');
     } finally {
       setUploadingDoc(false);
@@ -134,7 +134,7 @@ export default function ManageContractsPage() {
       setShowForm(false);
       Swal.fire({ title: 'החוזה נוצר בהצלחה!', icon: 'success', confirmButtonText: 'אישור', background: '#f7f3f2', color: '#2b241d', confirmButtonColor: '#c99b4a' });
     } catch {
-      Swal.fire({ title: 'שגיאה', text: 'אירעה שגיאה ביצירת החוזה', icon: 'error', confirmButtonText: 'אישור', background: '#f7f3f2', color: '#2b241d', confirmButtonColor: '#c99b4a' });
+      Swal.fire({ title: 'שימו לב', text: 'לא הצלחנו ליצור את החוזה. נסו שוב', icon: 'warning', confirmButtonText: 'אישור', background: '#f7f3f2', color: '#2b241d', confirmButtonColor: '#c99b4a' });
     }
   };
 

@@ -137,9 +137,9 @@ export default function ProjectsManagementPage() {
     },
     onError: () => {
       Swal.fire({
-        title: 'שגיאה',
+        title: 'שימו לב',
         text: 'לא ניתן ליצור את הפרויקט',
-        icon: 'error',
+        icon: 'warning',
         background: '#f7f3f2',
         color: '#2b241d',
       });
@@ -162,9 +162,9 @@ export default function ProjectsManagementPage() {
     },
     onError: () => {
       Swal.fire({
-        title: 'שגיאה',
+        title: 'שימו לב',
         text: 'לא ניתן לעדכן את הפרויקט',
-        icon: 'error',
+        icon: 'warning',
         background: '#f7f3f2',
         color: '#2b241d',
       });
@@ -234,8 +234,8 @@ export default function ProjectsManagementPage() {
       }));
     } catch (error) {
       Swal.fire({
-        title: 'שגיאה בהעלאת תמונה',
-        icon: 'error',
+        title: 'לא ניתן להעלות תמונה',
+        icon: 'warning',
         background: '#f7f3f2',
         color: '#2b241d',
       });

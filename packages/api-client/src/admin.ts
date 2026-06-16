@@ -39,8 +39,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'שגיאה בטעינת דוח הבריאות. נסה לרענן את הדף.' }));
-      throw new Error(error.message || 'שגיאה בטעינת דוח הבריאות. נסה לרענן את הדף.');
+      const error = await res.json().catch(() => ({ message: 'לא הצלחנו לטעון את דוח הבריאות. נסו לרענן את הדף.' }));
+      throw new Error(error.message || 'לא הצלחנו לטעון את דוח הבריאות. נסו לרענן את הדף.');
     }
 
     return res.json();
@@ -52,8 +52,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'שגיאה בטעינת דוחות הבריאות. נסה לרענן את הדף.' }));
-      throw new Error(error.message || 'שגיאה בטעינת דוחות הבריאות. נסה לרענן את הדף.');
+      const error = await res.json().catch(() => ({ message: 'לא הצלחנו לטעון את דוחות הבריאות. נסו לרענן את הדף.' }));
+      throw new Error(error.message || 'לא הצלחנו לטעון את דוחות הבריאות. נסו לרענן את הדף.');
     }
 
     return res.json();
@@ -66,8 +66,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'שגיאה בשליחת דוח הבריאות. נסה שוב.' }));
-      throw new Error(error.message || 'שגיאה בשליחת דוח הבריאות. נסה שוב.');
+      const error = await res.json().catch(() => ({ message: 'לא הצלחנו לשלוח את דוח הבריאות. נסו שוב.' }));
+      throw new Error(error.message || 'לא הצלחנו לשלוח את דוח הבריאות. נסו שוב.');
     }
 
     return res.json();
@@ -80,8 +80,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'שגיאה בטעינת המשימות. נסה לרענן את הדף.' }));
-      throw new Error(error.message || 'שגיאה בטעינת המשימות. נסה לרענן את הדף.');
+      const error = await res.json().catch(() => ({ message: 'לא הצלחנו לטעון את המשימות. נסו לרענן את הדף.' }));
+      throw new Error(error.message || 'לא הצלחנו לטעון את המשימות. נסו לרענן את הדף.');
     }
 
     return res.json();
@@ -94,8 +94,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'שגיאה בהפעלת המשימה. נסה שוב.' }));
-      throw new Error(error.message || 'שגיאה בהפעלת המשימה. נסה שוב.');
+      const error = await res.json().catch(() => ({ message: 'לא הצלחנו להפעיל את המשימה. נסו שוב.' }));
+      throw new Error(error.message || 'לא הצלחנו להפעיל את המשימה. נסו שוב.');
     }
 
     return res.json();
@@ -109,8 +109,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'שגיאה בעדכון המשימה. נסה שוב.' }));
-      throw new Error(error.message || 'שגיאה בעדכון המשימה. נסה שוב.');
+      const error = await res.json().catch(() => ({ message: 'לא הצלחנו לעדכן את המשימה. נסו שוב.' }));
+      throw new Error(error.message || 'לא הצלחנו לעדכן את המשימה. נסו שוב.');
     }
 
     return res.json();
@@ -135,8 +135,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'שגיאה בטעינת המשתמשים. נסה לרענן את הדף.' }));
-      throw new Error(error.message || 'שגיאה בטעינת המשתמשים. נסה לרענן את הדף.');
+      const error = await res.json().catch(() => ({ message: 'לא הצלחנו לטעון את המשתמשים. נסו לרענן את הדף.' }));
+      throw new Error(error.message || 'לא הצלחנו לטעון את המשתמשים. נסו לרענן את הדף.');
     }
 
     return res.json();
@@ -158,8 +158,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'שגיאה בטעינת המשתמשים הממתינים. נסה לרענן את הדף.' }));
-      throw new Error(error.message || 'שגיאה בטעינת המשתמשים הממתינים. נסה לרענן את הדף.');
+      const error = await res.json().catch(() => ({ message: 'לא הצלחנו לטעון את המשתמשים הממתינים. נסו לרענן את הדף.' }));
+      throw new Error(error.message || 'לא הצלחנו לטעון את המשתמשים הממתינים. נסו לרענן את הדף.');
     }
 
     return res.json();
@@ -173,8 +173,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'שגיאה בהפעלת המשתמש. נסה שוב.' }));
-      throw new Error(error.message || 'שגיאה בהפעלת המשתמש. נסה שוב.');
+      const error = await res.json().catch(() => ({ message: 'לא הצלחנו להפעיל את המשתמש. נסו שוב.' }));
+      throw new Error(error.message || 'לא הצלחנו להפעיל את המשתמש. נסו שוב.');
     }
 
     return res.json();
@@ -193,8 +193,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'שגיאה בהפעלת המשתמשים. נסה שוב.' }));
-      throw new Error(error.message || 'שגיאה בהפעלת המשתמשים. נסה שוב.');
+      const error = await res.json().catch(() => ({ message: 'לא הצלחנו להפעיל את המשתמשים. נסו שוב.' }));
+      throw new Error(error.message || 'לא הצלחנו להפעיל את המשתמשים. נסו שוב.');
     }
 
     return res.json();
@@ -207,8 +207,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'שגיאה בהשבתת המשתמש. נסה שוב.' }));
-      throw new Error(error.message || 'שגיאה בהשבתת המשתמש. נסה שוב.');
+      const error = await res.json().catch(() => ({ message: 'לא הצלחנו להשבית את המשתמש. נסו שוב.' }));
+      throw new Error(error.message || 'לא הצלחנו להשבית את המשתמש. נסו שוב.');
     }
 
     return res.json();
@@ -222,8 +222,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'שגיאה בהתחברות כמשתמש. נסה שוב.' }));
-      throw new Error(error.message || 'שגיאה בהתחברות כמשתמש. נסה שוב.');
+      const error = await res.json().catch(() => ({ message: 'לא הצלחנו להתחבר כמשתמש. נסו שוב.' }));
+      throw new Error(error.message || 'לא הצלחנו להתחבר כמשתמש. נסו שוב.');
     }
 
     return res.json();
@@ -236,8 +236,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'שגיאה במחיקת המשתמש. נסה שוב.' }));
-      throw new Error(error.message || 'שגיאה במחיקת המשתמש. נסה שוב.');
+      const error = await res.json().catch(() => ({ message: 'לא הצלחנו למחוק את המשתמש. נסו שוב.' }));
+      throw new Error(error.message || 'לא הצלחנו למחוק את המשתמש. נסו שוב.');
     }
 
     return res.json();
@@ -248,7 +248,7 @@ export const adminApi = {
       headers: getHeaders(),
     });
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'שגיאה בטעינת משתמשים שנמחקו.' }));
+      const error = await res.json().catch(() => ({ message: 'לא הצלחנו לטעון משתמשים שנמחקו.' }));
       throw new Error(error.message);
     }
     return res.json();
@@ -260,7 +260,7 @@ export const adminApi = {
       headers: getHeaders(),
     });
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'שגיאה בשחזור המשתמש.' }));
+      const error = await res.json().catch(() => ({ message: 'לא הצלחנו לשחזר את המשתמש.' }));
       throw new Error(error.message);
     }
     return res.json();
@@ -291,8 +291,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const err = await res.json().catch(() => ({ error: 'שגיאה בעדכון המשתמש. נסה שוב.' }));
-      throw new Error(err.error || err.message || 'שגיאה בעדכון המשתמש. נסה שוב.');
+      const err = await res.json().catch(() => ({ error: 'לא הצלחנו לעדכן את המשתמש. נסו שוב.' }));
+      throw new Error(err.error || err.message || 'לא הצלחנו לעדכן את המשתמש. נסו שוב.');
     }
 
     return res.json();
@@ -324,8 +324,8 @@ export const adminApi = {
       body: JSON.stringify(data),
     });
     if (!res.ok) {
-      const err = await res.json().catch(() => ({ error: 'שגיאה ביצירת הספק. נסה שוב.' }));
-      throw new Error(err.error || err.message || 'שגיאה ביצירת הספק. נסה שוב.');
+      const err = await res.json().catch(() => ({ error: 'לא הצלחנו ליצור את המשתמש. נסו שוב.' }));
+      throw new Error(err.error || err.message || 'לא הצלחנו ליצור את המשתמש. נסו שוב.');
     }
     return res.json();
   },
@@ -349,8 +349,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'שגיאה בטעינת החשבוניות. נסה לרענן את הדף.' }));
-      throw new Error(error.message || 'שגיאה בטעינת החשבוניות. נסה לרענן את הדף.');
+      const error = await res.json().catch(() => ({ message: 'לא הצלחנו לטעון את החשבוניות. נסו לרענן את הדף.' }));
+      throw new Error(error.message || 'לא הצלחנו לטעון את החשבוניות. נסו לרענן את הדף.');
     }
 
     return res.json();
@@ -373,8 +373,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'שגיאה בטעינת החשבוניות שנמחקו. נסה לרענן את הדף.' }));
-      throw new Error(error.message || 'שגיאה בטעינת החשבוניות שנמחקו. נסה לרענן את הדף.');
+      const error = await res.json().catch(() => ({ message: 'לא הצלחנו לטעון את החשבוניות שנמחקו. נסו לרענן את הדף.' }));
+      throw new Error(error.message || 'לא הצלחנו לטעון את החשבוניות שנמחקו. נסו לרענן את הדף.');
     }
 
     return res.json();
@@ -388,8 +388,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'שגיאה במחיקת החשבונית. נסה שוב.' }));
-      throw new Error(error.message || 'שגיאה במחיקת החשבונית. נסה שוב.');
+      const error = await res.json().catch(() => ({ message: 'לא הצלחנו למחוק את החשבונית. נסו שוב.' }));
+      throw new Error(error.message || 'לא הצלחנו למחוק את החשבונית. נסו שוב.');
     }
 
     return res.json();
@@ -403,8 +403,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'שגיאה במחיקת החשבוניות. נסה שוב.' }));
-      throw new Error(error.message || 'שגיאה במחיקת החשבוניות. נסה שוב.');
+      const error = await res.json().catch(() => ({ message: 'לא הצלחנו למחוק את החשבוניות. נסו שוב.' }));
+      throw new Error(error.message || 'לא הצלחנו למחוק את החשבוניות. נסו שוב.');
     }
 
     return res.json();
@@ -418,8 +418,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'שגיאה בשחזור החשבונית. נסה שוב.' }));
-      throw new Error(error.message || 'שגיאה בשחזור החשבונית. נסה שוב.');
+      const error = await res.json().catch(() => ({ message: 'לא הצלחנו לשחזר את החשבונית. נסו שוב.' }));
+      throw new Error(error.message || 'לא הצלחנו לשחזר את החשבונית. נסו שוב.');
     }
 
     return res.json();
@@ -433,8 +433,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'שגיאה במחיקת החשבונית לצמיתות. נסה שוב.' }));
-      throw new Error(error.message || 'שגיאה במחיקת החשבונית לצמיתות. נסה שוב.');
+      const error = await res.json().catch(() => ({ message: 'לא הצלחנו למחוק את החשבונית לצמיתות. נסו שוב.' }));
+      throw new Error(error.message || 'לא הצלחנו למחוק את החשבונית לצמיתות. נסו שוב.');
     }
 
     return res.json();
@@ -448,8 +448,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'שגיאה בניקוי סל המיחזור. נסה שוב.' }));
-      throw new Error(error.message || 'שגיאה בניקוי סל המיחזור. נסה שוב.');
+      const error = await res.json().catch(() => ({ message: 'לא הצלחנו לנקות את סל המיחזור. נסו שוב.' }));
+      throw new Error(error.message || 'לא הצלחנו לנקות את סל המיחזור. נסו שוב.');
     }
 
     return res.json();
@@ -463,8 +463,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'שגיאה באימות החשבונית. נסה שוב.' }));
-      throw new Error(error.message || 'שגיאה באימות החשבונית. נסה שוב.');
+      const error = await res.json().catch(() => ({ message: 'לא הצלחנו לאמת את החשבונית. נסו שוב.' }));
+      throw new Error(error.message || 'לא הצלחנו לאמת את החשבונית. נסו שוב.');
     }
 
     return res.json();
@@ -487,8 +487,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'שגיאה בטעינת יומן הביקורת. נסה לרענן את הדף.' }));
-      throw new Error(error.message || 'שגיאה בטעינת יומן הביקורת. נסה לרענן את הדף.');
+      const error = await res.json().catch(() => ({ message: 'לא הצלחנו לטעון את יומן הביקורת. נסו לרענן את הדף.' }));
+      throw new Error(error.message || 'לא הצלחנו לטעון את יומן הביקורת. נסו לרענן את הדף.');
     }
 
     return res.json();
@@ -514,8 +514,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'שגיאה בטעינת יומני המערכת. נסה לרענן את הדף.' }));
-      throw new Error(error.message || 'שגיאה בטעינת יומני המערכת. נסה לרענן את הדף.');
+      const error = await res.json().catch(() => ({ message: 'לא הצלחנו לטעון את יומני המערכת. נסו לרענן את הדף.' }));
+      throw new Error(error.message || 'לא הצלחנו לטעון את יומני המערכת. נסו לרענן את הדף.');
     }
 
     return res.json();
@@ -527,8 +527,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'שגיאה בטעינת יומן המערכת. נסה לרענן את הדף.' }));
-      throw new Error(error.message || 'שגיאה בטעינת יומן המערכת. נסה לרענן את הדף.');
+      const error = await res.json().catch(() => ({ message: 'לא הצלחנו לטעון את יומן המערכת. נסו לרענן את הדף.' }));
+      throw new Error(error.message || 'לא הצלחנו לטעון את יומן המערכת. נסו לרענן את הדף.');
     }
 
     return res.json();
@@ -540,8 +540,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'שגיאה בטעינת נתוני היומנים. נסה לרענן את הדף.' }));
-      throw new Error(error.message || 'שגיאה בטעינת נתוני היומנים. נסה לרענן את הדף.');
+      const error = await res.json().catch(() => ({ message: 'לא הצלחנו לטעון את נתוני היומנים. נסו לרענן את הדף.' }));
+      throw new Error(error.message || 'לא הצלחנו לטעון את נתוני היומנים. נסו לרענן את הדף.');
     }
 
     return res.json();
@@ -554,8 +554,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'שגיאה בפתרון היומן. נסה שוב.' }));
-      throw new Error(error.message || 'שגיאה בפתרון היומן. נסה שוב.');
+      const error = await res.json().catch(() => ({ message: 'לא הצלחנו לפתור את היומן. נסו שוב.' }));
+      throw new Error(error.message || 'לא הצלחנו לפתור את היומן. נסו שוב.');
     }
 
     return res.json();
@@ -573,8 +573,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'שגיאה בהפעלת סריקת המערכת. נסה שוב.' }));
-      throw new Error(error.message || 'שגיאה בהפעלת סריקת המערכת. נסה שוב.');
+      const error = await res.json().catch(() => ({ message: 'לא הצלחנו להפעיל את סריקת המערכת. נסו שוב.' }));
+      throw new Error(error.message || 'לא הצלחנו להפעיל את סריקת המערכת. נסו שוב.');
     }
 
     return res.json();
@@ -615,8 +615,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'שגיאה בטעינת היסטוריית הסריקות. נסה לרענן את הדף.' }));
-      throw new Error(error.message || 'שגיאה בטעינת היסטוריית הסריקות. נסה לרענן את הדף.');
+      const error = await res.json().catch(() => ({ message: 'לא הצלחנו לטעון את היסטוריית הסריקות. נסו לרענן את הדף.' }));
+      throw new Error(error.message || 'לא הצלחנו לטעון את היסטוריית הסריקות. נסו לרענן את הדף.');
     }
 
     return res.json();
@@ -629,8 +629,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'שגיאה בטעינת ההזמנות' }));
-      throw new Error(error.message || 'שגיאה בטעינת ההזמנות');
+      const error = await res.json().catch(() => ({ message: 'לא הצלחנו לטעון את ההזמנות' }));
+      throw new Error(error.message || 'לא הצלחנו לטעון את ההזמנות');
     }
 
     return res.json();
@@ -644,8 +644,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'שגיאה בעדכון סטטוס ההזמנה' }));
-      throw new Error(error.message || 'שגיאה בעדכון סטטוס ההזמנה');
+      const error = await res.json().catch(() => ({ message: 'לא הצלחנו לעדכן את סטטוס ההזמנה' }));
+      throw new Error(error.message || 'לא הצלחנו לעדכן את סטטוס ההזמנה');
     }
 
     return res.json();
@@ -655,7 +655,7 @@ export const adminApi = {
     const res = await fetchWithAuth(`${config.baseUrl}/admin/config`, {
       headers: getHeaders(),
     });
-    if (!res.ok) throw new Error('שגיאה בטעינת ההגדרות');
+    if (!res.ok) throw new Error('לא הצלחנו לטעון את ההגדרות');
     return res.json();
   },
 
@@ -665,7 +665,7 @@ export const adminApi = {
       headers: getHeaders(),
       body: JSON.stringify(data),
     });
-    if (!res.ok) throw new Error('שגיאה בעדכון ההגדרות');
+    if (!res.ok) throw new Error('לא הצלחנו לעדכן את ההגדרות');
     return res.json();
   },
 
@@ -676,8 +676,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'שגיאה בטעינת החוזים. נסה לרענן את הדף.' }));
-      throw new Error(error.message || 'שגיאה בטעינת החוזים. נסה לרענן את הדף.');
+      const error = await res.json().catch(() => ({ message: 'לא הצלחנו לטעון את החוזים. נסו לרענן את הדף.' }));
+      throw new Error(error.message || 'לא הצלחנו לטעון את החוזים. נסו לרענן את הדף.');
     }
 
     return res.json();
@@ -699,8 +699,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'שגיאה ביצירת החוזה. נסה שוב.' }));
-      throw new Error(error.message || 'שגיאה ביצירת החוזה. נסה שוב.');
+      const error = await res.json().catch(() => ({ message: 'לא הצלחנו ליצור את החוזה. נסו שוב.' }));
+      throw new Error(error.message || 'לא הצלחנו ליצור את החוזה. נסו שוב.');
     }
 
     return res.json();
@@ -718,8 +718,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'שגיאה בהעלאת התמונה. נסה שוב.' }));
-      throw new Error(error.message || 'שגיאה בהעלאת התמונה. נסה שוב.');
+      const error = await res.json().catch(() => ({ message: 'לא הצלחנו להעלות את התמונה. נסו שוב.' }));
+      throw new Error(error.message || 'לא הצלחנו להעלות את התמונה. נסו שוב.');
     }
 
     return res.json();
@@ -732,8 +732,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'שגיאה בטעינת המוצרים. נסה לרענן את הדף.' }));
-      throw new Error(error.message || 'שגיאה בטעינת המוצרים. נסה לרענן את הדף.');
+      const error = await res.json().catch(() => ({ message: 'לא הצלחנו לטעון את המוצרים. נסו לרענן את הדף.' }));
+      throw new Error(error.message || 'לא הצלחנו לטעון את המוצרים. נסו לרענן את הדף.');
     }
 
     return res.json();
@@ -763,8 +763,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'שגיאה ביצירת המוצר. נסה שוב.' }));
-      throw new Error(error.message || 'שגיאה ביצירת המוצר. נסה שוב.');
+      const error = await res.json().catch(() => ({ message: 'לא הצלחנו ליצור את המוצר. נסו שוב.' }));
+      throw new Error(error.message || 'לא הצלחנו ליצור את המוצר. נסו שוב.');
     }
 
     return res.json();
@@ -786,8 +786,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'שגיאה בעדכון המוצר. נסה שוב.' }));
-      throw new Error(error.message || 'שגיאה בעדכון המוצר. נסה שוב.');
+      const error = await res.json().catch(() => ({ message: 'לא הצלחנו לעדכן את המוצר. נסו שוב.' }));
+      throw new Error(error.message || 'לא הצלחנו לעדכן את המוצר. נסו שוב.');
     }
 
     return res.json();
@@ -800,8 +800,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'שגיאה במחיקת המוצר. נסה שוב.' }));
-      throw new Error(error.message || 'שגיאה במחיקת המוצר. נסה שוב.');
+      const error = await res.json().catch(() => ({ message: 'לא הצלחנו למחוק את המוצר. נסו שוב.' }));
+      throw new Error(error.message || 'לא הצלחנו למחוק את המוצר. נסו שוב.');
     }
 
     return res.json();
@@ -831,8 +831,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'שגיאה בטעינת סטטוס המערכת. נסה לרענן את הדף.' }));
-      throw new Error(error.message || 'שגיאה בטעינת סטטוס המערכת. נסה לרענן את הדף.');
+      const error = await res.json().catch(() => ({ message: 'לא הצלחנו לטעון את סטטוס המערכת. נסו לרענן את הדף.' }));
+      throw new Error(error.message || 'לא הצלחנו לטעון את סטטוס המערכת. נסו לרענן את הדף.');
     }
 
     return res.json();
@@ -846,8 +846,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'שגיאה בשליחת התראת המערכת. נסה שוב.' }));
-      throw new Error(error.message || 'שגיאה בשליחת התראת המערכת. נסה שוב.');
+      const error = await res.json().catch(() => ({ message: 'לא הצלחנו לשלוח את התראת המערכת. נסו שוב.' }));
+      throw new Error(error.message || 'לא הצלחנו לשלוח את התראת המערכת. נסו שוב.');
     }
 
     return res.json();
@@ -863,8 +863,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'שגיאה בטעינת היסטוריית הסטטוס. נסה לרענן את הדף.' }));
-      throw new Error(error.message || 'שגיאה בטעינת היסטוריית הסטטוס. נסה לרענן את הדף.');
+      const error = await res.json().catch(() => ({ message: 'לא הצלחנו לטעון את היסטוריית הסטטוס. נסו לרענן את הדף.' }));
+      throw new Error(error.message || 'לא הצלחנו לטעון את היסטוריית הסטטוס. נסו לרענן את הדף.');
     }
 
     return res.json();
@@ -877,8 +877,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'שגיאה בשליחת מייל בדיקה. נסה שוב.' }));
-      throw new Error(error.message || 'שגיאה בשליחת מייל בדיקה. נסה שוב.');
+      const error = await res.json().catch(() => ({ message: 'לא הצלחנו לשלוח מייל בדיקה. נסו שוב.' }));
+      throw new Error(error.message || 'לא הצלחנו לשלוח מייל בדיקה. נסו שוב.');
     }
 
     return res.json();

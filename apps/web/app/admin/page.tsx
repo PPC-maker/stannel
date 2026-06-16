@@ -339,7 +339,7 @@ export default function AdminPage() {
       await fetchAllUsers();
       Swal.fire({ title: 'שוחזר!', text: `${userName} שוחזר בהצלחה`, icon: 'success', timer: 2000, showConfirmButton: false, background: '#f7f3f2', color: '#2b241d' });
     } catch (error: any) {
-      Swal.fire({ title: 'שגיאה', text: error.message, icon: 'error', background: '#f7f3f2', color: '#2b241d' });
+      Swal.fire({ title: 'שימו לב', text: error.message, icon: 'warning', background: '#f7f3f2', color: '#2b241d' });
     } finally {
       setRestoringUser(null);
     }
@@ -549,9 +549,9 @@ export default function AdminPage() {
     } catch (error) {
       console.error('Error deleting invoice:', error);
       Swal.fire({
-        title: 'שגיאה',
-        text: 'שגיאה במחיקת החשבונית',
-        icon: 'error',
+        title: 'שימו לב',
+        text: 'לא הצלחנו למחוק את החשבונית. נסו שוב',
+        icon: 'warning',
         confirmButtonText: 'אישור',
         background: '#f7f3f2',
         color: '#2b241d',
@@ -591,9 +591,9 @@ export default function AdminPage() {
     } catch (error) {
       console.error('Error bulk deleting invoices:', error);
       Swal.fire({
-        title: 'שגיאה',
-        text: 'שגיאה במחיקת החשבוניות',
-        icon: 'error',
+        title: 'שימו לב',
+        text: 'לא הצלחנו למחוק את החשבוניות. נסו שוב',
+        icon: 'warning',
         confirmButtonText: 'אישור',
         background: '#f7f3f2',
         color: '#2b241d',
@@ -619,9 +619,9 @@ export default function AdminPage() {
     } catch (error) {
       console.error('Error restoring invoice:', error);
       Swal.fire({
-        title: 'שגיאה',
-        text: 'שגיאה בשחזור החשבונית',
-        icon: 'error',
+        title: 'שימו לב',
+        text: 'לא הצלחנו לשחזר את החשבונית. נסו שוב',
+        icon: 'warning',
         confirmButtonText: 'אישור',
         background: '#f7f3f2',
         color: '#2b241d',
@@ -660,9 +660,9 @@ export default function AdminPage() {
     } catch (error) {
       console.error('Error permanently deleting invoice:', error);
       Swal.fire({
-        title: 'שגיאה',
-        text: 'שגיאה במחיקת החשבונית',
-        icon: 'error',
+        title: 'שימו לב',
+        text: 'לא הצלחנו למחוק את החשבונית. נסו שוב',
+        icon: 'warning',
         confirmButtonText: 'אישור',
         background: '#f7f3f2',
         color: '#2b241d',
@@ -701,9 +701,9 @@ export default function AdminPage() {
     } catch (error) {
       console.error('Error cleaning up recycle bin:', error);
       Swal.fire({
-        title: 'שגיאה',
-        text: 'שגיאה בניקוי סל המחזור',
-        icon: 'error',
+        title: 'שימו לב',
+        text: 'לא הצלחנו לנקות את סל המחזור. נסו שוב',
+        icon: 'warning',
         confirmButtonText: 'אישור',
         background: '#f7f3f2',
         color: '#2b241d',
@@ -749,9 +749,9 @@ export default function AdminPage() {
     } catch (error) {
       console.error('Error logging in as user:', error);
       Swal.fire({
-        title: 'שגיאה',
-        text: 'שגיאה בכניסה לחשבון',
-        icon: 'error',
+        title: 'שימו לב',
+        text: 'לא הצלחנו להיכנס לחשבון. נסו שוב',
+        icon: 'warning',
         confirmButtonText: 'אישור',
         background: '#f7f3f2',
         color: '#2b241d',
@@ -791,9 +791,9 @@ export default function AdminPage() {
     } catch (error) {
       console.error('Error deleting user:', error);
       Swal.fire({
-        title: 'שגיאה',
-        text: 'שגיאה במחיקת המשתמש',
-        icon: 'error',
+        title: 'שימו לב',
+        text: 'לא הצלחנו למחוק את המשתמש. נסו שוב',
+        icon: 'warning',
         confirmButtonText: 'אישור',
         background: '#f7f3f2',
         color: '#2b241d',
@@ -850,9 +850,9 @@ export default function AdminPage() {
       });
     } catch (error: any) {
       Swal.fire({
-        title: 'שגיאה',
-        text: error.message || 'שגיאה באיפוס הסיסמה',
-        icon: 'error',
+        title: 'שימו לב',
+        text: error.message || 'לא הצלחנו לאפס את הסיסמה. נסו שוב',
+        icon: 'warning',
         background: '#f7f3f2',
         color: '#2b241d',
       });
@@ -889,9 +889,9 @@ export default function AdminPage() {
     } catch (error) {
       console.error('Error deactivating user:', error);
       Swal.fire({
-        title: 'שגיאה',
+        title: 'שימו לב',
         text: 'לא ניתן לנתק את המשתמש',
-        icon: 'error',
+        icon: 'warning',
         background: '#f7f3f2',
         color: '#2b241d',
       });
@@ -978,9 +978,9 @@ export default function AdminPage() {
       const msg = error?.message || 'לא ניתן לשמור את הפרטים';
       const isDuplicate = msg.includes('כבר קיים') || msg.includes('already');
       Swal.fire({
-        title: isDuplicate ? 'שימו לב' : 'שגיאה',
+        title: 'שימו לב',
         text: msg,
-        icon: isDuplicate ? 'info' : 'error',
+        icon: isDuplicate ? 'info' : 'warning',
         background: '#f7f3f2',
         color: '#2b241d',
       });
@@ -1015,7 +1015,7 @@ export default function AdminPage() {
       Swal.fire({ title: 'נמחק!', icon: 'success', timer: 1500, showConfirmButton: false, background: '#f7f3f2', color: '#2b241d' });
     } catch (err) {
       console.error('Error deleting image:', err);
-      Swal.fire({ title: 'שגיאה', text: 'לא ניתן למחוק את התמונה', icon: 'error', background: '#f7f3f2', color: '#2b241d' });
+      Swal.fire({ title: 'שימו לב', text: 'לא ניתן למחוק את התמונה', icon: 'warning', background: '#f7f3f2', color: '#2b241d' });
     }
   };
 
@@ -1223,9 +1223,9 @@ export default function AdminPage() {
         });
       } catch (err: any) {
         Swal.fire({
-          title: 'שגיאה',
+          title: 'שימו לב',
           text: err?.message || 'משהו השתבש בתהליך היצירה',
-          icon: 'error',
+          icon: 'warning',
           confirmButtonText: 'סגור',
           background: '#f7f3f2',
           color: '#2b241d',
@@ -1503,9 +1503,9 @@ export default function AdminPage() {
     } catch (error: any) {
       console.error('Error creating supplier:', error);
       Swal.fire({
-        title: 'שגיאה',
-        text: error.message || 'שגיאה ביצירת הספק. נסה שוב.',
-        icon: 'error',
+        title: 'שימו לב',
+        text: error.message || 'לא הצלחנו ליצור את המשתמש. נסו שוב',
+        icon: 'warning',
         confirmButtonText: 'אישור',
         background: '#f7f3f2',
         color: '#2b241d',
@@ -1530,9 +1530,9 @@ export default function AdminPage() {
     } catch (error) {
       console.error('Error verifying invoice:', error);
       Swal.fire({
-        title: 'שגיאה',
-        text: 'שגיאה בעדכון החשבונית',
-        icon: 'error',
+        title: 'שימו לב',
+        text: 'לא הצלחנו לעדכן את החשבונית. נסו שוב',
+        icon: 'warning',
         confirmButtonText: 'אישור',
         background: '#f7f3f2',
         color: '#2b241d',
@@ -2072,7 +2072,7 @@ Please analyze this error and provide a fix.
                                               });
                                               await fetchAllUsers();
                                               Swal.fire({ title: 'עודכן!', icon: 'success', timer: 1500, showConfirmButton: false, background: '#f7f3f2', color: '#2b241d' });
-                                            } catch { Swal.fire({ title: 'שגיאה', icon: 'error', background: '#f7f3f2', color: '#2b241d' }); }
+                                            } catch { Swal.fire({ title: 'שימו לב', icon: 'warning', background: '#f7f3f2', color: '#2b241d' }); }
                                           }} />
                                         </label>
                                       </div>
@@ -2734,7 +2734,7 @@ Please analyze this error and provide a fix.
                                                 Swal.fire({ title: 'תוקן!', text: `הסכום עודכן ל-₪${invoice.aiExtractedAmount?.toLocaleString()}`, icon: 'success', background: '#f7f3f2', color: '#2b241d', timer: 1500, showConfirmButton: false });
                                               } catch (err) {
                                                 console.error(err);
-                                                Swal.fire({ title: 'שגיאה', text: 'לא ניתן לתקן את הסכום', icon: 'error', background: '#f7f3f2', color: '#2b241d' });
+                                                Swal.fire({ title: 'שימו לב', text: 'לא הצלחנו לתקן את הסכום. נסו שוב', icon: 'warning', background: '#f7f3f2', color: '#2b241d' });
                                               }
                                             }
                                           }}
@@ -2998,7 +2998,7 @@ Please analyze this error and provide a fix.
                                   Swal.fire({ title: 'תוקן ואושר!', text: `הסכום עודכן ל-₪${selectedInvoice.aiExtractedAmount?.toLocaleString()} והחשבונית אושרה`, icon: 'success', background: '#f7f3f2', color: '#2b241d', timer: 2000, showConfirmButton: false });
                                 } catch (err) {
                                   console.error(err);
-                                  Swal.fire({ title: 'שגיאה', text: 'שגיאה בתיקון הסכום', icon: 'error', background: '#f7f3f2', color: '#2b241d' });
+                                  Swal.fire({ title: 'שימו לב', text: 'לא הצלחנו לתקן את הסכום. נסו שוב', icon: 'warning', background: '#f7f3f2', color: '#2b241d' });
                                 } finally {
                                   setProcessingInvoice(null);
                                 }

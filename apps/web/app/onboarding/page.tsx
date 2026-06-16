@@ -73,9 +73,9 @@ export default function OnboardingPage() {
       router.push('/wallet');
     } catch (error) {
       Swal.fire({
-        title: 'שגיאה',
-        text: 'אירעה שגיאה בשמירת הפרטים',
-        icon: 'error',
+        title: 'שימו לב',
+        text: 'לא הצלחנו לשמור את הפרטים. נסו שוב',
+        icon: 'warning',
         confirmButtonText: 'אישור',
         background: '#1a1a2e',
         color: '#fff',

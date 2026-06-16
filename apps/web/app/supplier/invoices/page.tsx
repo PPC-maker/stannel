@@ -89,9 +89,9 @@ export default function SupplierInvoicesPage() {
       });
     } catch (error: any) {
       Swal.fire({
-        title: 'שגיאה',
+        title: 'שימו לב',
         text: error.message || 'לא ניתן לאשר את התשלום',
-        icon: 'error',
+        icon: 'warning',
         confirmButtonColor: '#c99b4a',
         background: '#f7f3f2',
         color: '#2b241d',

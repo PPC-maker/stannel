@@ -102,9 +102,9 @@ export default function EventsPage() {
         });
       } else {
         Swal.fire({
-          title: 'שגיאה',
-          text: error.message || 'שגיאה בהרשמה לאירוע',
-          icon: 'error',
+          title: 'שימו לב',
+          text: error.message || 'לא הצלחנו לרשום אתכם לאירוע. נסו שוב',
+          icon: 'warning',
           confirmButtonText: 'אישור',
           background: '#f7f3f2',
           color: '#2b241d',
@@ -144,9 +144,9 @@ export default function EventsPage() {
       });
     } catch (error: any) {
       Swal.fire({
-        title: 'שגיאה',
-        text: error.message || 'שגיאה בביטול ההרשמה',
-        icon: 'error',
+        title: 'שימו לב',
+        text: error.message || 'לא הצלחנו לבטל את ההרשמה. נסו שוב',
+        icon: 'warning',
         confirmButtonText: 'אישור',
         background: '#f7f3f2',
         color: '#2b241d',

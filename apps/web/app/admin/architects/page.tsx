@@ -102,9 +102,9 @@ export default function AdminArchitectsPage() {
       });
     } catch (error) {
       Swal.fire({
-        title: 'שגיאה',
-        text: 'אירעה שגיאה בעדכון הסטטוס',
-        icon: 'error',
+        title: 'שימו לב',
+        text: 'לא הצלחנו לעדכן את הסטטוס. נסו שוב',
+        icon: 'warning',
         confirmButtonText: 'אישור',
         background: '#f7f3f2',
         color: '#2b241d',

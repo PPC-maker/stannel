@@ -185,9 +185,9 @@ export default function RewardsContent() {
       });
     } catch (error: any) {
       Swal.fire({
-        title: 'שגיאה',
-        text: error.message || 'שגיאה במימוש המוצר',
-        icon: 'error',
+        title: 'שימו לב',
+        text: error.message || 'לא הצלחנו לממש את המוצר. נסו שוב',
+        icon: 'warning',
         confirmButtonText: 'אישור',
         background: '#f7f3f2',
         color: '#2b241d',

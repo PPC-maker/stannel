@@ -104,9 +104,9 @@ export default function SupplierProfilePage() {
       });
     } catch (error: any) {
       Swal.fire({
-        title: 'שגיאה',
+        title: 'שימו לב',
         text: error.message || 'לא ניתן להעלות תמונת פרופיל',
-        icon: 'error',
+        icon: 'warning',
         confirmButtonColor: '#c99b4a',
         background: '#f7f3f2',
         color: '#2b241d',
@@ -142,9 +142,9 @@ export default function SupplierProfilePage() {
       });
     } catch (error: any) {
       Swal.fire({
-        title: 'שגיאה',
+        title: 'שימו לב',
         text: error.message || 'לא ניתן לשמור את הפרופיל',
-        icon: 'error',
+        icon: 'warning',
         confirmButtonColor: '#c99b4a',
         background: '#f7f3f2',
         color: '#2b241d',
@@ -220,9 +220,9 @@ export default function SupplierProfilePage() {
       });
     } else {
       Swal.fire({
-        title: 'שגיאה',
+        title: 'שימו לב',
         text: 'לא ניתן להעלות את התמונות',
-        icon: 'error',
+        icon: 'warning',
         confirmButtonColor: '#c99b4a',
         background: '#f7f3f2',
         color: '#2b241d',
@@ -266,9 +266,9 @@ export default function SupplierProfilePage() {
       } catch (error) {
         console.error('Failed to delete image:', error);
         Swal.fire({
-          title: 'שגיאה',
+          title: 'שימו לב',
           text: 'לא ניתן למחוק את התמונה',
-          icon: 'error',
+          icon: 'warning',
           confirmButtonColor: '#10b981',
           background: '#0a1f18',
           color: '#ffffff',

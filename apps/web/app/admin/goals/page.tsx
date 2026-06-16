@@ -98,9 +98,9 @@ export default function ManageGoalsPage() {
       refetch();
     } catch (error) {
       Swal.fire({
-        title: 'שגיאה',
-        text: 'אירעה שגיאה ביצירת היעד',
-        icon: 'error',
+        title: 'שימו לב',
+        text: 'לא הצלחנו ליצור את היעד. נסו שוב',
+        icon: 'warning',
         confirmButtonText: 'אישור',
         background: '#f7f3f2',
         color: '#2b241d',

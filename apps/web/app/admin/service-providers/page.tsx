@@ -147,7 +147,7 @@ export default function ManageServiceProvidersPage() {
         await createMutation.mutateAsync(formValues);
         Swal.fire({ title: 'נוסף!', text: `${formValues.name} נוסף בהצלחה`, icon: 'success', timer: 2000, showConfirmButton: false, background: '#f7f3f2', color: '#2b241d' });
       } catch {
-        Swal.fire({ title: 'שגיאה', text: 'לא ניתן להוסיף', icon: 'error', background: '#f7f3f2', color: '#2b241d' });
+        Swal.fire({ title: 'שימו לב', text: 'לא ניתן להוסיף', icon: 'warning', background: '#f7f3f2', color: '#2b241d' });
       }
     }
   };
@@ -209,7 +209,7 @@ export default function ManageServiceProvidersPage() {
         await updateMutation.mutateAsync({ id: provider.id, data: formValues });
         Swal.fire({ title: 'עודכן!', text: `${formValues.name} עודכן בהצלחה`, icon: 'success', timer: 2000, showConfirmButton: false, background: '#f7f3f2', color: '#2b241d' });
       } catch {
-        Swal.fire({ title: 'שגיאה', text: 'לא ניתן לעדכן', icon: 'error', background: '#f7f3f2', color: '#2b241d' });
+        Swal.fire({ title: 'שימו לב', text: 'לא ניתן לעדכן', icon: 'warning', background: '#f7f3f2', color: '#2b241d' });
       }
     }
   };
@@ -233,7 +233,7 @@ export default function ManageServiceProvidersPage() {
         await deleteMutation.mutateAsync(provider.id);
         Swal.fire({ title: 'נמחק!', text: `${provider.name} נמחק`, icon: 'success', timer: 2000, showConfirmButton: false, background: '#f7f3f2', color: '#2b241d' });
       } catch {
-        Swal.fire({ title: 'שגיאה', text: 'לא ניתן למחוק', icon: 'error', background: '#f7f3f2', color: '#2b241d' });
+        Swal.fire({ title: 'שימו לב', text: 'לא ניתן למחוק', icon: 'warning', background: '#f7f3f2', color: '#2b241d' });
       }
     }
   };
@@ -243,7 +243,7 @@ export default function ManageServiceProvidersPage() {
     try {
       await updateMutation.mutateAsync({ id: provider.id, data: { isActive: !provider.isActive } });
     } catch {
-      Swal.fire({ title: 'שגיאה', text: 'לא ניתן לעדכן סטטוס', icon: 'error', background: '#f7f3f2', color: '#2b241d' });
+      Swal.fire({ title: 'שימו לב', text: 'לא ניתן לעדכן סטטוס', icon: 'warning', background: '#f7f3f2', color: '#2b241d' });
     }
   };
 

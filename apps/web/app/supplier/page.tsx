@@ -99,7 +99,7 @@ export default function SupplierDashboardPage() {
         color: '#2b241d',
       });
     } catch {
-      Swal.fire({ title: 'שגיאה', icon: 'error', background: '#f7f3f2', color: '#2b241d' });
+      Swal.fire({ title: 'שימו לב', icon: 'warning', background: '#f7f3f2', color: '#2b241d' });
     }
   };
 
@@ -146,9 +146,9 @@ export default function SupplierDashboardPage() {
       });
     } catch (error: any) {
       Swal.fire({
-        title: 'שגיאה',
+        title: 'שימו לב',
         text: error.message || 'לא ניתן לאשר את התשלום',
-        icon: 'error',
+        icon: 'warning',
         confirmButtonColor: '#c99b4a',
         background: '#f7f3f2',
         color: '#2b241d',
