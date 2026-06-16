@@ -514,7 +514,12 @@ export async function adminRoutes(server: FastifyInstance) {
     };
 
     if (!body.email || !body.password || !body.name || !body.supplierProfile?.companyName) {
-      return reply.code(400).send({ error: 'חסרים שדות חובה: אימייל, סיסמה, שם, שם חברה' });
+      const missing = [];
+      if (!body.email) missing.push('אימייל');
+      if (!body.password) missing.push('סיסמה');
+      if (!body.name) missing.push('שם');
+      if (!body.supplierProfile?.companyName) missing.push('שם חברה');
+      return reply.code(400).send({ error: `חסרים שדות חובה: ${missing.join(', ')}` });
     }
 
     if (body.password.length < 6) {
@@ -585,9 +590,12 @@ export async function adminRoutes(server: FastifyInstance) {
 
       return user;
     } catch (err: any) {
-      // If Firebase user was created but Prisma failed, try to clean up
-      if (err.code !== 'auth/email-already-exists') {
-        console.error('Error creating supplier:', err);
+      console.error('Error creating supplier:', err);
+      if (err.code === 'auth/email-already-exists') {
+        return reply.code(400).send({ error: 'כתובת אימייל כבר קיימת ב-Firebase' });
+      }
+      if (err.code === 'auth/invalid-password') {
+        return reply.code(400).send({ error: 'סיסמה לא תקינה - חייבת להכיל לפחות 6 תווים' });
       }
       return reply.code(500).send({ error: err.message || 'שגיאה ביצירת הספק' });
     }

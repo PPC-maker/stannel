@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Mail, Lock, User, Phone, Building2, ArrowLeft, Check, AlertCircle, Camera, X, Palette, ChevronDown, MapPin } from 'lucide-react';
+import { Mail, Lock, User, Phone, Building2, ArrowLeft, Check, AlertCircle, Camera, X, Palette, ChevronDown, MapPin, Eye, EyeOff } from 'lucide-react';
 import Image from 'next/image';
 import { useAuth } from '@/lib/auth-context';
 
@@ -66,6 +66,7 @@ export default function RegisterPage() {
     address: '',
   });
   const [passwordErrors, setPasswordErrors] = useState<string[]>([]);
+  const [showPassword, setShowPassword] = useState(false);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -460,11 +461,19 @@ export default function RegisterPage() {
                     <label className="block text-white/70 text-base font-semibold mb-2">סיסמה <span className="text-red-400/70 text-xs font-normal">(שדה חובה)</span></label>
                     <div className="relative">
                       <Lock className="absolute right-4 top-1/2 -translate-y-1/2 text-[#c99b4a]" size={22} />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute left-4 top-1/2 -translate-y-1/2 text-[#c99b4a] hover:text-[#d4af37] transition-colors"
+                        tabIndex={-1}
+                      >
+                        {showPassword ? <EyeOff size={22} /> : <Eye size={22} />}
+                      </button>
                       <input
-                        type="password"
+                        type={showPassword ? 'text' : 'password'}
                         value={formData.password}
                         onChange={(e) => handlePasswordChange(e.target.value)}
-                        className={`w-full bg-white/10 border rounded-xl px-4 py-4 pr-12 text-white text-lg font-medium placeholder-white/40 focus:bg-white/15 transition-all ${
+                        className={`w-full bg-white/10 border rounded-xl px-12 py-4 text-white text-lg font-medium placeholder-white/40 focus:bg-white/15 transition-all ${
                           formData.password && passwordErrors.length > 0
                             ? 'border-red-500/50 focus:border-red-500'
                             : formData.password && passwordErrors.length === 0
