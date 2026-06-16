@@ -975,10 +975,12 @@ export default function AdminPage() {
       });
     } catch (error: any) {
       console.error('Error saving user:', error);
+      const msg = error?.message || 'לא ניתן לשמור את הפרטים';
+      const isDuplicate = msg.includes('כבר קיים') || msg.includes('already');
       Swal.fire({
-        title: 'שגיאה',
-        text: error?.message || 'לא ניתן לשמור את הפרטים',
-        icon: 'error',
+        title: isDuplicate ? 'שימו לב' : 'שגיאה',
+        text: msg,
+        icon: isDuplicate ? 'info' : 'error',
         background: '#f7f3f2',
         color: '#2b241d',
       });
