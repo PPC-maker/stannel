@@ -287,10 +287,13 @@ export async function adminRoutes(server: FastifyInstance) {
         const { getAuth } = await import('firebase-admin/auth');
         await getAuth().updateUser(user.firebaseUid, { email: body.email });
       } catch (err: any) {
-        if (err.code === 'auth/email-already-exists') {
-          return reply.code(400).send({ error: `האימייל ${body.email} כבר קיים במערכת` });
+        if (err.code === 'auth/email-already-exists' || err.message?.includes('already in use')) {
+          return reply.code(400).send({ error: `האימייל ${body.email} כבר בשימוש. נסו כתובת אחרת` });
         }
-        return reply.code(400).send({ error: err.message || 'שגיאה בעדכון האימייל' });
+        if (err.code === 'auth/invalid-email') {
+          return reply.code(400).send({ error: `האימייל ${body.email} אינו תקין` });
+        }
+        return reply.code(400).send({ error: `לא הצלחנו לעדכן את האימייל. נסו שוב` });
       }
     }
 
