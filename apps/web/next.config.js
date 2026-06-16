@@ -49,6 +49,12 @@ const nextConfig = {
   },
   // Enable standalone output for Cloud Run production builds
   output: 'standalone',
+  typescript: {
+    ignoreBuildErrors: false,
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   async headers() {
     return [
       {

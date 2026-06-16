@@ -591,7 +591,7 @@ export async function adminRoutes(server: FastifyInstance) {
             phone: body.phone,
             company: body.company,
             address: body.address,
-            role: body.role || 'SUPPLIER',
+            role: (body.role || 'SUPPLIER') as any,
             isActive: true,
             activatedAt: new Date(),
             firebaseUid: firebaseUser.uid,

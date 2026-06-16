@@ -1,40 +1,13 @@
 'use client';
 
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { useState, type ReactNode } from 'react';
-import { AuthProvider } from '@/lib/auth-context';
-import { useWebSocket } from '@/lib/useWebSocket';
+import dynamic from 'next/dynamic';
+import type { ReactNode } from 'react';
 
-// Component that initializes WebSocket connection for real-time updates
-function WebSocketProvider({ children }: { children: ReactNode }) {
-  useWebSocket();
-  return <>{children}</>;
-}
+// Dynamically import the actual providers to avoid SSR/prerender hook errors
+const ClientProviders = dynamic(() => import('./client-providers'), {
+  ssr: false,
+});
 
 export function Providers({ children }: { children: ReactNode }) {
-  const [queryClient] = useState(
-    () =>
-      new QueryClient({
-        defaultOptions: {
-          queries: {
-            staleTime: 30 * 1000, // 30 שניות - נתונים מתעדכנים יותר מהר
-            gcTime: 10 * 60 * 1000, // 10 דקות - cache
-            refetchOnWindowFocus: true, // מרפרש בחזרה לחלון
-            refetchOnMount: true, // מרפרש ב-mount רק אם data ישן
-            refetchOnReconnect: true,
-            retry: 1,
-          },
-        },
-      })
-  );
-
-  return (
-    <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <WebSocketProvider>
-          {children}
-        </WebSocketProvider>
-      </AuthProvider>
-    </QueryClientProvider>
-  );
+  return <ClientProviders>{children}</ClientProviders>;
 }
