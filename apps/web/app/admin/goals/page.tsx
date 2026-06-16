@@ -137,9 +137,9 @@ export default function ManageGoalsPage() {
           <div>
             <h1 className="text-3xl font-display font-bold text-[#2b241d] flex items-center gap-3">
               <Target className="text-[#c99b4a]" />
-              ניהול יעדי אדריכלים
+              ניהול יעדי אדריכלים ומעצבים
             </h1>
-            <p className="text-[#8b7c69] mt-1">הגדרת יעדי מכירות ובונוסים לאדריכלים</p>
+            <p className="text-[#8b7c69] mt-1">הגדרת יעדי מכירות ובונוסים לאדריכלים ומעצבים</p>
           </div>
           <button
             onClick={() => {

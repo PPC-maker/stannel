@@ -251,6 +251,7 @@ export async function adminRoutes(server: FastifyInstance) {
     const { id } = request.params as { id: string };
     const body = request.body as {
       name?: string;
+      email?: string;
       phone?: string;
       address?: string;
       company?: string;
@@ -275,11 +276,22 @@ export async function adminRoutes(server: FastifyInstance) {
       return reply.code(404).send({ error: 'User not found' });
     }
 
+    // Update email in Firebase if changed
+    if (body.email && body.email !== user.email && user.firebaseUid) {
+      try {
+        const { getAuth } = await import('firebase-admin/auth');
+        await getAuth().updateUser(user.firebaseUid, { email: body.email });
+      } catch (err: any) {
+        return reply.code(400).send({ error: err.message || 'שגיאה בעדכון האימייל' });
+      }
+    }
+
     // Update user basic fields
     const updatedUser = await prisma.user.update({
       where: { id },
       data: {
         ...(body.name !== undefined && { name: body.name }),
+        ...(body.email !== undefined && { email: body.email }),
         ...(body.phone !== undefined && { phone: body.phone }),
         ...(body.address !== undefined && { address: body.address }),
         ...(body.company !== undefined && { company: body.company }),
@@ -491,6 +503,33 @@ export async function adminRoutes(server: FastifyInstance) {
     }
   });
 
+  // Check if email or phone already exists
+  server.post('/users/check-exists', async (request: FastifyRequest, reply: FastifyReply) => {
+    const { email, phone } = request.body as { email?: string; phone?: string };
+    const result: { emailExists: boolean; phoneExists: boolean; emailUser?: { name: string; role: string }; phoneUser?: { name: string; role: string } } = {
+      emailExists: false,
+      phoneExists: false,
+    };
+
+    if (email) {
+      const existingUser = await prisma.user.findUnique({ where: { email } });
+      if (existingUser) {
+        result.emailExists = true;
+        result.emailUser = { name: existingUser.name, role: existingUser.role };
+      }
+    }
+
+    if (phone) {
+      const existingUser = await prisma.user.findFirst({ where: { phone } });
+      if (existingUser) {
+        result.phoneExists = true;
+        result.phoneUser = { name: existingUser.name, role: existingUser.role };
+      }
+    }
+
+    return result;
+  });
+
   // Create supplier (admin)
   server.post('/users/create-supplier', async (request: FastifyRequest, reply: FastifyReply) => {
     const body = request.body as {
@@ -498,6 +537,7 @@ export async function adminRoutes(server: FastifyInstance) {
       password: string;
       name: string;
       phone?: string;
+      role?: string;
       company?: string;
       address?: string;
       supplierProfile: {
@@ -551,7 +591,7 @@ export async function adminRoutes(server: FastifyInstance) {
             phone: body.phone,
             company: body.company,
             address: body.address,
-            role: 'SUPPLIER',
+            role: body.role || 'SUPPLIER',
             isActive: true,
             activatedAt: new Date(),
             firebaseUid: firebaseUser.uid,

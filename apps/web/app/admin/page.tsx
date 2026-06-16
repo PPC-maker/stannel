@@ -904,6 +904,8 @@ export default function AdminPage() {
     const sp = user.supplierProfile;
     setEditingUserId(user.id);
     setEditForm({
+      email: user.email || '',
+      newPassword: '',
       name: user.name || '',
       phone: user.phone || '',
       address: user.address || '',
@@ -929,7 +931,12 @@ export default function AdminPage() {
         company: editForm.company,
       };
 
+      // Include email if changed
       const user = allUsers.find(u => u.id === userId);
+      if (editForm.email && editForm.email !== user?.email) {
+        data.email = editForm.email;
+      }
+
       if (user?.role === 'SUPPLIER') {
         data.supplierProfile = {
           companyName: editForm.sp_companyName,
@@ -944,22 +951,33 @@ export default function AdminPage() {
       }
 
       await adminApi.updateUser(userId, data);
+
+      // Handle password change separately
+      if (editForm.newPassword && editForm.newPassword.length >= 6) {
+        const { fetchWithAuth: fetchAuth, config: apiConfig, getHeaders: getH2 } = await import('@stannel/api-client');
+        await fetchAuth(`${apiConfig.baseUrl}/admin/users/${userId}/reset-password`, {
+          method: 'POST',
+          headers: getH2() as Record<string, string>,
+          body: JSON.stringify({ newPassword: editForm.newPassword }),
+        });
+      }
+
       await fetchAllUsers();
       setEditingUserId(null);
       Swal.fire({
         title: 'נשמר!',
-        text: 'פרטי המשתמש עודכנו',
+        text: editForm.newPassword ? 'פרטי המשתמש והסיסמה עודכנו' : 'פרטי המשתמש עודכנו',
         icon: 'success',
         timer: 1500,
         showConfirmButton: false,
         background: '#f7f3f2',
         color: '#2b241d',
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error saving user:', error);
       Swal.fire({
         title: 'שגיאה',
-        text: 'לא ניתן לשמור את הפרטים',
+        text: error?.message || 'לא ניתן לשמור את הפרטים',
         icon: 'error',
         background: '#f7f3f2',
         color: '#2b241d',
@@ -1002,24 +1020,61 @@ export default function AdminPage() {
   const handleCreateSupplier = async () => {
     // Step 1: Basic info
     const step1 = await Swal.fire({
-      title: 'הוספת ספק חדש (1/4)',
+      title: '',
       html: `
         <div style="text-align: right; direction: rtl;">
-          <div style="margin-bottom: 12px;">
-            <label style="display: block; margin-bottom: 4px; font-size: 14px; color: #ccc;">אימייל *</label>
-            <input id="swal-email" type="email" class="swal2-input" placeholder="email@example.com" style="text-align: left; direction: ltr;" />
+          <div style="display: flex; justify-content: center; gap: 8px; margin-bottom: 18px;">
+            <div style="width: 32px; height: 4px; border-radius: 4px; background: linear-gradient(135deg, #c99b4a, #e8c97d);"></div>
+            <div style="width: 32px; height: 4px; border-radius: 4px; background: #e0d5c7;"></div>
+            <div style="width: 32px; height: 4px; border-radius: 4px; background: #e0d5c7;"></div>
+            <div style="width: 32px; height: 4px; border-radius: 4px; background: #e0d5c7;"></div>
           </div>
-          <div style="margin-bottom: 12px;">
-            <label style="display: block; margin-bottom: 4px; font-size: 14px; color: #ccc;">סיסמה *</label>
-            <input id="swal-password" type="text" class="swal2-input" placeholder="מינימום 6 תווים" style="text-align: left; direction: ltr;" />
+          <div style="text-align: center; margin-bottom: 20px;">
+            <div style="width: 52px; height: 52px; border-radius: 16px; background: linear-gradient(135deg, rgba(201,155,74,0.15), rgba(201,155,74,0.05)); display: flex; align-items: center; justify-content: center; margin: 0 auto 12px;">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#c99b4a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+            </div>
+            <h2 style="font-size: 20px; font-weight: 700; color: #2b241d; margin: 0;">הוספת משתמש חדש</h2>
+            <p style="font-size: 13px; color: #a89b8a; margin: 4px 0 0;">פרטים אישיים ופרטי התחברות</p>
           </div>
-          <div style="margin-bottom: 12px;">
-            <label style="display: block; margin-bottom: 4px; font-size: 14px; color: #ccc;">שם איש קשר *</label>
-            <input id="swal-name" type="text" class="swal2-input" placeholder="שם מלא" />
+          <style>
+            .swal-field { margin-bottom: 14px; }
+            .swal-field label { display: block; margin-bottom: 6px; font-size: 13px; font-weight: 600; color: #6b5e50; }
+            .swal-field label span { color: #c99b4a; font-weight: 400; }
+            .swal-field input, .swal-field select { width: 100%; padding: 12px 14px; border: 1.5px solid #e0d5c7; border-radius: 12px; font-size: 15px; background: #fff; color: #2b241d; transition: all 0.2s; outline: none; box-sizing: border-box; }
+            .swal-field input:focus, .swal-field select:focus { border-color: #c99b4a; box-shadow: 0 0 0 3px rgba(201,155,74,0.12); }
+            .swal-field input::placeholder { color: #c4b9ab; }
+            .swal-field .field-status { font-size: 12px; margin-top: 4px; min-height: 16px; }
+            .swal-field .field-error { color: #dc3545; }
+            .swal-field .field-ok { color: #28a745; }
+            .swal-field .field-checking { color: #a89b8a; }
+            .swal-field input.input-error { border-color: #dc3545; background: #fff5f5; }
+            .swal-field input.input-ok { border-color: #28a745; }
+          </style>
+          <div class="swal-field">
+            <label>אימייל <span>*</span></label>
+            <input id="swal-email" type="email" placeholder="email@example.com" style="text-align: left; direction: ltr;" />
+            <div id="email-status" class="field-status"></div>
           </div>
-          <div style="margin-bottom: 12px;">
-            <label style="display: block; margin-bottom: 4px; font-size: 14px; color: #ccc;">טלפון</label>
-            <input id="swal-phone" type="text" class="swal2-input" placeholder="050-0000000" style="text-align: left; direction: ltr;" />
+          <div class="swal-field">
+            <label>סיסמה <span>*</span></label>
+            <input id="swal-password" type="text" placeholder="מינימום 6 תווים" style="text-align: left; direction: ltr;" />
+          </div>
+          <div class="swal-field">
+            <label>שם איש קשר <span>*</span></label>
+            <input id="swal-name" type="text" placeholder="שם מלא" />
+          </div>
+          <div class="swal-field">
+            <label>טלפון</label>
+            <input id="swal-phone" type="text" placeholder="050-0000000" style="text-align: left; direction: ltr;" />
+            <div id="phone-status" class="field-status"></div>
+          </div>
+          <div class="swal-field">
+            <label>סוג משתמש <span>*</span></label>
+            <select id="swal-role">
+              <option value="SUPPLIER">ספק</option>
+              <option value="ARCHITECT">אדריכל</option>
+              <option value="DESIGNER">מעצב</option>
+            </select>
           </div>
         </div>
       `,
@@ -1027,13 +1082,75 @@ export default function AdminPage() {
       confirmButtonText: 'הבא &larr;',
       cancelButtonText: 'ביטול',
       confirmButtonColor: '#c99b4a',
-      background: '#f7f3f2',
+      cancelButtonColor: '#9e9286',
+      background: '#faf8f5',
       color: '#2b241d',
-      preConfirm: () => {
+      width: '440px',
+      customClass: { popup: 'swal-premium-popup' },
+      didOpen: () => {
+        const emailInput = document.getElementById('swal-email') as HTMLInputElement;
+        const phoneInput = document.getElementById('swal-phone') as HTMLInputElement;
+        const emailStatus = document.getElementById('email-status')!;
+        const phoneStatus = document.getElementById('phone-status')!;
+
+        let emailTimer: any = null;
+        let phoneTimer: any = null;
+
+        const checkField = async (field: 'email' | 'phone', value: string, statusEl: HTMLElement, inputEl: HTMLInputElement) => {
+          if (!value) {
+            statusEl.innerHTML = '';
+            inputEl.classList.remove('input-error', 'input-ok');
+            return;
+          }
+          statusEl.innerHTML = '<span class="field-checking">בודק...</span>';
+          try {
+            const { fetchWithAuth: fetchAuth, config: apiConfig, getHeaders: getH2 } = await import('@stannel/api-client');
+            const res = await fetchAuth(`${apiConfig.baseUrl}/admin/users/check-exists`, {
+              method: 'POST',
+              headers: getH2() as Record<string, string>,
+              body: JSON.stringify({ [field]: value }),
+            });
+            const data = await res.json();
+            const exists = field === 'email' ? data.emailExists : data.phoneExists;
+            const existingUser = field === 'email' ? data.emailUser : data.phoneUser;
+            if (exists) {
+              const roleLabel = existingUser?.role === 'SUPPLIER' ? 'ספק' : existingUser?.role === 'ARCHITECT' ? 'אדריכל' : existingUser?.role === 'ADMIN' ? 'מנהל' : existingUser?.role || '';
+              statusEl.innerHTML = `<span class="field-error">${field === 'email' ? 'אימייל' : 'טלפון'} כבר קיים במערכת (${existingUser?.name || ''} - ${roleLabel})</span>`;
+              inputEl.classList.add('input-error');
+              inputEl.classList.remove('input-ok');
+            } else {
+              statusEl.innerHTML = `<span class="field-ok">${field === 'email' ? 'אימייל פנוי' : 'טלפון פנוי'} ✓</span>`;
+              inputEl.classList.add('input-ok');
+              inputEl.classList.remove('input-error');
+            }
+          } catch {
+            statusEl.innerHTML = '';
+            inputEl.classList.remove('input-error', 'input-ok');
+          }
+        };
+
+        emailInput.addEventListener('input', () => {
+          clearTimeout(emailTimer);
+          emailTimer = setTimeout(() => {
+            const val = emailInput.value.trim();
+            if (val && val.includes('@')) checkField('email', val, emailStatus, emailInput);
+          }, 500);
+        });
+
+        phoneInput.addEventListener('input', () => {
+          clearTimeout(phoneTimer);
+          phoneTimer = setTimeout(() => {
+            const val = phoneInput.value.trim();
+            if (val && val.length >= 9) checkField('phone', val, phoneStatus, phoneInput);
+          }, 500);
+        });
+      },
+      preConfirm: async () => {
         const email = (document.getElementById('swal-email') as HTMLInputElement)?.value?.trim();
         const password = (document.getElementById('swal-password') as HTMLInputElement)?.value;
         const name = (document.getElementById('swal-name') as HTMLInputElement)?.value?.trim();
         const phone = (document.getElementById('swal-phone') as HTMLInputElement)?.value?.trim();
+        const role = (document.getElementById('swal-role') as HTMLSelectElement)?.value || 'SUPPLIER';
         if (!email || !password || !name) {
           Swal.showValidationMessage('אימייל, סיסמה ושם הם שדות חובה');
           return false;
@@ -1042,7 +1159,27 @@ export default function AdminPage() {
           Swal.showValidationMessage('הסיסמה חייבת להכיל לפחות 6 תווים');
           return false;
         }
-        return { email, password, name, phone };
+        // Final server-side check before proceeding
+        try {
+          const { fetchWithAuth: fetchAuth, config: apiConfig, getHeaders: getH2 } = await import('@stannel/api-client');
+          const res = await fetchAuth(`${apiConfig.baseUrl}/admin/users/check-exists`, {
+            method: 'POST',
+            headers: getH2() as Record<string, string>,
+            body: JSON.stringify({ email, phone: phone || undefined }),
+          });
+          const data = await res.json();
+          if (data.emailExists) {
+            Swal.showValidationMessage(`אימייל כבר קיים במערכת (${data.emailUser?.name || ''})`);
+            return false;
+          }
+          if (phone && data.phoneExists) {
+            Swal.showValidationMessage(`טלפון כבר קיים במערכת (${data.phoneUser?.name || ''})`);
+            return false;
+          }
+        } catch {
+          // If check fails, continue anyway - create-supplier will catch it
+        }
+        return { email, password, name, phone, role };
       },
     });
 
@@ -1050,24 +1187,46 @@ export default function AdminPage() {
 
     // Step 2: Business info
     const step2 = await Swal.fire({
-      title: 'פרטי עסק (2/4)',
+      title: '',
       html: `
         <div style="text-align: right; direction: rtl;">
-          <div style="margin-bottom: 12px;">
-            <label style="display: block; margin-bottom: 4px; font-size: 14px; color: #ccc;">שם חברה *</label>
-            <input id="swal-companyName" type="text" class="swal2-input" placeholder="שם החברה" />
+          <div style="display: flex; justify-content: center; gap: 8px; margin-bottom: 18px;">
+            <div style="width: 32px; height: 4px; border-radius: 4px; background: #c99b4a;"></div>
+            <div style="width: 32px; height: 4px; border-radius: 4px; background: linear-gradient(135deg, #c99b4a, #e8c97d);"></div>
+            <div style="width: 32px; height: 4px; border-radius: 4px; background: #e0d5c7;"></div>
+            <div style="width: 32px; height: 4px; border-radius: 4px; background: #e0d5c7;"></div>
           </div>
-          <div style="margin-bottom: 12px;">
-            <label style="display: block; margin-bottom: 4px; font-size: 14px; color: #ccc;">תיאור</label>
-            <textarea id="swal-description" class="swal2-textarea" placeholder="תיאור קצר של העסק" style="direction: rtl;"></textarea>
+          <div style="text-align: center; margin-bottom: 20px;">
+            <div style="width: 52px; height: 52px; border-radius: 16px; background: linear-gradient(135deg, rgba(201,155,74,0.15), rgba(201,155,74,0.05)); display: flex; align-items: center; justify-content: center; margin: 0 auto 12px;">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#c99b4a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            </div>
+            <h2 style="font-size: 20px; font-weight: 700; color: #2b241d; margin: 0;">פרטי עסק</h2>
+            <p style="font-size: 13px; color: #a89b8a; margin: 4px 0 0;">מידע על החברה והפעילות</p>
           </div>
-          <div style="margin-bottom: 12px;">
-            <label style="display: block; margin-bottom: 4px; font-size: 14px; color: #ccc;">כתובת</label>
-            <input id="swal-address" type="text" class="swal2-input" placeholder="כתובת העסק" />
+          <style>
+            .swal-field { margin-bottom: 14px; }
+            .swal-field label { display: block; margin-bottom: 6px; font-size: 13px; font-weight: 600; color: #6b5e50; }
+            .swal-field label span { color: #c99b4a; font-weight: 400; }
+            .swal-field input, .swal-field textarea { width: 100%; padding: 12px 14px; border: 1.5px solid #e0d5c7; border-radius: 12px; font-size: 15px; background: #fff; color: #2b241d; transition: all 0.2s; outline: none; box-sizing: border-box; font-family: inherit; }
+            .swal-field input:focus, .swal-field textarea:focus { border-color: #c99b4a; box-shadow: 0 0 0 3px rgba(201,155,74,0.12); }
+            .swal-field input::placeholder, .swal-field textarea::placeholder { color: #c4b9ab; }
+            .swal-field textarea { min-height: 80px; resize: vertical; }
+          </style>
+          <div class="swal-field">
+            <label>שם חברה <span>*</span></label>
+            <input id="swal-companyName" type="text" placeholder="שם החברה" />
           </div>
-          <div style="margin-bottom: 12px;">
-            <label style="display: block; margin-bottom: 4px; font-size: 14px; color: #ccc;">אתר אינטרנט</label>
-            <input id="swal-website" type="text" class="swal2-input" placeholder="https://example.com" style="text-align: left; direction: ltr;" />
+          <div class="swal-field">
+            <label>תיאור</label>
+            <textarea id="swal-description" placeholder="תיאור קצר של העסק" style="direction: rtl;"></textarea>
+          </div>
+          <div class="swal-field">
+            <label>כתובת</label>
+            <input id="swal-address" type="text" placeholder="כתובת העסק" />
+          </div>
+          <div class="swal-field">
+            <label>אתר אינטרנט</label>
+            <input id="swal-website" type="text" placeholder="https://example.com" style="text-align: left; direction: ltr;" />
           </div>
         </div>
       `,
@@ -1075,8 +1234,11 @@ export default function AdminPage() {
       confirmButtonText: 'הבא &larr;',
       cancelButtonText: '&rarr; חזרה',
       confirmButtonColor: '#c99b4a',
-      background: '#f7f3f2',
+      cancelButtonColor: '#9e9286',
+      background: '#faf8f5',
       color: '#2b241d',
+      width: '440px',
+      customClass: { popup: 'swal-premium-popup' },
       preConfirm: () => {
         const companyName = (document.getElementById('swal-companyName') as HTMLInputElement)?.value?.trim();
         const description = (document.getElementById('swal-description') as HTMLTextAreaElement)?.value?.trim();
@@ -1094,33 +1256,56 @@ export default function AdminPage() {
 
     // Step 3: Social + Commission
     const step3 = await Swal.fire({
-      title: 'רשתות חברתיות ועמלה (3/4)',
+      title: '',
       html: `
         <div style="text-align: right; direction: rtl;">
-          <div style="margin-bottom: 12px;">
-            <label style="display: block; margin-bottom: 4px; font-size: 14px; color: #ccc;">Facebook</label>
-            <input id="swal-facebook" type="text" class="swal2-input" placeholder="קישור לפייסבוק" style="text-align: left; direction: ltr;" />
+          <div style="display: flex; justify-content: center; gap: 8px; margin-bottom: 18px;">
+            <div style="width: 32px; height: 4px; border-radius: 4px; background: #c99b4a;"></div>
+            <div style="width: 32px; height: 4px; border-radius: 4px; background: #c99b4a;"></div>
+            <div style="width: 32px; height: 4px; border-radius: 4px; background: linear-gradient(135deg, #c99b4a, #e8c97d);"></div>
+            <div style="width: 32px; height: 4px; border-radius: 4px; background: #e0d5c7;"></div>
           </div>
-          <div style="margin-bottom: 12px;">
-            <label style="display: block; margin-bottom: 4px; font-size: 14px; color: #ccc;">Instagram</label>
-            <input id="swal-instagram" type="text" class="swal2-input" placeholder="קישור לאינסטגרם" style="text-align: left; direction: ltr;" />
+          <div style="text-align: center; margin-bottom: 20px;">
+            <div style="width: 52px; height: 52px; border-radius: 16px; background: linear-gradient(135deg, rgba(201,155,74,0.15), rgba(201,155,74,0.05)); display: flex; align-items: center; justify-content: center; margin: 0 auto 12px;">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#c99b4a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            </div>
+            <h2 style="font-size: 20px; font-weight: 700; color: #2b241d; margin: 0;">רשתות חברתיות ועמלה</h2>
+            <p style="font-size: 13px; color: #a89b8a; margin: 4px 0 0;">קישורים לרשתות ואחוז עמלה</p>
           </div>
-          <div style="margin-bottom: 12px;">
-            <label style="display: block; margin-bottom: 4px; font-size: 14px; color: #ccc;">LinkedIn</label>
-            <input id="swal-linkedin" type="text" class="swal2-input" placeholder="קישור ללינקדאין" style="text-align: left; direction: ltr;" />
+          <style>
+            .swal-field { margin-bottom: 14px; }
+            .swal-field label { display: block; margin-bottom: 6px; font-size: 13px; font-weight: 600; color: #6b5e50; }
+            .swal-field input { width: 100%; padding: 12px 14px; border: 1.5px solid #e0d5c7; border-radius: 12px; font-size: 15px; background: #fff; color: #2b241d; transition: all 0.2s; outline: none; box-sizing: border-box; }
+            .swal-field input:focus { border-color: #c99b4a; box-shadow: 0 0 0 3px rgba(201,155,74,0.12); }
+            .swal-field input::placeholder { color: #c4b9ab; }
+          </style>
+          <div class="swal-field">
+            <label>Facebook</label>
+            <input id="swal-facebook" type="text" placeholder="קישור לפייסבוק" style="text-align: left; direction: ltr;" />
           </div>
-          <div style="margin-bottom: 12px;">
-            <label style="display: block; margin-bottom: 4px; font-size: 14px; color: #ccc;">אחוז עמלה</label>
-            <input id="swal-commission" type="number" class="swal2-input" placeholder="4" min="0" max="100" step="0.5" style="text-align: left; direction: ltr;" />
+          <div class="swal-field">
+            <label>Instagram</label>
+            <input id="swal-instagram" type="text" placeholder="קישור לאינסטגרם" style="text-align: left; direction: ltr;" />
+          </div>
+          <div class="swal-field">
+            <label>LinkedIn</label>
+            <input id="swal-linkedin" type="text" placeholder="קישור ללינקדאין" style="text-align: left; direction: ltr;" />
+          </div>
+          <div class="swal-field">
+            <label>אחוז עמלה</label>
+            <input id="swal-commission" type="number" placeholder="4" min="0" max="100" step="0.5" style="text-align: left; direction: ltr;" />
           </div>
         </div>
       `,
       showCancelButton: true,
-      confirmButtonText: 'צור ספק',
+      confirmButtonText: 'צור משתמש &larr;',
       cancelButtonText: '&rarr; חזרה',
       confirmButtonColor: '#c99b4a',
-      background: '#f7f3f2',
+      cancelButtonColor: '#9e9286',
+      background: '#faf8f5',
       color: '#2b241d',
+      width: '440px',
+      customClass: { popup: 'swal-premium-popup' },
       preConfirm: () => {
         const facebook = (document.getElementById('swal-facebook') as HTMLInputElement)?.value?.trim();
         const instagram = (document.getElementById('swal-instagram') as HTMLInputElement)?.value?.trim();
@@ -1147,6 +1332,7 @@ export default function AdminPage() {
         password: step1.value.password,
         name: step1.value.name,
         phone: step1.value.phone || undefined,
+        role: step1.value.role,
         supplierProfile: {
           companyName: step2.value.companyName,
           description: step2.value.description || undefined,
@@ -1166,30 +1352,42 @@ export default function AdminPage() {
       // Step 4: Image upload (optional)
       if (supplierId) {
         const step4 = await Swal.fire({
-          title: 'העלאת תמונות (4/4)',
+          title: '',
           html: `
             <div style="text-align: right; direction: rtl;">
-              <div style="margin-bottom: 16px;">
-                <label style="display: block; margin-bottom: 8px; font-size: 14px; color: #8b7c69; font-weight: 600;">תמונת פרופיל / לוגו</label>
-                <div style="position: relative;">
-                  <input id="swal-profile-image" type="file" accept="image/*" style="width: 100%; padding: 10px; border: 2px dashed rgba(201,155,74,0.3); border-radius: 12px; background: rgba(201,155,74,0.05); cursor: pointer; font-size: 13px; color: #8b7c69;" />
+              <div style="display: flex; justify-content: center; gap: 8px; margin-bottom: 18px;">
+                <div style="width: 32px; height: 4px; border-radius: 4px; background: #c99b4a;"></div>
+                <div style="width: 32px; height: 4px; border-radius: 4px; background: #c99b4a;"></div>
+                <div style="width: 32px; height: 4px; border-radius: 4px; background: #c99b4a;"></div>
+                <div style="width: 32px; height: 4px; border-radius: 4px; background: linear-gradient(135deg, #c99b4a, #e8c97d);"></div>
+              </div>
+              <div style="text-align: center; margin-bottom: 20px;">
+                <div style="width: 52px; height: 52px; border-radius: 16px; background: linear-gradient(135deg, rgba(201,155,74,0.15), rgba(201,155,74,0.05)); display: flex; align-items: center; justify-content: center; margin: 0 auto 12px;">
+                  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#c99b4a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
                 </div>
+                <h2 style="font-size: 20px; font-weight: 700; color: #2b241d; margin: 0;">העלאת תמונות</h2>
+                <p style="font-size: 13px; color: #a89b8a; margin: 4px 0 0;">תמונת פרופיל ותמונות עסקיות</p>
+              </div>
+              <div style="margin-bottom: 16px;">
+                <label style="display: block; margin-bottom: 6px; font-size: 13px; font-weight: 600; color: #6b5e50;">תמונת פרופיל / לוגו</label>
+                <input id="swal-profile-image" type="file" accept="image/*" style="width: 100%; padding: 12px 14px; border: 2px dashed rgba(201,155,74,0.3); border-radius: 12px; background: rgba(201,155,74,0.04); cursor: pointer; font-size: 13px; color: #8b7c69; box-sizing: border-box;" />
               </div>
               <div style="margin-bottom: 12px;">
-                <label style="display: block; margin-bottom: 8px; font-size: 14px; color: #8b7c69; font-weight: 600;">תמונות עסקיות (עד 10)</label>
-                <div style="position: relative;">
-                  <input id="swal-business-images" type="file" accept="image/*" multiple style="width: 100%; padding: 10px; border: 2px dashed rgba(201,155,74,0.3); border-radius: 12px; background: rgba(201,155,74,0.05); cursor: pointer; font-size: 13px; color: #8b7c69;" />
-                </div>
+                <label style="display: block; margin-bottom: 6px; font-size: 13px; font-weight: 600; color: #6b5e50;">תמונות עסקיות (עד 10)</label>
+                <input id="swal-business-images" type="file" accept="image/*" multiple style="width: 100%; padding: 12px 14px; border: 2px dashed rgba(201,155,74,0.3); border-radius: 12px; background: rgba(201,155,74,0.04); cursor: pointer; font-size: 13px; color: #8b7c69; box-sizing: border-box;" />
               </div>
-              <p style="font-size: 12px; color: #a89b8a; margin-top: 8px;">* ניתן לדלג ולהעלות תמונות מאוחר יותר</p>
+              <p style="font-size: 12px; color: #a89b8a; margin-top: 8px; text-align: center;">* ניתן לדלג ולהעלות תמונות מאוחר יותר</p>
             </div>
           `,
           showCancelButton: true,
           confirmButtonText: 'העלה תמונות',
           cancelButtonText: 'דלג',
           confirmButtonColor: '#c99b4a',
-          background: '#f7f3f2',
+          cancelButtonColor: '#9e9286',
+          background: '#faf8f5',
           color: '#2b241d',
+          width: '440px',
+          customClass: { popup: 'swal-premium-popup' },
           preConfirm: () => {
             const profileInput = document.getElementById('swal-profile-image') as HTMLInputElement;
             const businessInput = document.getElementById('swal-business-images') as HTMLInputElement;
@@ -1503,7 +1701,7 @@ Please analyze this error and provide a fix.
                 </div>
                 <div>
                   <p className="text-[#2b241d] font-medium group-hover:text-[#c99b4a] transition-colors">יעדים</p>
-                  <p className="text-[#a89b8a] text-xs">ניהול יעדי אדריכלים</p>
+                  <p className="text-[#a89b8a] text-xs">ניהול יעדי אדריכלים ומעצבים</p>
                 </div>
               </div>
             </div>
@@ -1840,6 +2038,8 @@ Please analyze this error and provide a fix.
                                         {editingUserId === user.id ? (
                                           <div className="space-y-3">
                                             <div><label className="text-[#a89b8a] text-xs mb-1 block">שם</label><input value={editForm.name || ''} onChange={(e) => setEditForm(f => ({ ...f, name: e.target.value }))} className="w-full px-3 py-2 bg-[#f7f3f2] border border-[rgba(201,155,74,0.12)] rounded-lg text-[#2b241d] text-sm focus:outline-none focus:border-[#c99b4a]" /></div>
+                                            <div><label className="text-[#a89b8a] text-xs mb-1 block">אימייל</label><input type="email" value={editForm.email || ''} onChange={(e) => setEditForm(f => ({ ...f, email: e.target.value }))} className="w-full px-3 py-2 bg-[#f7f3f2] border border-[rgba(201,155,74,0.12)] rounded-lg text-[#2b241d] text-sm focus:outline-none focus:border-[#c99b4a]" dir="ltr" /></div>
+                                            <div><label className="text-[#a89b8a] text-xs mb-1 block">סיסמה חדשה</label><input type="text" value={editForm.newPassword || ''} onChange={(e) => setEditForm(f => ({ ...f, newPassword: e.target.value }))} placeholder="השאר ריק אם אין שינוי" className="w-full px-3 py-2 bg-[#f7f3f2] border border-[rgba(201,155,74,0.12)] rounded-lg text-[#2b241d] text-sm focus:outline-none focus:border-[#c99b4a] placeholder:text-[#c4b9ab]" dir="ltr" /></div>
                                             <div><label className="text-[#a89b8a] text-xs mb-1 block">טלפון</label><input value={editForm.phone || ''} onChange={(e) => setEditForm(f => ({ ...f, phone: e.target.value }))} className="w-full px-3 py-2 bg-[#f7f3f2] border border-[rgba(201,155,74,0.12)] rounded-lg text-[#2b241d] text-sm focus:outline-none focus:border-[#c99b4a]" dir="ltr" /></div>
                                             <div><label className="text-[#a89b8a] text-xs mb-1 block">כתובת</label><input value={editForm.address || ''} onChange={(e) => setEditForm(f => ({ ...f, address: e.target.value }))} className="w-full px-3 py-2 bg-[#f7f3f2] border border-[rgba(201,155,74,0.12)] rounded-lg text-[#2b241d] text-sm focus:outline-none focus:border-[#c99b4a]" /></div>
                                             <div><label className="text-[#a89b8a] text-xs mb-1 block">חברה</label><input value={editForm.company || ''} onChange={(e) => setEditForm(f => ({ ...f, company: e.target.value }))} className="w-full px-3 py-2 bg-[#f7f3f2] border border-[rgba(201,155,74,0.12)] rounded-lg text-[#2b241d] text-sm focus:outline-none focus:border-[#c99b4a]" /></div>
@@ -2061,6 +2261,14 @@ Please analyze this error and provide a fix.
                                     <div>
                                       <label className="text-[#a89b8a] text-xs mb-1 block">שם</label>
                                       <input value={editForm.name || ''} onChange={(e) => setEditForm(f => ({ ...f, name: e.target.value }))} className="w-full px-3 py-2.5 bg-[#f7f3f2] border border-[rgba(201,155,74,0.12)] rounded-lg text-[#2b241d] text-sm focus:outline-none focus:border-[#c99b4a]" />
+                                    </div>
+                                    <div>
+                                      <label className="text-[#a89b8a] text-xs mb-1 block">אימייל</label>
+                                      <input type="email" value={editForm.email || ''} onChange={(e) => setEditForm(f => ({ ...f, email: e.target.value }))} className="w-full px-3 py-2.5 bg-[#f7f3f2] border border-[rgba(201,155,74,0.12)] rounded-lg text-[#2b241d] text-sm focus:outline-none focus:border-[#c99b4a]" dir="ltr" />
+                                    </div>
+                                    <div>
+                                      <label className="text-[#a89b8a] text-xs mb-1 block">סיסמה חדשה</label>
+                                      <input type="text" value={editForm.newPassword || ''} onChange={(e) => setEditForm(f => ({ ...f, newPassword: e.target.value }))} placeholder="השאר ריק אם אין שינוי" className="w-full px-3 py-2.5 bg-[#f7f3f2] border border-[rgba(201,155,74,0.12)] rounded-lg text-[#2b241d] text-sm focus:outline-none focus:border-[#c99b4a] placeholder:text-[#c4b9ab]" dir="ltr" />
                                     </div>
                                     <div>
                                       <label className="text-[#a89b8a] text-xs mb-1 block">טלפון</label>

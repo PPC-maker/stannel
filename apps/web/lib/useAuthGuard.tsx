@@ -14,13 +14,35 @@ export function useAuthGuard() {
   const router = useRouter();
   const { user, loading } = useAuth();
   const alertShown = useRef(false);
+  const wasAuthenticated = useRef(false);
+  const redirectTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
-    if (!loading && !user && !alertShown.current) {
-      alertShown.current = true;
-      // Just redirect to login without popup - the login page speaks for itself
-      router.replace('/login');
+    if (user) wasAuthenticated.current = true;
+  }, [user]);
+
+  useEffect(() => {
+    if (redirectTimer.current) {
+      clearTimeout(redirectTimer.current);
+      redirectTimer.current = null;
     }
+
+    if (!loading && !user && !alertShown.current) {
+      if (wasAuthenticated.current) {
+        // Wait for potential token refresh before redirecting
+        redirectTimer.current = setTimeout(() => {
+          alertShown.current = true;
+          router.replace('/login');
+        }, 2000);
+      } else {
+        alertShown.current = true;
+        router.replace('/login');
+      }
+    }
+
+    return () => {
+      if (redirectTimer.current) clearTimeout(redirectTimer.current);
+    };
   }, [user, loading, router]);
 
   return {
@@ -37,15 +59,44 @@ export function useAuthGuard() {
 export function useAdminGuard() {
   const router = useRouter();
   const { user, loading } = useAuth();
+  const wasAuthenticated = useRef(false);
+  const redirectTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Track if user was ever authenticated in this session
+  useEffect(() => {
+    if (user && user.role === 'ADMIN') {
+      wasAuthenticated.current = true;
+    }
+  }, [user]);
 
   useEffect(() => {
+    // Clear any pending redirect
+    if (redirectTimer.current) {
+      clearTimeout(redirectTimer.current);
+      redirectTimer.current = null;
+    }
+
     if (!loading) {
       if (!user) {
-        router.replace('/login');
+        // If user was previously authenticated, wait a bit for token refresh
+        // This prevents flash redirects during auth state transitions
+        if (wasAuthenticated.current) {
+          redirectTimer.current = setTimeout(() => {
+            router.replace('/login');
+          }, 2000);
+        } else {
+          router.replace('/login');
+        }
       } else if (user.role !== 'ADMIN') {
         router.replace('/wallet');
       }
     }
+
+    return () => {
+      if (redirectTimer.current) {
+        clearTimeout(redirectTimer.current);
+      }
+    };
   }, [user, loading, router]);
 
   return {
@@ -62,15 +113,36 @@ export function useAdminGuard() {
 export function useSupplierGuard() {
   const router = useRouter();
   const { user, loading } = useAuth();
+  const wasAuthenticated = useRef(false);
+  const redirectTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
+    if (user && user.role === 'SUPPLIER') wasAuthenticated.current = true;
+  }, [user]);
+
+  useEffect(() => {
+    if (redirectTimer.current) {
+      clearTimeout(redirectTimer.current);
+      redirectTimer.current = null;
+    }
+
     if (!loading) {
       if (!user) {
-        router.replace('/login');
+        if (wasAuthenticated.current) {
+          redirectTimer.current = setTimeout(() => {
+            router.replace('/login');
+          }, 2000);
+        } else {
+          router.replace('/login');
+        }
       } else if (user.role !== 'SUPPLIER') {
         router.replace('/wallet');
       }
     }
+
+    return () => {
+      if (redirectTimer.current) clearTimeout(redirectTimer.current);
+    };
   }, [user, loading, router]);
 
   return {
