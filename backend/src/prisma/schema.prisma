@@ -30,6 +30,7 @@ enum InvoiceStatus {
   REJECTED
   PENDING_SUPPLIER_PAY
   PAID
+  CREDITED
   OVERDUE
 }
 
