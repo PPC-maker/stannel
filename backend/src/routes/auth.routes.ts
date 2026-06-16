@@ -13,8 +13,9 @@ const registerSchema = z.object({
   email: z.string().email(),
   name: z.string().min(2),
   phone: z.string().optional(),
-  role: z.enum(['ARCHITECT', 'SUPPLIER']),
+  role: z.enum(['ARCHITECT', 'DESIGNER', 'SUPPLIER']),
   companyName: z.string().optional(),
+  address: z.string().optional(),
   firebaseToken: z.string(),
 });
 
@@ -38,7 +39,7 @@ const verifySchema = z.object({
 
 const googleAuthSchema = z.object({
   token: z.string(),
-  role: z.enum(['ARCHITECT', 'SUPPLIER']).optional(),
+  role: z.enum(['ARCHITECT', 'DESIGNER', 'SUPPLIER']).optional(),
 });
 
 export async function authRoutes(server: FastifyInstance) {
@@ -183,9 +184,11 @@ export async function authRoutes(server: FastifyInstance) {
           email: body.email,
           name: body.name,
           phone: body.phone,
-          role: body.role,
+          address: body.address,
+          company: body.companyName,
+          role: body.role as any,
           isActive: false, // Admin must approve
-          ...(body.role === 'ARCHITECT' && {
+          ...((body.role === 'ARCHITECT' || body.role === 'DESIGNER') && {
             architectProfile: { create: {} },
           }),
           ...(body.role === 'SUPPLIER' && {

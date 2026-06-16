@@ -25,8 +25,9 @@ interface RegisterData {
   password: string;
   name: string;
   phone?: string;
-  role: 'ARCHITECT' | 'SUPPLIER';
+  role: 'ARCHITECT' | 'DESIGNER' | 'SUPPLIER';
   companyName?: string;
+  address?: string;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -320,6 +321,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         firebaseToken: string;
         phone?: string;
         companyName?: string;
+        address?: string;
       } = {
         email: data.email,
         name: data.name,
@@ -332,6 +334,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
       if (data.companyName && data.companyName.trim() !== '') {
         payload.companyName = data.companyName;
+      }
+      if (data.address && data.address.trim() !== '') {
+        payload.address = data.address;
       }
 
       const response = await authApi.register(payload);

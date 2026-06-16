@@ -137,8 +137,8 @@ export default function RegisterPage() {
         name: formData.name,
         phone: formData.phone || undefined,
         role: role,
-        companyName: role === 'SUPPLIER' ? formData.companyName : undefined,
-        // Note: specialization and roleCategory can be stored in profile later
+        companyName: formData.companyName || undefined,
+        address: formData.address || undefined,
       });
       setStep(3); // Success step
     } catch (err: unknown) {
