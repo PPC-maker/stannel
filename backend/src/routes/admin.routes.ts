@@ -278,11 +278,27 @@ export async function adminRoutes(server: FastifyInstance) {
 
     // Update email in Firebase if changed
     if (body.email && body.email !== user.email && user.firebaseUid) {
+      // Check if email already taken in DB
+      const emailTaken = await prisma.user.findUnique({ where: { email: body.email } });
+      if (emailTaken) {
+        return reply.code(400).send({ error: `האימייל ${body.email} כבר קיים במערכת (${emailTaken.name})` });
+      }
       try {
         const { getAuth } = await import('firebase-admin/auth');
         await getAuth().updateUser(user.firebaseUid, { email: body.email });
       } catch (err: any) {
+        if (err.code === 'auth/email-already-exists') {
+          return reply.code(400).send({ error: `האימייל ${body.email} כבר קיים במערכת` });
+        }
         return reply.code(400).send({ error: err.message || 'שגיאה בעדכון האימייל' });
+      }
+    }
+
+    // Check if phone already taken
+    if (body.phone && body.phone !== user.phone) {
+      const phoneTaken = await prisma.user.findFirst({ where: { phone: body.phone, id: { not: id } } });
+      if (phoneTaken) {
+        return reply.code(400).send({ error: `הטלפון ${body.phone} כבר קיים במערכת (${phoneTaken.name})` });
       }
     }
 

@@ -268,6 +268,7 @@ export const adminApi = {
 
   async updateUser(userId: string, data: {
     name?: string;
+    email?: string;
     phone?: string;
     address?: string;
     company?: string;
@@ -290,8 +291,8 @@ export const adminApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'שגיאה בעדכון המשתמש. נסה שוב.' }));
-      throw new Error(error.message || 'שגיאה בעדכון המשתמש. נסה שוב.');
+      const err = await res.json().catch(() => ({ error: 'שגיאה בעדכון המשתמש. נסה שוב.' }));
+      throw new Error(err.error || err.message || 'שגיאה בעדכון המשתמש. נסה שוב.');
     }
 
     return res.json();
@@ -302,6 +303,7 @@ export const adminApi = {
     password: string;
     name: string;
     phone?: string;
+    role?: string;
     company?: string;
     address?: string;
     supplierProfile: {
