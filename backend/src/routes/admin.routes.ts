@@ -513,6 +513,7 @@ export async function adminRoutes(server: FastifyInstance) {
       };
     };
 
+    console.log('[Create Supplier] body:', JSON.stringify({ email: body.email, name: body.name, hasPassword: !!body.password, companyName: body.supplierProfile?.companyName }));
     if (!body.email || !body.password || !body.name || !body.supplierProfile?.companyName) {
       const missing = [];
       if (!body.email) missing.push('אימייל');

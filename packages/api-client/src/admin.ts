@@ -322,8 +322,8 @@ export const adminApi = {
       body: JSON.stringify(data),
     });
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'שגיאה ביצירת הספק. נסה שוב.' }));
-      throw new Error(error.message || 'שגיאה ביצירת הספק. נסה שוב.');
+      const err = await res.json().catch(() => ({ error: 'שגיאה ביצירת הספק. נסה שוב.' }));
+      throw new Error(err.error || err.message || 'שגיאה ביצירת הספק. נסה שוב.');
     }
     return res.json();
   },
