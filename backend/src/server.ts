@@ -92,7 +92,7 @@ async function registerPlugins() {
 
   // Rate limiting - global
   await server.register(rateLimit, {
-    max: 80,
+    max: 300,
     timeWindow: '1 minute',
     keyGenerator: (request) => request.ip,
   });
