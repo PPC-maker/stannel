@@ -138,10 +138,13 @@ export default function ManageContractsPage() {
     }
   };
 
-  const isContractActive = (contract: Contract) => {
+  const getContractStatus = (contract: Contract): 'active' | 'pending' | 'expired' => {
     const now = new Date();
-    return now >= new Date(contract.validFrom) && now <= new Date(contract.validTo);
+    if (now < new Date(contract.validFrom)) return 'pending';
+    if (now > new Date(contract.validTo)) return 'expired';
+    return 'active';
   };
+  const isContractActive = (contract: Contract) => getContractStatus(contract) === 'active';
 
   if (!isReady) {
     return <AuthGuardLoader />;
@@ -245,7 +248,7 @@ export default function ManageContractsPage() {
                               )}
                             </div>
                             <div className="flex items-center gap-4 mt-1 text-[#a89b8a] text-sm">
-                              <span className="flex items-center gap-1"><Percent size={12} />{contract.feePercent}% עמלה</span>
+                              <span className="flex items-center gap-1">{contract.feePercent}% עמלה</span>
                               <span className="flex items-center gap-1">
                                 <Calendar size={12} />
                                 {new Date(contract.validFrom).toLocaleDateString('he-IL')} - {new Date(contract.validTo).toLocaleDateString('he-IL')}
@@ -257,7 +260,7 @@ export default function ManageContractsPage() {
                           <div className="text-left">
                             <div className="flex items-center gap-1 mb-1">
                               {active ? <CheckCircle size={16} className="text-[#c99b4a]" /> : <XCircle size={16} className="text-red-400" />}
-                              <span className={active ? 'text-[#c99b4a] text-sm' : 'text-red-400 text-sm'}>{active ? 'פעיל' : 'לא פעיל'}</span>
+                              <span className={active ? 'text-[#c99b4a] text-sm' : getContractStatus(contract) === 'pending' ? 'text-blue-400 text-sm' : 'text-red-400 text-sm'}>{active ? 'פעיל' : getContractStatus(contract) === 'pending' ? 'ממתין להפעלה' : 'לא פעיל'}</span>
                             </div>
                           </div>
                           <button
@@ -340,7 +343,7 @@ export default function ManageContractsPage() {
                       <span className="text-[#a89b8a] text-sm">סטטוס</span>
                       <span className={`flex items-center gap-1.5 font-medium ${isContractActive(viewContract) ? 'text-[#c99b4a]' : 'text-red-400'}`}>
                         {isContractActive(viewContract) ? <CheckCircle size={16} /> : <XCircle size={16} />}
-                        {isContractActive(viewContract) ? 'פעיל' : 'לא פעיל'}
+                        {getContractStatus(viewContract) === 'active' ? 'פעיל' : getContractStatus(viewContract) === 'pending' ? 'ממתין להפעלה' : 'לא פעיל'}
                       </span>
                     </div>
 
@@ -386,7 +389,7 @@ export default function ManageContractsPage() {
         {/* ── Create Contract Modal ── */}
         <AnimatePresence>
           {showForm && (
-            <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[60] p-4">
               <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="w-full max-w-md">
                 <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-6 shadow-2xl max-h-[85vh] overflow-y-auto">
                   <div className="flex items-center justify-between mb-6">

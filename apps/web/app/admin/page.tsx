@@ -184,9 +184,11 @@ const defaultCategory = { icon: Activity, label: 'כללי' };
 
 const roleLabels: Record<string, string> = {
   ARCHITECT: 'אדריכל',
+  DESIGNER: 'מעצב',
   SUPPLIER: 'ספק',
   ADMIN: 'מנהל',
   architect: 'אדריכל',
+  designer: 'מעצב',
   supplier: 'ספק',
   admin: 'מנהל',
 };
@@ -1153,8 +1155,12 @@ export default function AdminPage() {
         const name = (document.getElementById('swal-name') as HTMLInputElement)?.value?.trim();
         const phone = (document.getElementById('swal-phone') as HTMLInputElement)?.value?.trim();
         const role = (document.getElementById('swal-role') as HTMLSelectElement)?.value || 'SUPPLIER';
-        if (!email || !password || !name) {
-          Swal.showValidationMessage('אימייל, סיסמה ושם הם שדות חובה');
+        const missing = [];
+        if (!email) missing.push('אימייל');
+        if (!password) missing.push('סיסמה');
+        if (!name) missing.push('שם');
+        if (missing.length > 0) {
+          Swal.showValidationMessage(`חסר: ${missing.join(', ')}`);
           return false;
         }
         if (password.length < 6) {
@@ -1611,6 +1617,7 @@ Please analyze this error and provide a fix.
   const roleSearchTerms: Record<string, string[]> = {
     ADMIN: ['מנהל', 'אדמין', 'admin'],
     ARCHITECT: ['אדריכל', 'architect'],
+    DESIGNER: ['מעצב', 'designer'],
     SUPPLIER: ['ספק', 'supplier'],
   };
   const filteredUsers = userSearch.trim()
@@ -1949,7 +1956,7 @@ Please analyze this error and provide a fix.
                     className="w-[90%] mx-auto px-5 py-4 bg-blue-50 border border-blue-200 text-blue-600 rounded-xl hover:bg-blue-100 transition-colors flex items-center justify-center gap-2 font-bold text-base"
                   >
                     <Building2 size={18} />
-                    + הוספת ספק חדש
+                    + הוספת משתמש חדש
                   </button>
                 </div>
               </div>
@@ -2007,7 +2014,7 @@ Please analyze this error and provide a fix.
                               </td>
                               <td className="py-4 px-4"><span className="text-[#8b7c69] flex items-center gap-2"><Mail size={14} className="text-[#a89b8a]" />{user.email}</span></td>
                               <td className="py-4 px-4"><span className="text-[#8b7c69] flex items-center gap-2"><Phone size={14} className="text-[#a89b8a]" />{user.phone || '-'}</span></td>
-                              <td className="py-4 px-4"><span className={`px-3 py-1 rounded-full text-sm ${user.role.toUpperCase() === 'ARCHITECT' ? 'bg-blue-500/20 text-blue-400' : user.role.toUpperCase() === 'ADMIN' ? 'bg-red-500/20 text-red-400' : 'bg-purple-500/20 text-purple-400'}`}>{roleLabels[user.role] || roleLabels[user.role.toUpperCase()] || user.role}</span></td>
+                              <td className="py-4 px-4"><span className={`px-3 py-1 rounded-full text-sm ${user.role.toUpperCase() === 'ARCHITECT' ? 'bg-blue-500/20 text-blue-400' : user.role.toUpperCase() === 'DESIGNER' ? 'bg-teal-500/20 text-teal-400' : user.role.toUpperCase() === 'ADMIN' ? 'bg-red-500/20 text-red-400' : 'bg-purple-500/20 text-purple-400'}`}>{roleLabels[user.role] || roleLabels[user.role.toUpperCase()] || user.role}</span></td>
                               <td className="py-4 px-4">
                                 {user.isActive ? <span className="px-3 py-1 rounded-full text-sm bg-green-500/20 text-green-400 flex items-center gap-1 w-fit"><CheckCircle size={14} />מאושר</span> : <span className="px-3 py-1 rounded-full text-sm bg-yellow-500/20 text-yellow-400 flex items-center gap-1 w-fit"><Clock size={14} />ממתין</span>}
                               </td>
@@ -2109,7 +2116,7 @@ Please analyze this error and provide a fix.
                                           <div className="flex items-center gap-2 text-[#8b7c69]"><span className="text-[#a89b8a] min-w-[80px]">נרשם:</span><span className="text-[#2b241d]">{new Date(user.createdAt).toLocaleString('he-IL')}</span></div>
                                           {user.activatedAt && <div className="flex items-center gap-2 text-[#8b7c69]"><span className="text-[#a89b8a] min-w-[80px]">אושר:</span><span className="text-[#2b241d]">{new Date(user.activatedAt).toLocaleString('he-IL')}</span></div>}
                                           {user.updatedAt && <div className="flex items-center gap-2 text-[#8b7c69]"><span className="text-[#a89b8a] min-w-[80px]">עודכן:</span><span className="text-[#2b241d]">{new Date(user.updatedAt).toLocaleString('he-IL')}</span></div>}
-                                          <div className="flex items-center gap-2 text-[#8b7c69]"><span className="text-[#a89b8a] min-w-[80px]">תפקיד:</span><span className={`px-2 py-0.5 rounded-full text-xs ${user.role.toUpperCase() === 'ARCHITECT' ? 'bg-blue-500/20 text-blue-400' : user.role.toUpperCase() === 'ADMIN' ? 'bg-red-500/20 text-red-400' : 'bg-purple-500/20 text-purple-400'}`}>{roleLabels[user.role] || roleLabels[user.role.toUpperCase()] || user.role}</span></div>
+                                          <div className="flex items-center gap-2 text-[#8b7c69]"><span className="text-[#a89b8a] min-w-[80px]">תפקיד:</span><span className={`px-2 py-0.5 rounded-full text-xs ${user.role.toUpperCase() === 'ARCHITECT' ? 'bg-blue-500/20 text-blue-400' : user.role.toUpperCase() === 'DESIGNER' ? 'bg-teal-500/20 text-teal-400' : user.role.toUpperCase() === 'ADMIN' ? 'bg-red-500/20 text-red-400' : 'bg-purple-500/20 text-purple-400'}`}>{roleLabels[user.role] || roleLabels[user.role.toUpperCase()] || user.role}</span></div>
                                           <div className="flex items-center gap-2 text-[#8b7c69]"><span className="text-[#a89b8a] min-w-[80px]">מזהה:</span><span className="text-[#a89b8a] text-xs font-mono" dir="ltr">{user.id}</span></div>
                                         </div>
                                       </div>

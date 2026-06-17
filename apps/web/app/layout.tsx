@@ -62,6 +62,8 @@ export default function RootLayout({
   return (
     <html lang="he" dir="rtl" className={assistant.variable} suppressHydrationWarning>
       <head>
+        <link rel="preload" href="/logoNew.png" as="image" />
+        <link rel="preload" href="/logoNewWhite.png" as="image" />
         <script dangerouslySetInnerHTML={{ __html: `
           (function(){
             var v='stannel-build-${process.env.NEXT_PUBLIC_BUILD_TIME}';

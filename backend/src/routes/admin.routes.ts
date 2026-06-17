@@ -57,8 +57,15 @@ const updateEventSchema = z.object({
   location: z.string().optional(),
   capacity: z.number().int().positive().optional(),
   pointsCost: z.number().int().min(0).optional(),
-  imageUrl: z.string().optional().nullable().transform(s => s && s.length > 0 ? s : null),
+  imageUrl: z.string().optional().nullable(),
   isHidden: z.boolean().optional(),
+}).transform(data => {
+  // Remove undefined fields so Prisma doesn't overwrite existing values
+  const cleaned: Record<string, any> = {};
+  for (const [key, value] of Object.entries(data)) {
+    if (value !== undefined) cleaned[key] = value;
+  }
+  return cleaned;
 });
 
 export async function adminRoutes(server: FastifyInstance) {
@@ -535,6 +542,16 @@ export async function adminRoutes(server: FastifyInstance) {
       if (existingUser) {
         result.emailExists = true;
         result.emailUser = { name: existingUser.name, role: existingUser.role };
+      } else {
+        // Also check Firebase
+        try {
+          const { getAuth } = await import('firebase-admin/auth');
+          await getAuth().getUserByEmail(email);
+          result.emailExists = true;
+          result.emailUser = { name: 'משתמש Firebase', role: '' };
+        } catch {
+          // Not found in Firebase - email is truly available
+        }
       }
     }
 

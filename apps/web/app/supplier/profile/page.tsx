@@ -50,6 +50,11 @@ export default function SupplierProfilePage() {
 
   const [images, setImages] = useState<string[]>([]);
 
+  // Scroll to top on mount
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   // Load profile data on mount
   useEffect(() => {
     if (isReady && user) {
@@ -64,7 +69,7 @@ export default function SupplierProfilePage() {
       setFormData({
         companyName: profile.companyName || '',
         description: profile.description || '',
-        phone: profile.phone || '',
+        phone: profile.phone || (profile as any).user?.phone || '',
         email: profile.user?.email || user?.email || '',
         address: profile.address || '',
         website: profile.website || '',

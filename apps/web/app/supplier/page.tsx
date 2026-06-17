@@ -400,7 +400,7 @@ export default function SupplierDashboardPage() {
                 <div className="w-14 h-14 mx-auto bg-[#f7f3f2] rounded-2xl flex items-center justify-center mb-3 group-hover:bg-[#c99b4a]/10 transition-colors">
                   <Building2 className="text-[#8b7c69] group-hover:text-[#c99b4a] transition-colors" size={28} />
                 </div>
-                <span className="text-[#8b7c69] group-hover:text-[#2b241d] text-sm font-medium transition-colors">פרטי הספק</span>
+                <span className="text-[#8b7c69] group-hover:text-[#2b241d] text-sm font-medium transition-colors whitespace-nowrap">פרטי הספק</span>
                 <ArrowUpRight size={14} className="inline-block mr-1 text-transparent group-hover:text-[#c99b4a] transition-colors" />
               </div>
             </motion.div>
