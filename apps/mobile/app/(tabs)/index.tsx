@@ -41,7 +41,22 @@ export default function MainScreen() {
   const handleTabPress = useCallback((tab: typeof TABS[0]) => {
     setActiveTab(tab.key);
     if (webViewRef.current) {
-      webViewRef.current.injectJavaScript(`window.location.href = '${WEB_URL}${tab.path}'; true;`);
+      // Navigate using existing Next.js Link in the page (client-side, no white flash)
+      // Search navbar links which are always present
+      webViewRef.current.injectJavaScript(`
+        (function() {
+          var links = document.querySelectorAll('a');
+          for (var i = 0; i < links.length; i++) {
+            var href = links[i].getAttribute('href');
+            if (href === '${tab.path}') {
+              links[i].click();
+              return;
+            }
+          }
+          window.location.href = '${tab.path}';
+        })();
+        true;
+      `);
     }
   }, []);
 

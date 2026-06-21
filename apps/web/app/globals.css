@@ -66,15 +66,9 @@ body.stannel-mobile-app {
   padding-bottom: 0 !important;
 }
 
-/* Hide browser's built-in password reveal button */
+/* Hide browser's built-in password reveal button (Windows/Edge only, not iOS WebView) */
 input::-ms-reveal,
-input::-ms-clear,
-input::-webkit-credentials-auto-fill-button,
-input::-webkit-clear-button {
-  display: none !important;
-  -webkit-appearance: none !important;
-}
-input[type="password"]::-webkit-textfield-decoration-container {
+input::-ms-clear {
   display: none !important;
 }
 
