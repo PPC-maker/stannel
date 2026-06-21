@@ -7,7 +7,7 @@ import { Mail, Lock, User, Phone, Building2, ArrowLeft, Check, AlertCircle, Came
 import Image from 'next/image';
 import { useAuth } from '@/lib/auth-context';
 
-type UserRole = 'ARCHITECT' | 'SUPPLIER';
+type UserRole = 'ARCHITECT' | 'DESIGNER' | 'SUPPLIER';
 
 // Sub-specializations for each role
 const architectSpecializations = [
