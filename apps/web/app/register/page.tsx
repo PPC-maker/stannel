@@ -217,7 +217,7 @@ export default function RegisterPage() {
 
                   <button
                     onClick={() => {
-                      setRole('ARCHITECT');
+                      setRole('DESIGNER');
                       setRoleCategory('DESIGNER');
                       setStep(2);
                     }}
