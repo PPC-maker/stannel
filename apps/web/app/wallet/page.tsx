@@ -465,6 +465,12 @@ export default function WalletPage() {
     return <AuthGuardLoader />;
   }
 
+  // Redirect suppliers to their dedicated dashboard
+  if (isSupplier) {
+    if (typeof window !== 'undefined') window.location.href = '/supplier';
+    return <AuthGuardLoader />;
+  }
+
   const metalGradient = 'linear-gradient(135deg, #d8ba72 0%, #9f7645 100%)';
   const bronzeCardBg = 'linear-gradient(135deg, #7a5a44 0%, #a67c5b 30%, #6f4f3b 65%, #b08a68 100%)';
   const bronzeCardGloss = 'linear-gradient(120deg, rgba(255,255,255,0.22), rgba(255,255,255,0.03) 40%, transparent 60%)';
