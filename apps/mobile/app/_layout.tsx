@@ -1,11 +1,9 @@
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { View, StyleSheet } from 'react-native';
-import { AuthProvider } from '@/lib/auth-context';
 
 export default function RootLayout() {
   return (
-    <AuthProvider>
     <View style={styles.container}>
       <Stack
         screenOptions={{
@@ -23,7 +21,6 @@ export default function RootLayout() {
       </Stack>
       <StatusBar style="dark" />
     </View>
-    </AuthProvider>
   );
 }
 
