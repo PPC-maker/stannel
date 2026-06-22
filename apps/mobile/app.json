@@ -69,6 +69,12 @@
         "projectId": "3df011da-c836-4c63-b9b2-b6b3caae4679"
       }
     },
-    "owner": "stannel_app"
+    "owner": "stannel_app",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/3df011da-c836-4c63-b9b2-b6b3caae4679"
+    }
   }
 }

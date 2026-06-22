@@ -9,7 +9,7 @@ export default function TabLayout() {
       }}
     >
       <Tabs.Screen name="index" />
-      {/* Hidden screens - all navigation handled by single WebView in index */}
+      {/* Placeholder screens required by Expo Router - all navigation via WebView */}
       <Tabs.Screen name="rewards" options={{ href: null }} />
       <Tabs.Screen name="invoices" options={{ href: null }} />
       <Tabs.Screen name="wallet" options={{ href: null }} />
