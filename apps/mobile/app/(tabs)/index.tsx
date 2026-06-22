@@ -41,7 +41,7 @@ export default function MainScreen() {
   const handleTabPress = useCallback((tab: typeof TABS[0]) => {
     setActiveTab(tab.key);
     if (webViewRef.current) {
-      webViewRef.current.injectJavaScript(`window.location.href = '${tab.path}'; true;`);
+      webViewRef.current.injectJavaScript(`window.location.href = '${WEB_URL}${tab.path}'; true;`);
     }
   }, []);
 
