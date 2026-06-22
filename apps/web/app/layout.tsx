@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from 'next';
 import { Assistant } from 'next/font/google';
 import './globals.css';
 import Navbar from '@/components/layout/Navbar';
-import MobileNavHelper from '@/components/layout/MobileNavHelper';
 import BottomNav from '@/components/layout/BottomNav';
 import AccessibilityWidget from '@/components/layout/AccessibilityWidget';
 import SplashScreen from '@/components/layout/SplashScreen';
@@ -91,7 +90,6 @@ export default function RootLayout({
             document.body.classList.add('stannel-mobile-app');
           }
         `}} />
-        <MobileNavHelper />
 
         <Providers>
           {/* Main app shell */}

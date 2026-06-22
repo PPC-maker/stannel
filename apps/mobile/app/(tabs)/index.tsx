@@ -45,16 +45,7 @@ export default function MainScreen() {
     setActiveTab(tab.key);
     setTabLoading(true);
     if (webViewRef.current) {
-      // Click hidden Next.js Link for client-side navigation (no full reload)
-      // Falls back to location.href if link not found
-      webViewRef.current.injectJavaScript(`
-        (function() {
-          var link = document.querySelector('[data-mobile-nav="${tab.key}"]');
-          if (link) { link.click(); }
-          else { window.location.href = '${WEB_URL}${tab.path}'; }
-        })();
-        true;
-      `);
+      webViewRef.current.injectJavaScript(`window.location.href = '${WEB_URL}${tab.path}'; true;`);
     }
   }, [activeTab]);
 
@@ -106,7 +97,12 @@ export default function MainScreen() {
         injectedJavaScript={HIDE_WEB_NAV_JS}
         javaScriptEnabled={true}
         domStorageEnabled={true}
-        startInLoadingState={false}
+        startInLoadingState={true}
+        renderLoading={() => (
+          <View style={styles.loaderOverlay}>
+            <ActivityIndicator size="large" color="#C9A961" />
+          </View>
+        )}
         allowsBackForwardNavigationGestures={true}
         sharedCookiesEnabled={true}
         thirdPartyCookiesEnabled={true}
