@@ -38,12 +38,16 @@ export default function MainScreen() {
     return () => backHandler.remove();
   }, [canGoBack]);
 
+  const [tabLoading, setTabLoading] = useState(false);
+
   const handleTabPress = useCallback((tab: typeof TABS[0]) => {
+    if (activeTab === tab.key) return;
     setActiveTab(tab.key);
+    setTabLoading(true);
     if (webViewRef.current) {
       webViewRef.current.injectJavaScript(`window.location.href = '${WEB_URL}${tab.path}'; true;`);
     }
-  }, []);
+  }, [activeTab]);
 
   // Keep internal links inside WebView, open external links in browser
   const handleShouldStartLoad = useCallback((event: WebViewNavigation) => {
@@ -88,7 +92,7 @@ export default function MainScreen() {
         ref={webViewRef}
         source={{ uri: `${WEB_URL}/login` }}
         style={styles.webview}
-        onLoadEnd={() => setInitialLoad(false)}
+        onLoadEnd={() => { setInitialLoad(false); setTabLoading(false); }}
         onNavigationStateChange={handleNavigationStateChange}
         injectedJavaScript={HIDE_WEB_NAV_JS}
         javaScriptEnabled={true}
@@ -108,8 +112,8 @@ export default function MainScreen() {
         userAgent="STANNEL-App/1.0"
       />
 
-      {/* Initial load spinner - only on first load, auto-hides after 3s */}
-      {initialLoad && (
+      {/* Loading overlay - initial load or tab switch */}
+      {(initialLoad || tabLoading) && (
         <View style={styles.loaderOverlay}>
           <ActivityIndicator size="large" color="#C9A961" />
         </View>
