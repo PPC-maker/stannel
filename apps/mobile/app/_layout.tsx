@@ -14,10 +14,6 @@ export default function RootLayout() {
       >
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="login" options={{ presentation: 'fullScreenModal', animation: 'fade' }} />
-        <Stack.Screen name="register" options={{ presentation: 'fullScreenModal', animation: 'fade' }} />
-        <Stack.Screen name="forgot-password" options={{ presentation: 'fullScreenModal', animation: 'fade' }} />
-        <Stack.Screen name="terms" options={{ presentation: 'fullScreenModal', animation: 'slide_from_bottom' }} />
-        <Stack.Screen name="about" options={{ presentation: 'fullScreenModal', animation: 'slide_from_bottom' }} />
       </Stack>
       <StatusBar style="dark" />
     </View>
