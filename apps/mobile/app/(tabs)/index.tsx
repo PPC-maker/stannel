@@ -45,7 +45,16 @@ export default function MainScreen() {
     setActiveTab(tab.key);
     setTabLoading(true);
     if (webViewRef.current) {
-      webViewRef.current.injectJavaScript(`window.location.href = '${WEB_URL}${tab.path}'; true;`);
+      // Click hidden Next.js Link for client-side navigation (no full reload)
+      // Falls back to location.href if link not found
+      webViewRef.current.injectJavaScript(`
+        (function() {
+          var link = document.querySelector('[data-mobile-nav="${tab.key}"]');
+          if (link) { link.click(); }
+          else { window.location.href = '${WEB_URL}${tab.path}'; }
+        })();
+        true;
+      `);
     }
   }, [activeTab]);
 
