@@ -37,6 +37,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '@/lib/auth-context';
 import { useAuthGuard, AuthGuardLoader } from '@/lib/useAuthGuard';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 const rankConfig = {
   BRONZE: { label: 'BRONZE', color: 'text-amber-700', bg: 'bg-amber-100', emoji: '🥉', badge: '3', minPoints: 0, maxPoints: 5000, next: 'SILVER' },
@@ -375,6 +376,7 @@ export default function WalletPage() {
   const { isReady } = useAuthGuard();
   const { user } = useAuth();
   const queryClient = useQueryClient();
+  const router = useRouter();
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [transactionsOpen, setTransactionsOpen] = useState(false);
   const isAdmin = user?.role === 'ADMIN';
@@ -417,40 +419,8 @@ export default function WalletPage() {
     fetchAdminStats();
   }, [isAdmin]);
 
-  useEffect(() => {
-    const wsUrl = (process.env.NEXT_PUBLIC_API_URL?.replace('http', 'ws') || 'ws://localhost:7070') + '/ws';
-    let ws: WebSocket | null = null;
-    let reconnectTimeout: NodeJS.Timeout | null = null;
-
-    const connect = () => {
-      try {
-        ws = new WebSocket(wsUrl);
-        ws.onopen = async () => {
-          try {
-            const { getIdToken } = await import('@/lib/firebase');
-            const token = await getIdToken();
-            if (token && ws?.readyState === WebSocket.OPEN) {
-              ws.send(JSON.stringify({ type: 'auth', token }));
-            }
-          } catch {}
-        };
-        ws.onmessage = () => {
-          queryClient.invalidateQueries({ queryKey: ['wallet'] });
-          queryClient.invalidateQueries({ queryKey: ['invoices'] });
-          queryClient.invalidateQueries({ queryKey: ['supplier'] });
-          fetchAdminStats();
-        };
-        ws.onclose = () => { reconnectTimeout = setTimeout(connect, 5000); };
-        ws.onerror = () => {};
-      } catch {}
-    };
-
-    connect();
-    return () => {
-      if (reconnectTimeout) clearTimeout(reconnectTimeout);
-      if (ws) ws.close();
-    };
-  }, []);
+  // WebSocket is handled globally by useWebSocket() in client-providers.tsx
+  // It already invalidates wallet, invoices, supplier queries on updates
 
   const currentRank = (card?.rank as keyof typeof rankConfig) || 'BRONZE';
   const rank = rankConfig[currentRank];
@@ -465,9 +435,14 @@ export default function WalletPage() {
     return <AuthGuardLoader />;
   }
 
-  // Redirect suppliers to their dedicated dashboard
+  // Redirect suppliers to their dedicated dashboard (client-side navigation, no full reload)
+  useEffect(() => {
+    if (isReady && isSupplier) {
+      router.replace('/supplier');
+    }
+  }, [isReady, isSupplier, router]);
+
   if (isSupplier) {
-    if (typeof window !== 'undefined') window.location.href = '/supplier';
     return <AuthGuardLoader />;
   }
 

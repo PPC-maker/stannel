@@ -9,7 +9,7 @@ const INJECT_JS = `
   if(window.__STANNEL_INJECTED) return true;
   window.__STANNEL_INJECTED=true;
   var s=document.createElement('style');
-  s.textContent='#splash-screen{display:none!important}.accessibility-widget,[class*="accessibility"],button[aria-label="פתח תפריט נגישות"]{display:none!important}.fixed.bottom-24,.fixed.z-50.w-14{display:none!important}';
+  s.textContent='#splash-screen{display:none!important}.accessibility-widget,[class*="accessibility"],button[aria-label="פתח תפריט נגישות"]{display:none!important}#web-bottom-nav,.web-bottom-nav{display:none!important}';
   document.head.appendChild(s);
   true;
 })();
@@ -62,7 +62,7 @@ export default function MainScreen() {
         textZoom={100}
         onShouldStartLoadWithRequest={onRequest}
         androidLayerType="hardware"
-        userAgent="StannelMobile/1.0"
+        userAgent="STANNEL-App/1.0"
       />
     </View>
   );

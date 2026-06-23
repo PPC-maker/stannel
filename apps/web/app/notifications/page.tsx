@@ -120,41 +120,8 @@ export default function NotificationsPage() {
     setLocalStatuses(getStoredStatuses());
   }, []);
 
-  // WebSocket for real-time notifications
-  useEffect(() => {
-    const wsUrl = (process.env.NEXT_PUBLIC_API_URL?.replace('http', 'ws') || 'ws://localhost:7070') + '/ws';
-    let ws: WebSocket | null = null;
-    let reconnectTimeout: NodeJS.Timeout | null = null;
-
-    const connect = () => {
-      try {
-        ws = new WebSocket(wsUrl);
-        ws.onopen = async () => {
-          try {
-            const { getIdToken } = await import('@/lib/firebase');
-            const token = await getIdToken();
-            if (token && ws?.readyState === WebSocket.OPEN) {
-              ws.send(JSON.stringify({ type: 'auth', token }));
-            }
-          } catch {}
-        };
-        ws.onmessage = (event) => {
-          try {
-            const msg = JSON.parse(event.data);
-            if (msg.type === 'notification:new') {
-              queryClient.invalidateQueries({ queryKey: ['notifications'] });
-            }
-          } catch {}
-        };
-        ws.onclose = () => { reconnectTimeout = setTimeout(connect, 5000); };
-      } catch {}
-    };
-    connect();
-    return () => {
-      if (reconnectTimeout) clearTimeout(reconnectTimeout);
-      if (ws) ws.close();
-    };
-  }, [queryClient]);
+  // WebSocket is handled globally by useWebSocket() in client-providers.tsx
+  // It already invalidates notifications queries on 'notification:new' events
 
   if (!isReady) return <AuthGuardLoader />;
 

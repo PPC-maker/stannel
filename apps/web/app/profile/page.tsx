@@ -39,7 +39,7 @@ export default function ProfilePage() {
   const { isReady } = useAuthGuard();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { user } = useAuth();
+  const { user, refreshUser } = useAuth();
   const { data: balance } = useWalletBalance();
   const { data: invoices } = useInvoices();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -154,8 +154,8 @@ export default function ProfilePage() {
       });
       setIsEditing(false);
       setShowPhotoModal(false);
-      // Clear URL params and refresh to show updated data
-      window.location.href = '/profile';
+      // Refresh user data to show updated info
+      await refreshUser();
     } catch (error) {
       console.error('Failed to update profile:', error);
     }
@@ -183,9 +183,8 @@ export default function ProfilePage() {
     try {
       await authApi.uploadProfileImage(file);
       setShowPhotoModal(false);
-      // Clear URL params and refresh to show new image
-      router.replace('/profile');
-      window.location.href = '/profile';
+      // Refresh user data to show new image
+      await refreshUser();
     } catch (error: any) {
       console.error('Failed to upload profile image:', error);
       setUploadError(error.message || 'שגיאה בהעלאת התמונה');
@@ -563,7 +562,7 @@ export default function ProfilePage() {
                       try {
                         await authApi.updateProfile({ profileImage: null });
                         setShowPhotoModal(false);
-                        window.location.href = '/profile';
+                        await refreshUser();
                       } catch (error) {
                         console.error('Failed to remove profile image:', error);
                       }

@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import ImageWithLoader from '@/components/ui/ImageWithLoader';
 import { Gift, Star, ShoppingCart, Loader2, Coins, Banknote, X, ChevronDown } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -35,6 +36,7 @@ function calculateCashCompletion(userPoints: number, productPointCost: number, p
 }
 
 export default function RewardsContent() {
+  const router = useRouter();
   const { user, loading: authLoading } = useAuth();
   const [selectedProduct, setSelectedProduct] = useState<string | null>(null);
   const [redeemingId, setRedeemingId] = useState<string | null>(null);
@@ -84,7 +86,7 @@ export default function RewardsContent() {
   }
 
   if (!user) {
-    if (typeof window !== 'undefined') window.location.href = '/login';
+    router.replace('/login');
     return <AuthGuardLoader />;
   }
 

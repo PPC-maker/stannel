@@ -39,7 +39,8 @@ export default function Navbar() {
   const router = useRouter();
   const pathname = usePathname();
 
-  // Fetch unread notification count + WebSocket
+  // Fetch unread notification count via React Query (already polls every 30s)
+  // The global WebSocket in client-providers.tsx handles real-time updates
   useEffect(() => {
     if (!user) return;
 
@@ -56,45 +57,13 @@ export default function Navbar() {
     fetchUnread();
     const interval = setInterval(fetchUnread, 30000);
 
-    // Listen for notification-read event from notifications page
+    // Listen for notification-read event from notifications page and WebSocket
     const handleRead = () => fetchUnread();
     window.addEventListener('notification-read', handleRead);
-
-    // WebSocket for real-time badge
-    const wsUrl = (process.env.NEXT_PUBLIC_API_URL?.replace('http', 'ws') || 'ws://localhost:7070') + '/ws';
-    let ws: WebSocket | null = null;
-    let reconnectTimeout: NodeJS.Timeout | null = null;
-
-    const connectWs = () => {
-      try {
-        ws = new WebSocket(wsUrl);
-        ws.onopen = async () => {
-          try {
-            const { getIdToken } = await import('@/lib/firebase');
-            const token = await getIdToken();
-            if (token && ws?.readyState === WebSocket.OPEN) {
-              ws.send(JSON.stringify({ type: 'auth', token }));
-            }
-          } catch {}
-        };
-        ws.onmessage = (event) => {
-          try {
-            const msg = JSON.parse(event.data);
-            if (msg.type === 'notification:new') {
-              fetchUnread();
-            }
-          } catch {}
-        };
-        ws.onclose = () => { reconnectTimeout = setTimeout(connectWs, 5000); };
-      } catch {}
-    };
-    connectWs();
 
     return () => {
       clearInterval(interval);
       window.removeEventListener('notification-read', handleRead);
-      if (reconnectTimeout) clearTimeout(reconnectTimeout);
-      if (ws) ws.close();
     };
   }, [user]);
 

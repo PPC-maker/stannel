@@ -33,18 +33,20 @@ export default function SplashScreen() {
     // Safety timeout - remove after 4 seconds max
     const safetyTimer = setTimeout(hideSplash, 4000);
 
-    // Always unregister stale Service Workers and clear JS chunk caches on every load.
-    // sessionStorage persists across Ctrl+Shift+R, so we must NOT gate this on a session flag —
-    // otherwise stale SWs survive hard refreshes and serve 404 chunk files from old builds.
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.getRegistrations().then((registrations) => {
-        registrations.forEach((reg) => reg.unregister());
-      });
-    }
-    if ('caches' in window) {
-      caches.keys().then((keys) => {
-        keys.forEach((key) => caches.delete(key));
-      });
+    // Service worker cleanup is handled by the build-version check in layout.tsx head script.
+    // Only clean up stale SWs on first visit per session to avoid unnecessary work on every navigation.
+    if (!sessionStorage.getItem('sw-cleaned')) {
+      sessionStorage.setItem('sw-cleaned', '1');
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then((registrations) => {
+          registrations.forEach((reg) => reg.unregister());
+        });
+      }
+      if ('caches' in window) {
+        caches.keys().then((keys) => {
+          keys.forEach((key) => caches.delete(key));
+        });
+      }
     }
 
     return () => {

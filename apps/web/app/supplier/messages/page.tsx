@@ -57,41 +57,12 @@ export default function SupplierMessagesPage() {
     if (isReady) fetchMessages();
   }, [isReady]);
 
-  // WebSocket for real-time notifications
+  // WebSocket is handled globally by useWebSocket() in client-providers.tsx
+  // Listen for notification events to refresh messages
   useEffect(() => {
-    const wsUrl = (process.env.NEXT_PUBLIC_API_URL?.replace('http', 'ws') || 'ws://localhost:7070') + '/ws';
-    let ws: WebSocket | null = null;
-    let reconnectTimeout: NodeJS.Timeout | null = null;
-
-    const connect = () => {
-      try {
-        ws = new WebSocket(wsUrl);
-        ws.onopen = async () => {
-          try {
-            const { getIdToken } = await import('@/lib/firebase');
-            const token = await getIdToken();
-            if (token && ws?.readyState === WebSocket.OPEN) {
-              ws.send(JSON.stringify({ type: 'auth', token }));
-            }
-          } catch {}
-        };
-        ws.onmessage = (event) => {
-          try {
-            const msg = JSON.parse(event.data);
-            if (msg.type === 'notification:new') {
-              fetchMessages();
-            }
-          } catch {}
-        };
-        ws.onclose = () => { reconnectTimeout = setTimeout(connect, 5000); };
-      } catch {}
-    };
-
-    connect();
-    return () => {
-      if (reconnectTimeout) clearTimeout(reconnectTimeout);
-      if (ws) ws.close();
-    };
+    const handleNotification = () => fetchMessages();
+    window.addEventListener('notification-read', handleNotification);
+    return () => window.removeEventListener('notification-read', handleNotification);
   }, []);
 
   const handleMarkAsRead = async (id: string) => {

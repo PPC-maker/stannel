@@ -19,7 +19,7 @@ export default function ClientProviders({ children }: { children: ReactNode }) {
           queries: {
             staleTime: 30 * 1000,
             gcTime: 10 * 60 * 1000,
-            refetchOnWindowFocus: true,
+            refetchOnWindowFocus: false,
             refetchOnMount: true,
             refetchOnReconnect: true,
             retry: 1,

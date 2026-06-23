@@ -43,7 +43,7 @@ export function useInvoices() {
       const response = await invoicesApi.getAll();
       return response.data;
     },
-    refetchInterval: 10000, // Auto-refresh every 10 seconds
+    refetchInterval: 60000, // Auto-refresh every 60 seconds (WebSocket handles real-time)
   });
 }
 
@@ -51,7 +51,7 @@ export function useInvoiceStats() {
   return useQuery({
     queryKey: ['invoices', 'stats'],
     queryFn: () => invoicesApi.getStats(),
-    refetchInterval: 10000, // Auto-refresh every 10 seconds
+    refetchInterval: 60000, // Auto-refresh every 60 seconds (WebSocket handles real-time)
   });
 }
 
@@ -117,8 +117,6 @@ export function useEvents() {
   return useQuery({
     queryKey: ['events'],
     queryFn: () => eventsApi.getAll(),
-    staleTime: 0,
-    refetchOnMount: 'always',
   });
 }
 
