@@ -20,7 +20,6 @@ export default function BottomNav() {
 
   const shouldHide =
     hiddenOnPages.includes(pathname) ||
-    pathname.startsWith('/admin') ||
     pathname.startsWith('/supplier/');
 
   if (shouldHide) return null;
