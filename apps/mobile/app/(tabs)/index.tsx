@@ -14,72 +14,48 @@ const TABS = [
 ];
 
 const AUTH_PAGES = ['/login', '/register', '/forgot-password', '/terms', '/privacy', '/onboarding', '/about'];
-const SUPPLIER_DASHBOARD_PATHS = ['/supplier/invoices', '/supplier/payments', '/supplier/profile'];
 
 export default function MainScreen() {
   const webViewRef = useRef<WebView>(null);
   const insets = useSafeAreaInsets();
-  const [initialLoad, setInitialLoad] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('home');
   const [canGoBack, setCanGoBack] = useState(false);
-  const [isAuthPage, setIsAuthPage] = useState(true);
-  const [tabLoading, setTabLoading] = useState(false);
+  const [showTabs, setShowTabs] = useState(false);
 
-  // Safety timeout - hide loader after 5 seconds no matter what
+  // Hide loader after 5s max
   useEffect(() => {
-    const timer = setTimeout(() => setInitialLoad(false), 5000);
-    return () => clearTimeout(timer);
+    const t = setTimeout(() => setLoading(false), 5000);
+    return () => clearTimeout(t);
   }, []);
 
   // Android back button
   useEffect(() => {
     if (Platform.OS !== 'android') return;
-    const handler = BackHandler.addEventListener('hardwareBackPress', () => {
+    const sub = BackHandler.addEventListener('hardwareBackPress', () => {
       if (canGoBack && webViewRef.current) {
         webViewRef.current.goBack();
         return true;
       }
       return false;
     });
-    return () => handler.remove();
+    return () => sub.remove();
   }, [canGoBack]);
 
-  const getActiveTabFromUrl = useCallback((url: string): string => {
-    if (!url) return 'home';
-    const path = url.replace(WEB_URL, '');
-    if (path === '/supplier' || SUPPLIER_DASHBOARD_PATHS.some(p => path.startsWith(p))) return 'home';
-    if (path.startsWith('/rewards')) return 'rewards';
-    if (path.startsWith('/suppliers')) return 'suppliers';
-    if (path.startsWith('/invoices')) return 'invoices';
-    if (path.startsWith('/profile') || path.startsWith('/settings')) return 'profile';
-    if (path.startsWith('/wallet') || path === '/' || path === '') return 'home';
-    return 'home';
-  }, []);
-
-  const checkIsAuthPage = useCallback((url: string): boolean => {
-    if (!url) return true;
-    const path = url.replace(WEB_URL, '');
-    if (path === '/' || path === '') return true; // Root redirects to login
-    return AUTH_PAGES.some(p => path === p || path.startsWith(p + '/') || path.startsWith(p + '?'));
-  }, []);
-
   const handleTabPress = useCallback((tab: typeof TABS[0]) => {
-    if (activeTab === tab.key && !tabLoading) {
+    if (activeTab === tab.key) {
       webViewRef.current?.reload();
       return;
     }
     setActiveTab(tab.key);
-    setTabLoading(true);
-    // Simple, reliable navigation
-    webViewRef.current?.injectJavaScript(`window.location.href = '${WEB_URL}${tab.path}'; true;`);
-    setTimeout(() => setTabLoading(false), 3000);
-  }, [activeTab, tabLoading]);
+    setLoading(true);
+    webViewRef.current?.injectJavaScript(`window.location.href='${WEB_URL}${tab.path}';true;`);
+    setTimeout(() => setLoading(false), 4000);
+  }, [activeTab]);
 
   const handleShouldStartLoad = useCallback((event: WebViewNavigation) => {
     const { url } = event;
-    if (url.startsWith(WEB_URL) || url.startsWith('about:') || url === 'about:blank') {
-      return true;
-    }
+    if (url.startsWith(WEB_URL) || url.startsWith('about:')) return true;
     Linking.openURL(url).catch(() => {});
     return false;
   }, []);
@@ -88,113 +64,83 @@ export default function MainScreen() {
     setCanGoBack(navState.canGoBack);
     const url = navState.url || '';
 
-    if (!navState.loading) {
-      setInitialLoad(false);
-      setTabLoading(false);
-    }
+    if (!navState.loading) setLoading(false);
 
-    setIsAuthPage(checkIsAuthPage(url));
-    setActiveTab(getActiveTabFromUrl(url));
-  }, [checkIsAuthPage, getActiveTabFromUrl]);
+    // Determine if tabs should show
+    const path = url.replace(WEB_URL, '');
+    const isAuth = !path || path === '/' || AUTH_PAGES.some(p => path.startsWith(p));
+    setShowTabs(!isAuth);
+
+    // Update active tab
+    if (path.startsWith('/rewards')) setActiveTab('rewards');
+    else if (path.startsWith('/suppliers')) setActiveTab('suppliers');
+    else if (path.startsWith('/invoices')) setActiveTab('invoices');
+    else if (path.startsWith('/profile') || path.startsWith('/settings')) setActiveTab('profile');
+    else if (path.startsWith('/wallet') || path.startsWith('/supplier') || path.startsWith('/admin') || path.startsWith('/events') || path.startsWith('/goals') || path.startsWith('/tools') || path.startsWith('/notifications')) setActiveTab('home');
+  }, []);
 
   const handleLoadEnd = useCallback(() => {
-    setInitialLoad(false);
-    setTabLoading(false);
+    setLoading(false);
     webViewRef.current?.injectJavaScript(HIDE_WEB_NAV_JS);
   }, []);
 
-  const handleError = useCallback(() => {
-    // On error, retry loading after a short delay
-    setTimeout(() => {
-      webViewRef.current?.reload();
-    }, 2000);
-  }, []);
-
-  const TAB_BAR_HEIGHT = 60 + insets.bottom;
-  const showTabBar = !isAuthPage;
-
   return (
     <View style={styles.container}>
-      <WebView
-        ref={webViewRef}
-        source={{ uri: `${WEB_URL}/login` }}
-        style={styles.webview}
-        onLoadEnd={handleLoadEnd}
-        onNavigationStateChange={handleNavigationStateChange}
-        onError={handleError}
-        onHttpError={handleError}
-        injectedJavaScript={HIDE_WEB_NAV_JS}
-        onMessage={() => {}}
-        javaScriptEnabled={true}
-        domStorageEnabled={true}
-        startInLoadingState={true}
-        renderLoading={() => (
-          <View style={styles.loadingView}>
-            <ActivityIndicator size="large" color="#C9A961" />
-          </View>
-        )}
-        allowsBackForwardNavigationGestures={true}
-        sharedCookiesEnabled={true}
-        thirdPartyCookiesEnabled={true}
-        cacheEnabled={true}
-        cacheMode="LOAD_DEFAULT"
-        pullToRefreshEnabled={true}
-        allowsInlineMediaPlayback={true}
-        mixedContentMode="compatibility"
-        originWhitelist={['*']}
-        setSupportMultipleWindows={false}
-        onShouldStartLoadWithRequest={handleShouldStartLoad}
-        userAgent="STANNEL-App/1.0"
-        textZoom={100}
-      />
+      {/* WebView takes all available space */}
+      <View style={{ flex: 1 }}>
+        <WebView
+          ref={webViewRef}
+          source={{ uri: `${WEB_URL}/login` }}
+          style={{ flex: 1 }}
+          onLoadEnd={handleLoadEnd}
+          onNavigationStateChange={handleNavigationStateChange}
+          onError={() => setTimeout(() => webViewRef.current?.reload(), 2000)}
+          injectedJavaScript={HIDE_WEB_NAV_JS}
+          onMessage={() => {}}
+          javaScriptEnabled
+          domStorageEnabled
+          startInLoadingState
+          renderLoading={() => <View style={styles.loader}><ActivityIndicator size="large" color="#C9A961" /></View>}
+          allowsBackForwardNavigationGestures
+          sharedCookiesEnabled
+          thirdPartyCookiesEnabled
+          cacheEnabled
+          pullToRefreshEnabled
+          allowsInlineMediaPlayback
+          mixedContentMode="always"
+          originWhitelist={['*']}
+          onShouldStartLoadWithRequest={handleShouldStartLoad}
+          userAgent="STANNEL-App/1.0"
+          textZoom={100}
+        />
+      </View>
 
       {/* Loading overlay */}
-      {(initialLoad || tabLoading) && (
+      {loading && (
         <View style={styles.loaderOverlay}>
           <ActivityIndicator size="large" color="#C9A961" />
         </View>
       )}
 
-      {/* Spacer to push content above tab bar */}
-      {showTabBar && <View style={{ height: TAB_BAR_HEIGHT, backgroundColor: '#1a1d21' }} />}
-
-      {/* Native Tab Bar */}
-      {showTabBar && (
-        <View style={[styles.tabBar, { height: TAB_BAR_HEIGHT, paddingBottom: insets.bottom }]}>
+      {/* Tab Bar - simple flex child, NOT absolute positioned */}
+      {showTabs && (
+        <View style={[styles.tabBar, { paddingBottom: Math.max(insets.bottom, 10) }]}>
           {TABS.map((tab) => {
             const isActive = activeTab === tab.key;
-
             if (tab.isCenter) {
               return (
-                <TouchableOpacity
-                  key={tab.key}
-                  onPress={() => handleTabPress(tab)}
-                  style={styles.centerTabWrapper}
-                  activeOpacity={0.7}
-                >
-                  <View style={[styles.centerTab, isActive && styles.centerTabActive]}>
+                <TouchableOpacity key={tab.key} onPress={() => handleTabPress(tab)} style={styles.centerWrap} activeOpacity={0.7}>
+                  <View style={[styles.centerBtn, isActive && { backgroundColor: '#b8952e' }]}>
                     <MaterialCommunityIcons name={tab.icon} color="#fff" size={26} />
                   </View>
-                  <Text style={[styles.tabLabel, { color: '#C9A961' }]}>{tab.label}</Text>
+                  <Text style={[styles.label, { color: '#C9A961' }]}>{tab.label}</Text>
                 </TouchableOpacity>
               );
             }
-
             return (
-              <TouchableOpacity
-                key={tab.key}
-                onPress={() => handleTabPress(tab)}
-                style={styles.tabItem}
-                activeOpacity={0.7}
-              >
-                <MaterialCommunityIcons
-                  name={tab.icon}
-                  color={isActive ? '#C9A961' : 'rgba(255,255,255,0.4)'}
-                  size={24}
-                />
-                <Text style={[styles.tabLabel, { color: isActive ? '#C9A961' : 'rgba(255,255,255,0.4)' }]}>
-                  {tab.label}
-                </Text>
+              <TouchableOpacity key={tab.key} onPress={() => handleTabPress(tab)} style={styles.tabItem} activeOpacity={0.7}>
+                <MaterialCommunityIcons name={tab.icon} color={isActive ? '#C9A961' : 'rgba(255,255,255,0.4)'} size={24} />
+                <Text style={[styles.label, { color: isActive ? '#C9A961' : 'rgba(255,255,255,0.4)' }]}>{tab.label}</Text>
               </TouchableOpacity>
             );
           })}
@@ -209,36 +155,21 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#060f1f',
   },
-  webview: {
-    flex: 1,
-    backgroundColor: '#060f1f',
-  },
-  loadingView: {
+  loader: {
     position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
+    top: 0, left: 0, right: 0, bottom: 0,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#060f1f',
   },
   loaderOverlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
+    ...StyleSheet.absoluteFillObject,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#060f1f',
     zIndex: 10,
   },
   tabBar: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
     flexDirection: 'row',
     backgroundColor: '#1a1d21',
     borderTopLeftRadius: 20,
@@ -246,11 +177,6 @@ const styles = StyleSheet.create({
     paddingTop: 8,
     alignItems: 'flex-start',
     justifyContent: 'space-around',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: -4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 12,
-    elevation: 20,
   },
   tabItem: {
     alignItems: 'center',
@@ -258,13 +184,13 @@ const styles = StyleSheet.create({
     paddingTop: 4,
     flex: 1,
   },
-  centerTabWrapper: {
+  centerWrap: {
     alignItems: 'center',
     justifyContent: 'center',
     flex: 1,
     marginTop: -18,
   },
-  centerTab: {
+  centerBtn: {
     width: 52,
     height: 52,
     borderRadius: 26,
@@ -274,16 +200,9 @@ const styles = StyleSheet.create({
     marginBottom: 2,
     borderWidth: 3,
     borderColor: '#1a1d21',
-    shadowColor: '#C9A961',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.4,
-    shadowRadius: 8,
     elevation: 8,
   },
-  centerTabActive: {
-    backgroundColor: '#b8952e',
-  },
-  tabLabel: {
+  label: {
     fontSize: 10,
     fontWeight: '600',
     marginTop: 2,
