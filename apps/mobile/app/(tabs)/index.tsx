@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect, useCallback } from 'react';
-import { View, StyleSheet, BackHandler, Platform, TouchableOpacity, Text, ActivityIndicator, Linking, Dimensions } from 'react-native';
+import { View, StyleSheet, BackHandler, Platform, TouchableOpacity, Text, ActivityIndicator, Linking } from 'react-native';
 import { WebView, WebViewNavigation } from 'react-native-webview';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -13,10 +13,7 @@ const TABS = [
   { key: 'profile', path: '/profile', label: 'פרופיל', icon: 'account-circle' as const },
 ];
 
-// Pages where native tab bar should be hidden
 const AUTH_PAGES = ['/login', '/register', '/forgot-password', '/terms', '/privacy', '/onboarding', '/about'];
-
-// Pages that belong to supplier dashboard (not the suppliers directory)
 const SUPPLIER_DASHBOARD_PATHS = ['/supplier/invoices', '/supplier/payments', '/supplier/profile'];
 
 export default function MainScreen() {
@@ -27,11 +24,10 @@ export default function MainScreen() {
   const [canGoBack, setCanGoBack] = useState(false);
   const [isAuthPage, setIsAuthPage] = useState(true);
   const [tabLoading, setTabLoading] = useState(false);
-  const [currentUrl, setCurrentUrl] = useState('');
 
-  // Safety timeout - hide loader after 4 seconds max
+  // Safety timeout - hide loader after 5 seconds no matter what
   useEffect(() => {
-    const timer = setTimeout(() => setInitialLoad(false), 4000);
+    const timer = setTimeout(() => setInitialLoad(false), 5000);
     return () => clearTimeout(timer);
   }, []);
 
@@ -48,80 +44,42 @@ export default function MainScreen() {
     return () => handler.remove();
   }, [canGoBack]);
 
-  // Determine active tab from URL
   const getActiveTabFromUrl = useCallback((url: string): string => {
     if (!url) return 'home';
     const path = url.replace(WEB_URL, '');
-
-    // Supplier dashboard pages - not the suppliers directory
-    if (path === '/supplier' || SUPPLIER_DASHBOARD_PATHS.some(p => path.startsWith(p))) {
-      return 'home'; // No specific tab for supplier dashboard
-    }
+    if (path === '/supplier' || SUPPLIER_DASHBOARD_PATHS.some(p => path.startsWith(p))) return 'home';
     if (path.startsWith('/rewards')) return 'rewards';
     if (path.startsWith('/suppliers')) return 'suppliers';
     if (path.startsWith('/invoices')) return 'invoices';
     if (path.startsWith('/profile') || path.startsWith('/settings')) return 'profile';
-    if (path.startsWith('/wallet') || path === '/') return 'home';
-    return activeTab; // Keep current tab for other pages (events, goals, tools, etc.)
-  }, [activeTab]);
+    if (path.startsWith('/wallet') || path === '/' || path === '') return 'home';
+    return 'home';
+  }, []);
 
-  // Check if current page is an auth page (tab bar should be hidden)
   const checkIsAuthPage = useCallback((url: string): boolean => {
     if (!url) return true;
     const path = url.replace(WEB_URL, '');
-    // Check if path starts with any auth page
-    return AUTH_PAGES.some(authPage => path === authPage || path.startsWith(authPage + '/') || path.startsWith(authPage + '?'));
+    if (path === '/' || path === '') return true; // Root redirects to login
+    return AUTH_PAGES.some(p => path === p || path.startsWith(p + '/') || path.startsWith(p + '?'));
   }, []);
 
   const handleTabPress = useCallback((tab: typeof TABS[0]) => {
     if (activeTab === tab.key && !tabLoading) {
-      // Already on this tab - refresh
       webViewRef.current?.reload();
       return;
     }
     setActiveTab(tab.key);
     setTabLoading(true);
-
-    // Use Next.js client-side navigation for faster transitions
-    const navScript = `
-      (function() {
-        try {
-          // Try Next.js router first for instant navigation
-          if (window.__NEXT_DATA__ && window.next && window.next.router) {
-            window.next.router.push('${tab.path}');
-          } else {
-            window.location.href = '${WEB_URL}${tab.path}';
-          }
-        } catch(e) {
-          window.location.href = '${WEB_URL}${tab.path}';
-        }
-        true;
-      })();
-    `;
-    webViewRef.current?.injectJavaScript(navScript);
-
-    // Safety timeout for tab loading
+    // Simple, reliable navigation
+    webViewRef.current?.injectJavaScript(`window.location.href = '${WEB_URL}${tab.path}'; true;`);
     setTimeout(() => setTabLoading(false), 3000);
   }, [activeTab, tabLoading]);
 
-  // Handle external links
   const handleShouldStartLoad = useCallback((event: WebViewNavigation) => {
     const { url } = event;
-
-    // Allow internal URLs
     if (url.startsWith(WEB_URL) || url.startsWith('about:') || url === 'about:blank') {
       return true;
     }
-
-    // Open external links natively
-    if (url.startsWith('https://wa.me') || url.startsWith('whatsapp://') ||
-        url.startsWith('tel:') || url.startsWith('mailto:') ||
-        url.startsWith('intent:') || url.startsWith('market:')) {
-      Linking.openURL(url).catch(() => {});
-      return false;
-    }
-
-    // Any other external URL
     Linking.openURL(url).catch(() => {});
     return false;
   }, []);
@@ -129,50 +87,49 @@ export default function MainScreen() {
   const handleNavigationStateChange = useCallback((navState: any) => {
     setCanGoBack(navState.canGoBack);
     const url = navState.url || '';
-    setCurrentUrl(url);
 
-    // Hide initial loader once page loads
     if (!navState.loading) {
       setInitialLoad(false);
       setTabLoading(false);
     }
 
-    // Update auth page state
     setIsAuthPage(checkIsAuthPage(url));
-
-    // Update active tab
     setActiveTab(getActiveTabFromUrl(url));
   }, [checkIsAuthPage, getActiveTabFromUrl]);
 
-  // Re-inject CSS on every page load to ensure web nav stays hidden
   const handleLoadEnd = useCallback(() => {
     setInitialLoad(false);
     setTabLoading(false);
-    // Re-inject the hiding script after every page load
     webViewRef.current?.injectJavaScript(HIDE_WEB_NAV_JS);
   }, []);
 
-  const tabBarHeight = 65 + insets.bottom;
+  const handleError = useCallback(() => {
+    // On error, retry loading after a short delay
+    setTimeout(() => {
+      webViewRef.current?.reload();
+    }, 2000);
+  }, []);
+
+  const TAB_BAR_HEIGHT = 60 + insets.bottom;
+  const showTabBar = !isAuthPage;
 
   return (
     <View style={styles.container}>
       <WebView
         ref={webViewRef}
-        source={{ uri: WEB_URL }}
-        style={[
-          styles.webview,
-          // Add bottom padding when tab bar is visible so content isn't hidden behind it
-          !isAuthPage && { marginBottom: tabBarHeight }
-        ]}
+        source={{ uri: `${WEB_URL}/login` }}
+        style={styles.webview}
         onLoadEnd={handleLoadEnd}
         onNavigationStateChange={handleNavigationStateChange}
+        onError={handleError}
+        onHttpError={handleError}
         injectedJavaScript={HIDE_WEB_NAV_JS}
-        onMessage={() => {}} // Required for injectedJavaScript to work on some devices
+        onMessage={() => {}}
         javaScriptEnabled={true}
         domStorageEnabled={true}
         startInLoadingState={true}
         renderLoading={() => (
-          <View style={[styles.loaderOverlay, { backgroundColor: '#060f1f' }]}>
+          <View style={styles.loadingView}>
             <ActivityIndicator size="large" color="#C9A961" />
           </View>
         )}
@@ -183,28 +140,27 @@ export default function MainScreen() {
         cacheMode="LOAD_DEFAULT"
         pullToRefreshEnabled={true}
         allowsInlineMediaPlayback={true}
-        mediaPlaybackRequiresUserAction={false}
         mixedContentMode="compatibility"
         originWhitelist={['*']}
         setSupportMultipleWindows={false}
         onShouldStartLoadWithRequest={handleShouldStartLoad}
         userAgent="STANNEL-App/1.0"
-        decelerationRate="normal"
-        showsVerticalScrollIndicator={false}
-        overScrollMode="never"
         textZoom={100}
       />
 
       {/* Loading overlay */}
       {(initialLoad || tabLoading) && (
-        <View style={[styles.loaderOverlay, { bottom: isAuthPage ? 0 : tabBarHeight }]}>
+        <View style={styles.loaderOverlay}>
           <ActivityIndicator size="large" color="#C9A961" />
         </View>
       )}
 
-      {/* Native Tab Bar - hidden on auth pages */}
-      {!isAuthPage && (
-        <View style={[styles.tabBar, { height: tabBarHeight, paddingBottom: insets.bottom }]}>
+      {/* Spacer to push content above tab bar */}
+      {showTabBar && <View style={{ height: TAB_BAR_HEIGHT, backgroundColor: '#1a1d21' }} />}
+
+      {/* Native Tab Bar */}
+      {showTabBar && (
+        <View style={[styles.tabBar, { height: TAB_BAR_HEIGHT, paddingBottom: insets.bottom }]}>
           {TABS.map((tab) => {
             const isActive = activeTab === tab.key;
 
@@ -255,7 +211,17 @@ const styles = StyleSheet.create({
   },
   webview: {
     flex: 1,
-    backgroundColor: 'transparent',
+    backgroundColor: '#060f1f',
+  },
+  loadingView: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#060f1f',
   },
   loaderOverlay: {
     position: 'absolute',
