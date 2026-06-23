@@ -104,7 +104,7 @@ export default function MainScreen() {
     <View style={styles.root}>
       <WebView
         ref={webViewRef}
-        source={{ uri: `${WEB_URL}/login` }}
+        source={{ uri: `${WEB_URL}/wallet` }}
         style={styles.web}
         onNavigationStateChange={onNavChange}
         onLoadEnd={() => webViewRef.current?.injectJavaScript(INJECT_JS)}

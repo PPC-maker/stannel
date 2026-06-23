@@ -43,9 +43,21 @@ const nextConfig = {
         port: '7070',
         pathname: '/uploads/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'stannel-api-1094694418275.me-west1.run.app',
+        pathname: '/uploads/**',
+      },
+      {
+        protocol: 'https',
+        hostname: '*.googleusercontent.com',
+      },
     ],
     formats: ['image/avif', 'image/webp'],
     minimumCacheTTL: 86400,
+    deviceSizes: [640, 750, 828, 1080, 1200],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256],
+    quality: 65,
   },
   // Enable standalone output for Cloud Run production builds
   output: 'standalone',
