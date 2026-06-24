@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 
 export default function Error({
@@ -11,14 +11,23 @@ export default function Error({
   reset: () => void;
 }) {
   const [dots, setDots] = useState('');
+  const retryCount = useRef(0);
 
   const errorMsg = (error.message || '') + (error.digest || '');
   const isAuthError = errorMsg.includes('401') || errorMsg.includes('403') || errorMsg.includes('Unauthorized') || errorMsg.includes('Forbidden') || errorMsg.includes('Missing authorization') || errorMsg.includes('not authenticated');
   const isChunkError = errorMsg.includes('ChunkLoadError') || errorMsg.includes('Loading chunk') || errorMsg.includes('Failed to fetch dynamically imported module');
 
   useEffect(() => {
+    // Auto-recover: try reset() up to 2 times before showing error page
+    if (retryCount.current < 2 && !isAuthError) {
+      retryCount.current += 1;
+      const timeout = setTimeout(() => {
+        reset();
+      }, 500 * retryCount.current);
+      return () => clearTimeout(timeout);
+    }
+
     // Auto-recover from chunk loading errors (happens after deploy).
-    // Clear all SW caches then do a fresh navigation (not reload) to bypass stale SW caches.
     if (isChunkError) {
       if ('serviceWorker' in navigator) {
         navigator.serviceWorker.getRegistrations().then((regs) => regs.forEach((r) => r.unregister()));
@@ -28,15 +37,12 @@ export default function Error({
           const keys = await caches.keys();
           await Promise.all(keys.map((k) => caches.delete(k)));
         }
-        // Use location.href (fresh navigation) instead of reload() to bypass SW cache
         window.location.href = window.location.pathname;
       };
       clearAndNavigate();
       return;
     }
 
-    // Auth error — do NOT auto-redirect (causes redirect loops)
-    // User will see the error page with a login button instead
     if (isAuthError) {
       console.warn('Auth error caught by error boundary — showing login option');
     }

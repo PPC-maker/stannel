@@ -680,3 +680,57 @@ model SystemConfig {
   description String?
   updatedAt   DateTime  @default(now()) @updatedAt
 }
+
+// ============================================
+// AI Guardian Bot - System Protection
+// ============================================
+
+enum GuardianLogSeverity {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum GuardianLogStatus {
+  OPEN
+  AUTO_FIXED
+  PENDING_APPROVAL
+  APPROVED
+  FIXING
+  FIXED
+  DISMISSED
+}
+
+model GuardianLog {
+  id          String               @id @default(cuid())
+  severity    GuardianLogSeverity
+  status      GuardianLogStatus    @default(OPEN)
+  title       String
+  description String               @db.Text
+  details     Json?
+  fixApplied  String?              @db.Text
+  fixSummary  String?
+  autoFixed   Boolean              @default(false)
+  emailSent   Boolean              @default(false)
+  createdAt   DateTime             @default(now())
+  updatedAt   DateTime             @updatedAt
+
+  chatMessages GuardianChat[]
+
+  @@index([severity])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model GuardianChat {
+  id        String       @id @default(cuid())
+  logId     String?
+  log       GuardianLog? @relation(fields: [logId], references: [id], onDelete: Cascade)
+  sender    String       // 'bot' or 'admin'
+  message   String       @db.Text
+  createdAt DateTime     @default(now())
+
+  @@index([logId])
+  @@index([createdAt])
+}

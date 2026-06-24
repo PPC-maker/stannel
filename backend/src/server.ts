@@ -36,6 +36,9 @@ healthMonitorService.initDailyScheduler();
 // Initialize System Scanner for nightly scans at 1:00 AM
 systemScannerService.initNightlyScanner();
 
+// Initialize Guardian Bot for continuous system protection
+guardianService.initDailyScanner();
+
 // Import routes
 import { authRoutes } from './routes/auth.routes.js';
 import { invoiceRoutes } from './routes/invoices.routes.js';
@@ -52,6 +55,8 @@ import { serviceProvidersRoutes } from './routes/service-providers.routes.js';
 import { suppliersDirectoryRoutes } from './routes/suppliers-directory.routes.js';
 import { supplierProjectsRoutes } from './routes/supplier-projects.routes.js';
 import { meetingsRoutes } from './routes/meetings.routes.js';
+import { guardianRoutes } from './routes/guardian.routes.js';
+import { guardianService } from './services/guardian.service.js';
 
 const server = Fastify({
   logger: {
@@ -150,6 +155,7 @@ async function registerRoutes() {
   server.register(suppliersDirectoryRoutes, { prefix: '/api/v1/suppliers' });
   server.register(supplierProjectsRoutes, { prefix: '/api/v1/projects' });
   server.register(meetingsRoutes, { prefix: '/api/v1/meetings' });
+  server.register(guardianRoutes, { prefix: '/api/v1/guardian' });
 }
 
 // Health check
@@ -221,7 +227,7 @@ server.post('/api/v1/report-error', async (request: FastifyRequest, reply: Fasti
     const body = request.body as { page?: string; error?: string; userAgent?: string };
     const { emailService } = await import('./services/email.service.js');
     await emailService.sendErrorAlert(
-      ['orenshp77@gmail.com'],
+      ['PPC@newpost.co.il'],
       {
         title: `שגיאת ממשק: ${body.page || 'לא ידוע'}`,
         message: body.error || 'שגיאה לא מזוהה',
