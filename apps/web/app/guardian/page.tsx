@@ -262,7 +262,7 @@ export default function GuardianPage() {
   const [chatSending, setChatSending] = useState(false);
   const [activeTicketId, setActiveTicketId] = useState<string | undefined>(undefined);
   const [activeTicketLog, setActiveTicketLog] = useState<GuardianLog | null>(null);
-  const chatEndRef = useRef<HTMLDivElement>(null);
+  const chatEndRef = useRef<HTMLDivElement>(null!);
   const chatIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   // Settings state
@@ -1023,7 +1023,7 @@ function ChatView({
   onApprove: (id: string) => void;
   onDismiss: (id: string) => void;
   onBack: () => void;
-  chatEndRef: React.RefObject<HTMLDivElement | null>;
+  chatEndRef: React.RefObject<HTMLDivElement>;
 }) {
   return (
     <motion.div
