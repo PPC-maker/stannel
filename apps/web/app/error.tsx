@@ -11,6 +11,7 @@ export default function Error({
   reset: () => void;
 }) {
   const [dots, setDots] = useState('');
+  const [showError, setShowError] = useState(false);
   const retryCount = useRef(0);
 
   const errorMsg = (error.message || '') + (error.digest || '');
@@ -18,12 +19,12 @@ export default function Error({
   const isChunkError = errorMsg.includes('ChunkLoadError') || errorMsg.includes('Loading chunk') || errorMsg.includes('Failed to fetch dynamically imported module');
 
   useEffect(() => {
-    // Auto-recover: try reset() up to 2 times before showing error page
-    if (retryCount.current < 2 && !isAuthError) {
+    // Auto-recover: try reset() up to 3 times silently before showing error page
+    if (retryCount.current < 3 && !isAuthError) {
       retryCount.current += 1;
       const timeout = setTimeout(() => {
         reset();
-      }, 500 * retryCount.current);
+      }, 300);
       return () => clearTimeout(timeout);
     }
 
@@ -47,6 +48,8 @@ export default function Error({
       console.warn('Auth error caught by error boundary — showing login option');
     }
 
+    // Only show error page after all retries failed
+    setShowError(true);
     console.error('Application error:', error);
 
     const interval = setInterval(() => {
@@ -54,6 +57,31 @@ export default function Error({
     }, 500);
     return () => clearInterval(interval);
   }, [error]);
+
+  // During silent retries, show the branded loading screen (no error flash)
+  if (!showError) {
+    return (
+      <div className="fixed inset-0 z-[100] bg-[#f7f3f2] flex flex-col items-center justify-center">
+        <div className="relative z-10 flex flex-col items-center gap-8">
+          <div className="relative">
+            <div className="absolute inset-0 rounded-full bg-[#c99b4a]/15 blur-3xl animate-pulse" style={{ transform: 'scale(2)' }} />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/logoNew.png" alt="Stannel Club" className="h-20 w-auto relative z-10" />
+          </div>
+          <div className="w-48 h-1 bg-[#c99b4a]/10 rounded-full overflow-hidden">
+            <div className="h-full rounded-full" style={{
+              background: 'linear-gradient(90deg, #c99b4a, #d4af37, #c99b4a)',
+              backgroundSize: '200% 100%',
+              animation: 'shimmerBar 1.5s ease-in-out infinite',
+            }} />
+          </div>
+        </div>
+        <style>{`
+          @keyframes shimmerBar { 0% { background-position: 200% 0; width: 30%; } 50% { width: 70%; } 100% { background-position: -200% 0; width: 30%; } }
+        `}</style>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#0a1628] via-[#0f2347] to-[#1a3a6b] flex items-center justify-center p-6">
