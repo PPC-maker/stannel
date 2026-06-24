@@ -281,15 +281,18 @@ export default function GuardianPage() {
     return '';
   }, []);
 
-  // ─── Hide Navbar & BottomNav on this page ────────────────────────────────
+  // ─── Hide Navbar, BottomNav & Accessibility widget on this page ──────────
   useEffect(() => {
     const nav = document.getElementById('web-top-nav');
     const bottomNav = document.getElementById('web-bottom-nav');
+    const accessibilityBtn = document.querySelector('button[aria-label="פתח תפריט נגישות"]') as HTMLElement | null;
     if (nav) nav.style.display = 'none';
     if (bottomNav) bottomNav.style.display = 'none';
+    if (accessibilityBtn) accessibilityBtn.style.display = 'none';
     return () => {
       if (nav) nav.style.display = '';
       if (bottomNav) bottomNav.style.display = '';
+      if (accessibilityBtn) accessibilityBtn.style.display = '';
     };
   }, []);
 
