@@ -285,6 +285,18 @@ export default function GuardianPage() {
     return '';
   }, []);
 
+  // ─── Hide Navbar & BottomNav on this page ────────────────────────────────
+  useEffect(() => {
+    const nav = document.getElementById('web-top-nav');
+    const bottomNav = document.getElementById('web-bottom-nav');
+    if (nav) nav.style.display = 'none';
+    if (bottomNav) bottomNav.style.display = 'none';
+    return () => {
+      if (nav) nav.style.display = '';
+      if (bottomNav) bottomNav.style.display = '';
+    };
+  }, []);
+
   // ─── Auth ────────────────────────────────────────────────────────────────
 
   useEffect(() => {
