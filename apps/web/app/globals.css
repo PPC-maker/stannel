@@ -65,6 +65,14 @@ body.stannel-mobile-app #splash-screen {
 body.stannel-mobile-app {
   padding-bottom: 0 !important;
 }
+/* Push navbar down in mobile app to avoid overlapping phone status bar (clock, battery, etc.) */
+body.stannel-mobile-app .web-top-nav,
+body.stannel-mobile-app #web-top-nav {
+  padding-top: calc(env(safe-area-inset-top, 0px) + 28px) !important;
+}
+body.stannel-mobile-app main {
+  padding-top: calc(4rem + env(safe-area-inset-top, 0px) + 28px) !important;
+}
 
 /* Hide browser's built-in password reveal button (Windows/Edge only, not iOS WebView) */
 input::-ms-reveal,
