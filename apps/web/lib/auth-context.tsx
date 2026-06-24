@@ -410,10 +410,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 }
 
+// Default context returned when AuthProvider hasn't loaded yet (e.g. during hard refresh)
+const defaultAuthContext: AuthContextType = {
+  firebaseUser: null,
+  user: null,
+  loading: true,
+  error: null,
+  login: async () => null,
+  loginWithGoogle: async () => null,
+  register: async () => {},
+  logout: async () => {},
+  refreshUser: async () => {},
+};
+
 export function useAuth() {
   const context = useContext(AuthContext);
+  // Return safe defaults instead of throwing - prevents error page on hard refresh
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    return defaultAuthContext;
   }
   return context;
 }
