@@ -664,7 +664,7 @@ export default function GuardianPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleLogin()}
                   className="w-full pr-11 pl-4 py-3 rounded-xl bg-white/5 text-white placeholder-gray-500 outline-none transition-all focus:ring-2"
-                  style={{ border: '1px solid #d4af37', focusRingColor: '#d4af37' }}
+                  style={{ border: '1px solid #d4af37' }}
                   autoFocus
                 />
               </div>
