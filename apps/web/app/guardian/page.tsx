@@ -22,37 +22,38 @@ import Swal from 'sweetalert2';
 // ─── Types ───────────────────────────────────────────────────────────────────
 
 interface GuardianStatus {
-  active: boolean;
-  lastScanAt: string | null;
+  enabled: boolean;
+  lastScan: string | null;
   scanInterval: number;
   maintenanceMode: boolean;
-}
-
-interface GuardianStats {
-  totalIssues: number;
-  autoFixed: number;
+  adminEmail: string;
+  recentLogs: number;
   pendingApproval: number;
+  autoFixed: number;
 }
 
 interface GuardianLog {
   id: string;
   title: string;
-  message: string;
-  severity: 'info' | 'warning' | 'error' | 'critical';
-  status: 'open' | 'resolved' | 'dismissed' | 'pending';
+  description: string;
+  severity: string;
+  status: string;
+  autoFixed: boolean;
   createdAt: string;
   updatedAt: string;
+  chatMessages?: ChatMessage[];
 }
 
 interface ChatMessage {
   id: string;
-  role: 'bot' | 'admin';
-  text: string;
+  sender: 'bot' | 'admin';
+  message: string;
+  logId?: string;
   createdAt: string;
 }
 
 interface GuardianSettings {
-  active: boolean;
+  enabled: boolean;
   scanInterval: number;
   maintenanceMode: boolean;
   adminEmail: string;
@@ -137,26 +138,21 @@ function guardianFetch(path: string, password: string, options?: RequestInit) {
 async function apiGetStatus(pw: string): Promise<GuardianStatus> {
   const res = await guardianFetch('/status', pw);
   if (!res.ok) throw new Error('Failed to fetch status');
-  const data = await res.json();
-  return data.data || data;
+  return res.json();
 }
 
-async function apiGetStats(pw: string): Promise<GuardianStats> {
-  const res = await guardianFetch('/stats', pw);
-  if (!res.ok) throw new Error('Failed to fetch stats');
-  const data = await res.json();
-  return data.data || data;
-}
-
-async function apiGetLogs(pw: string, filters?: { severity?: string; status?: string }): Promise<GuardianLog[]> {
-  const params = new URLSearchParams();
-  if (filters?.severity) params.set('severity', filters.severity);
-  if (filters?.status) params.set('status', filters.status);
-  const qs = params.toString();
-  const res = await guardianFetch(`/logs${qs ? `?${qs}` : ''}`, pw);
+async function apiGetLogs(pw: string, limit?: number): Promise<GuardianLog[]> {
+  const qs = limit ? `?limit=${limit}` : '';
+  const res = await guardianFetch(`/logs${qs}`, pw);
   if (!res.ok) throw new Error('Failed to fetch logs');
   const data = await res.json();
-  return data.data || data.logs || [];
+  return Array.isArray(data) ? data : [];
+}
+
+async function apiGetLog(pw: string, logId: string): Promise<GuardianLog | null> {
+  const res = await guardianFetch(`/logs/${logId}`, pw);
+  if (!res.ok) return null;
+  return res.json();
 }
 
 async function apiRunScan(pw: string): Promise<void> {
@@ -164,64 +160,65 @@ async function apiRunScan(pw: string): Promise<void> {
   if (!res.ok) throw new Error('Scan failed');
 }
 
-async function apiToggleGuardian(pw: string, active: boolean): Promise<void> {
-  const res = await guardianFetch('/toggle', pw, {
-    method: 'POST',
-    body: JSON.stringify({ active }),
+async function apiToggleGuardian(pw: string, enabled: boolean): Promise<void> {
+  await guardianFetch('/settings', pw, {
+    method: 'PATCH',
+    body: JSON.stringify({ key: 'enabled', value: String(enabled) }),
   });
-  if (!res.ok) throw new Error('Toggle failed');
 }
 
 async function apiGetChat(pw: string, logId?: string): Promise<ChatMessage[]> {
-  const path = logId ? `/chat/${logId}` : '/chat';
-  const res = await guardianFetch(path, pw);
+  const qs = logId ? `?logId=${logId}` : '';
+  const res = await guardianFetch(`/chat${qs}`, pw);
   if (!res.ok) throw new Error('Failed to fetch chat');
   const data = await res.json();
-  return data.data || data.messages || [];
+  return Array.isArray(data) ? data : [];
 }
 
-async function apiSendChat(pw: string, text: string, logId?: string): Promise<ChatMessage> {
-  const path = logId ? `/chat/${logId}` : '/chat';
-  const res = await guardianFetch(path, pw, {
+async function apiSendChat(pw: string, message: string, logId?: string): Promise<ChatMessage> {
+  const res = await guardianFetch('/chat', pw, {
     method: 'POST',
-    body: JSON.stringify({ text }),
+    body: JSON.stringify({ logId: logId || null, message }),
   });
   if (!res.ok) throw new Error('Failed to send message');
-  const data = await res.json();
-  return data.data || data.message || data;
+  return res.json();
 }
 
 async function apiApproveLog(pw: string, logId: string): Promise<void> {
-  const res = await guardianFetch(`/logs/${logId}/approve`, pw, { method: 'POST' });
+  const res = await guardianFetch(`/approve/${logId}`, pw, { method: 'POST' });
   if (!res.ok) throw new Error('Approve failed');
 }
 
 async function apiDismissLog(pw: string, logId: string): Promise<void> {
-  const res = await guardianFetch(`/logs/${logId}/dismiss`, pw, { method: 'POST' });
+  const res = await guardianFetch(`/dismiss/${logId}`, pw, { method: 'POST' });
   if (!res.ok) throw new Error('Dismiss failed');
 }
 
 async function apiGetSettings(pw: string): Promise<GuardianSettings> {
   const res = await guardianFetch('/settings', pw);
   if (!res.ok) throw new Error('Failed to fetch settings');
-  const data = await res.json();
-  return data.data || data;
+  return res.json();
 }
 
-async function apiUpdateSettings(pw: string, settings: Partial<GuardianSettings>): Promise<void> {
-  const res = await guardianFetch('/settings', pw, {
+async function apiUpdateSetting(pw: string, key: string, value: string): Promise<void> {
+  await guardianFetch('/settings', pw, {
     method: 'PATCH',
-    body: JSON.stringify(settings),
+    body: JSON.stringify({ key, value }),
   });
-  if (!res.ok) throw new Error('Failed to update settings');
 }
 
 async function apiChangePassword(pw: string, newPassword: string): Promise<void> {
-  const res = await guardianFetch('/change-password', pw, {
-    method: 'POST',
-    body: JSON.stringify({ newPassword }),
+  await guardianFetch('/settings', pw, {
+    method: 'PATCH',
+    body: JSON.stringify({ key: 'password', value: newPassword }),
   });
-  if (!res.ok) throw new Error('Failed to change password');
+}
+
+async function apiToggleMaintenance(pw: string, enabled: boolean): Promise<void> {
+  await guardianFetch('/maintenance', pw, {
+    method: 'POST',
+    body: JSON.stringify({ enabled }),
+  });
 }
 
 async function apiVerifyPassword(pw: string): Promise<boolean> {
@@ -250,7 +247,6 @@ export default function GuardianPage() {
 
   // Dashboard state
   const [status, setStatus] = useState<GuardianStatus | null>(null);
-  const [stats, setStats] = useState<GuardianStats | null>(null);
   const [recentLogs, setRecentLogs] = useState<GuardianLog[]>([]);
   const [dashLoading, setDashLoading] = useState(false);
   const [scanLoading, setScanLoading] = useState(false);
@@ -348,13 +344,11 @@ export default function GuardianPage() {
     if (!pw) return;
     setDashLoading(true);
     try {
-      const [st, stats_, logs_] = await Promise.all([
+      const [st, logs_] = await Promise.all([
         apiGetStatus(pw),
-        apiGetStats(pw),
         apiGetLogs(pw),
       ]);
       setStatus(st);
-      setStats(stats_);
       setRecentLogs(logs_.slice(0, 8));
     } catch (err) {
       console.error('Dashboard load error:', err);
@@ -535,7 +529,7 @@ export default function GuardianPage() {
     const pw = getPassword();
     if (!pw) return;
     try {
-      await apiUpdateSettings(pw, { [key]: value });
+      await apiUpdateSetting(pw, key, String(value));
       await loadSettings();
       Swal.fire({ icon: 'success', title: 'עודכן', timer: 1200, showConfirmButton: false, background: '#0d1b2a', color: '#fff' });
     } catch {
@@ -573,10 +567,7 @@ export default function GuardianPage() {
     if (!pw) return;
     setLogsLoading(true);
     try {
-      const logs = await apiGetLogs(pw, {
-        severity: logSeverityFilter || undefined,
-        status: logStatusFilter || undefined,
-      });
+      const logs = await apiGetLogs(pw);
       setAllLogs(logs);
     } catch (err) {
       console.error('Logs load error:', err);
@@ -610,10 +601,10 @@ export default function GuardianPage() {
     if (!status) return;
     const pw = getPassword();
     if (!pw) return;
-    const newActive = !status.active;
+    const newActive = !status.enabled;
     try {
       await apiToggleGuardian(pw, newActive);
-      setStatus((prev) => prev ? { ...prev, active: newActive } : prev);
+      setStatus((prev) => prev ? { ...prev, enabled: newActive } : prev);
       Swal.fire({
         icon: 'success',
         title: newActive ? 'Guardian הופעל' : 'Guardian כובה',
@@ -733,7 +724,7 @@ export default function GuardianPage() {
           <Shield className="w-6 h-6 text-[#d4af37]" />
           <h1 className="text-lg font-bold text-white">Guardian Bot</h1>
           {status && (
-            <span className={`w-2.5 h-2.5 rounded-full ${status.active ? 'bg-green-400' : 'bg-red-400'}`} />
+            <span className={`w-2.5 h-2.5 rounded-full ${status.enabled ? 'bg-green-400' : 'bg-red-400'}`} />
           )}
         </div>
         <button
@@ -749,13 +740,12 @@ export default function GuardianPage() {
       </header>
 
       {/* Content */}
-      <main className="flex-1 overflow-y-auto pb-20 px-3 pt-3">
+      <main className="flex-1 overflow-y-auto pb-24 px-4 pt-4">
         <AnimatePresence mode="wait">
           {activeTab === 'dashboard' && (
             <DashboardView
               key="dashboard"
               status={status}
-              stats={stats}
               recentLogs={recentLogs}
               loading={dashLoading}
               scanLoading={scanLoading}
@@ -862,7 +852,6 @@ function GlassCard({ children, className = '', onClick }: { children: React.Reac
 
 function DashboardView({
   status,
-  stats,
   recentLogs,
   loading,
   scanLoading,
@@ -873,7 +862,6 @@ function DashboardView({
   onRefresh,
 }: {
   status: GuardianStatus | null;
-  stats: GuardianStats | null;
   recentLogs: GuardianLog[];
   loading: boolean;
   scanLoading: boolean;
@@ -888,7 +876,7 @@ function DashboardView({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="space-y-3"
+      className="space-y-4"
     >
       {/* Status + Toggle */}
       <GlassCard>
@@ -900,24 +888,24 @@ function DashboardView({
           <button
             onClick={onToggle}
             className={`relative w-14 h-7 rounded-full transition-colors ${
-              status?.active ? 'bg-green-500' : 'bg-gray-600'
+              status?.enabled ? 'bg-green-500' : 'bg-gray-600'
             }`}
           >
             <motion.div
               className="absolute top-0.5 w-6 h-6 rounded-full bg-white shadow"
-              animate={{ right: status?.active ? '2px' : 'auto', left: status?.active ? 'auto' : '2px' }}
+              animate={{ right: status?.enabled ? '2px' : 'auto', left: status?.enabled ? 'auto' : '2px' }}
               transition={{ type: 'spring', stiffness: 500, damping: 30 }}
-              style={status?.active ? { right: '2px' } : { left: '2px' }}
+              style={status?.enabled ? { right: '2px' } : { left: '2px' }}
             />
           </button>
         </div>
         <div className="flex items-center gap-2 text-sm">
-          <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${status?.active ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}`}>
-            {status?.active ? 'פעיל' : 'כבוי'}
+          <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${status?.enabled ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}`}>
+            {status?.enabled ? 'פעיל' : 'כבוי'}
           </span>
-          {status?.lastScanAt && (
+          {status?.lastScan && (
             <span className="text-gray-400 text-xs">
-              סריקה אחרונה: {timeAgo(status.lastScanAt)}
+              סריקה אחרונה: {timeAgo(status.lastScan)}
             </span>
           )}
         </div>
@@ -926,15 +914,15 @@ function DashboardView({
       {/* Stats Cards */}
       <div className="grid grid-cols-3 gap-2">
         <GlassCard className="text-center">
-          <div className="text-2xl font-bold text-white">{stats?.totalIssues ?? '-'}</div>
+          <div className="text-2xl font-bold text-white">{status?.recentLogs ?? '-'}</div>
           <div className="text-[10px] text-gray-400 mt-0.5">בעיות סה״כ</div>
         </GlassCard>
         <GlassCard className="text-center">
-          <div className="text-2xl font-bold text-green-400">{stats?.autoFixed ?? '-'}</div>
+          <div className="text-2xl font-bold text-green-400">{status?.autoFixed ?? '-'}</div>
           <div className="text-[10px] text-gray-400 mt-0.5">תוקנו אוטומטית</div>
         </GlassCard>
         <GlassCard className="text-center">
-          <div className="text-2xl font-bold text-[#d4af37]">{stats?.pendingApproval ?? '-'}</div>
+          <div className="text-2xl font-bold text-[#d4af37]">{status?.pendingApproval ?? '-'}</div>
           <div className="text-[10px] text-gray-400 mt-0.5">ממתינים לאישור</div>
         </GlassCard>
       </div>
@@ -986,7 +974,7 @@ function DashboardView({
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex-1 min-w-0">
                     <p className="text-white text-sm font-medium truncate">{log.title}</p>
-                    <p className="text-gray-400 text-xs mt-0.5 truncate">{log.message}</p>
+                    <p className="text-gray-400 text-xs mt-0.5 truncate">{log.description}</p>
                     <div className="flex items-center gap-1.5 mt-1.5">
                       <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${severityColor(log.severity)}`}>
                         {severityLabel(log.severity)}
@@ -1114,23 +1102,23 @@ function ChatView({
               key={msg.id}
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
-              className={`flex ${msg.role === 'bot' ? 'justify-end' : 'justify-start'}`}
+              className={`flex ${msg.sender === 'bot' ? 'justify-end' : 'justify-start'}`}
             >
               <div
                 className={`max-w-[85%] rounded-2xl px-3.5 py-2.5 ${
-                  msg.role === 'bot'
+                  msg.sender === 'bot'
                     ? 'rounded-tl-sm'
                     : 'rounded-tr-sm'
                 }`}
                 style={
-                  msg.role === 'bot'
+                  msg.sender === 'bot'
                     ? { background: 'rgba(212,175,55,0.2)', border: '1px solid rgba(212,175,55,0.3)' }
                     : { background: 'rgba(59,130,246,0.2)', border: '1px solid rgba(59,130,246,0.3)' }
                 }
               >
-                <p className="text-white text-sm leading-relaxed whitespace-pre-wrap">{msg.text}</p>
-                <p className={`text-[10px] mt-1 ${msg.role === 'bot' ? 'text-[#d4af37]/60' : 'text-blue-400/60'}`}>
-                  {msg.role === 'bot' ? 'Guardian' : 'אדמין'} · {timeAgo(msg.createdAt)}
+                <p className="text-white text-sm leading-relaxed whitespace-pre-wrap">{msg.message}</p>
+                <p className={`text-[10px] mt-1 ${msg.sender === 'bot' ? 'text-[#d4af37]/60' : 'text-blue-400/60'}`}>
+                  {msg.sender === 'bot' ? 'Guardian' : 'אדמין'} · {timeAgo(msg.createdAt)}
                 </p>
               </div>
             </motion.div>
@@ -1198,7 +1186,7 @@ function LogsView({
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="space-y-3"
+      className="space-y-4"
     >
       {/* Filters */}
       <GlassCard className="!p-3">
@@ -1250,7 +1238,7 @@ function LogsView({
               <div className="flex items-start justify-between gap-2">
                 <div className="flex-1 min-w-0">
                   <p className="text-white text-sm font-medium truncate">{log.title}</p>
-                  <p className="text-gray-400 text-xs mt-0.5 line-clamp-2">{log.message}</p>
+                  <p className="text-gray-400 text-xs mt-0.5 line-clamp-2">{log.description}</p>
                   <div className="flex items-center gap-1.5 mt-1.5 flex-wrap">
                     <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${severityColor(log.severity)}`}>
                       {severityLabel(log.severity)}
@@ -1342,14 +1330,14 @@ function SettingsView({
             </div>
           </div>
           <button
-            onClick={() => onUpdateSetting('active', !settings?.active)}
+            onClick={() => onUpdateSetting('enabled', !settings?.enabled)}
             className={`relative w-14 h-7 rounded-full transition-colors ${
-              settings?.active ? 'bg-green-500' : 'bg-gray-600'
+              settings?.enabled ? 'bg-green-500' : 'bg-gray-600'
             }`}
           >
             <div
               className="absolute top-0.5 w-6 h-6 rounded-full bg-white shadow transition-all"
-              style={settings?.active ? { right: '2px' } : { left: '2px' }}
+              style={settings?.enabled ? { right: '2px' } : { left: '2px' }}
             />
           </button>
         </div>
