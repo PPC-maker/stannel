@@ -285,14 +285,14 @@ export default function GuardianPage() {
   useEffect(() => {
     const nav = document.getElementById('web-top-nav');
     const bottomNav = document.getElementById('web-bottom-nav');
-    const accessibilityBtn = document.querySelector('button[aria-label="פתח תפריט נגישות"]') as HTMLElement | null;
     if (nav) nav.style.display = 'none';
     if (bottomNav) bottomNav.style.display = 'none';
-    if (accessibilityBtn) accessibilityBtn.style.display = 'none';
+    // Hide all fixed elements that overlap the guardian page
+    document.body.classList.add('guardian-page');
     return () => {
       if (nav) nav.style.display = '';
       if (bottomNav) bottomNav.style.display = '';
-      if (accessibilityBtn) accessibilityBtn.style.display = '';
+      document.body.classList.remove('guardian-page');
     };
   }, []);
 
