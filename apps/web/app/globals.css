@@ -74,10 +74,15 @@ body.stannel-mobile-app main {
   padding-top: calc(4rem + env(safe-area-inset-top, 0px) + 28px) !important;
 }
 
-/* Guardian page - hide all overlapping UI */
-body.guardian-page [aria-label="פתח תפריט נגישות"],
-body.guardian-page .accessibility-widget {
-  display: none !important;
+/* Guardian page - move accessibility button to top-right so it doesn't block chat input */
+body.guardian-page [aria-label="פתח תפריט נגישות"] {
+  bottom: auto !important;
+  top: 60px !important;
+  left: auto !important;
+  right: 16px !important;
+  width: 36px !important;
+  height: 36px !important;
+  opacity: 0.5 !important;
 }
 
 /* Hide browser's built-in password reveal button (Windows/Edge only, not iOS WebView) */
