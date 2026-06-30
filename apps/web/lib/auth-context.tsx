@@ -370,11 +370,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = async () => {
     try {
+      // Navigate to login FIRST to prevent components from accessing null user data
+      if (typeof window !== 'undefined') {
+        window.location.href = '/login';
+      }
       await firebaseLogout();
       setAuthToken(null);
       setUser(null);
     } catch (err) {
       console.error('Logout error:', err);
+      // Even if logout fails, redirect to login
+      if (typeof window !== 'undefined') {
+        window.location.href = '/login';
+      }
     }
   };
 
