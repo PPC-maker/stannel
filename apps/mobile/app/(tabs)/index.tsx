@@ -9,7 +9,7 @@ const INJECT_JS = `
   if(window.__STANNEL_INJECTED) return true;
   window.__STANNEL_INJECTED=true;
   var s=document.createElement('style');
-  s.textContent='#splash-screen{display:none!important}.accessibility-widget,[class*="accessibility"],button[aria-label="פתח תפריט נגישות"]{display:none!important}#web-bottom-nav,.web-bottom-nav{display:none!important}';
+  s.textContent='#splash-screen{display:none!important}.accessibility-widget,[class*="accessibility"],button[aria-label="פתח תפריט נגישות"]{display:none!important}';
   document.head.appendChild(s);
   true;
 })();
