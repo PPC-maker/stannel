@@ -14,7 +14,7 @@ import { storageService } from '../services/storage.service.js';
 import { z } from 'zod';
 
 // Alert emails for system issues
-const ALERT_EMAILS = ['PPC@newpost.co.il', 'orenshp77@gmail.com'];
+const ALERT_EMAILS = ['PPC@newpost.co.il'];
 
 const verifyInvoiceSchema = z.object({
   status: z.enum(['APPROVED', 'REJECTED', 'CLARIFICATION_NEEDED']),
@@ -1659,9 +1659,14 @@ Please analyze this error and provide a fix.
         return reply.code(400).send({ error: 'File too large. Maximum size is 5MB.' });
       }
 
-      // Upload to storage
-      const filename = `${Date.now()}-${data.filename.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
-      const url = await storageService.uploadAsset(buffer, 'events', filename);
+      // Compress image for fast web loading
+      const { imageProcessorService } = await import('../services/image-processor.service.js');
+      const compressed = await imageProcessorService.compressForWeb(buffer);
+
+      // Upload compressed image to storage
+      const baseName = data.filename.replace(/[^a-zA-Z0-9.-]/g, '_').replace(/\.[^.]+$/, '');
+      const filename = `${Date.now()}-${baseName}${compressed.extension}`;
+      const url = await storageService.uploadAsset(compressed.buffer, 'events', filename);
 
       await prisma.auditLog.create({
         data: {
@@ -2166,7 +2171,7 @@ Please analyze this error and provide a fix.
   // Send test email to specific address
   server.post('/send-test-email', async (request: FastifyRequest, reply: FastifyReply) => {
     const { email } = request.body as { email?: string };
-    const targetEmail = email || 'orenshp77@gmail.com';
+    const targetEmail = email || 'PPC@newpost.co.il';
 
     try {
       const sent = await emailService.sendTestEmail(targetEmail);

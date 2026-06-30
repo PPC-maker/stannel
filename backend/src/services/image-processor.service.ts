@@ -76,4 +76,42 @@ export const imageProcessorService = {
       return imageBuffer;
     }
   },
+  /**
+   * Compress and resize product/asset images for fast web loading.
+   * Resizes to max 800px width, converts to WebP (60% quality).
+   * Falls back to JPEG if WebP fails.
+   */
+  async compressForWeb(imageBuffer: Buffer): Promise<{ buffer: Buffer; contentType: string; extension: string }> {
+    try {
+      const compressed = await sharp(imageBuffer)
+        .rotate() // Auto-rotate based on EXIF
+        .resize(800, 800, {
+          fit: 'inside',
+          withoutEnlargement: true,
+        })
+        .webp({
+          quality: 60,
+          effort: 4,
+        })
+        .toBuffer();
+
+      console.log(`[ImageProcessor] Compressed for web: ${(imageBuffer.length / 1024).toFixed(0)}KB → ${(compressed.length / 1024).toFixed(0)}KB (WebP)`);
+      return { buffer: compressed, contentType: 'image/webp', extension: '.webp' };
+    } catch {
+      // Fallback to JPEG
+      try {
+        const jpeg = await sharp(imageBuffer)
+          .rotate()
+          .resize(800, 800, { fit: 'inside', withoutEnlargement: true })
+          .jpeg({ quality: 65, mozjpeg: true })
+          .toBuffer();
+
+        console.log(`[ImageProcessor] Compressed for web: ${(imageBuffer.length / 1024).toFixed(0)}KB → ${(jpeg.length / 1024).toFixed(0)}KB (JPEG)`);
+        return { buffer: jpeg, contentType: 'image/jpeg', extension: '.jpg' };
+      } catch (err) {
+        console.error('[ImageProcessor] Compression failed, using original:', err);
+        return { buffer: imageBuffer, contentType: 'image/jpeg', extension: '.jpg' };
+      }
+    }
+  },
 };
