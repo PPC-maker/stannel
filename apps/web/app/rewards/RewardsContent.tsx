@@ -327,10 +327,11 @@ export default function RewardsContent() {
                         src={product.imageUrl}
                         alt={product.name}
                         fill
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        sizes="(max-width: 768px) 50vw, 33vw"
                         className="object-contain group-hover:scale-105 transition-transform duration-500"
-                        priority={index < 6}
-                        loading={index < 6 ? 'eager' : 'lazy'}
+                        priority={index < 4}
+                        loading={index < 4 ? 'eager' : 'lazy'}
+                        quality={60}
                       />
                     ) : (
                       <div className="w-full h-full bg-[#c99b4a]/5 flex items-center justify-center">
