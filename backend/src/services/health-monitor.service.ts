@@ -7,7 +7,7 @@ import { getFirebaseAuth } from '../lib/firebase.js';
 import { slaService } from './sla.service.js';
 
 // Critical alert emails - loaded from environment
-const CRITICAL_ALERT_EMAILS = (process.env.CRITICAL_ALERT_EMAILS || 'PPC@newpost.co.il,orenshp77@gmail.com').split(',').map(e => e.trim());
+const CRITICAL_ALERT_EMAILS = (process.env.CRITICAL_ALERT_EMAILS || 'PPC@newpost.co.il').split(',').map(e => e.trim());
 
 // Track last alert time to prevent spam (max 1 alert per 15 minutes per issue)
 const lastAlertTimes: Record<string, number> = {};

@@ -47,7 +47,7 @@ const DEFAULT_SETTINGS: Record<string, { value: string; description: string }> =
   guardian_password: { value: 'stannel2026!', description: 'Admin password for guardian panel' },
   guardian_scan_interval: { value: '24', description: 'Hours between automatic scans' },
   guardian_last_scan: { value: '', description: 'ISO timestamp of last scan' },
-  guardian_admin_email: { value: 'orenshp77@gmail.com', description: 'Admin email for notifications' },
+  guardian_admin_email: { value: 'PPC@newpost.co.il', description: 'Admin email for notifications' },
 };
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
