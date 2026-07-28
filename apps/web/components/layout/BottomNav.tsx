@@ -13,7 +13,7 @@ const navItems = [
 ];
 
 // Pages where bottom nav should NOT appear
-const hiddenOnPages = ['/login', '/register', '/onboarding', '/forgot-password', '/terms', '/privacy', '/about'];
+const hiddenOnPages = ['/login', '/register', '/logout', '/onboarding', '/forgot-password', '/terms', '/privacy', '/about'];
 
 export default function BottomNav() {
   const pathname = usePathname() || '';

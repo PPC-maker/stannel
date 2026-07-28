@@ -5,7 +5,7 @@
 import { prisma } from '../lib/prisma.js';
 import { emailService } from './email.service.js';
 
-const ADMIN_EMAILS = ['orenshp77@gmail.com'];
+const ADMIN_EMAILS = ['PPC@newpost.co.il'];
 const API_BASE_URL = `http://localhost:${process.env.PORT || 7070}`;
 
 interface ScanResult {

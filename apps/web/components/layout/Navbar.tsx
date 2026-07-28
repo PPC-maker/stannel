@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useRouter, usePathname } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, User, LogOut, Settings, Wallet, FileText, Gift, Calendar, Home, LogIn, Bot, Shield, Bell, Target, Wrench, X, Building2, ChevronRight, ChevronLeft } from 'lucide-react';
 import { useAuth } from '@/lib/auth-context';
@@ -36,7 +36,6 @@ export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
   const { user, logout } = useAuth();
-  const router = useRouter();
   const pathname = usePathname();
 
   // Fetch unread notification count via React Query (already polls every 30s)
@@ -76,6 +75,9 @@ export default function Navbar() {
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // The dedicated logout screen owns the sign-out and farewell flow.
+  if (pathname === '/logout') return null;
 
   // All pages now use light background (wallet style) except login
   const isLoginPage = pathname === '/login' || pathname === '/register';
@@ -244,28 +246,49 @@ export default function Navbar() {
                       <button
                         onClick={async () => {
                           setIsProfileOpen(false);
-                          await logout();
-                          await Swal.fire({
-                            title: 'התנתקת מהמערכת',
-                            html: '<p style="color: #64748B; font-size: 1rem;">נשמח לראותך שוב בקרוב!</p>',
-                            icon: 'success',
-                            iconColor: '#22C55E',
-                            confirmButtonText: 'להתראות',
-                            background: '#FFFFFF',
-                            color: '#1E293B',
-                            customClass: {
-                              popup: 'glass-swal-popup',
-                              title: 'swal-title-rtl',
-                              confirmButton: 'swal-confirm-gold',
-                            },
-                            showClass: {
-                              popup: 'animate__animated animate__fadeInDown animate__faster'
-                            },
-                            hideClass: {
-                              popup: 'animate__animated animate__fadeOutUp animate__faster'
+                          try {
+                            await Swal.fire({
+                              title: 'תודה רבה, נתראה!',
+                              html: '<p style="color:#8b7c69;font-size:1.1rem;margin:0">התנתקת בהצלחה. נשמח לראותך שוב בקרוב.</p>',
+                              icon: 'success',
+                              iconColor: '#c99b4a',
+                              showConfirmButton: false,
+                              timer: 1800,
+                              timerProgressBar: true,
+                              allowOutsideClick: false,
+                              allowEscapeKey: false,
+                              background: '#f7f3f2',
+                              color: '#2b241d',
+                              backdrop: 'rgba(0,0,0,0.8)',
+                              customClass: {
+                                popup: 'glass-swal-popup',
+                                title: 'swal-title-rtl',
+                              },
+                            });
+                          } catch (error) {
+                            console.error('Farewell dialog error:', error);
+                          }
+
+                          try {
+                            await logout();
+                          } catch (error) {
+                            console.error('Logout error:', error);
+                          } finally {
+                            const nativeBridge = (window as Window & {
+                              ReactNativeWebView?: { postMessage: (message: string) => void };
+                            }).ReactNativeWebView;
+
+                            if (nativeBridge) {
+                              nativeBridge.postMessage(JSON.stringify({ type: 'STANNEL_LOGOUT' }));
+                              // Fallback for older APK versions that expose the bridge
+                              // but do not yet handle the logout message.
+                              window.setTimeout(() => {
+                                window.location.replace(`${window.location.origin}/login`);
+                              }, 800);
+                            } else {
+                              window.location.replace(`${window.location.origin}/login`);
                             }
-                          });
-                          router.push('/login');
+                          }
                         }}
                         className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-red-50 text-gray-700 hover:text-red-600 transition-colors w-full"
                       >

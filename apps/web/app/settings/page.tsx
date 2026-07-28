@@ -154,36 +154,49 @@ export default function SettingsPage() {
 
   const handleLogout = async () => {
     setIsLoggingOut(true);
+    setShowLogoutConfirm(false);
     try {
-      await logout();
-      setShowLogoutConfirm(false);
       await Swal.fire({
-        title: 'התנתקת מהמערכת',
-        html: '<p style="color: #8b7c69; font-size: 1.1rem;">נשמח לראותך שוב בקרוב!</p>',
+        title: 'תודה רבה, נתראה!',
+        html: '<p style="color:#8b7c69;font-size:1.1rem;margin:0">התנתקת בהצלחה. נשמח לראותך שוב בקרוב.</p>',
         icon: 'success',
         iconColor: '#c99b4a',
-        confirmButtonText: 'להתראות',
-        confirmButtonColor: '#c99b4a',
+        showConfirmButton: false,
+        timer: 1800,
+        timerProgressBar: true,
+        allowOutsideClick: false,
+        allowEscapeKey: false,
         background: '#f7f3f2',
         color: '#2b241d',
         backdrop: 'rgba(0,0,0,0.8)',
         customClass: {
           popup: 'glass-swal-popup',
           title: 'swal-title-rtl',
-          confirmButton: 'swal-confirm-gold',
         },
-        showClass: {
-          popup: 'animate__animated animate__fadeInDown animate__faster'
-        },
-        hideClass: {
-          popup: 'animate__animated animate__fadeOutUp animate__faster'
-        }
       });
-      router.push('/');
+    } catch (error) {
+      console.error('Farewell dialog error:', error);
+    }
+
+    try {
+      await logout();
     } catch (error) {
       console.error('Logout error:', error);
     } finally {
-      setIsLoggingOut(false);
+      const nativeBridge = (window as Window & {
+        ReactNativeWebView?: { postMessage: (message: string) => void };
+      }).ReactNativeWebView;
+
+      if (nativeBridge) {
+        nativeBridge.postMessage(JSON.stringify({ type: 'STANNEL_LOGOUT' }));
+        // Fallback for older APK versions that expose the bridge
+        // but do not yet handle the logout message.
+        window.setTimeout(() => {
+          window.location.replace(`${window.location.origin}/login`);
+        }, 800);
+      } else {
+        window.location.replace(`${window.location.origin}/login`);
+      }
     }
   };
 

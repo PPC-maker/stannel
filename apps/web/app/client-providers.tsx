@@ -17,10 +17,10 @@ export default function ClientProviders({ children }: { children: ReactNode }) {
       new QueryClient({
         defaultOptions: {
           queries: {
-            staleTime: 30 * 1000,
-            gcTime: 10 * 60 * 1000,
+            staleTime: 5 * 60 * 1000, // 5 minutes - prevent refetch on page navigation
+            gcTime: 15 * 60 * 1000, // 15 minutes - keep cache longer
             refetchOnWindowFocus: false,
-            refetchOnMount: true,
+            refetchOnMount: false, // Don't refetch if data is still fresh (within staleTime)
             refetchOnReconnect: true,
             retry: 1,
           },

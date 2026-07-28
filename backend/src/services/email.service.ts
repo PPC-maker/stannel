@@ -41,8 +41,8 @@ const getTransporter = () => {
 
 // Email destinations - loaded from environment variables
 export const EMAIL_DESTINATIONS = {
-  systemReports: (process.env.SYSTEM_REPORT_EMAILS || 'orenshp77@gmail.com').split(',').map(e => e.trim()),
-  siteContact: (process.env.SITE_CONTACT_EMAILS || 'ppc@newpost.co.il').split(',').map(e => e.trim()),
+  systemReports: (process.env.SYSTEM_REPORT_EMAILS || 'PPC@newpost.co.il').split(',').map(e => e.trim()),
+  siteContact: (process.env.SITE_CONTACT_EMAILS || 'PPC@newpost.co.il').split(',').map(e => e.trim()),
 };
 
 export const emailService = {
@@ -682,7 +682,7 @@ export const emailService = {
         דו״ח אוטומטי • ${report.timestamp.toLocaleTimeString('he-IL')} • STANNEL System Monitor
       </p>
       <p style="color: #94a3b8; font-size: 11px; margin: 8px 0 0 0;">
-        הדו״ח נשלח כל יום בשעה 10:00
+        הדו״ח נשלח כל יום בשעה 13:00
       </p>
     </div>
   </div>
@@ -723,7 +723,7 @@ export const emailService = {
       </p>
       <div style="margin-top: 25px; padding: 15px; background-color: #f0fdf4; border-radius: 8px;">
         <p style="color: #10b981; margin: 0; font-size: 13px;">
-          🕐 דו״ח יומי יישלח כל יום בשעה 10:00
+          🕐 דו״ח יומי יישלח כל יום בשעה 13:00
         </p>
       </div>
     </div>

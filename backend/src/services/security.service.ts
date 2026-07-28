@@ -15,7 +15,7 @@ interface SecurityEvent {
 
 // Admin emails for security alerts
 const SECURITY_ADMIN_EMAILS = [
-  'orenshp77@gmail.com',
+  'PPC@newpost.co.il',
 ];
 
 // In-memory tracking for rate limiting and brute force detection

@@ -66,21 +66,32 @@ export default function RootLayout({
         <link rel="preload" href="/logoNewWhite.png" as="image" />
         <script dangerouslySetInnerHTML={{ __html: `
           (function(){
-            var v='stannel-build-${process.env.NEXT_PUBLIC_BUILD_TIME}';
-            if(localStorage.getItem('app-version')!==v){
-              localStorage.setItem('app-version',v);
-              if('serviceWorker' in navigator){
-                navigator.serviceWorker.getRegistrations().then(function(r){
-                  r.forEach(function(reg){reg.unregister()});
-                });
+            try {
+              var v='stannel-build-${process.env.NEXT_PUBLIC_BUILD_TIME}';
+              var current=localStorage.getItem('app-version');
+              if(current!==v){
+                localStorage.setItem('app-version',v);
+                window.addEventListener('load',function(){
+                  Promise.all([
+                    'serviceWorker' in navigator
+                      ? navigator.serviceWorker.getRegistrations().then(function(r){
+                          return Promise.all(r.map(function(reg){return reg.unregister()}));
+                        })
+                      : Promise.resolve(),
+                    'caches' in window
+                      ? caches.keys().then(function(k){
+                          return Promise.all(k.map(function(key){return caches.delete(key)}));
+                        })
+                      : Promise.resolve()
+                  ]).then(function(){
+                    if(sessionStorage.getItem('version-reloaded')!==v){
+                      sessionStorage.setItem('version-reloaded',v);
+                      setTimeout(function(){location.replace(location.href)},250);
+                    }
+                  }).catch(function(){});
+                },{once:true});
               }
-              if('caches' in window){
-                caches.keys().then(function(k){
-                  k.forEach(function(key){caches.delete(key)});
-                });
-              }
-              location.reload();
-            }
+            }catch(e){}
           })();
         `}} />
       </head>

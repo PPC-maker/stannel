@@ -1,11 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Mail, Lock, User, Phone, Building2, ArrowLeft, Check, AlertCircle, Camera, X, Palette, ChevronDown, MapPin, Eye, EyeOff } from 'lucide-react';
 import Image from 'next/image';
 import { useAuth } from '@/lib/auth-context';
+import Swal from 'sweetalert2';
 
 type UserRole = 'ARCHITECT' | 'DESIGNER' | 'SUPPLIER';
 
@@ -44,13 +45,7 @@ const supplierSpecializations = [
 type RoleCategory = 'ARCHITECT' | 'DESIGNER' | 'SUPPLIER';
 
 export default function RegisterPage() {
-  const { register, loading: authLoading, logout } = useAuth();
-
-  // Sign out any existing user when entering register page
-  // This prevents race conditions with existing Firebase sessions
-  useEffect(() => {
-    logout();
-  }, [logout]);
+  const { register, loading: authLoading } = useAuth();
 
   const [step, setStep] = useState(1);
   const [role, setRole] = useState<UserRole | null>(null);
@@ -143,7 +138,41 @@ export default function RegisterPage() {
       setStep(3); // Success step
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'ההרשמה נכשלה';
-      setError(translateFirebaseError(message));
+      const translatedMessage = translateFirebaseError(message);
+
+      setError(translatedMessage);
+      const result = await Swal.fire({
+        icon: 'info',
+        title: 'היי 👋',
+        html: '<p style="font-size:1.05rem;line-height:1.7">לא הצלחנו להשלים את ההרשמה כרגע.<br><strong>נשמח לקבל את הפרטים שלך וניצור איתך קשר להשלמת הרישום.</strong></p>',
+        confirmButtonText: 'שליחת הפרטים ב-WhatsApp',
+        confirmButtonColor: '#c99b4a',
+        showCancelButton: true,
+        cancelButtonText: 'סגירה',
+        cancelButtonColor: '#64748b',
+        background: '#173b31',
+        color: '#ffffff',
+      });
+
+      if (result.isConfirmed) {
+        let whatsappNumber = '972508817788';
+        try {
+          const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:7070';
+          const response = await fetch(`${apiUrl}/api/v1/config/whatsapp?role=${role}`);
+          const config = await response.json();
+          if (config.number) whatsappNumber = normalizeWhatsappNumber(config.number);
+        } catch {}
+
+        const contactMessage = [
+          'היי, ניסיתי להירשם ל-STANNEL ואשמח שתחזרו אליי להשלמת הרישום.',
+          `שם: ${formData.name}`,
+          `אימייל: ${formData.email}`,
+          `טלפון: ${formData.phone || 'לא הוזן'}`,
+          `סוג חשבון: ${roleCategory || role}`,
+        ].join('\n');
+
+        window.location.href = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(contactMessage)}`;
+      }
     } finally {
       setIsLoading(false);
     }
@@ -580,6 +609,13 @@ export default function RegisterPage() {
   );
 }
 
+function normalizeWhatsappNumber(value: string): string {
+  const digits = value.replace(/\D/g, '');
+  if (digits.startsWith('9720')) return `972${digits.slice(4)}`;
+  if (digits.startsWith('0')) return `972${digits.slice(1)}`;
+  return digits;
+}
+
 // Helper function to translate Firebase error messages to Hebrew
 function translateFirebaseError(error: string): string {
   const errorMap: Record<string, string> = {
@@ -590,6 +626,7 @@ function translateFirebaseError(error: string): string {
     'auth/wrong-password': 'סיסמה שגויה',
     'auth/invalid-credential': 'פרטי התחברות שגויים',
     'auth/user-not-found': 'משתמש לא נמצא',
+    'auth/user-disabled': 'כתובת האימייל הזו משויכת לחשבון שהושבת. לא ניתן להירשם מחדש עם אותה כתובת. יש לפנות למנהל המערכת כדי להפעיל את החשבון, או להשתמש בכתובת אימייל אחרת.',
     'auth/operation-not-allowed': 'הרשמה לא מופעלת כרגע',
     'auth/network-request-failed': 'בעיית רשת. בדקו את החיבור לאינטרנט',
     'auth/too-many-requests': 'יותר מדי ניסיונות. נסו שוב מאוחר יותר',

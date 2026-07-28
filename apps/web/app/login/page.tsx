@@ -199,11 +199,19 @@ export default function LoginPage() {
             <div className="flex-1 h-px bg-[#C9A961]/20" />
           </div>
 
+          <Link
+            href="/register"
+            className="w-full min-h-[64px] px-5 py-4 rounded-2xl border border-[#C9A961]/35 bg-white/5 hover:bg-[#C9A961]/10 hover:border-[#C9A961]/60 transition-all flex items-center justify-center gap-2 text-lg font-semibold"
+          >
+            <span className="text-white/60">עוד אין לכם חשבון?</span>
+            <span className="text-[#C9A961] font-bold">הירשמו כאן</span>
+          </Link>
+
           <button
             type="button"
             onClick={handleGoogleLogin}
             disabled={isLoading}
-            className="w-full bg-white/10 backdrop-blur border border-[#C9A961]/25 hover:border-[#C9A961]/50 text-white py-5 rounded-2xl transition-all flex items-center justify-center gap-3 disabled:opacity-50 text-lg font-semibold"
+            className="mt-4 w-full bg-white/10 backdrop-blur border border-[#C9A961]/25 hover:border-[#C9A961]/50 text-white py-5 rounded-2xl transition-all flex items-center justify-center gap-3 disabled:opacity-50 text-lg font-semibold"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24">
               <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -213,13 +221,6 @@ export default function LoginPage() {
             </svg>
             <span>המשך עם Google</span>
           </button>
-
-          <p className="text-center mt-5 text-white/50 text-base font-medium">
-            אין לכם חשבון?{' '}
-            <Link href="/register" className="text-[#C9A961] hover:underline font-bold">
-              הירשמו כאן
-            </Link>
-          </p>
 
           <p className="text-center mt-3">
             <Link href="/terms" className="text-white/30 hover:text-[#C9A961]/60 text-xs transition-colors">

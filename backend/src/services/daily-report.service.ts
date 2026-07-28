@@ -1,5 +1,5 @@
 // Daily Report Service - Generates and sends daily system status reports
-// Runs every day at 10:00 AM
+// Runs every day at 1:00 PM (13:00)
 
 import prisma from '../lib/prisma.js';
 import { emailService, EMAIL_DESTINATIONS } from './email.service.js';

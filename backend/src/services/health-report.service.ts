@@ -194,22 +194,8 @@ export const healthReportService = {
 
     const report = await this.generateReport();
 
-    // Get admin emails
-    const admins = await prisma.user.findMany({
-      where: {
-        role: 'ADMIN',
-        isActive: true,
-      },
-      select: { email: true },
-    });
-
-    const adminEmails = admins.map((a: { email: string }) => a.email);
-
-    if (adminEmails.length === 0) {
-      console.warn('[HealthReport] No admin emails found. Report not sent.');
-      report.status = 'failed';
-      return report;
-    }
+    // Send weekly report only to PPC
+    const adminEmails = ['PPC@newpost.co.il'];
 
     // Send email
     const sent = await emailService.sendHealthReport(adminEmails, {

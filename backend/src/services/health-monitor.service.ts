@@ -233,10 +233,10 @@ export const healthMonitorService = {
   }): Promise<void> {
     const alertKey = issue.type;
     const now = Date.now();
-    const fifteenMinutes = 15 * 60 * 1000;
+    const oneHour = 60 * 60 * 1000;
 
-    // Prevent spam - max 1 alert per 15 minutes per issue type
-    if (lastAlertTimes[alertKey] && (now - lastAlertTimes[alertKey]) < fifteenMinutes) {
+    // Prevent spam - max 1 alert per hour per issue type
+    if (lastAlertTimes[alertKey] && (now - lastAlertTimes[alertKey]) < oneHour) {
       console.log(`[HealthMonitor] Skipping alert for ${alertKey} - sent recently`);
       return;
     }
@@ -370,16 +370,15 @@ export const healthMonitorService = {
    * Initialize daily health check scheduler
    */
   initDailyScheduler(): void {
-    // Send report daily at 10:00 AM Israel time
+    // Send report daily at 1:00 PM Israel time (single daily email)
     const scheduleNextReport = () => {
       const now = new Date();
-      const targetHour = 10; // 10:00 AM
+      const targetHour = 13; // 1:00 PM
 
-      // Calculate next 1:00 AM
       const nextReport = new Date(now);
       nextReport.setHours(targetHour, 0, 0, 0);
 
-      // If it's already past 10 AM today, schedule for tomorrow
+      // If it's already past 1:00 PM today, schedule for tomorrow
       if (now.getHours() >= targetHour) {
         nextReport.setDate(nextReport.getDate() + 1);
       }
@@ -396,22 +395,17 @@ export const healthMonitorService = {
 
     scheduleNextReport();
 
-    // Also send an initial report on startup (after 1 minute)
-    setTimeout(() => {
-      this.sendDailyReport();
-    }, 60000);
-
-    // 🚨 CRITICAL: Check systems every 5 minutes
+    // 🚨 CRITICAL: Check systems every 30 minutes (alerts only when something is actually down)
     setInterval(() => {
       this.checkCriticalSystems();
-    }, 5 * 60 * 1000); // Every 5 minutes
+    }, 30 * 60 * 1000); // Every 30 minutes
 
-    // Initial critical check after 30 seconds
+    // Initial critical check after 2 minutes (give services time to start)
     setTimeout(() => {
       this.checkCriticalSystems();
-    }, 30000);
+    }, 120000);
 
-    console.log('[HealthMonitor] Daily health check scheduler initialized');
-    console.log('[HealthMonitor] 🚨 Critical system monitor running every 5 minutes');
+    console.log('[HealthMonitor] Daily health check scheduler initialized (report at 13:00)');
+    console.log('[HealthMonitor] 🚨 Critical system monitor running every 30 minutes');
   },
 };

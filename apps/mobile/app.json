@@ -2,14 +2,14 @@
   "expo": {
     "name": "STANNEL",
     "slug": "stannel",
-    "version": "1.0.0",
+    "version": "1.0.5",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
     "scheme": "stannel",
     "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "cover",
+      "image": "./assets/icon.png",
+      "resizeMode": "contain",
       "backgroundColor": "#060f1f"
     },
     "assetBundlePatterns": [
@@ -31,7 +31,7 @@
         "backgroundColor": "#060f1f"
       },
       "package": "com.stannel.app",
-      "versionCode": 1,
+      "versionCode": 6,
       "googleServicesFile": "./google-services.json",
       "permissions": [
         "android.permission.CAMERA",

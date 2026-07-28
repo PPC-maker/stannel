@@ -1,14 +1,6 @@
-'use client';
-
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { redirect } from 'next/navigation';
 
 export default function HomePage() {
-  const router = useRouter();
-
-  useEffect(() => {
-    router.replace('/login');
-  }, [router]);
-
-  return <div className="min-h-screen" />;
+  // A server redirect avoids rendering an empty client page in Android WebView.
+  redirect('/login');
 }

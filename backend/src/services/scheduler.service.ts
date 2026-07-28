@@ -32,13 +32,13 @@ function getNextMonday9AM(): Date {
   return nextMonday;
 }
 
-// Calculate next 10:00 AM (daily)
-function getNext10AM(): Date {
+// Calculate next 1:00 PM (daily)
+function getNext1PM(): Date {
   const now = new Date();
   const next = new Date(now);
-  next.setHours(10, 0, 0, 0);
+  next.setHours(13, 0, 0, 0);
 
-  // If it's already past 10:00 AM today, schedule for tomorrow
+  // If it's already past 1:00 PM today, schedule for tomorrow
   if (next <= now) {
     next.setDate(next.getDate() + 1);
   }
@@ -86,7 +86,7 @@ function getNextRunTime(name: string): Date {
     case 'weekly-health-report':
       return getNextMonday9AM();
     case 'daily-system-report':
-      return getNext10AM();
+      return getNext1PM();
     case 'daily-backup':
       return getNext1AM();
     case 'financial-integrity-check':
@@ -116,10 +116,10 @@ export const schedulerService = {
       },
     });
 
-    // Daily system report at 10:00 AM
+    // Daily system report at 1:00 PM
     this.registerTask({
       name: 'daily-system-report',
-      cronExpression: '0 10 * * *', // Every day at 10:00 AM
+      cronExpression: '0 13 * * *', // Every day at 1:00 PM
       lastRun: null,
       nextRun: getNextRunTime('daily-system-report'),
       enabled: true,
