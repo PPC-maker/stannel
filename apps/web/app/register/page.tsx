@@ -17,6 +17,10 @@ const architectSpecializations = [
   { value: 'landscape', label: 'אדריכלות נוף' },
   { value: 'urban', label: 'תכנון עירוני' },
   { value: 'preservation', label: 'שימור מבנים' },
+  { value: 'commercial', label: 'מסחרי' },
+  { value: 'residential_building', label: 'בניה רוויה' },
+  { value: 'public_buildings', label: 'מבני ציבור' },
+  { value: 'contractor_apartments', label: 'דירות קבלן' },
   { value: 'other', label: 'אחר' },
 ];
 
