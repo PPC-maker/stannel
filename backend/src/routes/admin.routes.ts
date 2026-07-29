@@ -46,7 +46,7 @@ const createEventSchema = z.object({
   date: z.string().transform(s => new Date(s)),
   location: z.string(),
   capacity: z.number().int().positive(),
-  pointsCost: z.number().int().min(0).optional().default(0),
+  pointsCost: z.union([z.number().int().min(0), z.null()]).optional().default(0).transform(v => v ?? 0),
   imageUrl: z.string().optional().transform(s => s && s.length > 0 ? s : undefined),
 });
 
@@ -56,7 +56,7 @@ const updateEventSchema = z.object({
   date: z.string().transform(s => new Date(s)).optional(),
   location: z.string().optional(),
   capacity: z.number().int().positive().optional(),
-  pointsCost: z.number().int().min(0).optional(),
+  pointsCost: z.union([z.number().int().min(0), z.null()]).optional().transform(v => v ?? 0),
   imageUrl: z.string().optional().nullable(),
   isHidden: z.boolean().optional(),
 }).transform(data => {

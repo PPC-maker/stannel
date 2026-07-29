@@ -503,7 +503,7 @@ export default function ManageEventsPage() {
                         type="number"
                         min="1"
                         value={formData.capacity}
-                        onChange={(e) => setFormData({ ...formData, capacity: parseInt(e.target.value) })}
+                        onChange={(e) => setFormData({ ...formData, capacity: parseInt(e.target.value) || 1 })}
                         required
                         className="w-full bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-xl px-4 py-3 text-[#2b241d]"
                       />
@@ -514,7 +514,7 @@ export default function ManageEventsPage() {
                         type="number"
                         min="0"
                         value={formData.pointsCost}
-                        onChange={(e) => setFormData({ ...formData, pointsCost: parseInt(e.target.value) })}
+                        onChange={(e) => setFormData({ ...formData, pointsCost: parseInt(e.target.value) || 0 })}
                         className="w-full bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-xl px-4 py-3 text-[#2b241d]"
                       />
                     </div>
