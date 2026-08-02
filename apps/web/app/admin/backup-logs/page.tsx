@@ -41,7 +41,7 @@ interface BackupSummary {
 }
 
 export default function BackupLogsPage() {
-  const { isAuthorized, isLoading: authLoading } = useAdminGuard();
+  const { isReady, loading: authLoading } = useAdminGuard();
   const [logs, setLogs] = useState<BackupLog[]>([]);
   const [summary, setSummary] = useState<BackupSummary | null>(null);
   const [loading, setLoading] = useState(true);
@@ -76,11 +76,11 @@ export default function BackupLogsPage() {
   };
 
   useEffect(() => {
-    if (isAuthorized) fetchLogs();
-  }, [isAuthorized]);
+    if (isReady) fetchLogs();
+  }, [isReady]);
 
   if (authLoading) return <AuthGuardLoader />;
-  if (!isAuthorized) return null;
+  if (!isReady) return null;
 
   const formatBytes = (bytes: number) => {
     if (bytes < 1024) return `${bytes} B`;
