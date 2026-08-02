@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import ImageWithLoader from '@/components/ui/ImageWithLoader';
 import Link from 'next/link';
-import { Search, Building2, MapPin, Phone, Globe, ChevronLeft, Loader2, MessageCircle, Calendar } from 'lucide-react';
+import { Search, Building2, MapPin, Phone, Globe, Loader2, MessageCircle, Calendar, Bookmark, SlidersHorizontal } from 'lucide-react';
 import { useSuppliersDirectory } from '@/lib/api-hooks';
 import { useAuth } from '@/lib/auth-context';
 import { meetingsApi } from '@stannel/api-client';
@@ -23,7 +23,6 @@ export default function SuppliersDirectoryPage() {
     window.scrollTo(0, 0);
   }, []);
 
-  // Debounce search
   const handleSearch = (value: string) => {
     setSearch(value);
     setTimeout(() => setDebouncedSearch(value), 300);
@@ -34,42 +33,48 @@ export default function SuppliersDirectoryPage() {
   }
 
   return (
-    <div className="min-h-screen">
-      {/* Page Header */}
-      <div className="pt-8 pb-4 px-4 sm:px-6 text-center">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-        >
-          <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold text-[#2b241d] mb-2 sm:mb-3">ספקים מובחרים</h1>
-          <p className="text-[#8b7c69] text-sm sm:text-lg">גלו את הספקים המובילים בתעשייה</p>
+    <div className="min-h-screen bg-[#f7f3f2]">
+      {/* Header */}
+      <div className="pt-10 pb-5 px-4 text-center">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+          <h1 className="text-4xl sm:text-5xl font-bold text-[#2b241d] tracking-widest uppercase mb-2">
+            Suppliers
+          </h1>
+          <p className="text-[#a89b8a] text-[11px] tracking-[0.2em] uppercase">
+            Curated Partners&nbsp;•&nbsp;Exceptional Standards&nbsp;•&nbsp;Timeless Design
+          </p>
         </motion.div>
       </div>
 
-      {/* Content */}
-      <div className="max-w-lg mx-auto px-4 sm:px-6 py-4 sm:py-8 pb-40 relative z-10">
-        {/* Search */}
+      {/* Search + Filter */}
+      <div className="max-w-lg mx-auto px-4 mb-5">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-4 sm:mb-8"
+          transition={{ delay: 0.1 }}
+          className="flex items-center gap-2"
         >
-          <div className="relative max-w-xl mx-auto">
-            <Search className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2 text-[#a89b8a]" size={18} />
+          <div className="relative flex-1">
+            <Search className="absolute right-4 top-1/2 -translate-y-1/2 text-[#a89b8a]" size={17} />
             <input
               type="text"
-              placeholder="חיפוש ספקים..."
+              placeholder="Search suppliers, categories..."
               value={search}
               onChange={(e) => handleSearch(e.target.value)}
-              className="w-full bg-[#f7f3f2] border border-[rgba(201,155,74,0.15)] rounded-xl sm:rounded-2xl px-4 py-3 sm:px-5 sm:py-4 pr-10 sm:pr-12 text-sm sm:text-base text-[#2b241d] placeholder:text-[#a89b8a] focus:border-[#c99b4a]/50 focus:outline-none focus:ring-2 focus:ring-[#c99b4a]/20 transition-all text-right"
+              className="w-full bg-white border border-[rgba(201,155,74,0.15)] rounded-2xl px-4 py-3.5 pr-11 text-sm text-[#2b241d] placeholder:text-[#c0b5a8] focus:border-[#c99b4a]/40 focus:outline-none focus:ring-2 focus:ring-[#c99b4a]/15 transition-all text-right shadow-sm"
             />
           </div>
+          <button className="w-12 h-12 rounded-2xl bg-[#2b241d] flex items-center justify-center flex-shrink-0 shadow-sm active:scale-95 transition-transform">
+            <SlidersHorizontal size={18} className="text-white" />
+          </button>
         </motion.div>
+      </div>
 
-        {/* Suppliers Grid */}
+      {/* Grid */}
+      <div className="max-w-lg mx-auto px-4 pb-40">
         {isLoading ? (
           <div className="flex items-center justify-center py-20">
-            <Loader2 size={40} className="text-[#c99b4a] animate-spin" />
+            <Loader2 size={36} className="text-[#c99b4a] animate-spin" />
           </div>
         ) : suppliers.length === 0 ? (
           <div className="text-center py-20">
@@ -77,7 +82,7 @@ export default function SuppliersDirectoryPage() {
             <p className="text-[#8b7c69] text-base">לא נמצאו ספקים</p>
           </div>
         ) : (
-          <div className="grid grid-cols-2 gap-3 sm:gap-5">
+          <div className="grid grid-cols-2 gap-3 sm:gap-4">
             {suppliers.map((supplier, index) => (
               <SupplierCard key={supplier.id} supplier={supplier} index={index} />
             ))}
@@ -90,6 +95,7 @@ export default function SuppliersDirectoryPage() {
 
 function SupplierCard({ supplier, index }: { supplier: any; index: number }) {
   const logoImage = supplier.profileImage || null;
+  const [bookmarked, setBookmarked] = useState(false);
 
   const handleWhatsApp = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -114,12 +120,12 @@ function SupplierCard({ supplier, index }: { supplier: any; index: number }) {
       html: `
         <p style="margin-bottom: 16px; color: #8b7c69; font-size: 14px; text-align: center;">קביעת פגישה עם ${supplier.companyName}</p>
         <div style="display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 320px; margin: 0 auto;" dir="rtl">
-          <input id="swal-subject" type="text" placeholder="נושא הפגישה *" style="width: 100%; padding: 14px 16px; background: #ffffff; border: 1px solid rgba(201,155,74,0.15); color: #2b241d; border-radius: 12px; font-size: 16px; text-align: right; outline: none; box-sizing: border-box; -webkit-appearance: none; appearance: none;">
+          <input id="swal-subject" type="text" placeholder="נושא הפגישה *" style="width: 100%; padding: 14px 16px; background: #ffffff; border: 1px solid rgba(201,155,74,0.15); color: #2b241d; border-radius: 12px; font-size: 16px; text-align: right; outline: none; box-sizing: border-box;">
           <label style="display: block; font-size: 13px; color: #8b7c69; text-align: right; margin-bottom: -4px;">תאריך *</label>
-          <input id="swal-date" type="date" min="${minDate}" style="width: 100%; padding: 14px 16px; background: #ffffff; border: 1px solid rgba(201,155,74,0.15); color: #2b241d; border-radius: 12px; font-size: 16px; text-align: right; outline: none; box-sizing: border-box; -webkit-appearance: none; appearance: none; direction: rtl;">
+          <input id="swal-date" type="date" min="${minDate}" style="width: 100%; padding: 14px 16px; background: #ffffff; border: 1px solid rgba(201,155,74,0.15); color: #2b241d; border-radius: 12px; font-size: 16px; outline: none; box-sizing: border-box; direction: rtl;">
           <label style="display: block; font-size: 13px; color: #8b7c69; text-align: right; margin-bottom: -4px;">שעה</label>
-          <input id="swal-time" type="time" value="10:00" style="width: 100%; padding: 14px 16px; background: #ffffff; border: 1px solid rgba(201,155,74,0.15); color: #2b241d; border-radius: 12px; font-size: 16px; text-align: right; outline: none; box-sizing: border-box; -webkit-appearance: none; appearance: none; direction: rtl;">
-          <textarea id="swal-notes" placeholder="הערות (אופציונלי)" style="width: 100%; padding: 14px 16px; background: #ffffff; border: 1px solid rgba(201,155,74,0.15); color: #2b241d; border-radius: 12px; min-height: 80px; font-size: 16px; text-align: right; outline: none; resize: none; box-sizing: border-box; -webkit-appearance: none; appearance: none;"></textarea>
+          <input id="swal-time" type="time" value="10:00" style="width: 100%; padding: 14px 16px; background: #ffffff; border: 1px solid rgba(201,155,74,0.15); color: #2b241d; border-radius: 12px; font-size: 16px; outline: none; box-sizing: border-box; direction: rtl;">
+          <textarea id="swal-notes" placeholder="הערות (אופציונלי)" style="width: 100%; padding: 14px 16px; background: #ffffff; border: 1px solid rgba(201,155,74,0.15); color: #2b241d; border-radius: 12px; min-height: 80px; font-size: 16px; text-align: right; outline: none; resize: none; box-sizing: border-box;"></textarea>
         </div>
       `,
       showCancelButton: true,
@@ -160,76 +166,87 @@ function SupplierCard({ supplier, index }: { supplier: any; index: number }) {
     <motion.div
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.1 }}
+      transition={{ delay: index * 0.08 }}
     >
       <Link href={`/suppliers/${supplier.id}`}>
-        <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl sm:rounded-3xl overflow-hidden hover:border-[#c99b4a]/30 hover:bg-[#faf8f5] transition-all group cursor-pointer p-3 sm:p-5">
-          {/* Logo */}
-          <div className="flex items-center justify-center mb-3 sm:mb-4">
+        <div className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all group cursor-pointer border border-[rgba(201,155,74,0.08)]">
+
+          {/* Image area */}
+          <div className="relative w-full aspect-[4/3] bg-[#f0ebe4]">
             {logoImage ? (
-              <div className="relative w-full aspect-square max-w-[140px] sm:max-w-[160px]">
-                <ImageWithLoader
-                  src={logoImage}
-                  alt={supplier.companyName}
-                  fill
-                  className="object-contain"
-                  unoptimized
-                />
-              </div>
+              <ImageWithLoader
+                src={logoImage}
+                alt={supplier.companyName}
+                fill
+                className="object-cover"
+                unoptimized
+              />
             ) : (
-              <div className="w-full aspect-square max-w-[140px] sm:max-w-[160px] rounded-2xl bg-gradient-to-br from-[#c99b4a]/20 to-[#c99b4a]/5 flex items-center justify-center border border-[#c99b4a]/15">
-                <span className="text-5xl sm:text-6xl font-bold text-[#c99b4a]">{supplier.companyName?.charAt(0) || 'S'}</span>
+              <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-[#f0ebe4] to-[#e8e0d5]">
+                <span className="text-5xl font-bold text-[#c99b4a]/40">{supplier.companyName?.charAt(0) || 'S'}</span>
               </div>
             )}
-          </div>
-
-          {/* Company Name */}
-          <h2 className="text-sm sm:text-lg font-bold text-[#2b241d] text-center mb-0.5 sm:mb-1 line-clamp-1">{supplier.companyName}</h2>
-
-          {/* Address */}
-          {supplier.address && (
-            <p className="text-[#a89b8a] text-[10px] sm:text-xs text-center flex items-center justify-center gap-1 mb-2 sm:mb-3 line-clamp-1">
-              <MapPin size={10} className="flex-shrink-0" />
-              {supplier.address}
-            </p>
-          )}
-
-          {/* Action Button: Schedule Meeting */}
-          <div className="mb-2 sm:mb-3">
+            {/* Bookmark */}
             <button
-              onClick={handleScheduleMeeting}
-              className="w-full flex items-center justify-center gap-1 py-2 sm:py-2.5 bg-[#c99b4a]/10 hover:bg-[#c99b4a]/20 text-[#c99b4a] rounded-lg sm:rounded-xl text-xs sm:text-sm font-semibold transition-colors"
+              onClick={(e) => { e.preventDefault(); e.stopPropagation(); setBookmarked(!bookmarked); }}
+              className="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/80 backdrop-blur-sm flex items-center justify-center shadow-sm active:scale-90 transition-transform"
             >
-              <Calendar size={14} className="sm:w-4 sm:h-4" />
-              <span>קבע פגישה</span>
+              <Bookmark
+                size={13}
+                className={bookmarked ? 'text-[#c99b4a] fill-[#c99b4a]' : 'text-[#a89b8a]'}
+              />
             </button>
           </div>
 
-          {/* Icons + Arrow */}
-          <div className="flex items-center justify-center gap-2 sm:gap-3 pt-2 sm:pt-3 border-t border-[rgba(201,155,74,0.08)]">
-            {supplier.phone && (
-              <button onClick={handleWhatsApp} className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#c99b4a]/10 hover:bg-[#c99b4a]/20 flex items-center justify-center transition-colors">
-                <MessageCircle size={12} className="text-[#c99b4a] sm:w-3.5 sm:h-3.5" />
-              </button>
-            )}
-            {supplier.phone && (
-              <button onClick={handlePhone} className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#c99b4a]/10 hover:bg-[#c99b4a]/20 flex items-center justify-center transition-colors">
-                <Phone size={12} className="text-[#c99b4a] sm:w-3.5 sm:h-3.5" />
-              </button>
-            )}
-            {supplier.website && (
-              <a
-                href={supplier.website.startsWith('http') ? supplier.website : `https://${supplier.website}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={(e) => e.stopPropagation()}
-                className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#c99b4a]/10 hover:bg-[#c99b4a]/20 flex items-center justify-center transition-colors"
-              >
-                <Globe size={12} className="text-[#c99b4a] sm:w-3.5 sm:h-3.5" />
-              </a>
-            )}
-            <div className="mr-auto">
-              <ChevronLeft size={16} className="text-[#c99b4a] group-hover:-translate-x-1 transition-transform sm:w-[18px] sm:h-[18px]" />
+          {/* Content */}
+          <div className="p-3">
+            {/* Name */}
+            <h2 className="text-sm font-bold text-[#2b241d] text-right mb-0.5 line-clamp-1">
+              {supplier.companyName}
+            </h2>
+
+            {/* Category + address */}
+            <p className="text-[#a89b8a] text-[10px] text-right flex items-center justify-end gap-1 mb-2.5 line-clamp-1">
+              {supplier.address && (
+                <>
+                  <MapPin size={9} className="flex-shrink-0" />
+                  {supplier.address}
+                </>
+              )}
+            </p>
+
+            {/* Schedule Meeting Button - solid gold */}
+            <button
+              onClick={handleScheduleMeeting}
+              className="w-full flex items-center justify-center gap-1.5 py-2 bg-[#c99b4a] hover:bg-[#b8893d] active:scale-95 text-white rounded-xl text-[11px] font-semibold transition-all mb-2.5"
+            >
+              <Calendar size={11} />
+              קבע פגישה
+            </button>
+
+            {/* Icons row */}
+            <div className="flex items-center justify-center gap-2 pt-2 border-t border-[rgba(201,155,74,0.08)]">
+              {supplier.website && (
+                <a
+                  href={supplier.website.startsWith('http') ? supplier.website : `https://${supplier.website}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => e.stopPropagation()}
+                  className="w-7 h-7 rounded-full bg-[#f7f3f2] hover:bg-[#c99b4a]/10 flex items-center justify-center transition-colors"
+                >
+                  <Globe size={12} className="text-[#a89b8a]" />
+                </a>
+              )}
+              {supplier.phone && (
+                <button onClick={handlePhone} className="w-7 h-7 rounded-full bg-[#f7f3f2] hover:bg-[#c99b4a]/10 flex items-center justify-center transition-colors">
+                  <Phone size={12} className="text-[#a89b8a]" />
+                </button>
+              )}
+              {supplier.phone && (
+                <button onClick={handleWhatsApp} className="w-7 h-7 rounded-full bg-[#f7f3f2] hover:bg-[#c99b4a]/10 flex items-center justify-center transition-colors">
+                  <MessageCircle size={12} className="text-[#a89b8a]" />
+                </button>
+              )}
             </div>
           </div>
         </div>
