@@ -1720,6 +1720,19 @@ Please analyze this error and provide a fix.
               </div>
             </div>
           </Link>
+          <Link href="/admin/backup-logs" className="group">
+            <div className="p-4 bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-xl hover:bg-[#f0ebe6] transition-all">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-blue-500/20">
+                  <Database size={20} className="text-blue-400" />
+                </div>
+                <div>
+                  <p className="text-[#2b241d] font-medium group-hover:text-[#c99b4a] transition-colors">יומן גיבויים</p>
+                  <p className="text-[#a89b8a] text-xs">מעקב גיבויי מסד נתונים</p>
+                </div>
+              </div>
+            </div>
+          </Link>
           <Link href="/admin/rewards" className="group">
             <div className="p-4 bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-xl hover:bg-[#f0ebe6] transition-all">
               <div className="flex items-center gap-3">

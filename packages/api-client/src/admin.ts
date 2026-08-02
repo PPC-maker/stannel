@@ -883,4 +883,76 @@ export const adminApi = {
 
     return res.json();
   },
+
+  // Backup Logs
+  async getBackupLogs(): Promise<{
+    logs: Array<{
+      id: string;
+      status: 'SUCCESS' | 'FAILED';
+      filename: string;
+      storage: string;
+      tables: number;
+      records: number;
+      sizeBytes: number;
+      durationMs: number;
+      error?: string;
+      createdAt: string;
+    }>;
+    summary: {
+      total: number;
+      lastSuccessAt: string | null;
+      lastFailedAt: string | null;
+      hoursSinceLastBackup: number | null;
+    };
+  }> {
+    const res = await fetchWithAuth(`${config.baseUrl}/admin/backup-logs`, {
+      headers: getHeadersNoBody(),
+    });
+
+    if (!res.ok) {
+      const error = await res.json().catch(() => ({ message: 'שגיאה בטעינת יומן הגיבויים' }));
+      throw new Error(error.message || 'שגיאה בטעינת יומן הגיבויים');
+    }
+
+    return res.json();
+  },
+
+  async forceBackup(): Promise<{ success: boolean; result: any }> {
+    const res = await fetchWithAuth(`${config.baseUrl}/admin/force-backup`, {
+      method: 'POST',
+      headers: getHeaders(),
+    });
+
+    if (!res.ok) {
+      const error = await res.json().catch(() => ({ message: 'הגיבוי נכשל' }));
+      throw new Error(error.message || 'הגיבוי נכשל');
+    }
+
+    return res.json();
+  },
+
+  // Generic helpers for dynamic endpoints
+  async get(path: string): Promise<any> {
+    const res = await fetchWithAuth(`${config.baseUrl}${path}`, {
+      headers: getHeadersNoBody(),
+    });
+    if (!res.ok) {
+      const error = await res.json().catch(() => ({}));
+      throw new Error(error.message || `Request failed: ${path}`);
+    }
+    return res.json();
+  },
+
+  async post(path: string, body?: any): Promise<any> {
+    const res = await fetchWithAuth(`${config.baseUrl}${path}`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: body ? JSON.stringify(body) : undefined,
+    });
+    if (!res.ok) {
+      const error = await res.json().catch(() => ({}));
+      throw new Error(error.message || `Request failed: ${path}`);
+    }
+    return res.json();
+  },
 };

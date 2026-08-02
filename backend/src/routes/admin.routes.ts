@@ -2360,6 +2360,38 @@ Please analyze this error and provide a fix.
     }
   });
 
+  // Backup logs journal endpoint
+  server.get('/backup-logs', async (request: FastifyRequest, reply: FastifyReply) => {
+    try {
+      const logs = await prisma.backupLog.findMany({
+        orderBy: { createdAt: 'desc' },
+        take: 30,
+      });
+
+      const lastSuccess = logs.find(l => l.status === 'SUCCESS');
+      const lastFailed = logs.find(l => l.status === 'FAILED');
+
+      return {
+        success: true,
+        logs,
+        summary: {
+          total: logs.length,
+          lastSuccessAt: lastSuccess?.createdAt ?? null,
+          lastFailedAt: lastFailed?.createdAt ?? null,
+          hoursSinceLastBackup: lastSuccess
+            ? Math.round((Date.now() - new Date(lastSuccess.createdAt).getTime()) / 3600000)
+            : null,
+        },
+      };
+    } catch (error) {
+      reply.code(500).send({
+        success: false,
+        error: 'Failed to fetch backup logs',
+        message: (error as Error).message,
+      });
+    }
+  });
+
   // Financial integrity check endpoint
   server.post('/financial-integrity-check', async (request: FastifyRequest, reply: FastifyReply) => {
     try {

@@ -1,5 +1,5 @@
 // Backup Service - Daily database backup at 1:00 AM
-// Backs up to Google Cloud Storage
+// Backs up to Google Cloud Storage (single rolling file - replaced each run)
 
 import prisma from '../lib/prisma.js';
 import { systemLogger } from './system-logger.service.js';
@@ -61,9 +61,8 @@ export const backupService = {
         }
       }
 
-      // Create backup JSON
-      const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-      const filename = `stannel-backup-${timestamp}.json`;
+      // Create backup JSON - fixed filename so it replaces the previous backup (rolling)
+      const filename = `stannel-backup-latest.json`;
       const backupJson = JSON.stringify({
         metadata: {
           timestamp: new Date().toISOString(),
@@ -77,14 +76,29 @@ export const backupService = {
       const size = Buffer.byteLength(backupJson, 'utf8');
 
       // Try to upload to GCS if configured
+      let storage = 'local';
       if (process.env.GOOGLE_APPLICATION_CREDENTIALS || process.env.GCS_INVOICE_BUCKET) {
         await this.uploadToGCS(filename, backupJson);
+        storage = 'gcs';
       } else {
         // Save locally as fallback
         await this.saveLocally(filename, backupJson);
       }
 
       const duration = Date.now() - startTime;
+
+      // Save to backup log journal
+      await prisma.backupLog.create({
+        data: {
+          status: 'SUCCESS',
+          filename,
+          storage,
+          tables: tables.length,
+          records: totalRecords,
+          sizeBytes: size,
+          durationMs: duration,
+        },
+      });
 
       // Log success
       await systemLogger.info('SCHEDULER', 'Backup Completed', `Daily backup completed: ${filename}`, {
@@ -115,6 +129,24 @@ export const backupService = {
       const duration = Date.now() - startTime;
 
       await systemLogger.critical('SCHEDULER', 'Backup Failed', `Daily backup failed: ${error.message}`, error);
+
+      // Save failure to backup log journal
+      try {
+        await prisma.backupLog.create({
+          data: {
+            status: 'FAILED',
+            filename: 'stannel-backup-latest.json',
+            storage: 'none',
+            tables: 0,
+            records: 0,
+            sizeBytes: 0,
+            durationMs: duration,
+            error: error.message,
+          },
+        });
+      } catch (logErr) {
+        console.error('[Backup] Failed to save error log:', logErr);
+      }
 
       // Send failure alert
       await this.sendBackupReport({
@@ -161,54 +193,24 @@ export const backupService = {
     }
   },
 
-  // Save backup locally as fallback
+  // Save backup locally - always overwrites the single rolling file
   async saveLocally(filename: string, content: string): Promise<void> {
     const fs = await import('fs').then(m => m.promises);
     const path = await import('path');
 
     const backupDir = path.join(process.cwd(), 'backups');
 
-    // Create backup directory if it doesn't exist
     try {
       await fs.access(backupDir);
     } catch {
       await fs.mkdir(backupDir, { recursive: true });
     }
 
+    // Write overwrites the existing file (rolling backup - no accumulation)
     const filePath = path.join(backupDir, filename);
     await fs.writeFile(filePath, content, 'utf8');
 
-    console.log(`[Backup] Saved locally: ${filePath}`);
-
-    // Clean up old backups (keep last 7 days)
-    await this.cleanupOldBackups(backupDir, 7);
-  },
-
-  // Clean up old backup files
-  async cleanupOldBackups(dir: string, keepDays: number): Promise<void> {
-    const fs = await import('fs').then(m => m.promises);
-    const path = await import('path');
-
-    try {
-      const files = await fs.readdir(dir);
-      const now = Date.now();
-      const maxAge = keepDays * 24 * 60 * 60 * 1000;
-
-      for (const file of files) {
-        if (file.startsWith('stannel-backup-')) {
-          const filePath = path.join(dir, file);
-          const stats = await fs.stat(filePath);
-          const age = now - stats.mtime.getTime();
-
-          if (age > maxAge) {
-            await fs.unlink(filePath);
-            console.log(`[Backup] Deleted old backup: ${file}`);
-          }
-        }
-      }
-    } catch (error) {
-      console.error('[Backup] Failed to cleanup old backups:', error);
-    }
+    console.log(`[Backup] Saved locally (overwrite): ${filePath}`);
   },
 
   // Send backup report email

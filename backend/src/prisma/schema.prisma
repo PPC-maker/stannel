@@ -734,3 +734,28 @@ model GuardianChat {
   @@index([logId])
   @@index([createdAt])
 }
+
+// ============================================
+// Backup Log - Journal of all backup runs
+// ============================================
+
+enum BackupStatus {
+  SUCCESS
+  FAILED
+}
+
+model BackupLog {
+  id          String       @id @default(cuid())
+  status      BackupStatus
+  filename    String       // e.g. stannel-backup-latest.json
+  storage     String       // 'gcs' or 'local'
+  tables      Int
+  records     Int
+  sizeBytes   Int
+  durationMs  Int
+  error       String?
+  createdAt   DateTime     @default(now())
+
+  @@index([createdAt])
+  @@index([status])
+}
