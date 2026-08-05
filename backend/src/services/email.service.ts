@@ -393,43 +393,54 @@ export const emailService = {
   ): Promise<boolean> {
     const html = `
 <!DOCTYPE html>
-<html dir="rtl" lang="he">
+<html lang="he">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ברוכים הבאים ל-STANNEL</title>
 </head>
-<body style="font-family: 'Segoe UI', Arial, sans-serif; background-color: #060f1f; margin: 0; padding: 20px;">
+<body style="font-family: 'Segoe UI', Arial, sans-serif; background-color: #060f1f; margin: 0; padding: 20px; direction: rtl;">
   <div style="max-width: 600px; margin: 0 auto; background: linear-gradient(135deg, rgba(26, 58, 107, 0.9) 0%, rgba(15, 35, 71, 0.95) 100%); border-radius: 16px; overflow: hidden; box-shadow: 0 8px 32px rgba(0,0,0,0.4); border: 1px solid rgba(212, 175, 55, 0.3);">
-    <!-- Header -->
+
+    <!-- Header with logo -->
     <div style="background: linear-gradient(135deg, #1a3a6b 0%, #0f2347 100%); padding: 40px; text-align: center; border-bottom: 2px solid rgba(212, 175, 55, 0.4);">
-      <div style="width: 80px; height: 80px; margin: 0 auto 20px; background: linear-gradient(135deg, #d4af37 0%, #f5d77e 100%); border-radius: 20px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 20px rgba(212, 175, 55, 0.4);">
-        <span style="color: #1a3a6b; font-size: 40px; font-weight: bold;">S</span>
-      </div>
-      <h1 style="color: #d4af37; margin: 0; font-size: 32px; font-weight: bold;">ברוכים הבאים ל-STANNEL</h1>
-      <p style="color: rgba(255,255,255,0.8); margin: 15px 0 0 0; font-size: 16px;">פלטפורמת הנאמנות המובילה לאדריכלים וספקים</p>
+      <img src="https://stannelclub.co.il/logoNewWhite.png" alt="STANNEL" style="height: 60px; max-width: 200px; object-fit: contain; margin-bottom: 20px; display: block; margin-left: auto; margin-right: auto;" />
+      <h1 style="color: #d4af37; margin: 0; font-size: 28px; font-weight: bold; direction: rtl;">ברוכים הבאים למועדון העסקים</h1>
+      <p style="color: rgba(255,255,255,0.8); margin: 10px 0 0 0; font-size: 15px; direction: ltr; letter-spacing: 0.1em;">STANNEL Business Club</p>
     </div>
 
     <!-- Content -->
-    <div style="padding: 40px;">
+    <div style="padding: 40px; direction: rtl;">
+
       <!-- Welcome Message -->
-      <div style="background: rgba(255,255,255,0.07); border-radius: 12px; padding: 25px; margin-bottom: 25px; border: 1px solid rgba(255,255,255,0.15);">
-        <h2 style="color: white; margin: 0 0 15px 0; font-size: 22px;">שלום ${escapeHtml(userName)}! 👋</h2>
-        <p style="color: rgba(255,255,255,0.8); margin: 0; font-size: 16px; line-height: 1.6;">
-          חשבונך אושר בהצלחה! כעת תוכל להתחבר למערכת וליהנות מכל היתרונות של פלטפורמת STANNEL.
+      <div style="background: rgba(255,255,255,0.07); border-radius: 12px; padding: 25px; margin-bottom: 25px; border: 1px solid rgba(255,255,255,0.15); text-align: right;">
+        <h2 style="color: white; margin: 0 0 12px 0; font-size: 20px;">שלום ${escapeHtml(userName)}! 👋</h2>
+        <p style="color: rgba(255,255,255,0.8); margin: 0; font-size: 15px; line-height: 1.7;">
+          חשבונך אושר בהצלחה! כעת תוכל להתחבר ולהנות מכל יתרונות מועדון העסקים האקסקלוסיבי של <span style="direction: ltr; display: inline-block;">STANNEL</span>.
         </p>
       </div>
 
       <!-- Features -->
-      <div style="margin-bottom: 30px;">
-        <h3 style="color: #d4af37; margin: 0 0 15px 0; font-size: 18px;">מה מחכה לך במערכת?</h3>
-        <ul style="color: rgba(255,255,255,0.8); margin: 0; padding-right: 20px; font-size: 15px; line-height: 2;">
-          <li>ניהול חשבוניות חכם ומהיר</li>
-          <li>צבירת נקודות נאמנות על כל רכישה</li>
-          <li>מימוש נקודות לפרסים בלעדיים</li>
-          <li>מעקב אחר היסטוריית הפעילות שלך</li>
-          <li>גישה לאירועים בלעדיים</li>
-        </ul>
+      <div style="margin-bottom: 30px; text-align: right;">
+        <h3 style="color: #d4af37; margin: 0 0 16px 0; font-size: 17px;">מה מחכה לך במועדון?</h3>
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <div style="display: flex; align-items: center; gap: 12px; background: rgba(255,255,255,0.05); border-radius: 10px; padding: 12px 16px; justify-content: flex-end;">
+            <span style="color: rgba(255,255,255,0.85); font-size: 14px;">גישה לאירועים אקסקלוסיביים</span>
+            <span style="font-size: 20px;">🎟️</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 12px; background: rgba(255,255,255,0.05); border-radius: 10px; padding: 12px 16px; justify-content: flex-end;">
+            <span style="color: rgba(255,255,255,0.85); font-size: 14px;">עדכונים על מוצרים וטכנולוגיות בתעשייה</span>
+            <span style="font-size: 20px;">🔬</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 12px; background: rgba(255,255,255,0.05); border-radius: 10px; padding: 12px 16px; justify-content: flex-end;">
+            <span style="color: rgba(255,255,255,0.85); font-size: 14px;">צבירת קרדיטים על רכישות</span>
+            <span style="font-size: 20px;">💳</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 12px; background: rgba(255,255,255,0.05); border-radius: 10px; padding: 12px 16px; justify-content: flex-end;">
+            <span style="color: rgba(255,255,255,0.85); font-size: 14px;">פרסום ושיווק בפלטפורמה</span>
+            <span style="font-size: 20px;">📣</span>
+          </div>
+        </div>
       </div>
 
       <!-- CTA Button -->
@@ -440,10 +451,10 @@ export const emailService = {
       </div>
 
       <!-- Support -->
-      <div style="background: rgba(212, 175, 55, 0.1); border-radius: 12px; padding: 20px; border: 1px solid rgba(212, 175, 55, 0.2);">
-        <p style="color: rgba(255,255,255,0.7); margin: 0; font-size: 14px; text-align: center;">
+      <div style="background: rgba(212, 175, 55, 0.1); border-radius: 12px; padding: 20px; border: 1px solid rgba(212, 175, 55, 0.2); text-align: center;">
+        <p style="color: rgba(255,255,255,0.7); margin: 0; font-size: 14px;">
           שאלות? צרו קשר עם צוות התמיכה שלנו<br/>
-          <a href="mailto:support@stannelclub.co.il" style="color: #d4af37; text-decoration: none;">support@stannelclub.co.il</a>
+          <a href="mailto:support@stannelclub.co.il" style="color: #d4af37; text-decoration: none; direction: ltr; display: inline-block;">support@stannelclub.co.il</a>
         </p>
       </div>
     </div>
@@ -451,10 +462,7 @@ export const emailService = {
     <!-- Footer -->
     <div style="background: rgba(0,0,0,0.3); padding: 25px; text-align: center; border-top: 1px solid rgba(255,255,255,0.1);">
       <p style="color: rgba(255,255,255,0.5); font-size: 13px; margin: 0;">
-        © 2026 STANNEL. כל הזכויות שמורות.
-      </p>
-      <p style="color: rgba(255,255,255,0.4); font-size: 12px; margin: 10px 0 0 0;">
-        הודעה זו נשלחה מ-noreply@stannelclub.co.il
+        © 2026 STANNEL Business Club. כל הזכויות שמורות.
       </p>
     </div>
   </div>
@@ -464,7 +472,7 @@ export const emailService = {
 
     return this.send({
       to: userEmail,
-      subject: '🎉 ברוכים הבאים ל-STANNEL - חשבונך אושר!',
+      subject: '🎉 ברוכים הבאים ל-STANNEL Business Club - חשבונך אושר!',
       html,
     });
   },
