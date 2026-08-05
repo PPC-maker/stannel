@@ -158,14 +158,14 @@ export async function adminRoutes(server: FastifyInstance) {
 
     // Send welcome email
     if (sendEmail && user.email) {
-      const webUrl = process.env.WEB_URL || 'https://stannel.app';
+      const webUrl = process.env.WEB_URL || 'https://stannelclub.co.il';
       const loginUrl = `${webUrl}/login?email=${encodeURIComponent(user.email)}`;
 
-      await emailService.sendWelcomeEmail(
-        user.email,
-        user.name,
-        loginUrl
-      );
+      try {
+        await emailService.sendWelcomeEmail(user.email, user.name, loginUrl);
+      } catch (emailErr) {
+        console.error('[Activate] Failed to send welcome email:', emailErr);
+      }
     }
 
     // Audit log
@@ -190,7 +190,7 @@ export async function adminRoutes(server: FastifyInstance) {
       return reply.code(400).send({ error: 'userIds array is required' });
     }
 
-    const webUrl = process.env.WEB_URL || 'https://stannel.app';
+    const webUrl = process.env.WEB_URL || 'https://stannelclub.co.il';
     const results: { userId: string; success: boolean; error?: string }[] = [];
 
     for (const userId of userIds) {
@@ -206,7 +206,11 @@ export async function adminRoutes(server: FastifyInstance) {
         // Send welcome email
         if (sendEmail && user.email) {
           const loginUrl = `${webUrl}/login?email=${encodeURIComponent(user.email)}`;
-          await emailService.sendWelcomeEmail(user.email, user.name, loginUrl);
+          try {
+            await emailService.sendWelcomeEmail(user.email, user.name, loginUrl);
+          } catch (emailErr) {
+            console.error('[BulkActivate] Failed to send welcome email:', emailErr);
+          }
         }
 
         results.push({ userId, success: true });

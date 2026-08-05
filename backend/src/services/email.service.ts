@@ -443,7 +443,7 @@ export const emailService = {
       <div style="background: rgba(212, 175, 55, 0.1); border-radius: 12px; padding: 20px; border: 1px solid rgba(212, 175, 55, 0.2);">
         <p style="color: rgba(255,255,255,0.7); margin: 0; font-size: 14px; text-align: center;">
           שאלות? צרו קשר עם צוות התמיכה שלנו<br/>
-          <a href="mailto:support@stannel.app" style="color: #d4af37; text-decoration: none;">support@stannel.app</a>
+          <a href="mailto:support@stannelclub.co.il" style="color: #d4af37; text-decoration: none;">support@stannelclub.co.il</a>
         </p>
       </div>
     </div>
@@ -454,7 +454,7 @@ export const emailService = {
         © 2026 STANNEL. כל הזכויות שמורות.
       </p>
       <p style="color: rgba(255,255,255,0.4); font-size: 12px; margin: 10px 0 0 0;">
-        הודעה זו נשלחה מ-noreply@stannel.app
+        הודעה זו נשלחה מ-noreply@stannelclub.co.il
       </p>
     </div>
   </div>
