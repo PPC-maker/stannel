@@ -218,6 +218,7 @@ export default function AdminPage() {
   const [stats, setStats] = useState<SystemLogStats | null>(null);
   const [allUsers, setAllUsers] = useState<AdminUser[]>([]);
   const [userSearch, setUserSearch] = useState('');
+  const [userRoleFilter, setUserRoleFilter] = useState<'ALL' | 'ARCHITECT' | 'DESIGNER' | 'SUPPLIER'>('ALL');
   const [latestScan, setLatestScan] = useState<ScanReport | null>(null);
   const [invoices, setInvoices] = useState<AdminInvoice[]>([]);
   const [selectedInvoice, setSelectedInvoice] = useState<AdminInvoice | null>(null);
@@ -1552,18 +1553,22 @@ Please analyze this error and provide a fix.
     DESIGNER: ['מעצב', 'designer'],
     SUPPLIER: ['ספק', 'supplier'],
   };
-  const filteredUsers = userSearch.trim()
-    ? allUsers.filter(u => {
-        const term = userSearch.trim().toLowerCase();
-        const matchesRole = roleSearchTerms[u.role]?.some(label => label.includes(term));
-        return u.name.toLowerCase().includes(term)
-          || u.email.toLowerCase().includes(term)
-          || (u.phone && u.phone.includes(term))
-          || (u.company && u.company.toLowerCase().includes(term))
-          || (u.supplierProfile?.companyName && u.supplierProfile.companyName.toLowerCase().includes(term))
-          || matchesRole;
-      })
-    : allUsers;
+  const filteredUsers = allUsers.filter(u => {
+    // Role filter
+    if (userRoleFilter !== 'ALL' && u.role !== userRoleFilter) return false;
+    // Text search
+    if (userSearch.trim()) {
+      const term = userSearch.trim().toLowerCase();
+      const matchesRole = roleSearchTerms[u.role]?.some(label => label.includes(term));
+      return u.name.toLowerCase().includes(term)
+        || u.email.toLowerCase().includes(term)
+        || (u.phone && u.phone.includes(term))
+        || (u.company && u.company.toLowerCase().includes(term))
+        || (u.supplierProfile?.companyName && u.supplierProfile.companyName.toLowerCase().includes(term))
+        || matchesRole;
+    }
+    return true;
+  });
   const pendingUsers = allUsers.filter(u => !u.isActive);
   const approvedUsers = allUsers.filter(u => u.isActive);
 
@@ -1882,9 +1887,33 @@ Please analyze this error and provide a fix.
                       type="text"
                       value={userSearch}
                       onChange={(e) => setUserSearch(e.target.value)}
-                      placeholder="חיפוש לפי שם, אימייל, טלפון, תפקיד (ספק/אדריכל)..."
+                      placeholder="חיפוש לפי שם, אימייל, טלפון..."
                       className="w-full pr-10 pl-4 py-4 bg-white border border-[rgba(201,155,74,0.15)] rounded-xl text-[#2b241d] placeholder-[#a89b8a] focus:outline-none focus:border-[#c99b4a] transition-colors text-sm"
                     />
+                  </div>
+                  {/* Role filter buttons */}
+                  <div className="flex gap-2 w-[90%] mx-auto">
+                    {([
+                      { value: 'ALL', label: 'הכל' },
+                      { value: 'ARCHITECT', label: 'אדריכלים' },
+                      { value: 'DESIGNER', label: 'מעצבים' },
+                      { value: 'SUPPLIER', label: 'ספקים' },
+                    ] as const).map(opt => (
+                      <button
+                        key={opt.value}
+                        onClick={() => setUserRoleFilter(opt.value)}
+                        className={`flex-1 py-2 rounded-lg text-xs font-semibold transition-colors border ${
+                          userRoleFilter === opt.value
+                            ? 'bg-[#c99b4a] text-white border-[#c99b4a]'
+                            : 'bg-white text-[#8b7c69] border-[rgba(201,155,74,0.2)] hover:border-[#c99b4a]/50'
+                        }`}
+                      >
+                        {opt.label}
+                        <span className="mr-1 opacity-70">
+                          ({opt.value === 'ALL' ? allUsers.length : allUsers.filter(u => u.role === opt.value).length})
+                        </span>
+                      </button>
+                    ))}
                   </div>
                   {pendingUsers.length > 0 && selectedUsers.size > 0 && (
                     <button

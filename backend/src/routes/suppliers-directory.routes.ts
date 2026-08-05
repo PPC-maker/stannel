@@ -14,7 +14,7 @@ export async function suppliersDirectoryRoutes(server: FastifyInstance) {
       const { search } = request.query as { search?: string };
       console.log('Fetching suppliers...', search ? `search: "${search}"` : '');
 
-      const whereClause: any = { role: 'SUPPLIER', isDeleted: false };
+      const whereClause: any = { role: 'SUPPLIER', isDeleted: false, isActive: true };
 
       if (search && search.trim()) {
         const term = search.trim();
