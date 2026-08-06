@@ -32,7 +32,7 @@ export const metadata: Metadata = {
     capable: true,
     statusBarStyle: 'black-translucent',
     title: 'STANNEL',
-    startupImage: '/logoNew.png',
+    startupImage: '/apple-touch-icon.png',
   },
   verification: {
     google: 't24_wOD9p0neygB7Y0IhjQDYgN8TnkqPRme_hIGtswI',
@@ -42,9 +42,12 @@ export const metadata: Metadata = {
     'mobile-web-app-capable': 'yes',
   },
   icons: {
-    icon: '/logoNew.png',
-    apple: '/logoNew.png',
-    shortcut: '/logoNew.png',
+    icon: [
+      { url: '/icon-192.png', sizes: '192x192', type: 'image/png' },
+      { url: '/icon-512.png', sizes: '512x512', type: 'image/png' },
+    ],
+    apple: '/apple-touch-icon.png',
+    shortcut: '/icon-192.png',
   },
   openGraph: {
     title: 'STANNEL | פלטפורמת ניהול מועדון לקוחות',
