@@ -1,7 +1,7 @@
 {
-  "name": "STANNEL - Design Club",
+  "name": "STANNEL - מועדון עסקים לקהילת העיצוב והבנייה",
   "short_name": "STANNEL",
-  "description": "הפלטפורמה האקסקלוסיבית לאדריכלים וספקים",
+  "description": "מועדון עסקים לקהילת העיצוב והבנייה — הטבות ויתרונות בלעדיים",
   "start_url": "/login",
   "display": "standalone",
   "orientation": "portrait",

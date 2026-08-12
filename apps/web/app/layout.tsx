@@ -23,9 +23,9 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: 'STANNEL | פלטפורמת ניהול מועדון לקוחות מקצועי',
-  description: 'הפלטפורמה האקסקלוסיבית לאדריכלים וספקים בתחום הבנייה והעיצוב',
-  keywords: ['אדריכלות', 'עיצוב פנים', 'מועדון לקוחות', 'נקודות', 'הטבות'],
+  title: 'STANNEL | מועדון עסקים לקהילת העיצוב והבנייה',
+  description: 'מועדון עסקים לקהילת העיצוב והבנייה — הטבות, נקודות ויתרונות בלעדיים לאדריכלים ומעצבים',
+  keywords: ['אדריכלות', 'עיצוב פנים', 'מועדון עסקים', 'בנייה', 'עיצוב', 'הטבות', 'נקודות', 'ספקים'],
   authors: [{ name: 'STANNEL' }],
   manifest: '/manifest.json',
   appleWebApp: {
@@ -50,8 +50,8 @@ export const metadata: Metadata = {
     shortcut: '/icon-192.png',
   },
   openGraph: {
-    title: 'STANNEL | פלטפורמת ניהול מועדון לקוחות',
-    description: 'הפלטפורמה האקסקלוסיבית לאדריכלים וספקים',
+    title: 'STANNEL | מועדון עסקים לקהילת העיצוב והבנייה',
+    description: 'מועדון עסקים לקהילת העיצוב והבנייה — הטבות, נקודות ויתרונות בלעדיים לאדריכלים ומעצבים',
     type: 'website',
     locale: 'he_IL',
   },
