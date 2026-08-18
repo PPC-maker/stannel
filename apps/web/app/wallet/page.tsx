@@ -525,9 +525,9 @@ export default function WalletPage() {
               { label: 'אירועים', icon: Calendar, href: '/events' },
               { label: 'הטבות', icon: Gift, href: '/rewards' },
             ].map((item) => (
-              <Link key={item.href} href={item.href} className="flex-1 flex flex-col items-center gap-2.5 py-4 rounded-2xl hover:bg-white/60 transition-all group">
-                <div className="w-14 h-14 rounded-[18px] flex items-center justify-center bg-[#f7f3f2]" style={{ boxShadow: '0 4px 14px rgba(64,38,18,0.12)' }}>
-                  <item.icon size={26} className="text-[#7a5a44] group-hover:text-[#5a3d2a] transition-colors" strokeWidth={1.8} />
+              <Link key={item.href} href={item.href} className="flex-1 flex flex-col items-center gap-2 py-3 rounded-2xl transition-all group">
+                <div className="w-16 h-16 rounded-[20px] flex items-center justify-center" style={{ background: 'linear-gradient(145deg,#f0e6d0,#e8d8b8)', boxShadow: '0 6px 18px rgba(201,155,74,0.25), 0 2px 6px rgba(64,38,18,0.1)' }}>
+                  <item.icon size={30} className="text-[#7a5a44]" strokeWidth={2} />
                 </div>
                 <span className="text-[13px] font-extrabold text-[#2b241d]">{item.label}</span>
               </Link>
@@ -611,14 +611,14 @@ export default function WalletPage() {
                       isActive ? 'scale-110' : ''
                     }`}
                     style={{
-                      width: 60,
-                      height: 60,
-                      background: isActive ? metalGradient : '#f7f3f2',
-                      boxShadow: isActive ? '0 6px 20px rgba(201,155,74,0.45)' : '0 4px 14px rgba(64,38,18,0.10)',
+                      width: 64,
+                      height: 64,
+                      background: isActive ? metalGradient : 'linear-gradient(145deg,#f0e6d0,#e8d8b8)',
+                      boxShadow: isActive ? '0 8px 24px rgba(201,155,74,0.5)' : '0 6px 18px rgba(201,155,74,0.25), 0 2px 6px rgba(64,38,18,0.1)',
                       borderRadius: 20,
                     }}
                   >
-                    <IconComponent size={26} className={isActive ? 'text-white' : 'text-[#7a5a44]'} strokeWidth={1.8} />
+                    <IconComponent size={30} className={isActive ? 'text-white' : 'text-[#7a5a44]'} strokeWidth={2} />
                   </div>
                   <span className="text-[13px] text-[#2b241d] font-extrabold">{category.label}</span>
                 </button>
