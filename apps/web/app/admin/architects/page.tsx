@@ -38,6 +38,7 @@ interface Architect {
     pointsBalance: number;
     cashBalance: number;
     totalEarned: number;
+    totalEarnedShekels?: number;
     _count?: {
       invoices: number;
     };
@@ -126,7 +127,7 @@ export default function AdminArchitectsPage() {
     total: architects.length,
     active: architects.filter(a => a.isActive).length,
     totalPoints: architects.reduce((sum, a) => sum + (a.architectProfile?.pointsBalance || 0), 0),
-    totalEarned: architects.reduce((sum, a) => sum + (a.architectProfile?.totalEarned || 0), 0),
+    totalEarned: architects.reduce((sum, a) => sum + (a.architectProfile?.totalEarnedShekels || 0), 0),
   };
 
   if (!isReady) {
@@ -178,7 +179,7 @@ export default function AdminArchitectsPage() {
           </div>
           <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-4 sm:p-6 bg-blue-50">
             <div className="text-center overflow-hidden">
-              <p className="text-blue-400/70 text-xs sm:text-sm">סה״כ הרוויחו</p>
+              <p className="text-blue-400/70 text-xs sm:text-sm">סה״כ בשקלים</p>
               <p className={`font-bold text-blue-400 ${String(stats.totalEarned).length > 6 ? 'text-lg sm:text-2xl' : 'text-2xl sm:text-3xl'}`}>₪{stats.totalEarned.toLocaleString()}</p>
             </div>
           </div>
@@ -243,7 +244,7 @@ export default function AdminArchitectsPage() {
                       <th className="py-3 px-4 text-right text-[#8b7c69] font-medium">אדריכל</th>
                       <th className="py-3 px-4 text-right text-[#8b7c69] font-medium">דרגה</th>
                       <th className="py-3 px-4 text-right text-[#8b7c69] font-medium">נקודות</th>
-                      <th className="py-3 px-4 text-right text-[#8b7c69] font-medium">סה״כ הרוויח</th>
+                      <th className="py-3 px-4 text-right text-[#8b7c69] font-medium">סה״כ בשקלים</th>
                       <th className="py-3 px-4 text-right text-[#8b7c69] font-medium">סטטוס</th>
                       <th className="py-3 px-4 text-right text-[#8b7c69] font-medium">פעולות</th>
                     </tr>
@@ -280,7 +281,7 @@ export default function AdminArchitectsPage() {
                         </td>
                         <td className="py-4 px-4">
                           <span className="text-[#2b241d] font-medium">
-                            ₪{(architect.architectProfile?.totalEarned || 0).toLocaleString()}
+                            ₪{(architect.architectProfile?.totalEarnedShekels || 0).toLocaleString()}
                           </span>
                         </td>
                         <td className="py-4 px-4">
@@ -377,9 +378,9 @@ export default function AdminArchitectsPage() {
                     </div>
                     <div className="p-3 bg-[#c99b4a]/10 rounded-lg text-center">
                       <FileText className="mx-auto text-[#c99b4a] mb-1" size={20} />
-                      <p className="text-[#c99b4a]/70 text-xs">סה״כ הרוויח</p>
+                      <p className="text-[#c99b4a]/70 text-xs">סה״כ בשקלים</p>
                       <p className="text-[#c99b4a] font-bold">
-                        ₪{(selectedArchitect.architectProfile?.totalEarned || 0).toLocaleString()}
+                        ₪{(selectedArchitect.architectProfile?.totalEarnedShekels || 0).toLocaleString()}
                       </p>
                     </div>
                     <div className="p-3 bg-blue-50 rounded-lg text-center">

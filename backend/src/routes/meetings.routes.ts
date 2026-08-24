@@ -60,12 +60,30 @@ export async function meetingsRoutes(server: FastifyInstance) {
       },
     });
 
-    // Notify supplier
+    // Notify supplier (in-app)
     await notificationService.send(supplier.userId, {
       title: 'בקשת פגישה חדשה',
       body: `${user.name} מבקש פגישה בנושא: ${body.subject}`,
       data: { type: 'MEETING_REQUEST', meetingId: meeting.id },
     });
+
+    // Email supplier so the request doesn't go unnoticed
+    try {
+      if (supplier.user.email) {
+        const { emailService } = await import('../services/email.service.js');
+        await emailService.sendMeetingRequestEmail(
+          supplier.user.email,
+          user.name,
+          body.subject,
+          new Date(body.date).toLocaleDateString('he-IL'),
+          body.time,
+          body.notes
+        );
+      }
+    } catch (e) {
+      // Email is best-effort, don't fail the request
+      console.error('Failed to send meeting request email:', e);
+    }
 
     return meeting;
   });
@@ -142,13 +160,29 @@ export async function meetingsRoutes(server: FastifyInstance) {
       data: { status },
     });
 
-    // Notify architect
+    // Notify architect (in-app)
     const statusText = status === 'approved' ? 'אושרה' : 'נדחתה';
     await notificationService.send(meeting.architect.userId, {
       title: `הפגישה ${statusText}`,
       body: `הפגישה בנושא "${meeting.subject}" ${statusText}`,
       data: { type: 'MEETING_STATUS', meetingId: id, status },
     });
+
+    // Email architect with the supplier's decision
+    try {
+      if (meeting.architect.user.email) {
+        const { emailService } = await import('../services/email.service.js');
+        await emailService.sendMeetingStatusEmail(
+          meeting.architect.user.email,
+          meeting.supplier.companyName,
+          meeting.subject,
+          status
+        );
+      }
+    } catch (e) {
+      // Email is best-effort, don't fail the request
+      console.error('Failed to send meeting status email:', e);
+    }
 
     return updated;
   });

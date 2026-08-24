@@ -99,8 +99,36 @@ export async function adminRoutes(server: FastifyInstance) {
       prisma.user.count({ where }),
     ]);
 
+    // Attach the real ₪ amount each architect actually earned from their invoices
+    // (architectProfile.totalEarned stores points, not ₪ — see loyalty.service.ts)
+    const architectIds = users
+      .map(u => u.architectProfile?.id)
+      .filter((id): id is string => !!id);
+
+    let realEarningsByArchitectId: Record<string, number> = {};
+    if (architectIds.length > 0) {
+      const sums = await prisma.invoice.groupBy({
+        by: ['architectId'],
+        where: { architectId: { in: architectIds }, architectCommission: { not: null } },
+        _sum: { architectCommission: true },
+      });
+      realEarningsByArchitectId = Object.fromEntries(
+        sums.map(s => [s.architectId, s._sum.architectCommission || 0])
+      );
+    }
+
+    const data = users.map(u => u.architectProfile
+      ? {
+          ...u,
+          architectProfile: {
+            ...u.architectProfile,
+            totalEarnedShekels: realEarningsByArchitectId[u.architectProfile.id] || 0,
+          },
+        }
+      : u);
+
     return {
-      data: users,
+      data,
       total,
       page,
       pageSize,
