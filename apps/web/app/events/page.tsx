@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ImgWithLoader } from '@/components/ui/ImageWithLoader';
-import { Calendar, MapPin, Users, Clock, CheckCircle, Loader2, Building2, FileText, XCircle } from 'lucide-react';
+import { Calendar, MapPin, Clock, CheckCircle, Loader2, Building2, FileText, XCircle } from 'lucide-react';
 import { meetingsApi } from '@stannel/api-client';
 import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '@/lib/auth-context';
@@ -374,10 +374,6 @@ export default function EventsPage() {
                           <span>{event.location}</span>
                         </div>
                       )}
-                      <div className="flex items-center gap-2 text-[#8b7c69] text-sm">
-                        <Users size={14} />
-                        <span>{event.registeredCount || 0} / {event.capacity || '∞'} משתתפים</span>
-                      </div>
                     </div>
 
                     {/* Points & Action */}
