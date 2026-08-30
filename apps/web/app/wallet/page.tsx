@@ -2,7 +2,7 @@
 
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
-import ImageWithLoader from '@/components/ui/ImageWithLoader';
+import ImageWithLoader, { ImgWithLoader } from '@/components/ui/ImageWithLoader';
 import { useState, useEffect, useCallback, useRef } from 'react';
 import {
   Wallet,
@@ -32,12 +32,24 @@ import {
   Headphones,
   Search,
 } from 'lucide-react';
-import { useWalletBalance, useWalletCard, useWalletTransactions, useSuppliersDirectory, useRewardProducts } from '@/lib/api-hooks';
+import { useWalletBalance, useWalletCard, useWalletTransactions, useSuppliersDirectory, useRewardProducts, useEvents } from '@/lib/api-hooks';
 import { useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '@/lib/auth-context';
 import { useAuthGuard, AuthGuardLoader } from '@/lib/useAuthGuard';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+
+function isValidEventImageUrl(url: string | undefined): boolean {
+  if (!url) return false;
+  const imageExtensions = /\.(jpg|jpeg|png|gif|webp|avif|svg)(\?.*)?$/i;
+  const imageHosts = ['images.unsplash.com', 'unsplash.com', 'storage.googleapis.com', 'cloudinary.com', 'imgur.com'];
+  try {
+    const parsedUrl = new URL(url);
+    return imageExtensions.test(parsedUrl.pathname) || imageHosts.some(host => parsedUrl.hostname.includes(host));
+  } catch {
+    return false;
+  }
+}
 
 const rankConfig = {
   BRONZE: { label: 'BRONZE', color: 'text-amber-700', bg: 'bg-amber-100', emoji: '🥉', badge: '3', minPoints: 0, maxPoints: 5000, next: 'SILVER' },
@@ -68,11 +80,8 @@ const quickActionCategories = [
     icon: Calendar,
     color: 'bg-purple-500',
     iconColor: 'text-purple-500',
-    items: [
-      { label: 'אירועים קרובים', href: '/events', icon: Calendar },
-      { label: 'האירועים שלי', href: '/events?filter=registered', icon: CheckCircle },
-      { label: 'היסטוריית אירועים', href: '/events?filter=past', icon: History },
-    ],
+    directHref: '/events',
+    items: [],
   },
   {
     id: 'tools',
@@ -394,6 +403,15 @@ export default function WalletPage() {
 
   const { data: allSuppliers, isLoading: suppliersLoading } = useSuppliersDirectory({});
 
+  // Featured event for the feed banner (nearest upcoming event)
+  const { data: eventsResponse } = useEvents();
+  const feedEvents = (eventsResponse as any)?.data || eventsResponse || [];
+  const featuredEvent = feedEvents[0];
+  const featuredEventSpotsLeft = featuredEvent
+    ? (featuredEvent.spotsLeft ?? ((featuredEvent.capacity || 0) - (featuredEvent.registeredCount || 0)))
+    : 0;
+  const featuredEventFull = featuredEventSpotsLeft <= 0;
+
   // Fetch role-based WhatsApp number
   useEffect(() => {
     if (!user?.role) return;
@@ -515,6 +533,39 @@ export default function WalletPage() {
             </div>
           </div>
         </motion.div>
+
+        {/* ── Featured Event Banner ── */}
+        {featuredEvent && (
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.11 }} className="mb-3">
+            <Link href="/events" className="block relative rounded-[20px] overflow-hidden" style={{ boxShadow: goldShadowLight }}>
+              <div className="relative h-40 sm:h-48 bg-[#f0e6d0]">
+                {isValidEventImageUrl(featuredEvent.imageUrl) ? (
+                  <ImgWithLoader
+                    src={featuredEvent.imageUrl}
+                    alt={featuredEvent.title}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <Calendar size={40} className="text-[#a89b8a]/40" />
+                  </div>
+                )}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent" />
+                <div
+                  className={`absolute top-3 right-3 text-xs font-bold px-3 py-1 rounded-full text-white ${
+                    featuredEventFull ? 'bg-red-500' : 'bg-[#c99b4a]'
+                  }`}
+                >
+                  {featuredEventFull ? 'אזלו הכרטיסים' : 'הרשמה פתוחה'}
+                </div>
+                <div className="absolute bottom-0 left-0 right-0 p-4">
+                  <p className="text-white/70 text-xs mb-1">האירוע הקרוב שלנו</p>
+                  <h3 className="text-white text-lg font-bold drop-shadow-sm">{featuredEvent.title}</h3>
+                </div>
+              </div>
+            </Link>
+          </motion.div>
+        )}
 
         {/* ── Quick Actions Row (below card) ── */}
         <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.12 }} className="mb-3">
