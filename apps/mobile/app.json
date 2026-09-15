@@ -2,7 +2,8 @@
   "expo": {
     "name": "STANNEL",
     "slug": "stannel",
-    "version": "1.0.5",
+    "version": "1.0.6",
+    "newArchEnabled": true,
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
@@ -31,7 +32,8 @@
         "backgroundColor": "#060f1f"
       },
       "package": "com.stannel.app",
-      "versionCode": 6,
+      "versionCode": 8,
+      "edgeToEdgeEnabled": true,
       "googleServicesFile": "./google-services.json",
       "permissions": [
         "android.permission.CAMERA",
@@ -59,7 +61,17 @@
         }
       ],
       "expo-font",
-      "expo-asset"
+      "expo-asset",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "compileSdkVersion": 36,
+            "targetSdkVersion": 36,
+            "buildToolsVersion": "36.0.0"
+          }
+        }
+      ]
     ],
     "extra": {
       "router": {

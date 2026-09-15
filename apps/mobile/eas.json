@@ -1,6 +1,7 @@
 {
   "cli": {
-    "version": ">= 12.0.0"
+    "version": ">= 12.0.0",
+    "appVersionSource": "local"
   },
   "build": {
     "development": {
@@ -26,11 +27,15 @@
       }
     },
     "production": {
+      "credentialsSource": "remote",
+      "autoIncrement": false,
+      "pnpm": "9.15.0",
       "ios": {
         "resourceClass": "m1-medium"
       },
       "android": {
-        "buildType": "app-bundle"
+        "buildType": "app-bundle",
+        "image": "latest"
       },
       "env": {
         "EXPO_PUBLIC_API_URL": "https://stannel-api-1094694418275.me-west1.run.app"

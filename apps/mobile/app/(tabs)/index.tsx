@@ -1,6 +1,7 @@
 import { useRef, useState, useEffect, useCallback } from 'react';
 import { View, Text, Pressable, StyleSheet, BackHandler, Platform, Linking, ActivityIndicator, Image } from 'react-native';
 import { WebView, WebViewMessageEvent, WebViewNavigation } from 'react-native-webview';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const WEB_URL = 'https://stannelclub.co.il';
 
@@ -71,7 +72,7 @@ export default function MainScreen() {
   ), []);
 
   return (
-    <View style={styles.root}>
+    <SafeAreaView style={styles.root}>
       <WebView
         key={webViewKey}
         ref={webViewRef}
@@ -125,7 +126,7 @@ export default function MainScreen() {
           <Text style={styles.progressText}>{Math.round(loadProgress * 100)}%</Text>
         </View>
       )}
-    </View>
+    </SafeAreaView>
   );
 }
 
