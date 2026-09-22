@@ -292,11 +292,6 @@ export async function invoiceRoutes(server: FastifyInstance) {
       return reply.code(404).send({ error: 'Invoice not found' });
     }
 
-    // Non-admins can't view deleted invoices
-    if (invoice.deletedAt && request.user!.role !== 'ADMIN') {
-      return reply.code(404).send({ error: 'Invoice not found' });
-    }
-
     // Verify user has permission to view this invoice
     const isAdmin = request.user!.role === 'ADMIN';
     const isOwnerArchitect = request.user!.role === 'ARCHITECT' &&
@@ -304,8 +299,18 @@ export async function invoiceRoutes(server: FastifyInstance) {
     const isOwnerSupplier = request.user!.role === 'SUPPLIER' &&
       request.user!.supplierProfile?.id === invoice.supplierId;
 
+    // Non-owners/non-admins never learn whether a deleted invoice existed
     if (!isAdmin && !isOwnerArchitect && !isOwnerSupplier) {
+      if (invoice.deletedAt) {
+        return reply.code(404).send({ error: 'Invoice not found' });
+      }
       return reply.code(403).send({ error: 'You do not have permission to view this invoice' });
+    }
+
+    // Owner viewing their own deleted invoice - tell them clearly what happened
+    // instead of a generic "not found" (previously looked identical to a bug)
+    if (invoice.deletedAt && !isAdmin) {
+      return reply.code(410).send({ error: 'החשבונית הוסרה על ידי מנהל המערכת', deleted: true });
     }
 
     return invoice;

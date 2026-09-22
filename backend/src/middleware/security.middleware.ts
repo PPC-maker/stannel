@@ -69,6 +69,11 @@ export function securityHeadersMiddleware(
   reply.header('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
   reply.header('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://apis.google.com https://*.firebaseapp.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https: http:; connect-src 'self' https: wss:; frame-src https://*.firebaseapp.com https://accounts.google.com;");
 
+  // Never let API responses be cached - the Android WebView's native HTTP
+  // cache is more aggressive than a browser and was serving stale data
+  // (e.g. a just-uploaded invoice missing from the list) on repeat GETs.
+  reply.header('Cache-Control', 'no-store, no-cache, must-revalidate');
+
   if (process.env.NODE_ENV === 'production') {
     reply.header('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
   }

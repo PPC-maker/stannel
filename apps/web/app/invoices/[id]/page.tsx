@@ -8,12 +8,13 @@ import { useInvoice } from '@/lib/api-hooks';
 import { useAuthGuard, AuthGuardLoader } from '@/lib/useAuthGuard';
 
 const statusConfig: Record<string, { label: string; color: string; bg: string; icon: any }> = {
-  PENDING_ADMIN: { label: 'ממתין לאישור', color: 'text-yellow-400', bg: 'bg-yellow-500/20 border-yellow-500/30', icon: Clock },
-  APPROVED: { label: 'מאושר', color: 'text-green-400', bg: 'bg-green-500/20 border-green-500/30', icon: CheckCircle },
-  REJECTED: { label: 'נדחה', color: 'text-red-400', bg: 'bg-red-500/20 border-red-500/30', icon: XCircle },
-  PENDING_SUPPLIER_PAY: { label: 'ממתין לתשלום', color: 'text-blue-400', bg: 'bg-blue-500/20 border-blue-500/30', icon: Clock },
-  PAID: { label: 'שולם', color: 'text-[#c99b4a]', bg: 'bg-[#c99b4a]/20 border-[#c99b4a]/30', icon: CheckCircle },
-  OVERDUE: { label: 'באיחור', color: 'text-red-400', bg: 'bg-red-500/20 border-red-500/30', icon: AlertTriangle },
+  PENDING_ADMIN: { label: 'ממתין לאישור', color: 'text-amber-800', bg: 'bg-amber-100 border-amber-200', icon: Clock },
+  APPROVED: { label: 'מאושר', color: 'text-green-800', bg: 'bg-green-100 border-green-200', icon: CheckCircle },
+  REJECTED: { label: 'נדחה', color: 'text-red-800', bg: 'bg-red-100 border-red-200', icon: XCircle },
+  PENDING_SUPPLIER_PAY: { label: 'ממתין לתשלום', color: 'text-blue-800', bg: 'bg-blue-100 border-blue-200', icon: Clock },
+  PAID: { label: 'שולם', color: 'text-[#8a6a3d]', bg: 'bg-[#c99b4a]/25 border-[#c99b4a]/40', icon: CheckCircle },
+  OVERDUE: { label: 'באיחור', color: 'text-red-800', bg: 'bg-red-100 border-red-200', icon: AlertTriangle },
+  DELETED: { label: 'נמחקה', color: 'text-gray-600', bg: 'bg-gray-100 border-gray-200', icon: XCircle },
 };
 
 export default function InvoiceDetailPage() {
@@ -29,13 +30,20 @@ export default function InvoiceDetailPage() {
   }
 
   if (error || !invoice) {
+    const isDeleted = (error as (Error & { deleted?: boolean }) | null)?.deleted;
     return (
       <div className="min-h-screen">
         <div className="px-4 max-w-4xl mx-auto pt-8 relative z-10 pb-24">
           <div className="bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-2xl p-8 text-center">
-            <AlertTriangle size={48} className="mx-auto text-red-400 mb-4" />
-            <h1 className="text-2xl font-bold text-[#2b241d] mb-2">חשבונית לא נמצאה</h1>
-            <p className="text-[#8b7c69] mb-6">החשבונית המבוקשת לא נמצאה או שאין לך הרשאה לצפות בה</p>
+            <AlertTriangle size={48} className={`mx-auto mb-4 ${isDeleted ? 'text-gray-400' : 'text-red-400'}`} />
+            <h1 className="text-2xl font-bold text-[#2b241d] mb-2">
+              {isDeleted ? 'החשבונית הוסרה' : 'חשבונית לא נמצאה'}
+            </h1>
+            <p className="text-[#8b7c69] mb-6">
+              {isDeleted
+                ? 'החשבונית הוסרה על ידי מנהל המערכת ואינה זמינה יותר'
+                : 'החשבונית המבוקשת לא נמצאה או שאין לך הרשאה לצפות בה'}
+            </p>
             <Link href="/invoices" className="inline-block px-6 py-3 bg-[#c99b4a] text-white rounded-xl hover:bg-[#9e7746] transition-colors">
               חזרה לחשבוניות
             </Link>
@@ -178,8 +186,8 @@ export default function InvoiceDetailPage() {
               {invoice.aiStatus && (
                 <div className={`p-4 rounded-xl border ${
                   invoice.aiStatus === 'MATCH' ? 'bg-[#c99b4a]/10 border-[#c99b4a]/30' :
-                  invoice.aiStatus === 'MISMATCH' ? 'bg-red-500/10 border-red-500/30' :
-                  'bg-yellow-500/10 border-yellow-500/30'
+                  invoice.aiStatus === 'MISMATCH' ? 'bg-red-100 border-red-200' :
+                  'bg-amber-100 border-amber-200'
                 }`}>
                   <p className="text-[#a89b8a] text-sm mb-2">בדיקת AI</p>
                   <div className="space-y-1.5">
@@ -198,8 +206,8 @@ export default function InvoiceDetailPage() {
                     <div className="flex items-center justify-between">
                       <span className="text-[#8b7c69] text-sm">סטטוס:</span>
                       <div className="flex items-center gap-1.5">
-                        {invoice.aiStatus === 'MATCH' ? <CheckCircle size={14} className="text-[#c99b4a]" /> : <AlertTriangle size={14} className="text-yellow-400" />}
-                        <span className={invoice.aiStatus === 'MATCH' ? 'text-[#c99b4a] text-sm' : 'text-yellow-400 text-sm'}>
+                        {invoice.aiStatus === 'MATCH' ? <CheckCircle size={14} className="text-[#c99b4a]" /> : <AlertTriangle size={14} className="text-amber-700" />}
+                        <span className={invoice.aiStatus === 'MATCH' ? 'text-[#c99b4a] text-sm' : 'text-amber-700 text-sm'}>
                           {invoice.aiStatus === 'MATCH' ? 'תואם' : invoice.aiStatus === 'MISMATCH' ? 'לא תואם' : 'לא ברור'}
                         </span>
                       </div>

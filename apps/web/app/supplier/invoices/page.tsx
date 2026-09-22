@@ -35,12 +35,12 @@ interface Invoice {
 }
 
 const STATUS_CONFIG: Record<string, { label: string; color: string; bg: string }> = {
-  PENDING_ADMIN: { label: 'ממתין לאישור', color: 'text-blue-400', bg: 'bg-blue-500/20' },
-  PENDING_SUPPLIER_PAY: { label: 'ממתין לתשלום', color: 'text-yellow-400', bg: 'bg-yellow-500/20' },
-  OVERDUE: { label: 'באיחור', color: 'text-red-400', bg: 'bg-red-500/20' },
-  PAID: { label: 'שולם', color: 'text-[#c99b4a]', bg: 'bg-[#c99b4a]/20' },
-  CREDITED: { label: 'זוכה', color: 'text-purple-400', bg: 'bg-purple-500/20' },
-  REJECTED: { label: 'נדחה', color: 'text-red-400', bg: 'bg-red-500/20' },
+  PENDING_ADMIN: { label: 'ממתין לאישור', color: 'text-blue-800', bg: 'bg-blue-100' },
+  PENDING_SUPPLIER_PAY: { label: 'ממתין לתשלום', color: 'text-amber-800', bg: 'bg-amber-100' },
+  OVERDUE: { label: 'באיחור', color: 'text-red-800', bg: 'bg-red-100' },
+  PAID: { label: 'שולם', color: 'text-[#8a6a3d]', bg: 'bg-[#c99b4a]/25' },
+  CREDITED: { label: 'זוכה', color: 'text-purple-800', bg: 'bg-purple-100' },
+  REJECTED: { label: 'נדחה', color: 'text-red-800', bg: 'bg-red-100' },
 };
 
 const STATUS_OPTIONS = [
@@ -243,7 +243,7 @@ export default function SupplierInvoicesPage() {
                           </td>
                           <td className="py-4 px-4">
                             {invoice.slaDeadline && canConfirm ? (
-                              <div className={`flex items-center gap-2 text-sm font-semibold ${isOverdue ? 'text-red-400' : 'text-amber-400'}`}>
+                              <div className={`flex items-center gap-2 text-sm font-semibold ${isOverdue ? 'text-red-700' : 'text-amber-700'}`}>
                                 {isOverdue ? <AlertTriangle size={14} /> : <Clock size={14} />}
                                 {new Date(invoice.slaDeadline).toLocaleDateString('he-IL')}
                               </div>
@@ -265,8 +265,8 @@ export default function SupplierInvoicesPage() {
                                 onClick={() => openPaymentModal(invoice)}
                                 className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-colors ${
                                   isOverdue
-                                    ? 'bg-red-500/20 text-red-400 hover:bg-red-500/30 border border-red-500/30'
-                                    : 'bg-amber-500/20 text-amber-400 hover:bg-amber-500/30 border border-amber-500/30'
+                                    ? 'bg-red-100 text-red-800 hover:bg-red-200 border border-red-200'
+                                    : 'bg-amber-100 text-amber-800 hover:bg-amber-200 border border-amber-200'
                                 }`}
                               >
                                 <CreditCard size={16} />
@@ -335,7 +335,7 @@ export default function SupplierInvoicesPage() {
                 {selectedInvoice.slaDeadline && (
                   <div className="flex justify-between items-center">
                     <span className="text-[#a89b8a]">תאריך יעד:</span>
-                    <span className={selectedInvoice.status === 'OVERDUE' ? 'text-red-400' : 'text-yellow-400'}>
+                    <span className={selectedInvoice.status === 'OVERDUE' ? 'text-red-700' : 'text-amber-700'}>
                       {new Date(selectedInvoice.slaDeadline).toLocaleDateString('he-IL')}
                     </span>
                   </div>

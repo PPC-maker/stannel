@@ -2653,14 +2653,14 @@ Please analyze this error and provide a fix.
                             <div className="p-2 space-y-2 bg-[#f7f3f2]/50">
                               {group.invoices.map((invoice) => {
                                 const invoiceStatusConfig: Record<string, { bg: string; text: string; label: string }> = {
-                                  PENDING_ADMIN: { bg: 'bg-yellow-500/20', text: 'text-yellow-400', label: 'ממתין לאישור' },
-                                  APPROVED: { bg: 'bg-green-500/20', text: 'text-green-400', label: 'מאושר' },
-                                  REJECTED: { bg: 'bg-red-500/20', text: 'text-red-400', label: 'נדחה' },
-                                  PAID: { bg: 'bg-blue-500/20', text: 'text-blue-400', label: 'שולם' },
-                                  PENDING_SUPPLIER_PAY: { bg: 'bg-purple-500/20', text: 'text-purple-400', label: 'ממתין לתשלום' },
-                                  OVERDUE: { bg: 'bg-orange-500/20', text: 'text-orange-400', label: 'באיחור' },
+                                  PENDING_ADMIN: { bg: 'bg-amber-100', text: 'text-amber-800', label: 'ממתין לאישור' },
+                                  APPROVED: { bg: 'bg-green-100', text: 'text-green-800', label: 'מאושר' },
+                                  REJECTED: { bg: 'bg-red-100', text: 'text-red-800', label: 'נדחה' },
+                                  PAID: { bg: 'bg-blue-100', text: 'text-blue-800', label: 'שולם' },
+                                  PENDING_SUPPLIER_PAY: { bg: 'bg-purple-100', text: 'text-purple-800', label: 'ממתין לתשלום' },
+                                  OVERDUE: { bg: 'bg-orange-100', text: 'text-orange-800', label: 'באיחור' },
                                 };
-                                const status = invoiceStatusConfig[invoice.status] || { bg: 'bg-gray-500/20', text: 'text-[#8b7c69]', label: invoice.status };
+                                const status = invoiceStatusConfig[invoice.status] || { bg: 'bg-gray-100', text: 'text-[#8b7c69]', label: invoice.status };
                                 const hasAmountMismatch = invoice.aiExtractedAmount && invoice.aiExtractedAmount > 0 && invoice.aiStatus !== 'MATCH' && Math.abs(invoice.amount - invoice.aiExtractedAmount) > 1;
                                 const isApprovedWithMismatch = hasAmountMismatch && invoice.status !== 'PENDING_ADMIN' && invoice.status !== 'REJECTED';
 
@@ -2677,8 +2677,8 @@ Please analyze this error and provide a fix.
                                     }`}
                                   >
                                     <div className="flex items-center gap-3">
-                                      <div className={`p-1.5 rounded-lg ${isApprovedWithMismatch ? 'bg-red-500/20' : status.bg}`}>
-                                        <Receipt size={14} className={isApprovedWithMismatch ? 'text-red-400' : status.text} />
+                                      <div className={`p-1.5 rounded-lg ${isApprovedWithMismatch ? 'bg-red-100' : status.bg}`}>
+                                        <Receipt size={14} className={isApprovedWithMismatch ? 'text-red-700' : status.text} />
                                       </div>
                                       <div>
                                         <p className="text-[#2b241d] font-medium text-sm">₪{invoice.amount.toLocaleString()}</p>
@@ -2828,9 +2828,9 @@ Please analyze this error and provide a fix.
                       <div>
                         <label className="text-[#8b7c69] text-sm">סטטוס</label>
                         <p className={`font-medium ${
-                          selectedInvoice.status === 'PENDING_ADMIN' ? 'text-yellow-400' :
-                          selectedInvoice.status === 'APPROVED' ? 'text-green-400' :
-                          selectedInvoice.status === 'REJECTED' ? 'text-red-400' : 'text-[#2b241d]'
+                          selectedInvoice.status === 'PENDING_ADMIN' ? 'text-amber-700' :
+                          selectedInvoice.status === 'APPROVED' ? 'text-green-700' :
+                          selectedInvoice.status === 'REJECTED' ? 'text-red-700' : 'text-[#2b241d]'
                         }`}>
                           {selectedInvoice.status === 'PENDING_ADMIN' ? 'ממתין לאישור' :
                            selectedInvoice.status === 'APPROVED' ? 'מאושר' :
@@ -2898,8 +2898,8 @@ Please analyze this error and provide a fix.
                     {/* AI Analysis */}
                     <div className={`p-3 rounded-lg ${
                       selectedInvoice.aiStatus === 'MATCH' ? 'bg-[#c99b4a]/20 border border-[#c99b4a]/30' :
-                      selectedInvoice.aiStatus === 'MISMATCH' ? 'bg-red-500/20 border border-red-500/30' :
-                      'bg-yellow-500/20 border border-yellow-500/30'
+                      selectedInvoice.aiStatus === 'MISMATCH' ? 'bg-red-100 border border-red-200' :
+                      'bg-amber-100 border border-amber-200'
                     }`}>
                       <p className="text-sm text-[#8b7c69] mb-2">ניתוח AI</p>
                       <div className="space-y-1.5">
@@ -2909,7 +2909,7 @@ Please analyze this error and provide a fix.
                         </div>
                         <div className="flex items-center justify-between">
                           <span className="text-[#8b7c69] text-sm">סכום שזוהה:</span>
-                          <span className={selectedInvoice.aiStatus === 'MATCH' ? 'text-[#c99b4a] font-semibold' : selectedInvoice.aiStatus === 'MISMATCH' ? 'text-red-400 font-semibold' : 'text-yellow-400 font-semibold'}>
+                          <span className={selectedInvoice.aiStatus === 'MATCH' ? 'text-[#c99b4a] font-semibold' : selectedInvoice.aiStatus === 'MISMATCH' ? 'text-red-700 font-semibold' : 'text-amber-700 font-semibold'}>
                             {selectedInvoice.aiExtractedAmount ? `₪${selectedInvoice.aiExtractedAmount.toLocaleString()}` : 'לא זוהה'}
                           </span>
                         </div>
@@ -2921,9 +2921,9 @@ Please analyze this error and provide a fix.
                           <div className="flex items-center justify-between pt-1 border-t border-[rgba(201,155,74,0.08)]">
                             <span className="text-[#8b7c69] text-sm">סטטוס:</span>
                             <span className={`px-2 py-0.5 rounded-full text-xs ${
-                              selectedInvoice.aiStatus === 'MATCH' ? 'bg-[#c99b4a]/30 text-[#c99b4a]' :
-                              selectedInvoice.aiStatus === 'MISMATCH' ? 'bg-red-500/30 text-red-400' :
-                              'bg-yellow-500/30 text-yellow-400'
+                              selectedInvoice.aiStatus === 'MATCH' ? 'bg-[#c99b4a]/30 text-[#8a6a3d]' :
+                              selectedInvoice.aiStatus === 'MISMATCH' ? 'bg-red-200 text-red-800' :
+                              'bg-amber-200 text-amber-800'
                             }`}>
                               {selectedInvoice.aiStatus === 'MATCH' ? 'תואם' : selectedInvoice.aiStatus === 'MISMATCH' ? 'לא תואם' : 'לא ברור'}
                             </span>

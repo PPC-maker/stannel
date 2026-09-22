@@ -9,13 +9,13 @@ import { useAuthGuard, AuthGuardLoader } from '@/lib/useAuthGuard';
 import { useAuth } from '@/lib/auth-context';
 
 const statusConfig = {
-  PENDING_ADMIN: { label: 'ממתין לאישור', color: 'text-yellow-400', bg: 'bg-yellow-400/20', icon: Clock },
-  CLARIFICATION_NEEDED: { label: 'נדרש הבהרה', color: 'text-purple-400', bg: 'bg-purple-400/20', icon: AlertCircle },
-  APPROVED: { label: 'אושר', color: 'text-green-400', bg: 'bg-green-400/20', icon: CheckCircle },
-  REJECTED: { label: 'נדחה', color: 'text-red-400', bg: 'bg-red-400/20', icon: XCircle },
-  PENDING_SUPPLIER_PAY: { label: 'ממתין לתשלום', color: 'text-blue-400', bg: 'bg-blue-400/20', icon: Clock },
-  PAID: { label: 'שולם', color: 'text-[#c99b4a]', bg: 'bg-[#c99b4a]/20', icon: CheckCircle },
-  OVERDUE: { label: 'באיחור', color: 'text-red-400', bg: 'bg-red-400/20', icon: AlertCircle },
+  PENDING_ADMIN: { label: 'ממתין לאישור', color: 'text-amber-800', bg: 'bg-amber-100', icon: Clock },
+  CLARIFICATION_NEEDED: { label: 'נדרש הבהרה', color: 'text-purple-800', bg: 'bg-purple-100', icon: AlertCircle },
+  APPROVED: { label: 'אושר', color: 'text-green-800', bg: 'bg-green-100', icon: CheckCircle },
+  REJECTED: { label: 'נדחה', color: 'text-red-800', bg: 'bg-red-100', icon: XCircle },
+  PENDING_SUPPLIER_PAY: { label: 'ממתין לתשלום', color: 'text-blue-800', bg: 'bg-blue-100', icon: Clock },
+  PAID: { label: 'שולם', color: 'text-[#8a6a3d]', bg: 'bg-[#c99b4a]/25', icon: CheckCircle },
+  OVERDUE: { label: 'באיחור', color: 'text-red-800', bg: 'bg-red-100', icon: AlertCircle },
 };
 
 export default function InvoicesPage() {

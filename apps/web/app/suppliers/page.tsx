@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import ImageWithLoader from '@/components/ui/ImageWithLoader';
 import Link from 'next/link';
-import { Search, Building2, MapPin, Phone, Globe, Loader2, MessageCircle, Calendar, Bookmark, SlidersHorizontal } from 'lucide-react';
+import { Search, Building2, MapPin, Phone, Globe, Loader2, MessageCircle, Calendar, Bookmark, SlidersHorizontal, Check } from 'lucide-react';
 import { useSuppliersDirectory } from '@/lib/api-hooks';
 import { useAuth } from '@/lib/auth-context';
 import { meetingsApi } from '@stannel/api-client';
@@ -15,9 +15,22 @@ export default function SuppliersDirectoryPage() {
   const isReady = !authLoading;
   const [search, setSearch] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
+  const [sortBy, setSortBy] = useState<'name-asc' | 'name-desc'>('name-asc');
+  const [onlyWithWebsite, setOnlyWithWebsite] = useState(false);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   const { data, isLoading } = useSuppliersDirectory({ search: debouncedSearch }, isReady);
-  const suppliers = data?.data || [];
+  const rawSuppliers = data?.data || [];
+
+  const suppliers = [...rawSuppliers]
+    .filter((s) => !onlyWithWebsite || !!s.website)
+    .sort((a, b) =>
+      sortBy === 'name-asc'
+        ? a.companyName.localeCompare(b.companyName, 'he')
+        : b.companyName.localeCompare(a.companyName, 'he')
+    );
+
+  const activeFilterCount = (onlyWithWebsite ? 1 : 0) + (sortBy !== 'name-asc' ? 1 : 0);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -47,7 +60,7 @@ export default function SuppliersDirectoryPage() {
       </div>
 
       {/* Search + Filter */}
-      <div className="max-w-lg mx-auto px-4 mb-5">
+      <div className="max-w-lg mx-auto px-4 mb-5 relative">
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -64,10 +77,67 @@ export default function SuppliersDirectoryPage() {
               className="w-full bg-white border border-[rgba(201,155,74,0.15)] rounded-2xl px-4 py-3.5 pr-11 text-sm text-[#2b241d] placeholder:text-[#c0b5a8] focus:border-[#c99b4a]/40 focus:outline-none focus:ring-2 focus:ring-[#c99b4a]/15 transition-all text-right shadow-sm"
             />
           </div>
-          <button className="w-12 h-12 rounded-2xl bg-[#2b241d] flex items-center justify-center flex-shrink-0 shadow-sm active:scale-95 transition-transform">
+          <button
+            onClick={() => setIsFilterOpen((v) => !v)}
+            className="relative w-12 h-12 rounded-2xl bg-[#2b241d] flex items-center justify-center flex-shrink-0 shadow-sm active:scale-95 transition-transform"
+          >
             <SlidersHorizontal size={18} className="text-white" />
+            {activeFilterCount > 0 && (
+              <span className="absolute -top-1 -left-1 w-4 h-4 rounded-full bg-[#c99b4a] text-white text-[10px] font-bold flex items-center justify-center">
+                {activeFilterCount}
+              </span>
+            )}
           </button>
         </motion.div>
+
+        {isFilterOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="absolute left-4 top-full mt-2 w-64 bg-white border border-[rgba(201,155,74,0.15)] rounded-2xl shadow-xl p-4 z-20"
+          >
+            <p className="text-[#2b241d] text-sm font-semibold mb-3">מיון</p>
+            <div className="space-y-1 mb-4">
+              {[
+                { key: 'name-asc' as const, label: 'שם: א-ת' },
+                { key: 'name-desc' as const, label: 'שם: ת-א' },
+              ].map((opt) => (
+                <button
+                  key={opt.key}
+                  onClick={() => setSortBy(opt.key)}
+                  className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-sm transition-colors ${
+                    sortBy === opt.key ? 'bg-[#c99b4a]/10 text-[#8a6a3d] font-semibold' : 'text-[#8b7c69] hover:bg-[#f7f3f2]'
+                  }`}
+                >
+                  {opt.label}
+                  {sortBy === opt.key && <Check size={14} />}
+                </button>
+              ))}
+            </div>
+
+            <p className="text-[#2b241d] text-sm font-semibold mb-2">סינון</p>
+            <button
+              onClick={() => setOnlyWithWebsite((v) => !v)}
+              className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-sm transition-colors mb-3 ${
+                onlyWithWebsite ? 'bg-[#c99b4a]/10 text-[#8a6a3d] font-semibold' : 'text-[#8b7c69] hover:bg-[#f7f3f2]'
+              }`}
+            >
+              עם אתר אינטרנט בלבד
+              {onlyWithWebsite && <Check size={14} />}
+            </button>
+
+            <button
+              onClick={() => {
+                setSortBy('name-asc');
+                setOnlyWithWebsite(false);
+                setIsFilterOpen(false);
+              }}
+              className="w-full py-2 rounded-xl text-sm text-[#a89b8a] hover:bg-[#f7f3f2] transition-colors"
+            >
+              איפוס סינון
+            </button>
+          </motion.div>
+        )}
       </div>
 
       {/* Grid */}

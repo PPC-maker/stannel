@@ -104,7 +104,9 @@ export const invoicesApi = {
 
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.message || 'שגיאה בטעינת החשבונית. נסה לרענן את הדף.');
+      const err = new Error(error.error || error.message || 'שגיאה בטעינת החשבונית. נסה לרענן את הדף.') as Error & { deleted?: boolean };
+      err.deleted = !!error.deleted;
+      throw err;
     }
 
     return response.json();

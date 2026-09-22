@@ -16,7 +16,13 @@ export async function fetchWithRetry(
   attempts = config.retryAttempts
 ): Promise<Response> {
   try {
-    const response = await fetch(url, options);
+    // GET requests must never be served from the WebView's HTTP cache -
+    // Android WebView caches identical API URLs more aggressively than a
+    // browser, which showed up as newly-created invoices "disappearing".
+    const fetchOptions: RequestInit = options.method && options.method !== 'GET'
+      ? options
+      : { ...options, cache: 'no-store' };
+    const response = await fetch(url, fetchOptions);
 
     // Retry on 500/503 (likely cold start or DB connection issue)
     if ((response.status === 500 || response.status === 503) && attempts > 0) {
