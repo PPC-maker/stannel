@@ -12,7 +12,10 @@ import type { DecodedIdToken } from 'firebase-admin/auth';
 const registerSchema = z.object({
   email: z.string().email(),
   name: z.string().min(2),
-  phone: z.string().optional(),
+  phone: z.string().min(1, 'מספר טלפון הוא שדה חובה').refine(
+    (val) => val.replace(/\D/g, '').length >= 9,
+    { message: 'מספר טלפון לא תקין' }
+  ),
   role: z.enum(['ARCHITECT', 'DESIGNER', 'SUPPLIER']),
   companyName: z.string().optional(),
   address: z.string().optional(),

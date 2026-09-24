@@ -475,7 +475,7 @@ export default function RegisterPage() {
                   </div>
 
                   <div>
-                    <label className="block text-white/70 text-base font-semibold mb-2">טלפון</label>
+                    <label className="block text-white/70 text-base font-semibold mb-2">טלפון <span className="text-red-400/70 text-xs font-normal">(שדה חובה)</span></label>
                     <div className="relative">
                       <Phone className="absolute right-4 top-1/2 -translate-y-1/2 text-[#c99b4a]" size={22} />
                       <input
@@ -485,6 +485,10 @@ export default function RegisterPage() {
                         className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-4 pr-12 text-white text-lg font-medium placeholder-white/40 focus:border-[#c99b4a] focus:bg-white/15 transition-all"
                         placeholder="050-123-4567"
                         dir="ltr"
+                        required
+                        minLength={9}
+                        pattern="[0-9\-\+\s]+"
+                        title="מספר טלפון תקין (לפחות 9 ספרות)"
                         disabled={isLoading}
                       />
                     </div>
