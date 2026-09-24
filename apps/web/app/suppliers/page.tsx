@@ -241,16 +241,18 @@ function SupplierCard({ supplier, index }: { supplier: any; index: number }) {
       <Link href={`/suppliers/${supplier.id}`}>
         <div className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all group cursor-pointer border border-[rgba(201,155,74,0.08)]">
 
-          {/* Image area */}
-          <div className="relative w-full aspect-[4/3] bg-[#f0ebe4]">
+          {/* Logo area */}
+          <div className="relative w-full aspect-[4/3] bg-white">
             {logoImage ? (
-              <ImageWithLoader
-                src={logoImage}
-                alt={supplier.companyName}
-                fill
-                className="object-cover"
-                unoptimized
-              />
+              <div className="absolute inset-5">
+                <ImageWithLoader
+                  src={logoImage}
+                  alt={supplier.companyName}
+                  fill
+                  className="object-contain"
+                  unoptimized
+                />
+              </div>
             ) : (
               <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-[#f0ebe4] to-[#e8e0d5]">
                 <span className="text-5xl font-bold text-[#c99b4a]/40">{supplier.companyName?.charAt(0) || 'S'}</span>

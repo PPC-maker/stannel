@@ -323,19 +323,19 @@ function SuppliersCarousel({ metalGradient, goldShadowLight, allSuppliers, suppl
         style={{ WebkitOverflowScrolling: 'touch', scrollBehavior: 'smooth', scrollSnapType: 'x mandatory' }}
       >
         {suppliers.map((supplier: any) => {
-          const logo = supplier.profileImage || supplier.businessImages?.[0];
+          const logo = supplier.profileImage;
           return (
             <Link
               key={supplier.id}
               href={`/suppliers/${supplier.id}`}
               className="flex-shrink-0 flex flex-col items-center gap-2 p-3 rounded-2xl group hover:bg-white/50 transition-all"
-              style={{ width: 100, scrollSnapAlign: 'start' }}
+              style={{ width: 108, scrollSnapAlign: 'start' }}
             >
-              <div className="w-16 h-16 rounded-xl overflow-hidden flex items-center justify-center">
+              <div className="w-24 h-24 rounded-xl overflow-hidden flex items-center justify-center bg-white border border-[rgba(201,155,74,0.1)] p-2.5">
                 {logo ? (
-                  <img src={logo} alt={supplier.companyName || ''} className="w-full h-full object-cover" />
+                  <img src={logo} alt={supplier.companyName || ''} className="w-full h-full object-contain" />
                 ) : (
-                  <Building2 size={24} className="text-[#c99b4a]" />
+                  <Building2 size={28} className="text-[#c99b4a]" />
                 )}
               </div>
               <span className="text-[10px] font-bold text-[#2b241d] text-center line-clamp-2 leading-tight">{supplier.companyName || supplier.name}</span>

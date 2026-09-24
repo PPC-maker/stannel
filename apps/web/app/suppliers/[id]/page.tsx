@@ -117,17 +117,34 @@ export default function SupplierDetailPage() {
       {/* Spacer for navbar */}
       <div className="pt-2" />
 
+      {/* ── Back navigation ── */}
+      <div className="mx-4 mb-3 flex items-center justify-between">
+        <Link
+          href="/suppliers"
+          className="inline-flex items-center gap-1.5 text-[#8b7c69] hover:text-[#c99b4a] transition-colors text-sm font-medium"
+        >
+          <ArrowRight size={16} />
+          כל הספקים
+        </Link>
+        <Link
+          href="/wallet"
+          className="inline-flex items-center gap-1.5 text-[#8b7c69] hover:text-[#c99b4a] transition-colors text-sm font-medium"
+        >
+          דף הבית
+        </Link>
+      </div>
+
       {/* ── 1. Logo + Name + Bio ── */}
       <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="mx-4 mb-4">
         <div className="bg-[#f7f3f2] rounded-2xl border border-[rgba(201,155,74,0.08)] p-5 shadow-sm">
           <div className="flex items-center gap-4 mb-3">
             {/* Logo */}
             {logoImage ? (
-              <div className="relative w-16 h-16 rounded-2xl overflow-hidden flex-shrink-0 border border-[rgba(201,155,74,0.1)]">
+              <div className="relative w-24 h-24 rounded-2xl overflow-hidden flex-shrink-0 border border-[rgba(201,155,74,0.1)] bg-white p-2">
                 <ImageWithLoader src={logoImage} alt={supplier.companyName} fill className="object-contain" unoptimized />
               </div>
             ) : (
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#c99b4a]/20 to-[#c99b4a]/5 flex items-center justify-center flex-shrink-0 border border-[#c99b4a]/15">
+              <div className="w-24 h-24 rounded-2xl bg-gradient-to-br from-[#c99b4a]/20 to-[#c99b4a]/5 flex items-center justify-center flex-shrink-0 border border-[#c99b4a]/15">
                 <span className="text-3xl font-bold text-[#c99b4a]">{supplier.companyName?.charAt(0) || 'S'}</span>
               </div>
             )}
