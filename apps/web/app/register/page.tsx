@@ -3,34 +3,29 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Mail, Lock, User, Phone, Building2, ArrowLeft, Check, AlertCircle, Camera, X, Palette, ChevronDown, MapPin, Eye, EyeOff } from 'lucide-react';
+import { Mail, Lock, User, Phone, Building2, ArrowLeft, Check, AlertCircle, Camera, X, Palette, MapPin, Eye, EyeOff } from 'lucide-react';
 import Image from 'next/image';
 import { useAuth } from '@/lib/auth-context';
 import Swal from 'sweetalert2';
 
 type UserRole = 'ARCHITECT' | 'DESIGNER' | 'SUPPLIER';
 
-// Sub-specializations for each role
+// Sub-categories (project types) for each role — which projects this professional specializes in
 const architectSpecializations = [
-  { value: 'architecture', label: 'אדריכלות' },
-  { value: 'interior', label: 'עיצוב פנים' },
-  { value: 'landscape', label: 'אדריכלות נוף' },
-  { value: 'urban', label: 'תכנון עירוני' },
-  { value: 'preservation', label: 'שימור מבנים' },
-  { value: 'commercial', label: 'מסחרי' },
   { value: 'residential_building', label: 'בניה רוויה' },
-  { value: 'public_buildings', label: 'מבני ציבור' },
-  { value: 'contractor_apartments', label: 'דירות קבלן' },
-  { value: 'other', label: 'אחר' },
+  { value: 'commercial_building', label: 'בניה מסחרית' },
+  { value: 'institutional_building', label: 'בניה מוסדית' },
+  { value: 'hotels', label: 'בתי מלון' },
+  { value: 'private_construction', label: 'בניה פרטית' },
+  { value: 'preservation', label: 'שימור' },
+  { value: 'interior', label: 'עיצוב פנים' },
+  { value: 'renovation', label: 'שיפוץ' },
 ];
 
 const designerSpecializations = [
-  { value: 'interior', label: 'עיצוב פנים' },
-  { value: 'furniture', label: 'עיצוב רהיטים' },
-  { value: 'lighting', label: 'עיצוב תאורה' },
-  { value: 'garden', label: 'עיצוב גינות' },
-  { value: 'kitchen', label: 'עיצוב מטבחים' },
-  { value: 'other', label: 'אחר' },
+  { value: 'contractor_apartments', label: 'דירות קבלן' },
+  { value: 'commercial_design', label: 'עיצוב מסחרי (משרדים, בתי מלון, חנויות)' },
+  { value: 'home_renovation', label: 'שיפוץ בתים' },
 ];
 
 const supplierSpecializations = [
@@ -54,7 +49,7 @@ export default function RegisterPage() {
   const [step, setStep] = useState(1);
   const [role, setRole] = useState<UserRole | null>(null);
   const [roleCategory, setRoleCategory] = useState<RoleCategory | null>(null);
-  const [specialization, setSpecialization] = useState('');
+  const [specializations, setSpecializations] = useState<string[]>([]);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -94,6 +89,12 @@ export default function RegisterPage() {
     return [];
   };
 
+  const toggleSpecialization = (value: string) => {
+    setSpecializations((prev) =>
+      prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value]
+    );
+  };
+
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -126,6 +127,11 @@ export default function RegisterPage() {
       return;
     }
 
+    if (specializations.length === 0) {
+      setError('יש לבחור לפחות תחום התמחות אחד');
+      return;
+    }
+
     setIsLoading(true);
     setError(null);
 
@@ -138,6 +144,7 @@ export default function RegisterPage() {
         role: role,
         companyName: formData.companyName || undefined,
         address: formData.address || undefined,
+        specializations,
       });
       setStep(3); // Success step
     } catch (err: unknown) {
@@ -435,25 +442,34 @@ export default function RegisterPage() {
                     </>
                   )}
 
-                  {/* Specialization dropdown */}
+                  {/* Specialization sub-categories (multi-select) */}
                   <div>
-                    <label className="block text-white/70 text-base font-semibold mb-2">תחום התמחות <span className="text-red-400/70 text-xs font-normal">(שדה חובה)</span></label>
-                    <div className="relative">
-                      <ChevronDown className="absolute left-4 top-1/2 -translate-y-1/2 text-white/40 pointer-events-none" size={22} />
-                      <select
-                        value={specialization}
-                        onChange={(e) => setSpecialization(e.target.value)}
-                        className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-4 text-white text-lg font-medium focus:border-[#c99b4a] focus:bg-white/15 transition-all appearance-none cursor-pointer"
-                        required
-                        disabled={isLoading}
-                      >
-                        <option value="" className="bg-[#1a4a3a] text-white">בחרו תחום התמחות</option>
-                        {getSpecializationOptions().map((option) => (
-                          <option key={option.value} value={option.value} className="bg-[#1a4a3a] text-white">
-                            {option.label}
-                          </option>
-                        ))}
-                      </select>
+                    <label className="block text-white/70 text-base font-semibold mb-2">
+                      תחומי התמחות <span className="text-red-400/70 text-xs font-normal">(שדה חובה, ניתן לבחור כמה שרוצים)</span>
+                    </label>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      {getSpecializationOptions().map((option) => {
+                        const checked = specializations.includes(option.value);
+                        return (
+                          <label
+                            key={option.value}
+                            className={`flex items-center gap-3 rounded-xl px-4 py-3 border cursor-pointer transition-all ${
+                              checked
+                                ? 'bg-[#c99b4a]/20 border-[#c99b4a]/60'
+                                : 'bg-white/10 border-white/20 hover:bg-white/15'
+                            }`}
+                          >
+                            <input
+                              type="checkbox"
+                              checked={checked}
+                              onChange={() => toggleSpecialization(option.value)}
+                              disabled={isLoading}
+                              className="w-5 h-5 rounded border-white/30 bg-white/10 text-[#c99b4a] focus:ring-[#c99b4a] cursor-pointer flex-shrink-0"
+                            />
+                            <span className="text-white text-base font-medium">{option.label}</span>
+                          </label>
+                        );
+                      })}
                     </div>
                   </div>
 

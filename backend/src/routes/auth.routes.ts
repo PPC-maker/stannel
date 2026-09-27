@@ -19,6 +19,7 @@ const registerSchema = z.object({
   role: z.enum(['ARCHITECT', 'DESIGNER', 'SUPPLIER']),
   companyName: z.string().optional(),
   address: z.string().optional(),
+  specializations: z.array(z.string()).optional(),
   firebaseToken: z.string(),
 });
 
@@ -192,10 +193,10 @@ export async function authRoutes(server: FastifyInstance) {
           role: body.role as any,
           isActive: false, // Admin must approve
           ...((body.role === 'ARCHITECT' || body.role === 'DESIGNER') && {
-            architectProfile: { create: {} },
+            architectProfile: { create: { specializations: body.specializations || [] } },
           }),
           ...(body.role === 'SUPPLIER' && {
-            supplierProfile: { create: { companyName: body.companyName || '' } },
+            supplierProfile: { create: { companyName: body.companyName || '', specializations: body.specializations || [] } },
           }),
         },
         include: {

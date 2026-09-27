@@ -41,6 +41,7 @@ export interface ArchitectProfile {
   cardExpiry?: Date;
   monthlyGoal: number;
   monthlyProgress: number;
+  specializations?: string[];
 }
 
 export interface SupplierProfile {
@@ -57,6 +58,7 @@ export interface SupplierProfile {
   businessImages?: string[];
   trustScore?: number;
   qualityScore?: number;
+  specializations?: string[];
 }
 
 export interface AuthUser extends User {
@@ -76,6 +78,7 @@ export interface RegisterRequest {
   phone?: string;
   role: UserRole;
   companyName?: string; // For suppliers
+  specializations?: string[]; // Project types/subcategories selected at registration
   firebaseToken?: string; // For Firebase auth
 }
 

@@ -28,6 +28,7 @@ interface RegisterData {
   role: 'ARCHITECT' | 'DESIGNER' | 'SUPPLIER';
   companyName?: string;
   address?: string;
+  specializations?: string[];
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -322,6 +323,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         phone?: string;
         companyName?: string;
         address?: string;
+        specializations?: string[];
       } = {
         email: data.email,
         name: data.name,
@@ -337,6 +339,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       }
       if (data.address && data.address.trim() !== '') {
         payload.address = data.address;
+      }
+      if (data.specializations && data.specializations.length > 0) {
+        payload.specializations = data.specializations;
       }
 
       const response = await authApi.register(payload);

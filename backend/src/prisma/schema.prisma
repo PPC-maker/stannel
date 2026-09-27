@@ -104,6 +104,9 @@ model ArchitectProfile {
   onboardingStatus String   @default("pending_review") // limited, pending_review, approved, rejected
   businessId      String?
 
+  // Project types/specializations selected at registration (subcategories)
+  specializations String[] @default([])
+
   invoices        Invoice[]
   cardTransactions CardTransaction[]
   goalBonuses     GoalBonus[]
@@ -145,6 +148,9 @@ model SupplierProfile {
   instagram       String?
   linkedin        String?
   businessImages  String[]    @default([])
+
+  // Project types/specializations selected at registration (subcategories)
+  specializations String[]    @default([])
 
   contracts     Contract[]
   invoices      Invoice[]
