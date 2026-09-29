@@ -1,7 +1,6 @@
 import { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
 import prisma from '../lib/prisma.js';
 import { authMiddleware, requireArchitect } from '../middleware/auth.middleware.js';
-import { notificationService } from '../services/notification.service.js';
 import { z } from 'zod';
 
 const createMeetingSchema = z.object({
@@ -61,11 +60,25 @@ export async function meetingsRoutes(server: FastifyInstance) {
     });
 
     // Notify supplier (in-app)
-    await notificationService.send(supplier.userId, {
-      title: 'בקשת פגישה חדשה',
-      body: `${user.name} מבקש פגישה בנושא: ${body.subject}`,
-      data: { type: 'MEETING_REQUEST', meetingId: meeting.id },
-    });
+    try {
+      await prisma.notification.create({
+        data: {
+          recipientId: supplier.userId,
+          type: 'MEETING_REQUEST',
+          title: 'בקשת פגישה חדשה',
+          message: `${user.name} מבקש פגישה בנושא: ${body.subject}`,
+          relatedEntity: 'meeting',
+          relatedId: meeting.id,
+        },
+      });
+      const { wsService } = await import('../services/websocket.service.js');
+      wsService.sendToUser(supplier.userId, 'notification:new', {
+        type: 'MEETING_REQUEST',
+        title: 'בקשת פגישה חדשה',
+      });
+    } catch (e) {
+      console.error('Failed to create in-app notification for meeting request:', e);
+    }
 
     // Email supplier so the request doesn't go unnoticed
     try {
@@ -162,11 +175,25 @@ export async function meetingsRoutes(server: FastifyInstance) {
 
     // Notify architect (in-app)
     const statusText = status === 'approved' ? 'אושרה' : 'נדחתה';
-    await notificationService.send(meeting.architect.userId, {
-      title: `הפגישה ${statusText}`,
-      body: `הפגישה בנושא "${meeting.subject}" ${statusText}`,
-      data: { type: 'MEETING_STATUS', meetingId: id, status },
-    });
+    try {
+      await prisma.notification.create({
+        data: {
+          recipientId: meeting.architect.userId,
+          type: 'MEETING_STATUS',
+          title: `הפגישה ${statusText}`,
+          message: `הפגישה בנושא "${meeting.subject}" ${statusText}`,
+          relatedEntity: 'meeting',
+          relatedId: id,
+        },
+      });
+      const { wsService } = await import('../services/websocket.service.js');
+      wsService.sendToUser(meeting.architect.userId, 'notification:new', {
+        type: 'MEETING_STATUS',
+        title: `הפגישה ${statusText}`,
+      });
+    } catch (e) {
+      console.error('Failed to create in-app notification for meeting status:', e);
+    }
 
     // Email architect with the supplier's decision
     try {

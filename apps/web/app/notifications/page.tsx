@@ -39,6 +39,7 @@ const TYPE_ICONS: Record<string, any> = {
   SYSTEM_ALERT: Zap,
   WELCOME: Shield,
   MEETING_REQUEST: MessageSquare,
+  MEETING_STATUS: Clock,
 };
 
 // Notification status: 'new' (red), 'pending' (yellow), 'handled' (green)
