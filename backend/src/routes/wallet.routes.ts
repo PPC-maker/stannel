@@ -12,7 +12,7 @@ export async function walletRoutes(server: FastifyInstance) {
     const user = request.user!;
 
     // Architect wallet
-    if (user.role === 'ARCHITECT' && user.architectProfile) {
+    if ((user.role === 'ARCHITECT' || user.role === 'DESIGNER') && user.architectProfile) {
       const profile = await prisma.architectProfile.findUnique({
         where: { id: user.architectProfile.id },
         select: {
@@ -63,7 +63,7 @@ export async function walletRoutes(server: FastifyInstance) {
     const pageSize = parseInt(query.pageSize || '20');
 
     // Architect transactions
-    if (user.role === 'ARCHITECT' && user.architectProfile) {
+    if ((user.role === 'ARCHITECT' || user.role === 'DESIGNER') && user.architectProfile) {
       const where = {
         architectId: user.architectProfile.id,
         ...(query.type && { type: query.type }),
@@ -124,7 +124,7 @@ export async function walletRoutes(server: FastifyInstance) {
     const user = request.user!;
 
     // Architect card
-    if (user.role === 'ARCHITECT' && user.architectProfile) {
+    if ((user.role === 'ARCHITECT' || user.role === 'DESIGNER') && user.architectProfile) {
       const profile = await prisma.architectProfile.findUnique({
         where: { id: user.architectProfile.id },
         select: {

@@ -11,7 +11,7 @@ export async function goalsRoutes(server: FastifyInstance) {
   }, async (request: FastifyRequest, reply: FastifyReply) => {
     const user = request.user!;
 
-    if (user.role !== 'ARCHITECT' || !user.architectProfile) {
+    if ((user.role !== 'ARCHITECT' && user.role !== 'DESIGNER') || !user.architectProfile) {
       return reply.code(403).send({ error: 'Only architects can access goals' });
     }
 
@@ -35,7 +35,7 @@ export async function goalsRoutes(server: FastifyInstance) {
   }, async (request: FastifyRequest, reply: FastifyReply) => {
     const user = request.user!;
 
-    if (user.role !== 'ARCHITECT' || !user.architectProfile) {
+    if ((user.role !== 'ARCHITECT' && user.role !== 'DESIGNER') || !user.architectProfile) {
       return reply.code(403).send({ error: 'Only architects can access goals' });
     }
 
@@ -61,7 +61,7 @@ export async function goalsRoutes(server: FastifyInstance) {
     const page = parseInt(query.page || '1');
     const pageSize = parseInt(query.pageSize || '20');
 
-    if (user.role !== 'ARCHITECT' || !user.architectProfile) {
+    if ((user.role !== 'ARCHITECT' && user.role !== 'DESIGNER') || !user.architectProfile) {
       return reply.code(403).send({ error: 'Only architects can access goals' });
     }
 
@@ -95,7 +95,7 @@ export async function goalsRoutes(server: FastifyInstance) {
   }, async (request: FastifyRequest, reply: FastifyReply) => {
     const user = request.user!;
 
-    if (user.role !== 'ARCHITECT' || !user.architectProfile) {
+    if ((user.role !== 'ARCHITECT' && user.role !== 'DESIGNER') || !user.architectProfile) {
       return reply.code(403).send({ error: 'Only architects can access goals' });
     }
 

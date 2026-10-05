@@ -231,7 +231,7 @@ export async function invoiceRoutes(server: FastifyInstance) {
       deletedAt: null,
     };
 
-    if (request.user!.role === 'ARCHITECT' && request.user!.architectProfile) {
+    if ((request.user!.role === 'ARCHITECT' || request.user!.role === 'DESIGNER') && request.user!.architectProfile) {
       // Architects see invoices they uploaded
       where.architectId = request.user!.architectProfile.id;
     } else if (request.user!.role === 'SUPPLIER' && request.user!.supplierProfile) {
@@ -294,7 +294,7 @@ export async function invoiceRoutes(server: FastifyInstance) {
 
     // Verify user has permission to view this invoice
     const isAdmin = request.user!.role === 'ADMIN';
-    const isOwnerArchitect = request.user!.role === 'ARCHITECT' &&
+    const isOwnerArchitect = (request.user!.role === 'ARCHITECT' || request.user!.role === 'DESIGNER') &&
       request.user!.architectProfile?.id === invoice.architectId;
     const isOwnerSupplier = request.user!.role === 'SUPPLIER' &&
       request.user!.supplierProfile?.id === invoice.supplierId;
@@ -326,7 +326,7 @@ export async function invoiceRoutes(server: FastifyInstance) {
       deletedAt: null,
     };
 
-    if (request.user!.role === 'ARCHITECT' && request.user!.architectProfile) {
+    if ((request.user!.role === 'ARCHITECT' || request.user!.role === 'DESIGNER') && request.user!.architectProfile) {
       baseWhere.architectId = request.user!.architectProfile.id;
     } else if (request.user!.role === 'SUPPLIER' && request.user!.supplierProfile) {
       baseWhere.supplierId = request.user!.supplierProfile.id;

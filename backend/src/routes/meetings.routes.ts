@@ -17,7 +17,7 @@ export async function meetingsRoutes(server: FastifyInstance) {
   // Create meeting request (architect → supplier)
   server.post('/', async (request: FastifyRequest, reply: FastifyReply) => {
     const user = request.user!;
-    if (user.role !== 'ARCHITECT') {
+    if ((user.role !== 'ARCHITECT' && user.role !== 'DESIGNER')) {
       return reply.code(403).send({ error: 'Only architects can request meetings' });
     }
 
@@ -108,7 +108,7 @@ export async function meetingsRoutes(server: FastifyInstance) {
 
     let where: any = {};
 
-    if (user.role === 'ARCHITECT') {
+    if ((user.role === 'ARCHITECT' || user.role === 'DESIGNER')) {
       const architect = await prisma.architectProfile.findUnique({ where: { userId: user.id } });
       if (!architect) return { data: [] };
       where.architectId = architect.id;
@@ -281,7 +281,7 @@ export async function meetingsRoutes(server: FastifyInstance) {
       return reply.code(404).send({ error: 'Meeting not found' });
     }
 
-    if (user.role === 'ARCHITECT') {
+    if ((user.role === 'ARCHITECT' || user.role === 'DESIGNER')) {
       const architect = await prisma.architectProfile.findUnique({ where: { userId: user.id } });
       if (!architect || architect.id !== meeting.architectId) {
         return reply.code(403).send({ error: 'Unauthorized' });

@@ -17,8 +17,8 @@ export const meetingsApi = {
     });
 
     if (!res.ok) {
-      const error = await res.json().catch(() => ({ message: 'שגיאה ביצירת הפגישה' }));
-      throw new Error(error.message || 'שגיאה ביצירת הפגישה');
+      const error = await res.json().catch(() => ({ error: 'שגיאה ביצירת הפגישה' }));
+      throw new Error(error.error || error.message || 'שגיאה ביצירת הפגישה');
     }
 
     return res.json();
@@ -46,7 +46,7 @@ export const meetingsApi = {
 
     if (!res.ok) {
       const error = await res.json().catch(() => ({ message: 'שגיאה בעדכון סטטוס' }));
-      throw new Error(error.message || 'שגיאה בעדכון סטטוס');
+      throw new Error(error.error || error.message || 'שגיאה בעדכון סטטוס');
     }
 
     return res.json();
@@ -64,7 +64,7 @@ export const meetingsApi = {
 
     if (!res.ok) {
       const error = await res.json().catch(() => ({ message: 'שגיאה בהעלאת מסמך' }));
-      throw new Error(error.message || 'שגיאה בהעלאת מסמך');
+      throw new Error(error.error || error.message || 'שגיאה בהעלאת מסמך');
     }
 
     return res.json();
@@ -78,7 +78,7 @@ export const meetingsApi = {
 
     if (!res.ok) {
       const error = await res.json().catch(() => ({ message: 'שגיאה בביטול הפגישה' }));
-      throw new Error(error.message || 'שגיאה בביטול הפגישה');
+      throw new Error(error.error || error.message || 'שגיאה בביטול הפגישה');
     }
 
     return res.json();

@@ -116,7 +116,7 @@ export async function authRoutes(server: FastifyInstance) {
           profileImage,
           role,
           isActive: false,
-          ...(role === 'ARCHITECT' && { architectProfile: { create: {} } }),
+          ...((role === 'ARCHITECT' || role === 'DESIGNER') && { architectProfile: { create: {} } }),
           ...(role === 'SUPPLIER' && { supplierProfile: { create: { companyName: name } } }),
         },
         include: { architectProfile: true, supplierProfile: true },
