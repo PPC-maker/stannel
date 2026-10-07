@@ -470,6 +470,19 @@ export const adminApi = {
     return res.json();
   },
 
+  // Meetings overview
+  async getMeetings(status?: string): Promise<{ data: any[]; total: number; counts: Record<string, number> }> {
+    const url = `${config.baseUrl}/admin/meetings${status ? `?status=${status}` : ''}`;
+    const res = await fetchWithAuth(url, { headers: getHeaders() });
+
+    if (!res.ok) {
+      const error = await res.json().catch(() => ({}));
+      throw new Error(error.error || error.message || 'לא הצלחנו לטעון את הפגישות');
+    }
+
+    return res.json();
+  },
+
   // Audit Logs
   async getAuditLogs(params?: { page?: number; pageSize?: number }): Promise<{
     data: any[];

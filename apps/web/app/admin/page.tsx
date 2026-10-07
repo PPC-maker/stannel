@@ -1712,6 +1712,19 @@ Please analyze this error and provide a fix.
               </div>
             </div>
           </Link>
+          <Link href="/admin/meetings" className="group">
+            <div className="p-4 bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-xl hover:bg-[#f0ebe6] transition-all">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-emerald-500/20">
+                  <Calendar size={20} className="text-emerald-500" />
+                </div>
+                <div>
+                  <p className="text-[#2b241d] font-medium group-hover:text-[#c99b4a] transition-colors">פגישות</p>
+                  <p className="text-[#a89b8a] text-xs">מי קבע עם מי וסטטוסים</p>
+                </div>
+              </div>
+            </div>
+          </Link>
           <Link href="/admin/audit-logs" className="group">
             <div className="p-4 bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-xl hover:bg-[#f0ebe6] transition-all">
               <div className="flex items-center gap-3">

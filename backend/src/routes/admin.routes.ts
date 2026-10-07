@@ -2392,6 +2392,29 @@ Please analyze this error and provide a fix.
     }
   });
 
+  // All meetings between users and suppliers (admin overview + history)
+  server.get('/meetings', async (request: FastifyRequest, reply: FastifyReply) => {
+    try {
+      const { status } = request.query as { status?: string };
+      const meetings = await prisma.meeting.findMany({
+        where: status ? { status } : {},
+        orderBy: { createdAt: 'desc' },
+        take: 500,
+        include: {
+          architect: { include: { user: { select: { name: true, email: true, phone: true, role: true } } } },
+          supplier: { select: { companyName: true, user: { select: { name: true, email: true, phone: true } } } },
+        },
+      });
+
+      const counts = { pending: 0, approved: 0, rejected: 0, cancelled: 0 } as Record<string, number>;
+      for (const m of meetings) counts[m.status] = (counts[m.status] || 0) + 1;
+
+      return { data: meetings, total: meetings.length, counts };
+    } catch (error) {
+      reply.code(500).send({ error: 'Failed to fetch meetings', message: (error as Error).message });
+    }
+  });
+
   // Backup logs journal endpoint
   server.get('/backup-logs', async (request: FastifyRequest, reply: FastifyReply) => {
     try {
