@@ -35,8 +35,9 @@ export async function meetingsRoutes(server: FastifyInstance) {
       return reply.code(404).send({ error: 'Architect profile not found' });
     }
 
-    const supplier = await prisma.supplierProfile.findUnique({
-      where: { id: body.supplierId },
+    // The suppliers directory exposes the User ID, so accept either that or the profile ID
+    const supplier = await prisma.supplierProfile.findFirst({
+      where: { OR: [{ id: body.supplierId }, { userId: body.supplierId }] },
       include: { user: true },
     });
 
@@ -47,7 +48,7 @@ export async function meetingsRoutes(server: FastifyInstance) {
     const meeting = await prisma.meeting.create({
       data: {
         architectId: architect.id,
-        supplierId: body.supplierId,
+        supplierId: supplier.id,
         date: new Date(body.date),
         time: body.time,
         subject: body.subject,
