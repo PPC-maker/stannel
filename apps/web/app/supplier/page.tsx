@@ -334,6 +334,17 @@ export default function SupplierDashboardPage() {
 
         </motion.div>
 
+        <Link href="/meetings" className="mb-6 flex items-center justify-between bg-[#f7f3f2] border border-[rgba(201,155,74,0.15)] rounded-2xl p-4 hover:bg-[#c99b4a]/5 transition-colors">
+          <span className="flex items-center gap-2 text-[#2b241d] font-medium">
+            <Calendar className="text-[#c99b4a]" size={20} />
+            כל הפגישות והיסטוריה
+            {pendingMeetings.length > 0 && (
+              <span className="bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">{pendingMeetings.length} חדשות</span>
+            )}
+          </span>
+          <ChevronDown size={16} className="rotate-90 text-[#8b7c69]" />
+        </Link>
+
         {/* Pending Meetings */}
         {pendingMeetings.length > 0 && (
           <motion.div

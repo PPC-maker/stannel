@@ -128,7 +128,7 @@ export async function meetingsRoutes(server: FastifyInstance) {
     const meetings = await prisma.meeting.findMany({
       where,
       include: {
-        architect: { include: { user: { select: { name: true, email: true, profileImage: true } } } },
+        architect: { include: { user: { select: { name: true, email: true, phone: true, profileImage: true } } } },
         supplier: { select: { companyName: true, user: { select: { name: true, email: true } } } },
       },
       orderBy: { date: 'asc' },

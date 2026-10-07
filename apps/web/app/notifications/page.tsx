@@ -143,6 +143,11 @@ export default function NotificationsPage() {
   };
 
   const handleNotificationClick = (notif: any) => {
+    if ((notif.type === 'MEETING_REQUEST' || notif.type === 'MEETING_STATUS') && notif.relatedEntity === 'meeting' && notif.relatedId && !extractPhone(notif.message)) {
+      updateStatus(notif.id, 'handled' as NotifStatus);
+      window.location.href = '/meetings';
+      return;
+    }
     const phone = extractPhone(notif.message);
     const msg = extractMessage(notif.message);
     const currentStatus = getNotifStatus(notif);

@@ -17,6 +17,7 @@ const architectLinks = [
   { href: '/invoices', label: 'חשבוניות', icon: FileText },
   { href: '/rewards', label: 'הטבות', icon: Gift },
   { href: '/events', label: 'אירועים', icon: Calendar },
+  { href: '/meetings', label: 'הפגישות שלי', icon: Calendar },
   { href: '/goals', label: 'יעדים', icon: Target },
   { href: '/notifications', label: 'התראות', icon: Bell },
   { href: '/tools', label: 'כלים', icon: Wrench },
@@ -27,6 +28,7 @@ const architectLinks = [
 // Links for SUPPLIER users - view only, no wallet
 const supplierLinks = [
   { href: '/supplier', label: 'לוח בקרה', icon: Home },
+  { href: '/meetings', label: 'פגישות', icon: Calendar },
   { href: '/notifications', label: 'התראות', icon: Bell },
   { href: '/ai-agent', label: 'תובנות AI', icon: Bot },
 ];
