@@ -841,6 +841,7 @@ export default function AdminPage() {
     setEditForm({
       email: user.email || '',
       newPassword: '',
+      role: user.role || '',
       name: user.name || '',
       phone: user.phone || '',
       address: user.address || '',
@@ -870,6 +871,11 @@ export default function AdminPage() {
       const user = allUsers.find(u => u.id === userId);
       if (editForm.email && editForm.email !== user?.email) {
         data.email = editForm.email;
+      }
+
+      // Include role if changed (ARCHITECT / DESIGNER / SUPPLIER)
+      if (editForm.role && editForm.role !== user?.role) {
+        data.role = editForm.role;
       }
 
       if (user?.role === 'SUPPLIER') {
@@ -2081,6 +2087,7 @@ Please analyze this error and provide a fix.
                                         {editingUserId === user.id ? (
                                           <div className="space-y-3">
                                             <div><label className="text-[#a89b8a] text-xs mb-1 block">שם</label><input value={editForm.name || ''} onChange={(e) => setEditForm(f => ({ ...f, name: e.target.value }))} className="w-full px-3 py-2 bg-[#f7f3f2] border border-[rgba(201,155,74,0.12)] rounded-lg text-[#2b241d] text-sm focus:outline-none focus:border-[#c99b4a]" /></div>
+                                            <div><label className="text-[#a89b8a] text-xs mb-1 block">תפקיד</label><select value={editForm.role || ''} onChange={(e) => setEditForm(f => ({ ...f, role: e.target.value }))} className="w-full px-3 py-2 bg-[#f7f3f2] border border-[rgba(201,155,74,0.12)] rounded-lg text-[#2b241d] text-sm focus:outline-none focus:border-[#c99b4a]"><option value="ARCHITECT">אדריכל</option><option value="DESIGNER">מעצב</option><option value="SUPPLIER">ספק / יצרן</option></select></div>
                                             <div><label className="text-[#a89b8a] text-xs mb-1 block">אימייל</label><input type="email" value={editForm.email || ''} onChange={(e) => setEditForm(f => ({ ...f, email: e.target.value }))} className="w-full px-3 py-2 bg-[#f7f3f2] border border-[rgba(201,155,74,0.12)] rounded-lg text-[#2b241d] text-sm focus:outline-none focus:border-[#c99b4a]" dir="ltr" /></div>
                                             <div><label className="text-[#a89b8a] text-xs mb-1 block">סיסמה חדשה</label><input type="text" value={editForm.newPassword || ''} onChange={(e) => setEditForm(f => ({ ...f, newPassword: e.target.value }))} placeholder="השאר ריק אם אין שינוי" className="w-full px-3 py-2 bg-[#f7f3f2] border border-[rgba(201,155,74,0.12)] rounded-lg text-[#2b241d] text-sm focus:outline-none focus:border-[#c99b4a] placeholder:text-[#c4b9ab]" dir="ltr" /></div>
                                             <div><label className="text-[#a89b8a] text-xs mb-1 block">טלפון</label><input value={editForm.phone || ''} onChange={(e) => setEditForm(f => ({ ...f, phone: e.target.value }))} className="w-full px-3 py-2 bg-[#f7f3f2] border border-[rgba(201,155,74,0.12)] rounded-lg text-[#2b241d] text-sm focus:outline-none focus:border-[#c99b4a]" dir="ltr" /></div>

@@ -267,6 +267,7 @@ export const adminApi = {
   },
 
   async updateUser(userId: string, data: {
+    role?: 'ARCHITECT' | 'DESIGNER' | 'SUPPLIER';
     name?: string;
     email?: string;
     phone?: string;

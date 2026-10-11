@@ -289,6 +289,7 @@ export async function adminRoutes(server: FastifyInstance) {
   server.patch('/users/:id', async (request: FastifyRequest, reply: FastifyReply) => {
     const { id } = request.params as { id: string };
     const body = request.body as {
+      role?: 'ARCHITECT' | 'DESIGNER' | 'SUPPLIER';
       name?: string;
       email?: string;
       phone?: string;
@@ -313,6 +314,17 @@ export async function adminRoutes(server: FastifyInstance) {
     });
     if (!user) {
       return reply.code(404).send({ error: 'User not found' });
+    }
+
+    // Role change (e.g. a Google sign-up that was auto-registered as architect)
+    const roleChanged = body.role !== undefined && body.role !== user.role;
+    if (roleChanged) {
+      if (!['ARCHITECT', 'DESIGNER', 'SUPPLIER'].includes(body.role as string)) {
+        return reply.code(400).send({ error: 'תפקיד לא תקין' });
+      }
+      if (user.role === 'ADMIN') {
+        return reply.code(400).send({ error: 'לא ניתן לשנות תפקיד של מנהל' });
+      }
     }
 
     // Update email in Firebase if changed
@@ -348,6 +360,7 @@ export async function adminRoutes(server: FastifyInstance) {
     const updatedUser = await prisma.user.update({
       where: { id },
       data: {
+        ...(roleChanged && { role: body.role }),
         ...(body.name !== undefined && { name: body.name }),
         ...(body.email !== undefined && { email: body.email }),
         ...(body.phone !== undefined && { phone: body.phone }),
@@ -356,6 +369,18 @@ export async function adminRoutes(server: FastifyInstance) {
       },
       include: { architectProfile: true, supplierProfile: true },
     });
+
+    // Make sure the profile that matches the new role exists (existing profiles are kept untouched)
+    if (roleChanged) {
+      if ((body.role === 'ARCHITECT' || body.role === 'DESIGNER') && !user.architectProfile) {
+        await prisma.architectProfile.create({ data: { userId: id } });
+      }
+      if (body.role === 'SUPPLIER' && !user.supplierProfile) {
+        await prisma.supplierProfile.create({
+          data: { userId: id, companyName: user.company || user.name || '' },
+        });
+      }
+    }
 
     // Update supplier profile if provided
     if (body.supplierProfile && user.supplierProfile) {
