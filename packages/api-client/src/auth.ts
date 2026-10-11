@@ -55,7 +55,13 @@ export const authApi = {
     return result;
   },
 
-  async googleAuth(firebaseToken: string, role?: 'ARCHITECT' | 'SUPPLIER'): Promise<AuthResponse & { isNewUser?: boolean }> {
+  async googleAuth(
+    firebaseToken: string,
+    role?: 'ARCHITECT' | 'SUPPLIER'
+  ): Promise<
+    | (AuthResponse & { isNewUser?: boolean; needsRegistration?: false })
+    | { needsRegistration: true; token: string; email: string; name: string; picture?: string }
+  > {
     const response = await fetchWithRetry(`${config.baseUrl}/auth/google`, {
       method: 'POST',
       headers: getHeaders(),

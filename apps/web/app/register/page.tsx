@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Mail, Lock, User, Phone, Building2, ArrowLeft, Check, AlertCircle, Camera, X, Palette, MapPin, Eye, EyeOff } from 'lucide-react';
@@ -44,7 +44,14 @@ const supplierSpecializations = [
 type RoleCategory = 'ARCHITECT' | 'DESIGNER' | 'SUPPLIER';
 
 export default function RegisterPage() {
-  const { register, loading: authLoading } = useAuth();
+  const { register, completeGoogleRegistration, firebaseUser, loading: authLoading } = useAuth();
+
+  // Arrived here after "Continue with Google" for a brand-new user: no password, email comes from Google
+  const [googleFlag, setGoogleFlag] = useState(false);
+  useEffect(() => {
+    setGoogleFlag(new URLSearchParams(window.location.search).get('google') === '1');
+  }, []);
+  const googleMode = googleFlag && !!firebaseUser;
 
   const [step, setStep] = useState(1);
   const [role, setRole] = useState<UserRole | null>(null);
@@ -66,6 +73,15 @@ export default function RegisterPage() {
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!googleMode || !firebaseUser) return;
+    setFormData((prev) => ({
+      ...prev,
+      name: prev.name || firebaseUser.displayName || '',
+      email: firebaseUser.email || prev.email,
+    }));
+  }, [googleMode, firebaseUser]);
 
   // Password validation function
   const validatePassword = (password: string): string[] => {
@@ -120,9 +136,9 @@ export default function RegisterPage() {
     e.preventDefault();
     if (!role) return;
 
-    // Validate password
+    // Validate password (not needed for Google sign-up)
     const errors = validatePassword(formData.password);
-    if (errors.length > 0) {
+    if (!googleMode && errors.length > 0) {
       setError('הסיסמה לא עומדת בדרישות');
       return;
     }
@@ -136,16 +152,27 @@ export default function RegisterPage() {
     setError(null);
 
     try {
-      await register({
-        email: formData.email,
-        password: formData.password,
-        name: formData.name,
-        phone: formData.phone || undefined,
-        role: role,
-        companyName: formData.companyName || undefined,
-        address: formData.address || undefined,
-        specializations,
-      });
+      if (googleMode) {
+        await completeGoogleRegistration({
+          name: formData.name,
+          phone: formData.phone || undefined,
+          role: role,
+          companyName: formData.companyName || undefined,
+          address: formData.address || undefined,
+          specializations,
+        });
+      } else {
+        await register({
+          email: formData.email,
+          password: formData.password,
+          name: formData.name,
+          phone: formData.phone || undefined,
+          role: role,
+          companyName: formData.companyName || undefined,
+          address: formData.address || undefined,
+          specializations,
+        });
+      }
       setStep(3); // Success step
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'ההרשמה נכשלה';
@@ -486,6 +513,7 @@ export default function RegisterPage() {
                         required
                         dir="ltr"
                         disabled={isLoading}
+                        readOnly={googleMode}
                       />
                     </div>
                   </div>
@@ -510,6 +538,7 @@ export default function RegisterPage() {
                     </div>
                   </div>
 
+                  {!googleMode && (
                   <div>
                     <label className="block text-white/70 text-base font-semibold mb-2">סיסמה <span className="text-red-400/70 text-xs font-normal">(שדה חובה)</span></label>
                     <div className="relative">
@@ -534,7 +563,7 @@ export default function RegisterPage() {
                             : 'border-white/20 focus:border-[#c99b4a]'
                         }`}
                         placeholder="••••••••"
-                        required
+                        required={!googleMode}
                         dir="ltr"
                         disabled={isLoading}
                       />
@@ -564,6 +593,7 @@ export default function RegisterPage() {
                       </div>
                     </div>
                   </div>
+                  )}
 
                   {/* Terms Checkbox */}
                   <div className="flex items-start gap-3 pt-2">

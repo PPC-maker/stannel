@@ -146,11 +146,11 @@ export async function authRoutes(server: FastifyInstance) {
         return { user, token: body.token, isNewUser: false };
       }
 
-      // Auto-register with Google profile
+      // New Google user: do NOT auto-create (it used to default to ARCHITECT with no details).
+      // The client sends them to the registration form (role, phone, specializations) first,
+      // which then calls POST /register with this same Firebase token.
       const email = decoded.email || '';
-      const name = decoded.name || decoded.email?.split('@')[0] || 'User';
-      const profileImage = decoded.picture || undefined;
-      const role = body.role || 'ARCHITECT';
+      const name = decoded.name || decoded.email?.split('@')[0] || '';
 
       const existingByEmail = await prisma.user.findUnique({ where: { email } });
       if (existingByEmail) {
@@ -160,22 +160,7 @@ export async function authRoutes(server: FastifyInstance) {
         });
       }
 
-      user = await prisma.user.create({
-        data: {
-          firebaseUid: decoded.uid,
-          email,
-          name,
-          profileImage,
-          role,
-          isActive: false,
-          ...((role === 'ARCHITECT' || role === 'DESIGNER') && { architectProfile: { create: {} } }),
-          ...(role === 'SUPPLIER' && { supplierProfile: { create: { companyName: name } } }),
-        },
-        include: { architectProfile: true, supplierProfile: true },
-      });
-
-      console.log('[Auth] Google auto-register - new user:', user.email, user.role);
-      return { user, token: body.token, isNewUser: true, message: 'Registration successful. Awaiting admin approval.' };
+      return { needsRegistration: true, token: body.token, email, name, picture: decoded.picture || undefined };
     } catch (error) {
       if (error instanceof z.ZodError) {
         return reply.code(400).send({ error: 'Validation error', details: error.errors });

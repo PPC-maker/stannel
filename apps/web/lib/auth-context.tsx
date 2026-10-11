@@ -16,8 +16,16 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<AuthUser | null>;
   loginWithGoogle: () => Promise<AuthUser | null>;
   register: (data: RegisterData) => Promise<void>;
+  completeGoogleRegistration: (data: Omit<RegisterData, 'password' | 'email'>) => Promise<void>;
   logout: () => Promise<void>;
   refreshUser: () => Promise<void>;
+}
+
+// New Google users must fill the registration form (role, phone, ...) before an account exists
+function goToGoogleSignup() {
+  if (typeof window !== 'undefined' && !window.location.pathname.startsWith('/register')) {
+    window.location.assign('/register?google=1');
+  }
 }
 
 interface RegisterData {
@@ -91,8 +99,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             } else if (errMsg.includes('not found') || errMsg.includes('404')) {
               try {
                 const response = await authApi.googleAuth(token);
-                // Check if new user needs approval
-                if (!response.user.isActive && response.user.role !== 'ADMIN') {
+                if (response.needsRegistration) {
+                  // Signed in with Google but no account yet → registration form
+                  setUser(null);
+                  goToGoogleSignup();
+                } else if (!response.user.isActive && response.user.role !== 'ADMIN') {
                   await firebaseLogout();
                   setAuthToken(null);
                   setUser(null);
@@ -248,6 +259,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       // Use googleAuth which auto-registers if user doesn't exist
       const response = await authApi.googleAuth(token);
 
+      // New Google user: keep the Firebase session and send them to the registration form
+      if (response.needsRegistration) {
+        setUser(null);
+        goToGoogleSignup();
+        return null;
+      }
+
       // Check if user needs approval (new user or existing inactive)
       if (!response.user.isActive && response.user.role !== 'ADMIN') {
         await firebaseLogout();
@@ -373,6 +391,55 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  // Finish registration for a user who signed in with Google (Firebase session already exists)
+  const completeGoogleRegistration = async (data: Omit<RegisterData, 'password' | 'email'>) => {
+    setError(null);
+    isAuthenticating.current = true;
+    try {
+      const fbUser = firebaseUserRef.current;
+      if (!fbUser || !fbUser.email) {
+        throw new Error('פג תוקף ההתחברות עם Google. חזרו למסך ההתחברות ונסו שוב.');
+      }
+      const token = await fbUser.getIdToken();
+      setAuthToken(token);
+
+      const payload: {
+        email: string;
+        name: string;
+        role: UserRole;
+        firebaseToken: string;
+        phone?: string;
+        companyName?: string;
+        address?: string;
+        specializations?: string[];
+      } = {
+        email: fbUser.email,
+        name: data.name,
+        role: data.role as UserRole,
+        firebaseToken: token,
+      };
+      if (data.phone && data.phone.trim() !== '') payload.phone = data.phone;
+      if (data.companyName && data.companyName.trim() !== '') payload.companyName = data.companyName;
+      if (data.address && data.address.trim() !== '') payload.address = data.address;
+      if (data.specializations && data.specializations.length > 0) payload.specializations = data.specializations;
+
+      const response = await authApi.register(payload);
+
+      if (!response.user.isActive && response.user.role !== 'ADMIN') {
+        await firebaseLogout();
+        setAuthToken(null);
+        setUser(null);
+        return;
+      }
+      setUser(response.user);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Registration failed');
+      throw err;
+    } finally {
+      isAuthenticating.current = false;
+    }
+  };
+
   const logout = async () => {
     try {
       await firebaseLogout();
@@ -409,6 +476,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         login,
         loginWithGoogle,
         register,
+        completeGoogleRegistration,
         logout,
         refreshUser,
       }}
@@ -427,6 +495,7 @@ const defaultAuthContext: AuthContextType = {
   login: async () => null,
   loginWithGoogle: async () => null,
   register: async () => {},
+  completeGoogleRegistration: async () => {},
   logout: async () => {},
   refreshUser: async () => {},
 };
