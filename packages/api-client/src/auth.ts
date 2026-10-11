@@ -72,6 +72,25 @@ export const authApi = {
     return result;
   },
 
+  // Mobile-app Google login hand-off (browser stores a custom token, the app polls for it)
+  async appGoogleComplete(sid: string, firebaseToken: string): Promise<void> {
+    const response = await fetchWithRetry(`${config.baseUrl}/auth/app-google/complete`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify({ sid, token: firebaseToken }),
+    });
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.error || 'שגיאה בהתחברות עם Google. נסה שוב.');
+    }
+  },
+
+  async appGooglePoll(sid: string): Promise<{ status: 'pending' | 'done'; customToken?: string }> {
+    const response = await fetch(`${config.baseUrl}/auth/app-google/poll?sid=${encodeURIComponent(sid)}`);
+    if (!response.ok) throw new Error('poll failed');
+    return response.json();
+  },
+
   async getMe(): Promise<AuthUser> {
     const response = await fetchWithAuth(`${config.baseUrl}/auth/me`, {
       method: 'GET',

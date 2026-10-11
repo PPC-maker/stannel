@@ -78,6 +78,7 @@ async function registerPlugins() {
       'https://www.stannel.app',
       'https://stannelclub.co.il',
       'https://www.stannelclub.co.il',
+      'https://stannel-app.firebaseapp.com', // app Google login hand-off page
       /\.stannel\.app$/,
       /\.stannelclub\.co\.il$/,
       /\.run\.app$/,

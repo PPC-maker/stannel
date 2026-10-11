@@ -121,9 +121,44 @@ export async function registerWithEmail(email: string, password: string) {
   }
 }
 
+// Host of the hand-off page: opened in the phone's real browser (it is not the WebView's own host,
+// so the app's WebView passes it to the system browser). Its /__/auth/handler is a registered redirect URI.
+const APP_GOOGLE_HOST = 'https://stannel-app.firebaseapp.com';
+
+export function isStannelApp(): boolean {
+  return typeof navigator !== 'undefined' && navigator.userAgent.includes('STANNEL-App');
+}
+
+// Inside the STANNEL app WebView Google OAuth can't run, so sign in via the system browser and
+// receive a Firebase custom token through the backend (see /app-google-login).
+async function loginWithGoogleViaBrowser() {
+  const auth = getFirebaseAuth();
+  if (!auth) throw new Error('Firebase not configured');
+  const bytes = crypto.getRandomValues(new Uint8Array(24));
+  const sid = Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('');
+  const { authApi } = await import('@stannel/api-client');
+
+  window.location.href = `${APP_GOOGLE_HOST}/app-google-login?sid=${sid}`;
+
+  const deadline = Date.now() + 5 * 60 * 1000;
+  while (Date.now() < deadline) {
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+    try {
+      const res = await authApi.appGooglePoll(sid);
+      if (res.status === 'done' && res.customToken) {
+        return loginWithCustomToken(res.customToken);
+      }
+    } catch {
+      // transient network error — keep polling
+    }
+  }
+  throw new Error('Google login timed out');
+}
+
 export async function loginWithGoogle() {
   const auth = getFirebaseAuth();
   if (!auth) throw new Error('Firebase not configured');
+  if (isStannelApp()) return loginWithGoogleViaBrowser();
   const provider = new GoogleAuthProvider();
   provider.addScope('profile');
   provider.addScope('email');

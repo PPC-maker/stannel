@@ -46,7 +46,59 @@ const googleAuthSchema = z.object({
   role: z.enum(['ARCHITECT', 'DESIGNER', 'SUPPLIER']).optional(),
 });
 
+// --- Google login hand-off for the mobile app (WebView can't run Google OAuth) ---
+// The WebView opens the system browser with a secret `sid`; the browser signs in with Google and
+// stores a Firebase custom token under that sid; the WebView polls for it once. Stored in Postgres
+// (not memory) so it works across Cloud Run instances. Table is created lazily, no migration needed.
+const HANDOFF_TTL_MS = 5 * 60 * 1000;
+const sidSchema = z.string().regex(/^[a-f0-9]{32,128}$/);
+let handoffTableReady = false;
+
+async function ensureHandoffTable() {
+  if (handoffTableReady) return;
+  await prisma.$executeRawUnsafe(
+    'CREATE TABLE IF NOT EXISTS "AppLoginHandoff" ("sid" TEXT PRIMARY KEY, "customToken" TEXT NOT NULL, "expiresAt" TIMESTAMPTZ NOT NULL)'
+  );
+  handoffTableReady = true;
+}
+
 export async function authRoutes(server: FastifyInstance) {
+  // Browser side: verify the Google-signed Firebase ID token, park a custom token under the sid
+  server.post('/app-google/complete', async (request: FastifyRequest, reply: FastifyReply) => {
+    try {
+      const body = z.object({ sid: sidSchema, token: z.string() }).parse(request.body);
+      const firebaseAuth = getFirebaseAuth();
+      if (!firebaseAuth) return reply.code(500).send({ error: 'Auth service not configured' });
+
+      const decoded = await firebaseAuth.verifyIdToken(body.token);
+      const customToken = await firebaseAuth.createCustomToken(decoded.uid);
+      await ensureHandoffTable();
+      await prisma.$executeRaw`DELETE FROM "AppLoginHandoff" WHERE "expiresAt" < NOW()`;
+      const expiresAt = new Date(Date.now() + HANDOFF_TTL_MS);
+      await prisma.$executeRaw`INSERT INTO "AppLoginHandoff" ("sid", "customToken", "expiresAt") VALUES (${body.sid}, ${customToken}, ${expiresAt}) ON CONFLICT ("sid") DO NOTHING`;
+      return { ok: true };
+    } catch (error) {
+      if (error instanceof z.ZodError) return reply.code(400).send({ error: 'Validation error' });
+      console.error('[Auth] app-google complete error:', error);
+      return reply.code(401).send({ error: 'Google authentication failed' });
+    }
+  });
+
+  // App side: poll for the custom token (returned once, then deleted)
+  server.get('/app-google/poll', async (request: FastifyRequest, reply: FastifyReply) => {
+    try {
+      const { sid } = z.object({ sid: sidSchema }).parse(request.query);
+      await ensureHandoffTable();
+      const rows = await prisma.$queryRaw<{ customToken: string }[]>`DELETE FROM "AppLoginHandoff" WHERE "sid" = ${sid} AND "expiresAt" > NOW() RETURNING "customToken"`;
+      if (rows.length === 0) return { status: 'pending' };
+      return { status: 'done', customToken: rows[0].customToken };
+    } catch (error) {
+      if (error instanceof z.ZodError) return reply.code(400).send({ error: 'Validation error' });
+      console.error('[Auth] app-google poll error:', error);
+      return reply.code(500).send({ error: 'Poll failed' });
+    }
+  });
+
   // Rate limiting only for login/register (not verify — verify is called on every page load)
   server.addHook('onRequest', async (request, reply) => {
     if (request.method === 'POST' && !request.url.includes('/verify')) {
