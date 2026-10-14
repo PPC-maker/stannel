@@ -35,7 +35,7 @@ async function findArchitectByToken(token: string) {
   if (!record || record.partner !== PARTNER || record.expiresAt < new Date()) return null;
   return prisma.architectProfile.findUnique({
     where: { userId: record.userId },
-    select: { id: true, pointsBalance: true, user: { select: { isActive: true, isDeleted: true } } },
+    select: { id: true, pointsBalance: true, user: { select: { name: true, isActive: true, isDeleted: true } } },
   });
 }
 
@@ -64,7 +64,7 @@ export async function partnerRoutes(server: FastifyInstance) {
     if (!architect || !architect.user.isActive || architect.user.isDeleted) {
       return reply.code(404).send({ error: 'Invalid or expired token' });
     }
-    return { balance: architect.pointsBalance };
+    return { name: architect.user.name, balance: architect.pointsBalance };
   });
 
   // Partner: POST /deduct-points { token, points, orderId }
