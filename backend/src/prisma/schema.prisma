@@ -766,3 +766,31 @@ model BackupLog {
   @@index([createdAt])
   @@index([status])
 }
+
+// ============================================
+// Partner redemption (e.g. Amsalem) - token hand-off + points deduction
+// ============================================
+
+model PartnerToken {
+  id          String    @id @default(cuid())
+  token       String    @unique
+  partner     String
+  userId      String
+  expiresAt   DateTime
+  createdAt   DateTime  @default(now())
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model PartnerRedemption {
+  id          String    @id @default(cuid())
+  partner     String
+  orderId     String
+  architectId String
+  points      Float
+  createdAt   DateTime  @default(now())
+
+  @@unique([partner, orderId])
+  @@index([architectId])
+}

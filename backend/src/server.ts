@@ -43,6 +43,7 @@ guardianService.initDailyScanner();
 import { authRoutes } from './routes/auth.routes.js';
 import { invoiceRoutes } from './routes/invoices.routes.js';
 import { walletRoutes } from './routes/wallet.routes.js';
+import { partnerRoutes } from './routes/partner.routes.js';
 import { eventsRoutes } from './routes/events.routes.js';
 import { rewardsRoutes } from './routes/rewards.routes.js';
 import { adminRoutes } from './routes/admin.routes.js';
@@ -144,6 +145,7 @@ async function registerRoutes() {
   server.register(authRoutes, { prefix: '/api/v1/auth' });
   server.register(invoiceRoutes, { prefix: '/api/v1/invoices' });
   server.register(walletRoutes, { prefix: '/api/v1/wallet' });
+  server.register(partnerRoutes, { prefix: '/api/v1/partner' });
   server.register(eventsRoutes, { prefix: '/api/v1/events' });
   server.register(rewardsRoutes, { prefix: '/api/v1/rewards' });
   server.register(adminRoutes, { prefix: '/api/v1/admin' });

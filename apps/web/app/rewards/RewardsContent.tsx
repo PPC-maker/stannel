@@ -40,6 +40,7 @@ export default function RewardsContent() {
   const { user, loading: authLoading } = useAuth();
   const [selectedProduct, setSelectedProduct] = useState<string | null>(null);
   const [redeemingId, setRedeemingId] = useState<string | null>(null);
+  const [amsalemLoading, setAmsalemLoading] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('all');
 
   const isArchitect = !authLoading && (user?.role === 'ARCHITECT' || user?.role === 'DESIGNER');
@@ -245,6 +246,26 @@ export default function RewardsContent() {
           <h1 className="text-2xl sm:text-3xl font-bold text-[#2b241d]">חנות ההטבות</h1>
           <p className="text-[#8b7c69] mt-1 text-sm sm:text-base">ממשו את הנקודות שצברתם להטבות מגוונות</p>
         </div>
+
+        {/* Amsalem redemption */}
+        <button
+          type="button"
+          disabled={amsalemLoading}
+          onClick={async () => {
+            setAmsalemLoading(true);
+            try {
+              const { url } = await walletApi.getAmsalemLink();
+              window.location.href = url;
+            } catch (err: any) {
+              Swal.fire({ icon: 'error', title: 'שגיאה', text: err?.message || 'לא ניתן לעבור לאמסלם כרגע', confirmButtonText: 'אישור' });
+              setAmsalemLoading(false);
+            }
+          }}
+          className="w-full mb-4 sm:mb-6 bg-[#f7f3f2] border border-[#c99b4a]/30 rounded-2xl p-4 sm:p-5 flex items-center justify-between text-[#2b241d] disabled:opacity-60"
+        >
+          <span className="font-semibold">מימוש נקודות באמסלם</span>
+          {amsalemLoading ? <Loader2 size={20} className="animate-spin" /> : <ShoppingCart size={20} className="text-[#c99b4a]" />}
+        </button>
 
         {/* Category Tabs */}
         <div className="mb-4 sm:mb-8 overflow-x-auto pb-2" style={{ scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}>

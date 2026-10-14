@@ -71,4 +71,21 @@ export const walletApi = {
 
     return response.json();
   },
+  async getAmsalemLink(): Promise<{ url: string }> {
+    const response = await fetchWithAuth(`${config.baseUrl}/partner/link`, {
+      method: 'POST',
+      headers: getHeaders(),
+    });
+
+    if (response.status === 401) {
+      throw new Error('פג תוקף החיבור. אנא התחבר/י מחדש למערכת.');
+    }
+
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({}));
+      throw new Error(error.message || error.error || 'שגיאה ביצירת קישור למימוש באמסלם.');
+    }
+
+    return response.json();
+  },
 };
