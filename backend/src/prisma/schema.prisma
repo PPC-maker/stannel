@@ -789,6 +789,7 @@ model PartnerRedemption {
   orderId     String
   architectId String
   points      Float
+  refundedAt  DateTime?
   createdAt   DateTime  @default(now())
 
   @@unique([partner, orderId])

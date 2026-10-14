@@ -104,8 +104,8 @@ export async function partnerRoutes(server: FastifyInstance) {
         await tx.cardTransaction.create({
           data: {
             architectId: architect.id,
-            type: 'REDEEM',
-            amount: -points,
+            type: 'DEBIT',
+            amount: points,
             description: `מימוש באמסלם - הזמנה ${orderId}`,
           },
         });
@@ -120,6 +120,51 @@ export async function partnerRoutes(server: FastifyInstance) {
       if (err?.code === 'P2002') {
         return { success: true, duplicate: true, orderId };
       }
+      request.log.error(err);
+      return reply.code(500).send({ success: false, error: 'Internal error' });
+    }
+  });
+
+  // Partner: POST /refund-points { orderId } - full refund of a previously deducted order (idempotent)
+  server.post('/refund-points', { preHandler: [partnerAuth] }, async (request, reply) => {
+    const body = request.body as { orderId?: string };
+    const orderId = String(body?.orderId || '').trim();
+    if (!orderId) {
+      return reply.code(400).send({ success: false, error: 'orderId is required' });
+    }
+
+    const redemption = await prisma.partnerRedemption.findUnique({
+      where: { partner_orderId: { partner: PARTNER, orderId } },
+    });
+    if (!redemption) {
+      return reply.code(404).send({ success: false, error: 'Order not found' });
+    }
+
+    try {
+      const result = await prisma.$transaction(async (tx) => {
+        // Only the first refund of an order flips refundedAt; concurrent/repeated calls get count 0
+        const flipped = await tx.partnerRedemption.updateMany({
+          where: { id: redemption.id, refundedAt: null },
+          data: { refundedAt: new Date() },
+        });
+        if (flipped.count === 0) return { duplicate: true };
+        await tx.architectProfile.update({
+          where: { id: redemption.architectId },
+          data: { pointsBalance: { increment: redemption.points }, totalRedeemed: { decrement: redemption.points } },
+        });
+        await tx.cardTransaction.create({
+          data: {
+            architectId: redemption.architectId,
+            type: 'CREDIT',
+            amount: redemption.points,
+            description: `ביטול מימוש באמסלם - הזמנה ${orderId}`,
+          },
+        });
+        return { duplicate: false };
+      });
+      const p = await prisma.architectProfile.findUnique({ where: { id: redemption.architectId }, select: { pointsBalance: true } });
+      return { success: true, orderId, refunded: redemption.points, balance: p?.pointsBalance ?? 0, ...(result.duplicate && { duplicate: true }) };
+    } catch (err: any) {
       request.log.error(err);
       return reply.code(500).send({ success: false, error: 'Internal error' });
     }
