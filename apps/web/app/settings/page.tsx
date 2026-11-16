@@ -152,6 +152,54 @@ export default function SettingsPage() {
     return <AuthGuardLoader />;
   }
 
+  const handleDeleteAccount = async () => {
+    const confirmed = await Swal.fire({
+      title: 'מחיקת חשבון',
+      html: '<p style="color:#8b7c69;margin:0">החשבון שלך יימחק ולא תוכל להתחבר אליו יותר. פעולה זו אינה ניתנת לביטול.</p>',
+      icon: 'warning',
+      iconColor: '#ef4444',
+      showCancelButton: true,
+      confirmButtonText: 'מחק את החשבון',
+      cancelButtonText: 'ביטול',
+      confirmButtonColor: '#ef4444',
+      background: '#f7f3f2',
+      color: '#2b241d',
+    });
+    if (!confirmed.isConfirmed) return;
+
+    try {
+      await authApi.deleteAccount();
+    } catch (error) {
+      await Swal.fire({
+        title: 'שגיאה',
+        text: error instanceof Error ? error.message : 'שגיאה במחיקת החשבון',
+        icon: 'error',
+        background: '#f7f3f2',
+        color: '#2b241d',
+      });
+      return;
+    }
+
+    try {
+      await logout();
+    } catch (error) {
+      console.error('Logout error:', error);
+    } finally {
+      const nativeBridge = (window as Window & {
+        ReactNativeWebView?: { postMessage: (message: string) => void };
+      }).ReactNativeWebView;
+
+      if (nativeBridge) {
+        nativeBridge.postMessage(JSON.stringify({ type: 'STANNEL_LOGOUT' }));
+        window.setTimeout(() => {
+          window.location.replace(`${window.location.origin}/login`);
+        }, 800);
+      } else {
+        window.location.replace(`${window.location.origin}/login`);
+      }
+    }
+  };
+
   const handleLogout = async () => {
     setIsLoggingOut(true);
     setShowLogoutConfirm(false);
@@ -610,6 +658,14 @@ export default function SettingsPage() {
               <LogOut size={20} />
               <span className="font-medium">התנתקות מהחשבון</span>
             </button>
+            {user?.role !== 'ADMIN' && (
+              <button
+                onClick={handleDeleteAccount}
+                className="w-full flex items-center justify-center gap-3 py-3 mt-2 text-sm text-[#8b7c69] hover:text-red-500 transition-colors"
+              >
+                <span>מחיקת חשבון</span>
+              </button>
+            )}
           </motion.div>
         </div>
       </div>

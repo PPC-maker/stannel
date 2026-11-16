@@ -342,7 +342,10 @@ export default function AdminPage() {
       await fetchAllUsers();
       Swal.fire({ title: 'שוחזר!', text: `${userName} שוחזר בהצלחה`, icon: 'success', timer: 2000, showConfirmButton: false, background: '#f7f3f2', color: '#2b241d' });
     } catch (error: any) {
-      Swal.fire({ title: 'שימו לב', text: error.message, icon: 'warning', background: '#f7f3f2', color: '#2b241d' });
+      const msg = typeof error?.message === 'string' && /[֐-׿]/.test(error.message)
+        ? error.message
+        : 'לא הצלחנו לשחזר את המשתמש. נסו שוב.';
+      Swal.fire({ title: 'שימו לב', text: msg, icon: 'warning', confirmButtonText: 'אישור', background: '#f7f3f2', color: '#2b241d' });
     } finally {
       setRestoringUser(null);
     }

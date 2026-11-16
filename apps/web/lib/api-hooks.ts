@@ -13,6 +13,11 @@ export function useWalletBalance(enabled: boolean = true) {
     queryKey: ['wallet', 'balance'],
     queryFn: () => walletApi.getBalance(),
     enabled: enabled && isAuthenticated(),
+    // Points can change outside the app (e.g. Amsalem redemption) - keep the balance live
+    staleTime: 0,
+    refetchInterval: 15000,
+    refetchOnWindowFocus: true,
+    refetchOnMount: 'always',
   });
 }
 
@@ -32,6 +37,10 @@ export function useWalletTransactions(enabled: boolean = true) {
       return response.data;
     },
     enabled,
+    staleTime: 0,
+    refetchInterval: 15000,
+    refetchOnWindowFocus: true,
+    refetchOnMount: 'always',
   });
 }
 
@@ -480,6 +489,14 @@ export function useTopArchitects() {
   return useQuery({
     queryKey: ['analytics', 'top-architects'],
     queryFn: () => analyticsApi.getTopArchitects(),
+  });
+}
+
+export function useActivityReport(days: number = 7) {
+  return useQuery({
+    queryKey: ['analytics', 'activity', days],
+    queryFn: () => analyticsApi.getActivity(days),
+    refetchInterval: 60000,
   });
 }
 

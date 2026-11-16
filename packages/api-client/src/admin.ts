@@ -257,7 +257,7 @@ export const adminApi = {
   async restoreUser(userId: string): Promise<{ success: boolean }> {
     const res = await fetchWithAuth(`${config.baseUrl}/admin/users/${userId}/restore`, {
       method: 'PATCH',
-      headers: getHeaders(),
+      headers: getHeadersNoBody(),
     });
     if (!res.ok) {
       const error = await res.json().catch(() => ({ message: 'לא הצלחנו לשחזר את המשתמש.' }));

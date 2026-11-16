@@ -5,6 +5,7 @@ import { getFirebaseAuth } from '../lib/firebase.js';
 import prisma from '../lib/prisma.js';
 import { authMiddleware } from '../middleware/auth.middleware.js';
 import { storageService } from '../services/storage.service.js';
+import { trackUserActivity, detectPlatform } from '../services/activity-tracker.service.js';
 import { z } from 'zod';
 import { Prisma } from '@prisma/client';
 import type { DecodedIdToken } from 'firebase-admin/auth';
@@ -215,7 +216,11 @@ export async function authRoutes(server: FastifyInstance) {
       });
 
       if (existingByEmail) {
-        return reply.code(400).send({ error: 'Email already registered with a different account' });
+        return reply.code(400).send({
+          error: existingByEmail.isDeleted
+            ? 'החשבון עם כתובת המייל הזו נמחק בעבר. פנו למנהל המערכת כדי לשחזר אותו.'
+            : 'כתובת המייל הזו כבר רשומה במערכת, אולי בהתחברות אחרת (למשל Google). נסו להתחבר, או פנו למנהל המערכת.',
+        });
       }
 
       // Create user with profile
@@ -247,20 +252,25 @@ export async function authRoutes(server: FastifyInstance) {
     } catch (error) {
       // Handle Zod validation errors
       if (error instanceof z.ZodError) {
-        return reply.code(400).send({ error: 'Validation error', details: error.errors });
+        // Surface our own Hebrew messages (phone); otherwise a clear generic Hebrew message
+        const hebrew = error.errors.map(e => e.message).find(m => /[֐-׿]/.test(m));
+        return reply.code(400).send({
+          error: hebrew || 'חלק מהפרטים חסרים או לא תקינים (שם, אימייל, טלפון או סוג חשבון). בדקו את הטופס ונסו שוב.',
+          details: error.errors,
+        });
       }
 
       // Handle Prisma errors
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         console.error('[Auth] Database error:', error.code, error.message);
         if (error.code === 'P2002') {
-          return reply.code(400).send({ error: 'User already exists' });
+          return reply.code(400).send({ error: 'המשתמש כבר קיים במערכת. נסו להתחבר, או פנו למנהל המערכת.' });
         }
-        return reply.code(500).send({ error: 'Database error' });
+        return reply.code(500).send({ error: 'אירעה שגיאה בשמירת ההרשמה. נסו שוב בעוד רגע, ואם זה חוזר פנו למנהל המערכת.' });
       }
 
       console.error('[Auth] Registration error:', error);
-      return reply.code(500).send({ error: 'Registration failed' });
+      return reply.code(500).send({ error: 'ההרשמה לא הושלמה. נסו שוב בעוד רגע, ואם זה חוזר פנו למנהל המערכת.' });
     }
   });
 
@@ -308,6 +318,8 @@ export async function authRoutes(server: FastifyInstance) {
           pendingApproval: true
         });
       }
+
+      trackUserActivity(user.id, user.role, detectPlatform(request.headers['user-agent']));
 
       return { user, token: body.token };
     } catch (error) {
@@ -378,6 +390,63 @@ export async function authRoutes(server: FastifyInstance) {
     });
 
     return user;
+  });
+
+  // Upload the logo of a supplier that has just registered (the account is not active yet, so the
+  // regular authMiddleware would reject it). Only SUPPLIER users, and only while they have no image.
+  server.post('/profile/logo', async (request: FastifyRequest, reply: FastifyReply) => {
+    try {
+      const authHeader = request.headers.authorization;
+      if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return reply.code(401).send({ error: 'Unauthorized', message: 'Missing authorization token' });
+      }
+
+      const firebaseAuth = getFirebaseAuth();
+      if (!firebaseAuth) {
+        return reply.code(500).send({ error: 'Auth service not configured' });
+      }
+
+      let decoded: DecodedIdToken;
+      try {
+        decoded = await firebaseAuth.verifyIdToken(authHeader.replace('Bearer ', ''));
+      } catch {
+        return reply.code(401).send({ error: 'Unauthorized', message: 'Invalid token' });
+      }
+
+      const user = await prisma.user.findUnique({ where: { firebaseUid: decoded.uid } });
+      if (!user) {
+        return reply.code(401).send({ error: 'Unauthorized', message: 'User not found' });
+      }
+      if (user.role !== 'SUPPLIER') {
+        return reply.code(403).send({ error: 'Forbidden', message: 'Only suppliers can upload a logo here' });
+      }
+      if (user.profileImage) {
+        return reply.code(409).send({ error: 'Logo already uploaded' });
+      }
+
+      const data = await request.file();
+      if (!data) {
+        return reply.code(400).send({ error: 'No file uploaded' });
+      }
+
+      const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+      if (!allowedTypes.includes(data.mimetype)) {
+        return reply.code(400).send({ error: 'Invalid file type. Only images are allowed.' });
+      }
+
+      const buffer = await data.toBuffer();
+      if (buffer.length > 5 * 1024 * 1024) {
+        return reply.code(400).send({ error: 'File too large. Maximum size is 5MB.' });
+      }
+
+      const imageUrl = await storageService.uploadProfileImage(buffer, user.id, data.filename);
+      await prisma.user.update({ where: { id: user.id }, data: { profileImage: imageUrl } });
+
+      return { imageUrl };
+    } catch (error) {
+      console.error('[Auth] Supplier logo upload error:', error);
+      return reply.code(500).send({ error: 'Failed to upload logo' });
+    }
   });
 
   // Upload profile image
@@ -467,7 +536,49 @@ export async function authRoutes(server: FastifyInstance) {
   });
 
   // Request password reset via email (sent through our SMTP)
-  server.post('/request-password-reset', async (request: FastifyRequest, reply: FastifyReply) => {
+  // Self-service account deletion (App Store guideline 5.1.1(v)).
+  // Soft delete, same semantics as admin delete: record kept for audit, login disabled.
+  server.delete('/account', { preHandler: [authMiddleware] }, async (request: FastifyRequest, reply: FastifyReply) => {
+    const userId = request.user!.id;
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    if (!user || user.isDeleted) {
+      return reply.code(404).send({ error: 'User not found' });
+    }
+    if (user.role === 'ADMIN') {
+      return reply.code(403).send({ error: 'Admin accounts cannot be deleted from the app' });
+    }
+
+    await prisma.user.update({
+      where: { id: userId },
+      data: { isDeleted: true, deletedAt: new Date(), isActive: false },
+    });
+
+    if (user.firebaseUid) {
+      try {
+        const auth = getFirebaseAuth();
+        if (auth) {
+          await auth.updateUser(user.firebaseUid, { disabled: true });
+        }
+      } catch (e: any) {
+        if (e.code !== 'auth/user-not-found') {
+          console.error('Error disabling Firebase user:', e);
+        }
+      }
+    }
+
+    await prisma.auditLog.create({
+      data: {
+        userId,
+        action: 'USER_SELF_DELETED',
+        entityId: userId,
+        metadata: { deletedUserEmail: user.email },
+      },
+    });
+
+    return { success: true };
+  });
+
+  server.post('/request-password-reset',async (request: FastifyRequest, reply: FastifyReply) => {
     const { email } = request.body as { email: string };
 
     if (!email) {

@@ -65,6 +65,21 @@ export default function RewardsContent() {
     if (!isArchitect) return;
     walletApi.getBalance().then(setBalance).catch(() => {});
     walletApi.getCard().then(setCard).catch(() => {});
+
+    // Live balance: points may be redeemed on Amsalem in another tab - refresh on return and every 15s
+    const refreshBalance = () => {
+      if (document.visibilityState === 'visible') {
+        walletApi.getBalance().then(setBalance).catch(() => {});
+      }
+    };
+    const interval = setInterval(refreshBalance, 15000);
+    document.addEventListener('visibilitychange', refreshBalance);
+    window.addEventListener('focus', refreshBalance);
+    return () => {
+      clearInterval(interval);
+      document.removeEventListener('visibilitychange', refreshBalance);
+      window.removeEventListener('focus', refreshBalance);
+    };
   }, [isArchitect]);
 
   // Show info popup for suppliers/admins

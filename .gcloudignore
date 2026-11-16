@@ -1,0 +1,32 @@
+.git
+node_modules
+**/node_modules
+.next
+**/.next
+dist
+**/dist
+*.log
+.env
+**/.env
+.claude
+no/
+nul
+*.pdf
+*.docx
+*.jpeg
+*.jpg
+*.png
+!apps/web/public/**
+!apps/web/app/**
+backend/.env.backup
+
+# Not required by the web Docker build context
+apps/mobile/
+STAFF NO NEED/
+%SystemDrive%/
+%USERPROFILE%/
+.firebase/
+.turbo/
+*.mp4
+*.psd
+*.prproj

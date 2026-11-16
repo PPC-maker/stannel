@@ -4,6 +4,7 @@ import { FastifyRequest, FastifyReply } from 'fastify';
 import { getAuth } from 'firebase-admin/auth';
 import prisma from '../lib/prisma.js';
 import { UserRole } from '../types/index.js';
+import { trackUserActivity, detectPlatform } from '../services/activity-tracker.service.js';
 
 // Extend FastifyRequest to include user
 declare module 'fastify' {
@@ -86,6 +87,13 @@ export async function authMiddleware(
   } catch (error) {
     return reply.code(401).send({ error: 'Unauthorized', message: 'Invalid token' });
   }
+
+  // Activity tracking (fire-and-forget, throttled, never throws)
+  trackUserActivity(
+    request.user!.id,
+    request.user!.role,
+    detectPlatform(request.headers['user-agent'], request.headers['x-client-platform'] as string | undefined)
+  );
 }
 
 // Role-based access control middleware

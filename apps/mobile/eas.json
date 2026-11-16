@@ -26,23 +26,24 @@
       }
     },
     "production": {
+      "pnpm": "9.15.0",
       "ios": {
-        "resourceClass": "m1-medium"
+        "resourceClass": "m-medium",
+        "image": "macos-sequoia-15.6-xcode-26.0"
       },
       "android": {
         "buildType": "app-bundle"
       },
       "env": {
-        "EXPO_PUBLIC_API_URL": "https://stannel-api-1094694418275.me-west1.run.app"
-      }
+        "EXPO_PUBLIC_API_URL": "https://stannel-api-1094694418275.me-west1.run.app"      }
     }
   },
   "submit": {
     "production": {
       "ios": {
-        "appleId": "developer@stannel.app",
-        "ascAppId": "YOUR_APP_STORE_CONNECT_ID",
-        "appleTeamId": "YOUR_TEAM_ID"
+        "appleId": "info@newpost.co.il",
+        "ascAppId": "6824633206",
+        "appleTeamId": "888WH756AB"
       },
       "android": {
         "serviceAccountKeyPath": "./google-service-account.json",

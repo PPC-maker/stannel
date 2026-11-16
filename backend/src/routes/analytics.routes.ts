@@ -4,6 +4,7 @@ import { FastifyInstance, FastifyRequest } from 'fastify';
 import prisma from '../lib/prisma.js';
 import { authMiddleware, requireAdmin } from '../middleware/auth.middleware.js';
 import { aiService } from '../services/ai.service.js';
+import { getActivityReport } from '../services/activity-tracker.service.js';
 
 export async function analyticsRoutes(server: FastifyInstance) {
   // Admin only
@@ -126,6 +127,13 @@ export async function analyticsRoutes(server: FastifyInstance) {
         : 100,
       bySupplier,
     };
+  });
+
+  // Login / usage activity (who connected, split by role, most viewed pages)
+  server.get('/activity', async (request: FastifyRequest) => {
+    const query = request.query as { days?: string };
+    const days = Math.min(Math.max(parseInt(query.days || '7', 10) || 7, 1), 90);
+    return getActivityReport(days);
   });
 
   // Top architects ranking

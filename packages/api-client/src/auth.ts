@@ -1,6 +1,6 @@
 // Auth API Client
 
-import { config, getHeaders, setAuthToken, fetchWithRetry, fetchWithAuth } from './config';
+import { config, getHeaders, getHeadersNoBody, setAuthToken, fetchWithRetry, fetchWithAuth } from './config';
 import type { AuthResponse, LoginRequest, RegisterRequest, AuthUser } from '@stannel/types';
 
 export const authApi = {
@@ -160,6 +160,28 @@ export const authApi = {
     return response.json();
   },
 
+  // Logo of a supplier that has just registered (account not active yet)
+  async uploadSupplierLogo(file: File): Promise<{ imageUrl: string }> {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const headers = getHeaders();
+    delete (headers as Record<string, string>)['Content-Type'];
+
+    const response = await fetchWithAuth(`${config.baseUrl}/auth/profile/logo`, {
+      method: 'POST',
+      headers,
+      body: formData,
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.error || errorData.message || 'שגיאה בהעלאת הלוגו. נסה שוב.');
+    }
+
+    return response.json();
+  },
+
   async getPreferences(): Promise<UserPreferences> {
     const response = await fetchWithAuth(`${config.baseUrl}/auth/preferences`, {
       method: 'GET',
@@ -182,6 +204,20 @@ export const authApi = {
 
     if (!response.ok) {
       throw new Error('שגיאה בשמירת ההעדפות');
+    }
+
+    return response.json();
+  },
+
+  async deleteAccount(): Promise<{ success: boolean }> {
+    const response = await fetchWithAuth(`${config.baseUrl}/auth/account`, {
+      method: 'DELETE',
+      headers: getHeadersNoBody(),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.error || errorData.message || 'שגיאה במחיקת החשבון. נסה שוב או פנה למנהל.');
     }
 
     return response.json();

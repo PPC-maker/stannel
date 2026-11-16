@@ -23,6 +23,7 @@ const architectLinks = [
   { href: '/tools', label: 'כלים', icon: Wrench },
   { href: '/ai-agent', label: 'הסוכן שלך', icon: Bot },
   { href: '/suppliers', label: 'ספקים', icon: Building2 },
+  { href: '/plentrix', label: 'Plentrix', icon: Wrench },
 ];
 
 // Links for SUPPLIER users - view only, no wallet

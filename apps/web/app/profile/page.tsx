@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/lib/auth-context';
 import { useAuthGuard, AuthGuardLoader } from '@/lib/useAuthGuard';
-import { useWalletBalance, useInvoices } from '@/lib/api-hooks';
+import { useWalletBalance, useWalletTransactions, useInvoices } from '@/lib/api-hooks';
 import { authApi } from '@stannel/api-client';
 import {
   User,
@@ -42,6 +42,7 @@ export default function ProfilePage() {
   const { user, refreshUser } = useAuth();
   const { data: balance } = useWalletBalance();
   const { data: invoices } = useInvoices();
+  const { data: transactions } = useWalletTransactions(user?.role === 'ARCHITECT' || user?.role === 'DESIGNER');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [isEditing, setIsEditing] = useState(false);
@@ -117,14 +118,26 @@ export default function ProfilePage() {
     totalRedeemed: balance?.totalRedeemed || 0,
   };
 
-  // Recent activity from invoices
-  const recentActivity = (invoices || []).slice(0, 5).map((inv: any) => ({
+  // Recent activity: invoices + redemptions (rewards store / Amsalem) with what the points were spent on
+  const redemptionActivity = (Array.isArray(transactions) ? transactions : [])
+    .filter((t: any) => t.type === 'DEBIT' || t.description?.includes('ביטול מימוש'))
+    .map((t: any) => ({
+      id: `tx-${t.id}`,
+      type: 'redeem',
+      description: t.description,
+      date: t.createdAt,
+      points: t.type === 'DEBIT' ? -(t.amount || 0) : (t.amount || 0),
+    }));
+  const invoiceActivity = (invoices || []).map((inv: any) => ({
     id: inv.id,
     type: 'points',
     description: `חשבונית מ${inv.supplier?.companyName || 'ספק'}`,
     date: inv.createdAt,
     points: inv.pointsEarned || 0,
   }));
+  const recentActivity = [...invoiceActivity, ...redemptionActivity]
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    .slice(0, 10);
 
   const getTierColor = (tier: string) => {
     switch (tier) {

@@ -37,6 +37,7 @@ interface RegisterData {
   companyName?: string;
   address?: string;
   specializations?: string[];
+  logo?: File; // required for suppliers (enforced in the register form)
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -364,6 +365,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       const response = await authApi.register(payload);
 
+      // Supplier logo must be uploaded now, before the (not yet active) account is logged out
+      if (data.role === 'SUPPLIER' && data.logo) {
+        try {
+          await authApi.uploadSupplierLogo(data.logo);
+        } catch (logoErr) {
+          console.warn('[Auth] Supplier logo upload failed:', logoErr);
+        }
+      }
+
       // New user needs admin approval - show message and logout
       if (!response.user.isActive && response.user.role !== 'ADMIN') {
         await firebaseLogout();
@@ -424,6 +434,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (data.specializations && data.specializations.length > 0) payload.specializations = data.specializations;
 
       const response = await authApi.register(payload);
+
+      if (data.role === 'SUPPLIER' && data.logo) {
+        try {
+          await authApi.uploadSupplierLogo(data.logo);
+        } catch (logoErr) {
+          console.warn('[Auth] Supplier logo upload failed:', logoErr);
+        }
+      }
 
       if (!response.user.isActive && response.user.role !== 'ADMIN') {
         await firebaseLogout();

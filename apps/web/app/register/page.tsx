@@ -148,6 +148,12 @@ export default function RegisterPage() {
       return;
     }
 
+    // Suppliers must upload a logo (saved as their profile image)
+    if (role === 'SUPPLIER' && !imageFile) {
+      setError('יש להעלות לוגו של העסק כדי להשלים את ההרשמה');
+      return;
+    }
+
     setIsLoading(true);
     setError(null);
 
@@ -160,6 +166,7 @@ export default function RegisterPage() {
           companyName: formData.companyName || undefined,
           address: formData.address || undefined,
           specializations,
+          logo: imageFile || undefined,
         });
       } else {
         await register({
@@ -171,6 +178,7 @@ export default function RegisterPage() {
           companyName: formData.companyName || undefined,
           address: formData.address || undefined,
           specializations,
+          logo: imageFile || undefined,
         });
       }
       setStep(3); // Success step
@@ -182,7 +190,7 @@ export default function RegisterPage() {
       const result = await Swal.fire({
         icon: 'info',
         title: 'היי 👋',
-        html: '<p style="font-size:1.05rem;line-height:1.7">לא הצלחנו להשלים את ההרשמה כרגע.<br><strong>נשמח לקבל את הפרטים שלך וניצור איתך קשר להשלמת הרישום.</strong></p>',
+        html: `<p style="font-size:1.05rem;line-height:1.7">לא הצלחנו להשלים את ההרשמה כרגע.<br><span style="opacity:.8;font-size:.95rem">הסיבה: ${String(translatedMessage).replace(/[<>&]/g, '')}</span><br><strong>נשמח לקבל את הפרטים שלך וניצור איתך קשר להשלמת הרישום.</strong></p>`,
         confirmButtonText: 'שליחת הפרטים ב-WhatsApp',
         confirmButtonColor: '#c99b4a',
         showCancelButton: true,
@@ -207,6 +215,7 @@ export default function RegisterPage() {
           `אימייל: ${formData.email}`,
           `טלפון: ${formData.phone || 'לא הוזן'}`,
           `סוג חשבון: ${roleCategory || role}`,
+          `סיבת הכשל: ${translatedMessage}`,
         ].join('\n');
 
         window.location.href = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(contactMessage)}`;
@@ -388,7 +397,9 @@ export default function RegisterPage() {
                     )}
                   </div>
                 </div>
-                <p className="text-center text-white/40 text-xs mb-4">תמונת פרופיל (אופציונלי)</p>
+                <p className="text-center text-white/40 text-xs mb-4">
+                  {role === 'SUPPLIER' ? 'לוגו העסק (חובה)' : 'תמונת פרופיל (אופציונלי)'}
+                </p>
 
                 {/* Error Alert */}
                 {error && (
