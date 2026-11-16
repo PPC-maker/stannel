@@ -92,8 +92,8 @@ export default function MainScreen() {
         domStorageEnabled
         sharedCookiesEnabled
         thirdPartyCookiesEnabled
-        cacheEnabled={false}
-        cacheMode="LOAD_NO_CACHE"
+        cacheEnabled
+        cacheMode="LOAD_DEFAULT"
         allowsBackForwardNavigationGestures
         pullToRefreshEnabled
         mixedContentMode="always"
