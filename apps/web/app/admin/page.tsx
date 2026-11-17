@@ -28,6 +28,7 @@ import {
   ChevronDown,
   ChevronUp,
   ChevronRight,
+  Bell,
   type LucideIcon,
   Search,
   UserCheck,
@@ -1704,6 +1705,19 @@ Please analyze this error and provide a fix.
                 <div>
                   <p className="text-[#2b241d] font-medium group-hover:text-[#c99b4a] transition-colors">יעדים</p>
                   <p className="text-[#a89b8a] text-xs">ניהול יעדי אדריכלים ומעצבים</p>
+                </div>
+              </div>
+            </div>
+          </Link>
+          <Link href="/admin/push" className="group">
+            <div className="p-4 bg-[#f7f3f2] border border-[rgba(201,155,74,0.08)] rounded-xl hover:bg-[#f0ebe6] transition-all">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-violet-500/20">
+                  <Bell size={20} className="text-violet-500" />
+                </div>
+                <div>
+                  <p className="text-[#2b241d] font-medium group-hover:text-[#c99b4a] transition-colors">הודעות פוש</p>
+                  <p className="text-[#a89b8a] text-xs">שליחת התראות לטלפונים</p>
                 </div>
               </div>
             </div>

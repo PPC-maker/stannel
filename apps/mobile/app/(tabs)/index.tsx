@@ -1,6 +1,7 @@
 import { useRef, useState, useEffect, useCallback } from 'react';
 import { View, Text, Pressable, StyleSheet, BackHandler, Platform, Linking, ActivityIndicator, Image } from 'react-native';
 import { WebView, WebViewMessageEvent, WebViewNavigation } from 'react-native-webview';
+import { getPushInfo } from '../../lib/push';
 
 const WEB_URL = 'https://stannelclub.co.il';
 
@@ -54,6 +55,15 @@ export default function MainScreen() {
         // Destroy the authenticated WebView and create a clean instance at login.
         // This avoids a Next.js/Firebase navigation race after sign-out on Android.
         setWebViewKey((current) => current + 1);
+      } else if (message.type === 'STANNEL_PUSH_INIT') {
+        // The website reports a logged-in user: ask for notification permission, hand the token back.
+        getPushInfo().then((info) => {
+          if (!info) return;
+          const payload = JSON.stringify(info);
+          webViewRef.current?.injectJavaScript(
+            `window.__STANNEL_PUSH=${payload};window.dispatchEvent(new CustomEvent('stannel-push-token',{detail:${payload}}));true;`
+          );
+        });
       }
     } catch {
       // Ignore messages that are not part of the STANNEL native bridge.

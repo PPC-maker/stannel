@@ -15,6 +15,8 @@ export { analyticsApi } from './analytics';
 export { supplierApi } from './supplier';
 export { suppliersDirectoryApi } from './suppliers-directory';
 export { meetingsApi } from './meetings';
+export { pushApi } from './push';
+export type { PushAudience, PushCampaign } from './push';
 
 // Local imports for apiClient convenience object
 import { authApi } from './auth';

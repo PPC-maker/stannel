@@ -58,6 +58,7 @@ import { supplierProjectsRoutes } from './routes/supplier-projects.routes.js';
 import { meetingsRoutes } from './routes/meetings.routes.js';
 import { guardianRoutes } from './routes/guardian.routes.js';
 import { activityRoutes } from './routes/activity.routes.js';
+import { pushRoutes } from './routes/push.routes.js';
 import { guardianService } from './services/guardian.service.js';
 
 const server = Fastify({
@@ -161,6 +162,7 @@ async function registerRoutes() {
   server.register(meetingsRoutes, { prefix: '/api/v1/meetings' });
   server.register(guardianRoutes, { prefix: '/api/v1/guardian' });
   server.register(activityRoutes, { prefix: '/api/v1/activity' });
+  server.register(pushRoutes, { prefix: '/api/v1/push' });
 }
 
 // Health check

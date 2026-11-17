@@ -6,6 +6,7 @@ import BottomNav from '@/components/layout/BottomNav';
 import AccessibilityWidget from '@/components/layout/AccessibilityWidget';
 import SplashScreen from '@/components/layout/SplashScreen';
 import ActivityTracker from '@/components/layout/ActivityTracker';
+import PushRegistrar from '@/components/layout/PushRegistrar';
 import { Providers } from './providers';
 
 const assistant = Assistant({
@@ -122,6 +123,7 @@ export default function RootLayout({
           {/* Splash Screen + Service Worker */}
           <SplashScreen />
           <ActivityTracker />
+          <PushRegistrar />
         </Providers>
       </body>
     </html>

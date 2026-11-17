@@ -72,6 +72,7 @@ model User {
 
   // New relations from BASE44 migration
   notifications     Notification[]
+  deviceTokens      DeviceToken[]
   profilesViewed    ProfileView[]  @relation("ProfileViewer")
   profileViewers    ProfileView[]  @relation("ProfileViewed")
 
@@ -794,4 +795,31 @@ model PartnerRedemption {
 
   @@unique([partner, orderId])
   @@index([architectId])
+}
+
+// Push notifications: one row per installed app (FCM token)
+model DeviceToken {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token       String   @unique
+  platform    String   // ios | android
+  lastSeenAt  DateTime @default(now())
+  createdAt   DateTime @default(now())
+
+  @@index([userId])
+}
+
+// Push notifications sent manually from the admin panel
+model PushCampaign {
+  id           String   @id @default(cuid())
+  title        String
+  body         String
+  audience     String   // ALL | ARCHITECT | DESIGNER | SUPPLIER
+  sentCount    Int      @default(0)
+  failedCount  Int      @default(0)
+  createdById  String?
+  createdAt    DateTime @default(now())
+
+  @@index([createdAt])
 }

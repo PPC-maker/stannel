@@ -3,7 +3,7 @@
 import { createContext, useContext, useEffect, useState, useRef, ReactNode } from 'react';
 import { User, onAuthStateChanged, onIdTokenChanged } from 'firebase/auth';
 import { getFirebaseAuth, logout as firebaseLogout } from './firebase';
-import { authApi, setAuthToken, setTokenRefreshCallback } from '@stannel/api-client';
+import { authApi, pushApi, setAuthToken, setTokenRefreshCallback } from '@stannel/api-client';
 import type { AuthUser } from '@stannel/types';
 import { UserRole } from '@stannel/types';
 import Swal from 'sweetalert2';
@@ -459,6 +459,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const logout = async () => {
+    // Mobile app: stop push notifications for this user on this device (best effort, max 2s)
+    try {
+      const pushToken = typeof window !== 'undefined' ? (window as any).__STANNEL_PUSH?.token : undefined;
+      if (pushToken) {
+        await Promise.race([
+          pushApi.unregisterDevice(pushToken).catch(() => undefined),
+          new Promise((resolve) => setTimeout(resolve, 2000)),
+        ]);
+      }
+    } catch {
+      // never block logout
+    }
     try {
       await firebaseLogout();
       setAuthToken(null);
