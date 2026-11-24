@@ -254,8 +254,16 @@ export default function AdminPage() {
 
   const fetchAllUsers = async () => {
     try {
-      const response = await adminApi.getUsers({ pageSize: 100 });
-      setAllUsers(response.data as AdminUser[]);
+      // Load every page — a single page of 100 hid users beyond the 100 newest
+      const pageSize = 100;
+      const first = await adminApi.getUsers({ pageSize, page: 1 });
+      let all = [...(first.data as AdminUser[])];
+      const totalPages = Math.min(first.totalPages || 1, 50);
+      for (let page = 2; page <= totalPages; page++) {
+        const next = await adminApi.getUsers({ pageSize, page });
+        all = all.concat(next.data as AdminUser[]);
+      }
+      setAllUsers(all);
     } catch (error) {
       console.error('Error fetching users:', error);
     }
